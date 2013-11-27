@@ -11,8 +11,8 @@ GrainCloud {
   var server;
   var instArray, noteArray, octaveArray;
   var trigRateLow, trigRateHigh, sustainLow, sustainHigh, ampLow, ampHigh, cutoffLow, cutoffHigh, rqLow, rqHigh, panLow, panHigh;
-  var <cloudPattern;
-  var faderBus, <faderSynth, output;
+  var cloudPattern;
+  var faderBus, faderSynth, output;
 
   *new {
     ^super.new.prInit;

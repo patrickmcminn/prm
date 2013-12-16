@@ -96,7 +96,7 @@ MicroCluster {
   }
 
   prMakeSynths {
-    | inBus, amp = 1, numPitchShifts = 12, rangeLo = -1.0, rangeHi = 1.0,
+    | inBus, outBus, amp = 1, numPitchShifts = 12, rangeLo = -1.0, rangeHi = 1.0,
     trigType = 0, trigRate = 5, dryAmp = 0, cutoff = 15000, pan = 0, group = nil |
     triggerSynth = Synth(\PRM_externalImpulse, [\outBus, trigBus, \trigRate, trigRate], group, \addToTail);
     drySynth = Synth(\PRM_dryOutput, [\inBus, inBus, \outBus, faderBus, \amp, dryAmp], group, \addToTail);

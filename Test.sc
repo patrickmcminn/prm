@@ -1,12 +1,12 @@
-Dongs {
+Test {
 
-  *new {
-    ^super.new.init;
+  *new { | yeah = 0, yeahTwo = 1 |
+    ^super.new.init(yeah, yeahTwo);
   }
 
-  init {
-
-    "dongs loaded!".postln;
+  init { | yeah = 0, yeahTwo = 1 |
+    ^[yeah, yeahTwo];
+    //"dongs loaded!".postln;
   }
 
   add { | num1 = 9, num2 = 4 |

@@ -63,11 +63,11 @@ DelayNetwork {
     }).add;
 
     SynthDef(\prm_DelayNetwork_Input, {
-      | inBus, dryOutBus, wetOutBus, dryMute = 1, wetMute = 1 |
+      | inBus, dryOutBus, wetOutBus, dryAmp = 1, dryMute = 1, wetAmp = 1, wetMute = 1 |
       var input, sig;
       input = In.ar(inBus);
-      Out.ar(dryOutBus, Pan2.ar(input * dryMute));
-      Out.ar(wetOutBus, Pan2.ar(input * wetMute));
+      Out.ar(dryOutBus, Pan2.ar(input * dryAmp * dryMute));
+      Out.ar(wetOutBus, input * wetAmp * wetMute);
     }).add;
 
 
@@ -77,8 +77,7 @@ DelayNetwork {
       var lagTime = 0.05;
       input = In.ar(inBus, 2);
       bal = Balance2.ar(input[0], input[1], balance, amp.lag(lagTime));
-      sig = input * amp;
-      sig = sig * mute;
+      sig = bal * mute;
       sig = Out.ar(outBus, sig);
     }).add;
   }
@@ -89,7 +88,7 @@ DelayNetwork {
 
   }
 
-  prKillBusses {
+  prFreeBusses {
     delayBus.free;
     faderBus.free;
   }
@@ -113,7 +112,7 @@ DelayNetwork {
     });
   }
 
-  prKillSynths {
+  prFreeSynths {
     faderSynth.free;
     delayArray.do({ | synth | synth.free; });
     inputSynth.free;
@@ -135,6 +134,28 @@ DelayNetwork {
     faderSynth.set(\balance, balance);
   }
 
+  setDryAmp { | amp |
+    inputSynth.set(\dryAmp, amp);
+  }
+
+  setDryVol { | vol |
+    this.setDryAmp(vol.dbamp);
+  }
+
+  toggleDry {
+    inputSynth.get(\dryMute, { | muteState |
+      if(muteState == 0, { this.unMuteDry }, { this.muteDry });
+    });
+  }
+
+  muteDry {
+    inputSynth.set(\dryMute, 0);
+  }
+
+  unMuteDry {
+    inputSynth.set(\dryMute, 1);
+  }
+
   setInput { | inBus |
     inputSynth.set(\inBus, inBus);
     ^inBus;
@@ -143,6 +164,10 @@ DelayNetwork {
   setOutput { | outBus |
     faderSynth.set(\outBus, outBus);
     ^outBus;
+  }
+
+  getNumDelays {
+    ^delayArray.size
   }
 
   addDelay { | delayTime = 1, decayTime = 1, maxDelay = 6, filterType = 0, cutoff = 10000, res = 0, pan = 0, pitchShift = 0 |
@@ -154,20 +179,46 @@ DelayNetwork {
   }
 
   setDelayTime { | delayNum = 0, delayTime = 1 |
-    delayArray.at(delayNum).set(\delayTime, delayTime);
+    if( delayArray.size > delayNum,
+      { delayArray.at(delayNum).set(\delayTime, delayTime); },
+      { ^"Delay Synth Does Not Exist at This Index"; });
   }
 
   setDecayTime { | delayNum = 0, decayTime = 1 |
-    delayArray.at(delayNum).set(\decayTime, decayTime);
+    if( delayArray.size > delayNum,
+      { delayArray.at(delayNum).set(\decayTime, decayTime); },
+      { ^"Delay Synth Does Not Exist at This Index"; });
+  }
+
+  setCutoff { | delayNum = 0, cutoff = 1000 |
+    if( delayArray.size > delayNum,
+      { delayArray.at(delayNum).set(\cutoff, cutoff); },
+      { ^"Delay Synth Does Not Exist at This Index"; });
+  }
+
+  setRes { | delayNum = 0, res = 0 |
+    if( delayArray.size > delayNum,
+      { delayArray.at(delayNum).set(\res, res); },
+      { ^"Delay Synth Does Not Exist at This Index"; });
+  }
+
+  setPan { | delayNum = 0, pan = 0 |
+    if( delayArray.size > delayNum,
+      { delayArray.at(delayNum).set(\pan, pan); },
+      { ^"Delay Synth Does Not Exist at This Index"; });
+  }
+
+  setPitchShift { | delayNum = 0, pitchShift = 0 |
+    if( delayArray.size > delayNum,
+      { delayArray.at(delayNum).set(\pitchShift, pitchShift); },
+      { ^"Delay Synth Does Not Exist at This Index"; });
   }
 
   randomizeParameters {
-
     |
     delayTimeLow = 1, delayTimeHigh = 4, decayTimeLow = 1, decayTimeHigh = 1, cutoffLow = 400, cutoffHigh = 1000,
     resLow = 0, resHigh = 0.5, panLow = -1, panHigh = 1, pitchShiftArray = 0
     |
-
     delayArray.do({ | synth |
       var shift;
       if( pitchShiftArray.isArray, { shift = pitchShiftArray.choose; }, { shift = pitchShiftArray });
@@ -195,5 +246,27 @@ DelayNetwork {
       synth.set(\cutoff, exprand(cutoffLow, cutoffHigh));
     });
   }
+
+  randomizeRes { | resLow = 0, resHigh = 0.5 |
+    delayArray.do({ | synth |
+      synth.set(\res, rrand(resLow, resHigh));
+    });
+  }
+
+  randomizePan { | panLow = -1, panHigh = 1 |
+    delayArray.do({ | synth |
+      synth.set(\pan, rrand(panLow, panHigh));
+    });
+  }
+
+  setPitchShiftArray { | pitchShiftArray |
+    delayArray.do({ | synth | synth.set(\pitchShift, pitchShiftArray.choose;) });
+  }
+
+  free {
+    this.prFreeSynths;
+    this.prFreeBusses;
+  }
+
 
 }

@@ -57,18 +57,24 @@ VariDist {
 
     SynthDef(\prm_variDist, {
       |
-      inBus, outBus, amp = 0.2, octaveAmp = 1, dist = 1000, trigSelect = 1, trigRate = 1,
-      cutoffLow = 800, cutoffHigh = 3500, resLow = 1, resHigh = 0.4
+      inBus, outBus, amp = 0.2, octaveAmp = 1, dist = 1000,
+      lowBoost = 0, lowFreq = 500, midBoost = 0, midFreq = 1000, highBoost = 0, highFreq = 2500,
+      trigSelect = 1, trigRate = 1, cutoffLow = 800, cutoffHigh = 3500, resLow = 1, resHigh = 0.4
       |
-      var input, pitchShift, sum, trigger, distortion, cutoffChange, resonanceChange, filter, sig;
+      var input, pitchShift, sum, trigger, distortion;
+      var lowShelf, mid, highShelf;
+      var cutoffChange, resonanceChange, filter, sig;
       input = In.ar(inBus);
       pitchShift = PitchShift.ar(input, 0.2, 0.5) * octaveAmp;
       sum = input + pitchShift;
       distortion = (sum * dist).distort;
+      lowShelf = BLowShelf.ar(distortion, lowFreq, 1, lowBoost);
+      mid = BPeakEQ.ar(lowShelf, midFreq, 1, midBoost);
+      highShelf = BHiShelf.ar(mid, highFreq, 1, highBoost);
       trigger = Select.ar(trigSelect, [Impulse.ar(trigRate), Dust.ar(trigRate)]);
       cutoffChange = TExpRand.ar(cutoffLow, cutoffHigh, trigger);
       resonanceChange = TRand.ar(resLow, resHigh, trigger);
-      filter = RLPF.ar(distortion, cutoffChange, resonanceChange);
+      filter = RLPF.ar(highShelf, cutoffChange, resonanceChange);
       sig = filter * amp;
       Out.ar(outBus, sig);
     }).add;
@@ -171,6 +177,48 @@ VariDist {
     this.setResLow(resLow);
     this.setResHigh(resHigh);
   }
+
+  setLowBoost { | boost = 0 |
+    distortionSynth.set(\lowBoost, boost);
+  }
+
+  setLowFreq { | freq = 500 |
+    distortionSynth.set(\lowFreq, freq);
+  }
+
+  setMidBoost { | boost = 0 |
+    distortionSynth.set(\midBoost, boost);
+  }
+
+  setMidFreq { | freq = 1000 |
+    distortionSynth.set(\midFreq, freq);
+  }
+
+  setHighBoost { | boost = 0 |
+    distortionSynth.set(\highBoost, boost);
+  }
+
+  setHighFreq { | freq = 2500 |
+    distortionSynth.set(\highFreq, freq);
+  }
+
+  setEQBoost { | lowBoost = 0, midBoost = 0, highBoost = 0 |
+    this.setLowBoost(lowBoost);
+    this.setMidBoost(midBoost);
+    this.setHighBoost(highBoost);
+  }
+
+  setEQFreq { | lowFreq = 500, midFreq = 1000, highFreq = 2500 |
+    this.setLowFreq(lowFreq);
+    this.setMidFreq(midFreq);
+    this.setHighFreq(highFreq);
+  }
+
+  setEQ { | lowBoost = 0, lowFreq = 500, midBoost = 0, midFreq = 1000, highBoost = 0, highFreq = 2500 |
+    this.setEQBoost(lowBoost, midBoost, highBoost);
+    this.setEQFreq(lowFreq, midFreq, highFreq);
+  }
+
 
   free {
     this.prFreeSynths;

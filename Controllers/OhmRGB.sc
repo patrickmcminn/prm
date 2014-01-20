@@ -5,7 +5,7 @@ prm
 
 OhmRGB {
 
-  var midiInPort, midiOutPort;
+  var midiInPort, <midiOutPort;
   var noteFuncArray, controlFuncArray;
 
   *new {
@@ -21,7 +21,8 @@ OhmRGB {
   prInitMIDI {
     MIDIIn.connectAll;
     midiInPort = MIDIIn.findPort("OhmRGB", "Controls");
-    midiOutPort = MIDIOut.findPort("OhmRGB", "Controls");
+    midiOutPort = MIDIOut.newByName("OhmRGB", "Controls");
+    midiOutPort.latency = 0;
   }
 
   prMakeResponders {
@@ -52,7 +53,7 @@ OhmRGB {
   prMakeControlResponders {
     controlFuncArray = Array.fill(25, { | index |
       MIDIFunc({ | val, num, chn, src | (midiInPort.device + "controller" + num + "has no function assigned").postln; },
-        index, nil, \cc, midiInPort.uid).fix;
+        index, nil, \control, midiInPort.uid).fix;
     });
   }
 
@@ -158,7 +159,7 @@ OhmRGB {
   //////// Color Functions:
 
   turnColor { | num, color = \off |
-    case(color,
+    switch(color,
       { \off }, { midiOutPort.noteOn(16, num, 0) },
       { \red }, { midiOutPort.noteOn(16, num, 16) },
       { \green }, { midiOutPort.noteOn(16, num, 127) },
@@ -202,17 +203,28 @@ OhmRGB {
     this.turnColor(num, \white);
   }
 
-  turnGrid { | num = 0, color = \off |
-   case(color,
-      { \off }, { 63.do({ | num | this.turnColor(num, \off)}); },
-      { \red }, { 63.do({ | num | this.turnColor(num, \red)}); },
-      { \green }, { 63.do({ | num | this.turnColor(num, \green)}); },
-      { \blue }, { 63.do({ | num | this.turnColor(num, \blue)}); },
-      { \yellow }, { 63.do({ | num | this.turnColor(num, \yellow)}); },
-      { \purple }, { 63.do({ | num | this.turnColor(num, \purple)}); },
-      { \cyan }, { 63.do({ | num | this.turnColor(num, \cyan)}); },
-      { \white }, { 63.do({ | num | this.turnColor(num, \white)}); }
+  turnRandomColor { | num |
+    var color;
+    color = [\red, \green, \blue, \yellow, \purple, \cyan, \white].choose;
+    this.turnColor(num, color);
+  }
+
+  turnGrid { | color = \off |
+   switch(color,
+      { \off }, { 64.do({ | num | this.turnColor(num, \off)}); },
+      { \red }, { 64.do({ | num | this.turnColor(num, \red)}); },
+      { \green }, { 64.do({ | num | this.turnColor(num, \green)}); },
+      { \blue }, { 64.do({ | num | this.turnColor(num, \blue)}); },
+      { \yellow }, { 64.do({ | num | this.turnColor(num, \yellow)}); },
+      { \purple }, { 64.do({ | num | this.turnColor(num, \purple)}); },
+      { \cyan }, { 64.do({ | num | this.turnColor(num, \cyan)}); },
+      { \white }, { 64.do({ | num | this.turnColor(num, \white)}); }
     );
+  }
+
+  turnGridRandom {
+    var color = [\red, \green, \blue, \yellow, \purple, \cyan, \white].choose;
+    this.turnGrid(color);
   }
 
 }

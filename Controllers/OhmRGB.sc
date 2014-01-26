@@ -6,7 +6,12 @@ prm
 OhmRGB {
 
   var midiInPort, <midiOutPort;
-  var noteFuncArray, controlFuncArray;
+  var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
+  var leftSlidersBankArray, rightSlidersBankArray;
+  var leftKnobsBankArray, rightKnobsBankArray;
+  var crossfaderBankArray;
+
+  var activeLeftSlidersBank, activeRightSlidersBank, activeLeftKnobsBank, activeRightKnobsBank, activeCrossfaderBank;
 
   *new {
     ^super.new.prInit;
@@ -15,7 +20,7 @@ OhmRGB {
   prInit {
     this.prInitMIDI;
     this.prMakeResponders;
-
+    this.prMakeControlBanks;
   }
 
   prInitMIDI {
@@ -36,23 +41,28 @@ OhmRGB {
   }
 
   prMakeNoteResponders {
-    noteFuncArray = Array.fill(80, { | index |
-      MIDIFunc({ | val, num, chn, src | (midiInPort.device + "note" + num + "has no function assigned").postln; },
+    noteOnFuncArray = Array.fill(80, { | index |
+      MIDIFunc({ | val, num, chn, src | (midiInPort.device + "noteOn" + num + "has no function assigned").postln; },
         index, nil, \noteOn, midiInPort.uid).fix;
     });
-    noteFuncArray = noteFuncArray.add(
-      MIDIFunc({ | val, num, chn, src | (midiInPort.device + "note" + num + "has no function assigned").postln; },
+    noteOnFuncArray = noteOnFuncArray.add(
+      MIDIFunc({ | val, num, chn, src | (midiInPort.device + "noteOn" + num + "has no function assigned").postln; },
         87, nil, \noteOn, midiInPort.uid).fix;
     );
+
+    noteOffFuncArray = Array.fill(80, { | index |
+      MIDIFunc({ | val, num, chn, src |  }, index, nil, \noteOff, midiInPort.uid).fix;
+    });
+    noteOffFuncArray = noteOffFuncArray.add(MIDIFunc({ | val, num, chn, src | }, 87, nil, \noteOff, midiInPort.uid).fix;);
   }
 
   prFreeNoteResponders {
-    noteFuncArray.do({ | func | func.free; });
+    noteOnFuncArray.do({ | func | func.free; });
   }
 
   prMakeControlResponders {
     controlFuncArray = Array.fill(25, { | index |
-      MIDIFunc({ | val, num, chn, src | (midiInPort.device + "controller" + num + "has no function assigned").postln; },
+      MIDIFunc({ | val, num, chn, src | },
         index, nil, \control, midiInPort.uid).fix;
     });
   }
@@ -61,62 +71,161 @@ OhmRGB {
     controlFuncArray.do({ | func | func.free; });
   }
 
+  ///////// Banks:
+
+  prMakeControlBanks { | numBanks = 1 |
+    leftSlidersBankArray = Array.fill(numBanks, { Array.fill(4, { nil; }); });
+    rightSlidersBankArray = Array.fill(numBanks, { Array.fill(4, { nil; }); });
+    leftKnobsBankArray = Array.fill(numBanks, { Array.fill(12, { nil; }); });
+    rightKnobsBankArray = Array.fill(numBanks, { Array.fill(4, { nil; }); });
+    crossfaderBankArray = Array.fill(numBanks, { { nil }; });
+
+    activeLeftSlidersBank = 0;
+    activeRightSlidersBank = 0;
+    activeLeftKnobsBank = 0;
+    activeRightKnobsBank = 0;
+    activeCrossfaderBank = 0;
+  }
+
+  //////// Public Bank Functions:
+
+  addControlBank { | type = \leftSliders |
+    switch(type,
+      { \leftSlider }, { leftSlidersBankArray.add(Array.fill(4, { nil; });); },
+      { \rightSliders }, { rightSlidersBankArray.add(Array.fill(4, { nil; });); },
+      { \leftKnobs }, { leftKnobsBankArray.add(Array.fill(12, { nil; });) },
+      { \rightKnobs }, { rightKnobsBankArray.add(Array.fill(4, { nil; });) },
+      { \crossfader }, { crossfaderBankArray.add( { nil } ); }
+    );
+  }
+
+  activeControlBank { | type = \leftSliders |
+    switch(type,
+      { \leftSlider }, { ^activeLeftSlidersBank },
+      { \rightSliders }, { ^activeRightSlidersBank },
+      { \leftKnobs }, { ^activeLeftKnobsBank },
+      { \rightKnobs }, { ^activeRightKnobsBank },
+      { \crossfader }, { ^activeCrossfaderBank }
+    );
+  }
+
+  setActiveControlBank { | type = \leftSliders, bank = 0 |
+    switch(type,
+      { \leftSlider }, { activeLeftSlidersBank = bank },
+      { \rightSliders }, { activeRightSlidersBank = bank },
+      { \leftKnobs }, { activeLeftKnobsBank = bank },
+      { \rightKnobs }, { activeRightKnobsBank = bank },
+      { \crossfader }, { activeCrossfaderBank = bank }
+    );
+  }
+
   setFunc { | num = 0, type = \noteOn, func = nil |
     switch(type,
-      { \noteOn }, { noteFuncArray[num].prFunc_(func); },
+      { \noteOn }, { noteOnFuncArray[num].prFunc_(func); },
+      { \noteOff }, { noteOffFuncArray[num].prFunc_(func); },
       { \control }, { controlFuncArray[num].prFunc_(func); }
     );
   }
 
-  setNoteFunc { | num, func |
+  clearFunc { | num = 0, type = \noteOn |
+    switch(type,
+      { \noteOn }, { noteOnFuncArray[num].prFunc_(
+        { | val, num, chn, src | (midiInPort.device + "noteOn" + num + "has no function assigned").postln; }) },
+      { \noteOff }, { noteOffFuncArray[num].prFunc_(
+         { | val, num, chn, src | (midiInPort.device + "noteOn" + num + "has no function assigned").postln; }) },
+      { \control }, { controlFuncArray[num].prFunc_({}); }
+    );
+  }
+
+  setNoteOnFunc { | num, func |
     this.setFunc(num, \noteOn, func);
+  }
+
+  clearNoteOnFunc { | num |
+    this.clearFunc(num, \noteOn);
+  }
+
+  setNoteOffFunc { | num, func |
+    this.setFunc(num, \noteOff, func);
+  }
+
+  clearNoteOffFunc { | num |
+    this.clearFunc(num, \noteOff);
   }
 
   setCCFunc { | num, func |
     this.setFunc(num, \control, func);
   }
 
-  setGridFunc { | column = 0, row = 0, func |
-    var num = (column * 8) + row;
-    this.setNoteFunc(num, func);
+  clearCCFunc { | num |
+    this.clearFunc(num, \control);
   }
 
-  setLeftButtonFunc { | num, func |
+  setGridFunc { | column = 0, row = 0, func, type = \noteOn |
+    var num = (column * 8) + row;
+    switch(type,
+      { \noteOn }, { this.setNoteOnFunc(num, func); },
+      { \noteOff }, { this.setNoteOffFunc(num, func); }
+    );
+  }
+
+  setLeftButtonFunc { | num, func, type = \noteOn |
     var buttonArray = [65, 73, 66, 74];
     if( num < 5,
-      { this.setNoteFunc(buttonArray[num], func); },
+      { switch(type,
+        { \noteOn}, { this.setNoteOnFunc(buttonArray[num], func); },
+        { \noteOff }, { this.setNoteOffFunc(buttonArray[num], func); }
+        );
+      },
       { ^"not that many left buttons"; }
     );
   }
 
-  setRightButtonFunc { | num, func |
+  setRightButtonFunc { | num, func, type = \noteOn |
     var buttonArray = [67, 75, 68, 76];
     if( num < 5,
-      { this.setNoteFunc(buttonArray[num], func); },
+      { switch(type,
+        { \noteOn }, { this.setNoteOnFunc(buttonArray[num], func); },
+        { \noteOff }, { this.setNoteOffFunc(buttonArray[num], func); }
+        );
+      },
       { ^"not that many right buttons"; }
     );
   }
 
-  setCrossfaderButton { | num, func |
+  setCrossfaderButton { | num, func, type = \noteOn |
     var buttonArray = [64, 72];
     if ( num < 3,
-      { this.setNoteFunc(buttonArray[num], func); },
+      { switch(type,
+        { \noteOn }, { this.setNoteOnFunc(buttonArray[num], func); },
+        { \noteOff }, { this.setNoteOffFunc(buttonArray[num], func); }
+        );
+      },
       { ^"not that many crossfader buttons"; }
     );
   }
 
-  setControlButtonFunc { | column = 0, row = 0, func |
+  setControlButtonFunc { | column = 0, row = 0, func, type = \noteOn |
     var buttonArray = [69, 77, 70, 78, 71, 79];
     var num = (column * 2) + row;
     if( num < 6,
-      { this.setNoteFunc(buttonArray[num], func); },
+      { switch(type,
+        { \noteOn }, { this.setNoteOnFunc(buttonArray[num], func); },
+        { \noteOff }, { this.setNoteOffFunc(buttonArray[num], func); }
+        );
+      },
       { ^"not that many control buttons" }
     );
   }
 
-  setMasterButtonFunc { | func |
-    this.setNoteFunc(87, func);
+  setMasterButtonFunc { | func, type = \noteOn |
+    switch(type,
+      { \noteOn }, { this.setNoteOnFunc(80, func); },
+      { \noteOff }, { this.setNoteOffFunc(80, func); }
+    );
   }
+
+  //////// Sliders:
 
   setLeftSliderFunc { | num = 0, func |
     var sliderArray = [23, 22, 15, 14];
@@ -133,6 +242,8 @@ OhmRGB {
       { ^"not that many right sliders";}
     );
   }
+
+  //////// Knobs:
 
   setLeftKnobFunc { | column = 0, row = 0, func |
     var num = (column * 3) + row;
@@ -209,7 +320,52 @@ OhmRGB {
     this.turnColor(num, color);
   }
 
-  turnGrid { | color = \off |
+  turnGridColor { | column = 0, row = 0, color = \off |
+    var num = (column * 8) + row;
+    this.turnColor(num, color);
+  }
+
+  turnGridOff { | column = 0, row = 0 |
+    var num = (column * 8) + row;
+    this.turnColor(num, \off);
+  }
+
+  turnGridRed { | column = 0, row = 0 |
+    var num = (column * 8) + row;
+    this.turnColor(num, \red);
+  }
+
+  turnGridGreen { | column = 0, row = 0 |
+    var num = (column * 8) + row;
+    this.turnColor(num, \green);
+  }
+
+  turnGridBlue { | column = 0, row = 0 |
+    var num = (column * 8) + row;
+    this.turnColor(num, \blue);
+  }
+
+  turnGridYellow { | column = 0, row = 0 |
+    var num = (column * 8) + row;
+    this.turnColor(num, \yellow);
+  }
+
+  turnGridPurple { | column = 0, row = 0 |
+    var num = (column * 8) + row;
+    this.turnColor(num, \purple);
+  }
+
+  turnGridCyan { | column = 0, row = 0 |
+    var num = (column * 8) + row;
+    this.turnColor(num, \cyan);
+  }
+
+  turnGridWhite { | column = 0, row = 0 |
+    var num = (column * 8) + row;
+    this.turnColor(num, \white);
+  }
+
+  turnAllGrid { | color = \off |
    switch(color,
       { \off }, { 64.do({ | num | this.turnColor(num, \off)}); },
       { \red }, { 64.do({ | num | this.turnColor(num, \red)}); },
@@ -225,6 +381,356 @@ OhmRGB {
   turnGridRandom {
     var color = [\red, \green, \blue, \yellow, \purple, \cyan, \white].choose;
     this.turnGrid(color);
+  }
+
+  turnLeftButtonColor { | num = 0, color = \off |
+    var buttonArray = [65, 73, 66, 74];
+    this.turnColor(buttonArray[num], color);
+  }
+
+  turnLeftButtonOff { | num |
+    this.turnLeftButtonColor(num, \off);
+  }
+
+  turnLeftButtonRed { | num |
+    this.turnLeftButtonColor(num, \red);
+  }
+
+  turnLeftButtonGreen { | num |
+    this.turnLeftButtonColor(num, \green);
+  }
+
+  turnLeftButtonBlue { | num |
+    this.turnLeftButtonColor(num, \blue);
+  }
+
+  turnLeftButtonYellow { | num |
+    this.turnLeftButtonColor(num, \yellow);
+  }
+
+  turnLeftButtonPurple { | num |
+    this.turnLeftButtonColor(num, \purple);
+  }
+
+  turnLeftButtonCyan { | num |
+    this.turnLeftButtonColor(num, \cyan);
+  }
+
+  turnLeftButtonWhite { | num |
+    this.turnLeftButtonColor(num, \white);
+  }
+
+  turnAllLeftButtonsColor { | color = \off |
+    var buttonArray = [65, 73, 66, 74];
+    buttonArray.do({ | num | this.turnColor(num, color); });
+  }
+
+  turnAllLeftButtonsOff {
+    this.turnAllLeftButtonsColor(\off);
+  }
+
+  turnAllLeftButtonsRed {
+    this.turnAllLeftButtonsColor(\red);
+  }
+
+  turnAllLeftButtonsGreen {
+    this.turnAllLeftButtonsColor(\green);
+  }
+
+  turnAllLeftButtonsBlue {
+    this.turnAllLeftButtonsColor(\blue);
+  }
+
+  turnAllLeftButtonsYellow {
+    this.turnAllLeftButtonsColor(\yellow);
+  }
+
+  turnAllLeftButtonsPurple {
+    this.turnAllLeftButtonsColor(\purple);
+  }
+
+  turnAllLeftButtonsCyan {
+    this.turnAllLeftButtonsColor(\cyan);
+  }
+
+  turnAllLeftButtonsWhite {
+    this.turnAllLeftButtonsColor(\white);
+  }
+
+  turnRightButtonColor { | num = 0, color = \off |
+    var buttonArray = [67, 75, 68, 76];
+    this.turnColor(buttonArray[num], color);
+  }
+
+  turnRightButtonOff { | num |
+    this.turnRightButtonColor(num, \off);
+  }
+
+  turnRightButtonRed { | num |
+    this.turnRightButtonColor(num, \red);
+  }
+
+  turnRightButtonGreen { | num |
+    this.turnRightButtonColor(num, \green);
+  }
+
+  turnRightButtonBlue { | num |
+    this.turnRightButtonColor(num, \blue);
+  }
+
+  turnRightButtonYellow { | num |
+    this.turnRightButtonColor(num, \yellow);
+  }
+
+  turnRightButtonPurple { | num |
+    this.turnRightButtonColor(num, \purple);
+  }
+
+  turnRightButtonCyan { | num |
+    this.turnRightButtonColor(num, \cyan);
+  }
+
+  turnRightButtonWhite { | num |
+    this.turnRightButtonColor(num, \white);
+  }
+
+  turnAllRightButtonsColor { | color = \off |
+    var buttonArray = [67, 75, 68, 76];
+    buttonArray.do({ | num | this.turnColor(num, color); });
+  }
+
+  turnAllRightButtonsOff {
+    this.turnAllRightButtonsColor(\off);
+  }
+
+  turnAllRightButtonsRed {
+    this.turnAllRightButtonsColor(\red);
+  }
+
+  turnAllRightButtonsGreen {
+    this.turnAllRightButtonsColor(\green);
+  }
+
+  turnAllRightButtonsBlue {
+    this.turnAllRightButtonsColor(\blue);
+  }
+
+  turnAllRightButtonsYellow {
+    this.turnAllRightButtonsColor(\yellow);
+  }
+
+  turnAllRightButtonsPurple {
+    this.turnAllRightButtonsColor(\purple);
+  }
+
+  turnAllRightButtonsCyan {
+    this.turnAllRightButtonsColor(\cyan);
+  }
+
+  turnAllRightButtonsWhite {
+    this.turnAllRightButtonsColor(\white);
+  }
+
+  turnCrossfaderButton { | num = 0, color = \off |
+    var buttonArray = [64, 72];
+    this.turnColor(buttonArray[num], color);
+  }
+
+  turnCrossfaderButtonOff { | num |
+    var buttonArray = [64, 72];
+    this.turnColor(buttonArray[num], \off);
+  }
+
+  turnCrossfaderButtonRed { | num |
+    var buttonArray = [64, 72];
+    this.turnColor(buttonArray[num], \red);
+  }
+
+  turnCrossfaderButtonGreen { | num |
+    var buttonArray = [64, 72];
+    this.turnColor(buttonArray[num], \green);
+  }
+
+  turnCrossfaderButtonBlue { | num |
+    var buttonArray = [64, 72];
+    this.turnColor(buttonArray[num], \blue);
+  }
+
+  turnCrossfaderButtonYellow { | num |
+    var buttonArray = [64, 72];
+    this.turnColor(buttonArray[num], \yellow);
+  }
+
+  turnCrossfaderButtonPurple { | num |
+    var buttonArray = [64, 72];
+    this.turnColor(buttonArray[num], \purple);
+  }
+
+  turnCrossfaderButtonCyan { | num |
+    var buttonArray = [64, 72];
+    this.turnColor(buttonArray[num], \cyan);
+  }
+
+  turnCrossfaderButtonWhite { | num |
+    var buttonArray = [64, 72];
+    this.turnColor(buttonArray[num], \white);
+  }
+
+  turnAllCrossfaderButtonsColor { | color = \off |
+    var buttonArray = [64, 72];
+    buttonArray.do({ | index | this.turnColor(index, color); });
+  }
+
+  turnAllCrossfaderButtonsOff {
+    this.turnAllCrossfaderButtonsColor(\off);
+  }
+
+  turnAllCrossfaderButtonsRed {
+    this.turnAllCrossfaderButtonsColor(\red);
+  }
+
+  turnAllCrossfaderButtonsGreen {
+    this.turnAllCrossfaderButtonsColor(\green);
+  }
+
+  turnAllCrossfaderButtonsBlue {
+    this.turnAllCrossfaderButtonsColor(\blue);
+  }
+
+  turnAllCrossfaderButtonsYellow {
+    this.turnAllCrossfaderButtonsColor(\yellow);
+  }
+
+  turnAllCrossfaderButtonsPurple {
+    this.turnAllCrossfaderButtonsColor(\purple);
+  }
+
+  turnAllCrossfaderButtonsCyan {
+    this.turnAllCrossfaderButtonsColor(\cyan);
+  }
+
+  turnAllCrossfaderButtonsWhite {
+    this.turnAllCrossfaderButtonsColor(\white);
+  }
+
+  turnControlButtonColor { | num = 0, color = \off |
+    var buttonArray = [69, 77, 70, 78, 71, 79];
+    this.turnColor(buttonArray[num], color);
+  }
+
+  turnControlButtonOff { | num |
+    this.turnControlButtonColor(num, \off);
+  }
+
+  turnControlButtonRed { | num |
+    this.turnControlButtonColor(num, \red);
+  }
+
+  turnControlButtonGreen { | num |
+    this.turnControlButtonColor(num, \green);
+  }
+
+  turnControlButtonBlue { | num |
+    this.turnControlButtonColor(num, \blue);
+  }
+
+  turnControlButtonYellow { | num |
+    this.turnControlButtonColor(num, \yellow);
+  }
+
+  turnControlButtonPurple { | num |
+    this.turnControlButtonColor(num, \purple);
+  }
+
+  turnControlButtonCyan { | num |
+    this.turnControlButtonColor(num, \cyan);
+  }
+
+  turnControlButtonWhite { | num |
+    this.turnControlButtonColor(num, \white);
+  }
+
+  turnAllControlButtonsColor { | color = \off |
+    var buttonArray = [69, 77, 70, 78, 71, 79];
+    buttonArray.do({ | index | this.turnColor(index, color) });
+  }
+
+  turnAllControlButtonsOff {
+    this.turnAllControlButtonsColor(\off);
+  }
+
+  turnAllControlButtonsRed {
+    this.turnAllControlButtonsColor(\red);
+  }
+
+  turnAllControlButtonsGreen {
+    this.turnAllControlButtonsColor(\green);
+  }
+
+  turnAllControlButtonsBlue {
+    this.turnAllControlButtonsColor(\blue);
+  }
+
+  turnAllControlButtonsYellow {
+    this.turnAllControlButtonsColor(\yellow);
+  }
+
+  turnAllControlButtonsPurple {
+    this.turnAllControlButtonsColor(\purple);
+  }
+
+  turnAllControlButtonsCyan {
+    this.turnAllControlButtonsColor(\cyan);
+  }
+
+  turnAllControlButtonsWhite {
+    this.turnAllControlButtonsColor(\white);
+  }
+
+  turnMasterButtonColor { | color = \off |
+    this.turnColor(87);
+  }
+
+  turnMasterButtonOff {
+    this.turnMasterButtonColor(\off);
+  }
+
+  turnMasterButtonRed {
+    this.turnMasterButtonColor(\red);
+  }
+
+  turnMasterButtonGreen {
+    this.turnMasterButtonColor(\green);
+  }
+
+  turnMasterButtonBlue {
+    this.turnMasterButtonColor(\blue);
+  }
+
+  turnMasterButtonYellow {
+    this.turnMasterButtonColor(\yellow);
+  }
+
+  turnMasterButtonPurple {
+    this.turnMasterButtonColor(\purple);
+  }
+
+  turnMasterButtonCyan {
+    this.turnMasterButtonColor(\cyan);
+  }
+
+  turnMasterButtonWhite {
+    this.turnMasterButtonColor(\white);
+  }
+
+  turnAllOff {
+    // this.turnAllGridOff;
+    this.turnAllGrid(\off);
+    this.turnAllLeftButtonsOff;
+    this.turnAllRightButtonsOff;
+    this.turnAllCrossfaderButtonsOff;
+    this.turnAllControlButtonsOff;
+    this.turnMasterButtonOff;
   }
 
 }

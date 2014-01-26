@@ -12,11 +12,11 @@ GrainCloud {
   var cloudPattern;
   var faderBus, faderSynth, output;
 
-  *new { | output = 0, group = nil, addAction = \addToTail |
-    ^super.new.prInit(output);
+  *new { | outBus = 0, amp = 0.5, balance = 0, relGroup = nil, addAction = \addToTail |
+    ^super.new.prInit(outBus, amp, balance, relGroup, addAction);
   }
 
-  prInit { | output = 0, group = nil, addAction = \addToTail |
+  prInit { | output = 0, amp, balance, relGroup = nil, addAction = \addToTail |
     server = Server.default;
     server.waitForBoot{
       this.prAddSynthDefs;
@@ -24,11 +24,10 @@ GrainCloud {
       this.prMakeParameters;
       this.prMakeBus;
       server.sync;
-      this.prMakeSynth(output, group, addAction);
+      this.prMakeSynth(output, amp, balance, relGroup, addAction);
       server.sync;
       this.prMakePattern;
     }
-
   }
 
   //////// Private Functions:
@@ -220,8 +219,8 @@ GrainCloud {
     faderBus.free;
   }
 
-  prMakeSynth { | output = 0, group = nil, addAction = 'addToTail', amp = 0.5, balance = 0 |
-    faderSynth = Synth(\PRM_stereoFader, [\inBus, faderBus, \outBus, output, \amp, amp, \balance, balance], group, addAction);
+  prMakeSynth { | outBus = 0, amp = 0.5, balance = 0, relGroup = nil, addAction = 'addToTail' |
+    faderSynth = Synth(\PRM_stereoFader, [\inBus, faderBus, \outBus, outBus, \amp, amp, \balance, balance], relGroup, addAction);
 
   }
 
@@ -249,6 +248,18 @@ GrainCloud {
   }
 
   //////// Public Functions:
+
+  free {
+    cloudPattern.stop;
+    instArray = instArray.drop(instArray.size);
+    instArray = nil;
+    noteArray = noteArray.drop(noteArray.size);
+    noteArray = nil;
+    octaveArray = octaveArray.drop(octaveArray.size);
+    octaveArray = nil;
+    this.prFreeSynth;
+    this.prFreeBus;
+  }
 
   setAmp { | amp |
     faderSynth.set(\amp, amp);
@@ -603,7 +614,5 @@ GrainCloud {
         ^noteArray;
       }
     );
-
   }
-
 }

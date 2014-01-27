@@ -109,9 +109,17 @@ OhmRGB {
     );
   }
 
+  setActiveLeftSlidersBank { | bank = 0 |
+    var sliderArray = [23, 22, 15, 14];
+    activeLeftSlidersBank = bank;
+    sliderArray.do({ | item, index |
+      this.setCCFunc(item, leftSlidersBankArray[activeLeftSlidersBank][index]);
+    });
+  }
+
   setActiveControlBank { | type = \leftSliders, bank = 0 |
     switch(type,
-      { \leftSlider }, { activeLeftSlidersBank = bank },
+      { \leftSliders }, { this.setActiveLeftSlidersBank(bank); },
       { \rightSliders }, { activeRightSlidersBank = bank },
       { \leftKnobs }, { activeLeftKnobsBank = bank },
       { \rightKnobs }, { activeRightKnobsBank = bank },
@@ -227,12 +235,26 @@ OhmRGB {
 
   //////// Sliders:
 
-  setLeftSliderFunc { | num = 0, func |
+  setLeftSliderFunc { | num = 0, func, bank = 'active' |
+    var bankSet;
     var sliderArray = [23, 22, 15, 14];
-    if( num < 4,
-      { this.setCCFunc(sliderArray[num], func); },
+     if( num < 4,
+      {
+        if( bank == 'active',
+          {
+            bankSet = activeLeftSlidersBank;
+            leftSlidersBankArray[bankSet][num] = func;
+            this.setCCFunc(sliderArray[num], func);
+          },
+          {
+            bankSet = bank;
+            leftSlidersBankArray[bankSet][num] = func;
+          }
+        );
+      },
       { ^"not that many left sliders"; }
     );
+
   }
 
   setRightSliderFunc { | num = 0, func |

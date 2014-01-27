@@ -18,15 +18,45 @@
 
   //////// Public Bank Functions:
 
-  addControlBank { | type = \leftSliders |
+  addControlBanks { | num = 1, type = \leftSliders |
     switch(type,
-      { \leftSliders }, { leftSlidersBankArray.add(Array.fill(4, { nil; });); },
-      { \rightSliders }, { rightSlidersBankArray.add(Array.fill(4, { nil; });); },
-      { \leftKnobs }, { leftKnobsBankArray.add(Array.fill(12, { nil; });) },
-      { \rightKnobs }, { rightKnobsBankArray.add(Array.fill(4, { nil; });) },
-      { \crossfader }, { crossfaderBankArray.add( { nil } ); }
+      { \leftSliders }, { num.do({ leftSlidersBankArray.add(Array.fill(4, { nil; });); }); },
+      { \rightSliders }, { num.do({ rightSlidersBankArray.add(Array.fill(4, { nil; });); }) },
+      { \leftKnobs }, { num.do({ leftKnobsBankArray.add(Array.fill(12, { nil; });) }) },
+      { \rightKnobs }, { num.do({ rightKnobsBankArray.add(Array.fill(4, { nil; });) }) },
+      { \crossfader }, { num.do({ crossfaderBankArray.add( { nil } ); }) }
     );
   }
+
+  addLeftSlidersBanks { | num = 1 | this.addControlBanks(num, 'leftSliders'); }
+
+  addRightSlidersBanks { | num = 1 | this.addControlBanks(num, 'leftSliders'); }
+
+  addLeftKnobsBanks { | num = 1 | this.addControlBanks(num, 'leftKnobs'); }
+
+  addRightKnobsBanks { | num = 1 | this.addControlBanks(num, 'rightKnobs'); }
+
+  addCrossfaderBanks { | num = 1 | this.addControlBanks(num, 'crossfader'); }
+
+  numControlBanks { | type = \leftSliders |
+    switch(type,
+      { \leftSliders }, { ^leftSlidersBankArray.size; },
+      { \rightSliders }, { ^rightSlidersBankArray.size; },
+      { \leftKnobs }, { ^leftKnobsBankArray.size; },
+      { \rightKnobs }, { ^rightKnobsBankArray.size },
+      { \crossfader }, { ^crossfaderBankArray.size }
+    );
+  }
+
+  numLeftSlidersBanks { this.numControlBanks('leftSliders') }
+
+  numRightSlidersBanks { this.numControlBanks('RightSliders') }
+
+  numLeftKnobsBanks { this.numControlBanks('leftKnobs') }
+
+  numRightKnobsBanks { this.numControlBanks('rightKnobs') }
+
+  numCrossfaderBanks { this.numControlBanks('crossfader') }
 
   activeControlBank { | type = \leftSliders |
     switch(type,
@@ -37,6 +67,16 @@
       { \crossfader }, { ^activeCrossfaderBank }
     );
   }
+
+  activeLeftSlidersBank { this.activeControlBank('leftSliders'); }
+
+  activeRightSlidersBank { this.activeControlBank('rightSliders'); }
+
+  activeLeftKnobsBank { this.activeControlBank('leftKnobs'); }
+
+  activeRightKnobsBank { this.activeControlBank('rightKnobs'); }
+
+  activeCrossfaderBank { this.activeControlBank('crossfader'); }
 
   setActiveLeftSlidersBank { | bank = 0 |
     var sliderArray = [23, 22, 15, 14];
@@ -79,10 +119,10 @@
   setActiveControlBank { | type = \leftSliders, bank = 0 |
     switch(type,
       { \leftSliders }, { this.setActiveLeftSlidersBank(bank); },
-      { \rightSliders }, { activeRightSlidersBank = bank },
-      { \leftKnobs }, { activeLeftKnobsBank = bank },
-      { \rightKnobs }, { activeRightKnobsBank = bank },
-      { \crossfader }, { activeCrossfaderBank = bank }
+      { \rightSliders }, { this.setActiveRightSlidersBank(bank); },
+      { \leftKnobs }, { this.setActiveLeftKnobsBank(bank); },
+      { \rightKnobs }, { this.setActiveRightKnobsBank(bank); },
+      { \crossfader }, { this.setActiveCrossfaderBank(bank); }
     );
   }
 

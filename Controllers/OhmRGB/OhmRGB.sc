@@ -7,11 +7,13 @@ OhmRGB {
 
   var midiInPort, <midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
-  var <leftSlidersBankArray, rightSlidersBankArray;
-  var leftKnobsBankArray, rightKnobsBankArray;
-  var crossfaderBankArray;
 
-  var <activeLeftSlidersBank, activeRightSlidersBank, activeLeftKnobsBank, activeRightKnobsBank, activeCrossfaderBank;
+  var leftSlidersBankArray, rightSlidersBankArray, leftKnobsBankArray, rightKnobsBankArray, crossfaderBankArray;
+  var activeLeftSlidersBank, activeRightSlidersBank, activeLeftKnobsBank, activeRightKnobsBank, activeCrossfaderBank;
+
+  var gridBankArray, leftButtonsBankArray, rightButtonsBankArray, crossfaderButtonsBankArray, controlButtonsBankArray;
+  var activeGridBank, activeLeftButtonsBank, activeRightButtonsBank, activeCrossfaderButtonsBank, activeControlButtonsBank;
+
 
   *new {
     ^super.new.prInit;
@@ -114,6 +116,8 @@ OhmRGB {
     this.clearFunc(num, \control);
   }
 
+  //////// Convenience Methods:
+
   setGridFunc { | column = 0, row = 0, func, type = \noteOn |
     var num = (column * 8) + row;
     switch(type,
@@ -159,9 +163,9 @@ OhmRGB {
   }
 
   setControlButtonFunc { | column = 0, row = 0, func, type = \noteOn |
-    var buttonArray = [69, 77, 70, 78, 71, 79];
+    var buttonArray = [69, 77, 70, 78, 71, 79, 80];
     var num = (column * 2) + row;
-    if( num < 6,
+    if( num < 7,
       { switch(type,
         { \noteOn }, { this.setNoteOnFunc(buttonArray[num], func); },
         { \noteOff }, { this.setNoteOffFunc(buttonArray[num], func); }

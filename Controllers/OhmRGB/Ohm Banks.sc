@@ -2,12 +2,84 @@
 
    ///////// Banks:
 
+  //////// Note Banks:
+
+  /*
+  Array Slot 0: Note On Function
+  Array Slot 1: Note Off Function
+  Array Slot 2: Color
+  Array Slot 3: Animation Function (not implemented yet)
+  */
+
+  prMakeNoteBanks { | numBanks = 1 |
+    this.prMakeGridBanks(numBanks);
+    this.prMakeLeftButtonBanks(numBanks);
+    this.prMakeRightButtonBanks(numBanks);
+    this.prMakeCrossfaderButtonBanks(numBanks);
+    this.prMakeControlButtonBanks(numBanks);
+  }
+
+  prMakeGridBanks { | numBanks = 1 |
+    gridBankArray = Array.new;
+    this.addGridBanks(numBanks);
+  }
+
+  /*
+  prMakeLeftButtonBanks { | numBanks = 1 |
+    leftButtonsBankArray = Array.fill2D(4, 4, nil);
+    leftButtonsBankArray.do({ | item, index |
+      item[0] = { (midiInPort.device + "noteOn" + index + "has no function assigned").postln; };
+      item[1] = { };
+      item[2] = \off;
+      item[3] = nil;
+    });
+  }
+
+  prMakeRightButtonBanks { | numBanks = 1 |
+    rightButtonsBankArray = Array.fill2D(4, 4, nil);
+    rightButtonsBankArray.do({ | item, index |
+      item[0] = { (midiInPort.device + "noteOn" + index + "has no function assigned").postln; };
+      item[1] = { };
+      item[2] = \off;
+      item[3] = nil;
+    });
+  }
+
+  prMakeCrossfaderButtonsBanks { | numBanks = 1 |
+    crossfaderButtonsBankArray = Array.fill2D(2, 4, nil);
+    crossfaderButtonsBankArray.do({ | item, index |
+      item[0] = { (midiInPort.device + "noteOn" + index + "has no function assigned").postln; };
+      item[1] = { };
+      item[2] = \off;
+      item[3] = nil;
+    });
+  }
+
+  prMakeControlButtonsBanks { | numBanks = 1 |
+    controlButtonsBankArray = Array.fill2D(7, 4, nil);
+    controlButtonsBankArray.do({ | item, index |
+      item[0] = { (midiInPort.device + "noteOn" + index + "has no function assigned").postln; };
+      item[1] = { };
+      item[2] = \off;
+      item[3] = nil;
+    });
+  }
+  */
+
+  //////// Control Banks:
+
   prMakeControlBanks { | numBanks = 1 |
-    leftSlidersBankArray = Array.fill(numBanks, { Array.fill(4, { nil; }); });
-    rightSlidersBankArray = Array.fill(numBanks, { Array.fill(4, { nil; }); });
-    leftKnobsBankArray = Array.fill(numBanks, { Array.fill(12, { nil; }); });
-    rightKnobsBankArray = Array.fill(numBanks, { Array.fill(4, { nil; }); });
-    crossfaderBankArray = Array.fill(numBanks, { { nil }; });
+    leftSlidersBankArray = Array.new;
+    rightSlidersBankArray = Array.new;
+    leftKnobsBankArray = Array.new;
+    rightKnobsBankArray = Array.new;
+    crossfaderBankArray = Array.new;
+
+    this.addLeftSlidersBanks(numBanks);
+    this.addRightSlidersBanks(numBanks);
+    this.addLeftKnobsBanks(numBanks);
+    this.addRightKnobsBanks(numBanks);
+    this.addCrossfaderBanks(numBanks);
 
     activeLeftSlidersBank = 0;
     activeRightSlidersBank = 0;
@@ -18,19 +90,43 @@
 
   //////// Public Bank Functions:
 
+
+  //////// Public Note Bank Functions:
+
+  /*
+  addNoteBanks { | num = 1, type = 'grid' |
+    switch(type,
+      { 'grid' }, { num.do({
+  */
+
+  addGridBanks { | num = 1 |
+    var newGridBank;
+    num.do({
+      gridBankArray = gridBankArray.add(Array.fill2D(64, 4, nil));
+      gridBankArray[(gridBankArray.size)-1].do({ | item, index |
+        item[0] = { (midiInPort.device + "noteOn" + index + "has no function assigned").postln; };
+        item[1] = { };
+        item[2] = \off;
+        item[3] = nil;
+      });
+    });
+  }
+
+  //////// Public Control Bank Functions:
+
   addControlBanks { | num = 1, type = \leftSliders |
     switch(type,
-      { \leftSliders }, { num.do({ leftSlidersBankArray.add(Array.fill(4, { nil; });); }); },
-      { \rightSliders }, { num.do({ rightSlidersBankArray.add(Array.fill(4, { nil; });); }) },
-      { \leftKnobs }, { num.do({ leftKnobsBankArray.add(Array.fill(12, { nil; });) }) },
-      { \rightKnobs }, { num.do({ rightKnobsBankArray.add(Array.fill(4, { nil; });) }) },
-      { \crossfader }, { num.do({ crossfaderBankArray.add( { nil } ); }) }
+      { \leftSliders }, { num.do({ leftSlidersBankArray = leftSlidersBankArray.add(Array.fill(4, { nil; });); }); },
+      { \rightSliders }, { num.do({ rightSlidersBankArray = rightSlidersBankArray.add(Array.fill(4, { nil; });); }) },
+      { \leftKnobs }, { num.do({ leftKnobsBankArray = leftKnobsBankArray.add(Array.fill(12, { nil; });) }) },
+      { \rightKnobs }, { num.do({ rightKnobsBankArray = rightKnobsBankArray.add(Array.fill(4, { nil; });) }) },
+      { \crossfader }, { num.do({ crossfaderBankArray = crossfaderBankArray.add( { nil } ); }) }
     );
   }
 
   addLeftSlidersBanks { | num = 1 | this.addControlBanks(num, 'leftSliders'); }
 
-  addRightSlidersBanks { | num = 1 | this.addControlBanks(num, 'leftSliders'); }
+  addRightSlidersBanks { | num = 1 | this.addControlBanks(num, 'rightSliders'); }
 
   addLeftKnobsBanks { | num = 1 | this.addControlBanks(num, 'leftKnobs'); }
 

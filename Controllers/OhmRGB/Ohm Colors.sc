@@ -346,8 +346,9 @@
     this.turnAllCrossfaderButtonsColor(\white);
   }
 
-  turnControlButtonColor { | num = 0, color = \off |
-    var buttonArray = [69, 77, 70, 78, 71, 79];
+  turnControlButtonColor { | row = 0, column = 0, color = \off |
+    var num = (row * 2) + column;
+    var buttonArray = [69, 77, 70, 78, 71, 79, 80];
     this.turnColor(buttonArray[num], color);
   }
 
@@ -384,7 +385,7 @@
   }
 
   turnAllControlButtonsColor { | color = \off |
-    var buttonArray = [69, 77, 70, 78, 71, 79];
+    var buttonArray = [69, 77, 70, 78, 71, 79, 80];
     buttonArray.do({ | index | this.turnColor(index, color) });
   }
 

@@ -62,9 +62,19 @@
     });
   }
 
-  setActiveRightKnobsBank { }
+  setActiveRightKnobsBank { | bank = 0 |
+    var knobArray = [3, 1, 0, 2];
+    activeRightKnobsBank = bank;
+    knobArray.do({ | item, index |
+      this.setCCFunc(item, rightKnobsBankArray[activeRightKnobsBank][index]);
+    });
+  }
 
-  setActiveCrossfaderBank { }
+  setActiveCrossfaderBank { | bank = 0 |
+    activeCrossfaderBank = bank;
+    this.setCCFunc(24, crossfaderBankArray[activeCrossfaderBank]);
+
+  }
 
   setActiveControlBank { | type = \leftSliders, bank = 0 |
     switch(type,

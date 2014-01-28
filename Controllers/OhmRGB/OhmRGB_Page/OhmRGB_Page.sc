@@ -12,7 +12,7 @@ OhmRGB_Page {
   var activeLeftSlidersBank, activeRightSlidersBank, activeLeftKnobsBank, activeRightKnobsBank, activeCrossfaderBank;
 
   var gridBankArray, leftButtonsBankArray, rightButtonsBankArray, crossfaderButtonsBankArray, controlButtonsBankArray;
-  var activeGridBank, activeLeftButtonsBank, activeRightButtonsBank, activeCrossfaderButtonsBank, activeControlButtonsBank;
+  var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeCrossfaderButtonsBank, <activeControlButtonsBank;
 
 
   *new {

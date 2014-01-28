@@ -8,7 +8,7 @@ OhmRGB {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
-  var <pageDict, <activePage;
+  var <pageDict, activePage, activePageKey;
 
   *new {
     ^super.new.prInit;
@@ -182,7 +182,8 @@ OhmRGB {
   }
 
   setPage { | name = 'page' |
-    activePage = pageDict[name];
+    activePageKey = name;
+    activePage = pageDict[activePageKey];
     81.do({ | num | this.setNoteOnFunc(num, activePage.getNoteOnFunc(num)); });
     81.do({ | num | this.setNoteOffFunc(num, activePage.getNoteOffFunc(num)); });
     25.do({ | num | this.setCCFunc(num, activePage.getCCFunc(num)); });

@@ -1,4 +1,4 @@
-+ OhmRGB {
++ OhmRGB_Page {
 
    ///////// Banks:
 
@@ -13,15 +13,41 @@
 
   prMakeNoteBanks { | numBanks = 1 |
     this.prMakeGridBanks(numBanks);
-    this.prMakeLeftButtonBanks(numBanks);
-    this.prMakeRightButtonBanks(numBanks);
-    this.prMakeCrossfaderButtonBanks(numBanks);
-    this.prMakeControlButtonBanks(numBanks);
+    this.prMakeLeftButtonsBanks(numBanks);
+    this.prMakeRightButtonsBanks(numBanks);
+    this.prMakeCrossfaderButtonsBanks(numBanks);
+    this.prMakeControlButtonsBanks(numBanks);
+
+    activeGridBank = 0;
+    activeLeftButtonsBank = 0;
+    activeRightButtonsBank = 0;
+    activeCrossfaderButtonsBank = 0;
+    activeControlButtonsBank = 0;
   }
 
   prMakeGridBanks { | numBanks = 1 |
     gridBankArray = Array.new;
     this.addGridBanks(numBanks);
+  }
+
+  prMakeLeftButtonsBanks { | numBanks = 1 |
+    leftButtonsBankArray = Array.new;
+    this.addLeftButtonsBanks(numBanks);
+  }
+
+  prMakeRightButtonsBanks { | numBanks = 1 |
+    rightButtonsBankArray = Array.new;
+    this.addRightButtonsBanks(numBanks);
+  }
+
+  prMakeCrossfaderButtonsBanks { | numBanks = 1 |
+    crossfaderButtonsBankArray = Array.new;
+    this.addCrossfaderButtonsBanks(numBanks);
+  }
+
+  prMakeControlButtonsBanks { | numBanks = 1 |
+    controlButtonsBankArray = Array.new;
+    this.addControlButtonsBanks(numBanks);
   }
 
   /*
@@ -91,26 +117,127 @@
   //////// Public Bank Functions:
 
 
-  //////// Public Note Bank Functions:
-
-  /*
-  addNoteBanks { | num = 1, type = 'grid' |
-    switch(type,
-      { 'grid' }, { num.do({
-  */
+  //// Public Note Bank Functions:
 
   addGridBanks { | num = 1 |
-    var newGridBank;
     num.do({
       gridBankArray = gridBankArray.add(Array.fill2D(64, 4, nil));
-      gridBankArray[(gridBankArray.size)-1].do({ | item, index |
-        item[0] = { (midiInPort.device + "noteOn" + index + "has no function assigned").postln; };
+      gridBankArray[(gridBankArray.size-1)].do({ | item, index |
+        item[0] = { };
         item[1] = { };
         item[2] = \off;
         item[3] = nil;
       });
     });
   }
+
+  addLeftButtonsBanks { | num = 1 |
+    num.do({
+      leftButtonsBankArray = leftButtonsBankArray.add(Array.fill2D(4, 4, nil));
+      leftButtonsBankArray[(leftButtonsBankArray.size-1)].do({ | item, index |
+        item[0] = { };
+        item[1] = { };
+        item[2] = \off;
+        item[3] = nil;
+      });
+    });
+  }
+
+  addRightButtonsBanks { | num = 1 |
+    num.do({
+      rightButtonsBankArray = rightButtonsBankArray.add(Array.fill2D(4, 4, nil));
+      rightButtonsBankArray[(rightButtonsBankArray.size-1)].do({ | item, index |
+        item[0] = { };
+        item[1] = { };
+        item[2] = \off;
+        item[3] = nil;
+      });
+    });
+  }
+
+  addCrossfaderButtonsBanks { | num = 1 |
+    num.do({
+      crossfaderButtonsBankArray = crossfaderButtonsBankArray.add(Array.fill2D(2, 4, nil));
+      crossfaderButtonsBankArray[(crossfaderButtonsBankArray.size-1)].do({ | item, index |
+        item[0] = { };
+        item[1] = { };
+        item[2] = \off;
+        item[3] = nil;
+      });
+    });
+  }
+
+  addControlButtonsBanks { | num = 1 |
+    num.do({
+      controlButtonsBankArray = controlButtonsBankArray.add(Array.fill2D(7, 4, nil));
+      controlButtonsBankArray[(controlButtonsBankArray.size-1)].do({ | item, index |
+        item[0] = { };
+        item[1] = { };
+        item[2] = \off;
+        item[3] = nil;
+      });
+    });
+  }
+
+  addNoteBanks { | numBanks = 1, type = 'grid' |
+    switch(type,
+      { 'grid' }, { this.addGridBanks(numBanks); },
+      { 'leftButtons' }, { this.addLeftButtonsBanks(numBanks); },
+      { 'rightButtons' }, { this.addRightButtonsBanks(numBanks); },
+      { 'crossfaderButtons' }, { this.addCrossfaderButtonsBanks(numBanks); },
+      { 'controlButtons' }, { this.addControlButtonsBanks(numBanks); }
+    );
+  }
+
+  setActiveGridBank { | bank = 0 |
+    activeGridBank = bank;
+    64.do({ | index |
+      this.setNoteOnFunc(index, gridBankArray[activeGridBank][index][0]);
+      this.setNoteOffFunc(index, gridBankArray[activeGridBank][index][1]);
+      this.turnColor(index, gridBankArray[activeGridBank][index][2]);
+    });
+  }
+
+  setActiveLeftButtonsBank { | bank = 0 |
+    var buttonArray = [65, 73, 66, 74];
+    activeLeftButtonsBank = bank;
+    buttonArray.do({ | item, index |
+      this.setNoteOnFunc(item, leftButtonsBankArray[activeLeftButtonsBank][index][0]);
+      this.setNoteOffFunc(item, leftButtonsBankArray[activeLeftButtonsBank][index][1]);
+      this.turnColor(item, leftButtonsBankArray[activeLeftButtonsBank][index][2]);
+    });
+  }
+
+  setActiveRightButtonsBank { | bank = 0 |
+    var buttonArray = [67, 75, 68, 76];
+    activeRightButtonsBank = bank;
+    buttonArray.do({ | item, index |
+      this.setNoteOnFunc(item, rightButtonsBankArray[activeRightButtonsBank][index][0]);
+      this.setNoteOffFunc(item, rightButtonsBankArray[activeRightButtonsBank][index][1]);
+      this.turnColor(item, rightButtonsBankArray[activeRightButtonsBank][index][2]);
+    });
+  }
+
+  setActiveCrossfaderButtonsBank { | bank = 0 |
+    var buttonArray = [64, 72];
+    activeCrossfaderButtonsBank = bank;
+    buttonArray.do({ | item, index |
+      this.setNoteOnFunc(item, crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][0]);
+      this.setNoteOffFunc(item, crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][1]);
+      this.turnColor(item, crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][2]);
+    });
+  }
+
+  setActiveControlButtonsBank { | bank = 0 |
+    var buttonArray = [69, 77, 70, 78, 71, 79, 80];
+    activeControlButtonsBank = bank;
+    buttonArray.do({ | item, index |
+      this.setNoteOnFunc(item, controlButtonsBankArray[activeControlButtonsBank][index][0]);
+      this.setNoteOffFunc(item, controlButtonsBankArray[activeControlButtonsBank][index][1]);
+      this.turnColor(item, controlButtonsBankArray[activeControlButtonsBank][index][2]);
+    });
+  }
+
 
   //////// Public Control Bank Functions:
 

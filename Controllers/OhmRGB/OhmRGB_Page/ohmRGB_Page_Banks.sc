@@ -281,26 +281,6 @@
 
   numCrossfaderBanks { this.numControlBanks('crossfader') }
 
-  activeControlBank { | type = \leftSliders |
-    switch(type,
-      { \leftSliders }, { ^activeLeftSlidersBank },
-      { \rightSliders }, { ^activeRightSlidersBank },
-      { \leftKnobs }, { ^activeLeftKnobsBank },
-      { \rightKnobs }, { ^activeRightKnobsBank },
-      { \crossfader }, { ^activeCrossfaderBank }
-    );
-  }
-
-  activeLeftSlidersBank { this.activeControlBank('leftSliders'); }
-
-  activeRightSlidersBank { this.activeControlBank('rightSliders'); }
-
-  activeLeftKnobsBank { this.activeControlBank('leftKnobs'); }
-
-  activeRightKnobsBank { this.activeControlBank('rightKnobs'); }
-
-  activeCrossfaderBank { this.activeControlBank('crossfader'); }
-
   setActiveLeftSlidersBank { | bank = 0 |
     var sliderArray = [23, 22, 15, 14];
     activeLeftSlidersBank = bank;

@@ -8,7 +8,8 @@ OhmRGB {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
-  var <pageDict, activePage, activePageKey;
+  var <pageDict, <activePage, activePageKey;
+  var colorArray;
 
   *new {
     ^super.new.prInit;
@@ -17,6 +18,7 @@ OhmRGB {
   prInit {
     this.prInitMIDI;
     this.prMakeResponders;
+    this.prMakeColorArray;
     this.prMakePageDictionary;
   }
 
@@ -35,6 +37,11 @@ OhmRGB {
   prFreeResponders {
     this.prFreeNoteResponders;
     this.prFreeControlResponders;
+  }
+
+  prMakeColorArray {
+    colorArray = Array.fill(80, { | num | num });
+    colorArray = colorArray.add(87);
   }
 
   //////// Note Responders:
@@ -120,59 +127,6 @@ OhmRGB {
 
   clearCCFunc { | num |
     this.clearFunc(num, \control);
-  }
-
-  //////// colors:
-
-  turnColor { | num, color = \off |
-    switch(color,
-      { \off }, { midiOutPort.noteOn(16, num, 0) },
-      { \red }, { midiOutPort.noteOn(16, num, 16) },
-      { \green }, { midiOutPort.noteOn(16, num, 127) },
-      { \blue }, { midiOutPort.noteOn(16, num, 32) },
-      { \yellow }, { midiOutPort.noteOn(16, num, 64) },
-      { \purple }, { midiOutPort.noteOn(16, num, 8) },
-      { \cyan }, { midiOutPort.noteOn(16, num, 4) },
-      { \white }, { midiOutPort.noteOn(16, num, 1) },
-    );
-  }
-
-  turnOff { | num |
-    this.turnColor(num, \off);
-  }
-
-  turnRed { | num |
-    this.turnColor(num, \red);
-  }
-
-  turnGreen { | num |
-    this.turnColor(num, \green);
-  }
-
-  turnBlue { | num |
-    this.turnColor(num, \blue);
-  }
-
-  turnYellow { | num |
-    this.turnColor(num, \yellow);
-  }
-
-  turnPurple { | num |
-    this.turnColor(num, \purple);
-  }
-
-  turnCyan { | num |
-    this.turnColor(num, \cyan);
-  }
-
-  turnWhite { | num |
-    this.turnColor(num, \white);
-  }
-
-  turnRandomColor { | num |
-    var color;
-    color = [\red, \green, \blue, \yellow, \purple, \cyan, \white].choose;
-    this.turnColor(num, color);
   }
 
   /////// Page:

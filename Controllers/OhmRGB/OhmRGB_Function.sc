@@ -43,8 +43,47 @@
     var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank; });
-    pageDict[page].setControlButtonFunc(num, func, type, bank);
+    pageDict[page].setControlButtonFunc(column, row, func, type, bank);
     this.setFunc(buttonArray[num], type, activePage.getFunc(buttonArray[num], type));
   }
 
+  setLeftSliderFunc { | num = 0, func, bank = 'active', page = 'active' |
+    var sliderArray = [23, 22, 15, 14];
+    if( page == 'active', { page = activePageKey;  });
+    if( bank == 'active', { bank = pageDict[page].activeLeftSlidersBank;  });
+    pageDict[page].setLeftSliderFunc(num, func, bank);
+    this.setCCFunc(sliderArray[num], activePage.getCCFunc(sliderArray[num]));
+  }
+
+  setRightSliderFunc { | num = 0, func, bank = 'active', page = 'active' |
+    var sliderArray = [5, 7, 6, 4];
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeRightSlidersBank; });
+    pageDict[page].setRightSliderFunc(num, func, bank);
+    this.setCCFunc(sliderArray[num], activePage.getCCFunc(sliderArray[num]));
+  }
+
+  setLeftKnobFunc { | column = 0, row = 0, func, bank = 'active', page = 'active' |
+    var num = (column * 3) + row;
+    var knobArray = [17, 19, 21, 16, 18, 20, 9, 11, 13, 8, 10, 12];
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeLeftKnobsBank; });
+    pageDict[page].setLeftKnobFunc(column, row, func, bank);
+    this.setCCFunc(knobArray[num], activePage.getCCFunc(knobArray[num]));
+  }
+
+  setRightKnobFunc { | num, func, bank = 'active', page = 'active' |
+    var knobArray = [3, 1, 0, 2];
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeRightKnobsBank; });
+    pageDict[page].setRightKnobFunc(num, func, bank);
+    this.setCCFunc(knobArray[num], activePage.getCCFunc(knobArray[num]));
+  }
+
+  setCrossfaderFunc { | func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeCrossfaderBank; });
+    pageDict[page].setCrossfaderFunc(func, bank);
+    this.setCCFunc(24, activePage.getCCFunc(24));
+  }
 }

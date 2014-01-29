@@ -9,7 +9,7 @@ OhmRGB_Page {
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray;
 
   var leftSlidersBankArray, rightSlidersBankArray, leftKnobsBankArray, rightKnobsBankArray, crossfaderBankArray;
-  var activeLeftSlidersBank, activeRightSlidersBank, activeLeftKnobsBank, activeRightKnobsBank, activeCrossfaderBank;
+  var <activeLeftSlidersBank, <activeRightSlidersBank, <activeLeftKnobsBank, <activeRightKnobsBank, <activeCrossfaderBank;
 
   var gridBankArray, leftButtonsBankArray, rightButtonsBankArray, crossfaderButtonsBankArray, controlButtonsBankArray;
   var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeCrossfaderButtonsBank, <activeControlButtonsBank;
@@ -242,17 +242,13 @@ OhmRGB_Page {
     var sliderArray = [23, 22, 15, 14];
      if( num < 4,
       {
-        if( bank == 'active',
-          {
-            bankSet = activeLeftSlidersBank;
-            leftSlidersBankArray[bankSet][num] = func;
-            this.setCCFunc(sliderArray[num], func);
-          },
-          {
-            bankSet = bank;
-            leftSlidersBankArray[bankSet][num] = func;
-          }
-        );
+        if( bank == activeLeftSlidersBank, { bank = 'active'});
+        if( bank == 'active', { bankSet = activeLeftSlidersBank }, { bankSet = bank });
+        bank.postln;
+        bankSet.postln;
+        activeLeftSlidersBank.postln;
+        leftSlidersBankArray[bankSet][num] = func;
+        if( bank == 'active', { this.setCCFunc(sliderArray[num], func); });
       },
       { ^"not that many left sliders"; }
     );
@@ -261,21 +257,14 @@ OhmRGB_Page {
   setRightSliderFunc { | num = 0, func, bank = 'active' |
     var bankSet;
     var sliderArray = [5, 7, 6, 4];
-    if( num < 4,
+     if( num < 4,
       {
-        if( bank == 'active',
-          {
-            bankSet = activeRightSlidersBank;
-            rightSlidersBankArray[bankSet][num] = func;
-            this.setCCFunc(sliderArray[num], func);
-          },
-          {
-            bankSet = bank;
-            rightSlidersBankArray[bankSet][num] = func;
-          }
-        );
+        if( bank == activeRightSlidersBank, { bank = 'active'});
+        if( bank == 'active', { bankSet = activeRightSlidersBank }, { bankSet = bank });
+        rightSlidersBankArray[bankSet][num] = func;
+        if( bank == 'active', { this.setCCFunc(sliderArray[num], func); });
       },
-      { ^"not that many right sliders";}
+      { ^"not that many right sliders"; }
     );
   }
 
@@ -287,17 +276,10 @@ OhmRGB_Page {
     var knobArray = [17, 19, 21, 16, 18, 20, 9, 11, 13, 8, 10, 12];
     if( num < 12,
       {
-        if( bank == 'active',
-          {
-            bankSet = activeLeftKnobsBank;
-            leftKnobsBankArray[bankSet][num] = func;
-            this.setCCFunc(knobArray[num], func);
-          },
-          {
-            bankSet = bank;
-            leftKnobsBankArray[bankSet][num] = func;
-          }
-        );
+        if( bank == activeLeftKnobsBank, { bank = 'active' });
+        if( bank == 'active', { bankSet = activeLeftKnobsBank }, { bankSet = bank });
+        leftKnobsBankArray[bankSet][num] = func;
+        if( bank == 'active', { this.setCCFunc(knobArray[num], func); });
       },
       { ^"not that many left knobs" }
     );
@@ -308,17 +290,10 @@ OhmRGB_Page {
     var knobArray = [3, 1, 0, 2];
     if ( num < 4,
       {
-        if( bank == 'active',
-          {
-            bankSet = activeRightKnobsBank;
-            rightKnobsBankArray[bankSet][num] = func;
-            this.setCCFunc(knobArray[num], func);
-          },
-          {
-            bankSet = bank;
-            rightKnobsBankArray[bankSet][num] = func;
-          }
-        );
+        if( bank == activeRightKnobsBank, { bank = 'active' });
+        if( bank == 'active', { bankSet = activeRightKnobsBank }, { bankSet = bank });
+        rightKnobsBankArray[bankSet][num] = func;
+        if( bank == 'active', { this.setCCFunc(knobArray[num], func); });
       },
       { ^"not that many right knobs"; }
     );
@@ -326,17 +301,11 @@ OhmRGB_Page {
 
   setCrossfaderFunc { | func, bank = 'active' |
     var bankSet;
-    if ( bank == 'active',
-      {
-        bankSet = activeCrossfaderBank;
-        crossfaderBankArray[bankSet] = func;
-        this.setCCFunc(24, func);
-      },
-      {
-        bankSet = bank;
-        crossfaderBankArray[bankSet] = func;
-      }
-    );
+    if( bank == activeCrossfaderBank, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeCrossfaderBank }, { bankSet = bank });
+    crossfaderBankArray[bankSet] = func;
+    if( bank == 'active', { this.setCCFunc(24, func); });
+
   }
 
 }

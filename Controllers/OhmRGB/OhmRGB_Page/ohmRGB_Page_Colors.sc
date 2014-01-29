@@ -2,60 +2,6 @@
 
   //////// Color Functions:
 
-  /*
-  turnColor { | num, color = \off |
-    switch(color,
-      { \off }, { midiOutPort.noteOn(16, num, 0) },
-      { \red }, { midiOutPort.noteOn(16, num, 16) },
-      { \green }, { midiOutPort.noteOn(16, num, 127) },
-      { \blue }, { midiOutPort.noteOn(16, num, 32) },
-      { \yellow }, { midiOutPort.noteOn(16, num, 64) },
-      { \purple }, { midiOutPort.noteOn(16, num, 8) },
-      { \cyan }, { midiOutPort.noteOn(16, num, 4) },
-      { \white }, { midiOutPort.noteOn(16, num, 1) },
-    );
-  }
-
-  turnOff { | num |
-    this.turnOff(num, \off);
-  }
-
-  turnRed { | num |
-    this.turnColor(num, \red);
-  }
-
-  turnGreen { | num |
-    this.turnColor(num, \green);
-  }
-
-  turnBlue { | num |
-    this.turnColor(num, \blue);
-  }
-
-  turnYellow { | num |
-    this.turnColor(num, \yellow);
-  }
-
-  turnPurple { | num |
-    this.turnColor(num, \purple);
-  }
-
-  turnCyan { | num |
-    this.turnColor(num, \cyan);
-  }
-
-  turnWhite { | num |
-    this.turnColor(num, \white);
-  }
-
-  turnRandomColor { | num |
-    var color;
-    color = [\red, \green, \blue, \yellow, \purple, \cyan, \white].choose;
-    this.turnColor(num, color);
-  }
-
-  */
-
   getColor { | num = 0 |
     ^colorArray[num];
   }
@@ -425,7 +371,7 @@
     var buttonArray = [69, 77, 70, 78, 71, 79, 80];
     if( bank == 'active', { bank = activeControlButtonsBank });
     controlButtonsBankArray[bank][num][2] = color;
-    this.turnColor(buttonArray[num], controlButtonsBankArray[activeControlButtonsBank][2]);
+    this.turnColor(buttonArray[num], controlButtonsBankArray[activeControlButtonsBank][num][2]);
     /*
     if( bank == activeControlButtonsBank, { bank = 'active' });
     if( bank == 'active',

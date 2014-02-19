@@ -6,36 +6,38 @@ prm
 
 DelayNetwork {
 
-  var server;
-  var delayBus, faderBus;
+  var server, group;
+  var delayBus, faderBus, rampBus;
   var inputSynth, delayArray, faderSynth;
+  var faderAmp;
 
   *new {
     |
     inBus = 0, outBus = 0, amp = 1, balance = 0, numDelays = 5, maxDelay = 6, delayTimeLow = 1, delayTimeHigh = 4,
     decayTimeLow = 1, decayTimeHigh = 1, filterType = 0, cutoffLow = 400, cutoffHigh = 1000, resLow = 0, resHigh = 0.5,
-    panLow = -1, panHigh = 1, pitchShiftArray = 0, group = nil, addAction = 'addToTail'
+    panLow = -1, panHigh = 1, pitchShiftArray = 0, relGroup = nil, addAction = 'addToTail'
     |
    ^super.new.prInit(inBus, outBus, amp, balance, numDelays, maxDelay, delayTimeLow, delayTimeHigh,
       decayTimeLow, decayTimeHigh, filterType, cutoffLow, cutoffHigh, resLow, resHigh, panLow, panHigh,
-      pitchShiftArray, group, addAction);
+      pitchShiftArray, relGroup, addAction);
   }
 
   prInit {
     |
     inBus = 0, outBus = 0, amp = 1, balance = 0, numDelays = 5, maxDelay = 6, delayTimeLow = 1, delayTimeHigh = 4,
     decayTimeLow = 1, decayTimeHigh = 1, filterType = 0, cutoffLow = 400, cutoffHigh = 1000, resLow = 0, resHigh = 0.5,
-    panLow = -1, panHigh = 1, pitchShiftArray = 0, group = nil, addAction = 'addToTail'
+    panLow = -1, panHigh = 1, pitchShiftArray = 0, relGroup = nil, addAction = 'addToTail'
     |
     server = Server.default;
     server.waitForBoot {
       this.prAddSynthDefs;
       server.sync;
+      this.prMakeGroup(relGroup, addAction);
       this.prMakeBusses;
       server.sync;
       this.prMakeSynths(inBus, outBus, amp, balance, numDelays, maxDelay, delayTimeLow, delayTimeHigh,
       decayTimeLow, decayTimeHigh, filterType, cutoffLow, cutoffHigh, resLow, resHigh, panLow, panHigh,
-      pitchShiftArray, group, addAction);
+      pitchShiftArray);
     };
   }
 
@@ -82,13 +84,21 @@ DelayNetwork {
     }).add;
   }
 
+  prMakeGroup { | relGroup = nil, addAction = 'addToTail' |
+    group = Group.new(relGroup, addAction);
+  }
+
+  prFreeGroup { group.free; }
+
   prMakeBusses {
+    rampBus = Bus.control;
     delayBus = Bus.audio;
     faderBus = Bus.audio(server, 2);
 
   }
 
   prFreeBusses {
+    rampBus.free;
     delayBus.free;
     faderBus.free;
   }
@@ -96,11 +106,13 @@ DelayNetwork {
   prMakeSynths {
     | inBus = 0, outBus = 0, amp = 1, balance = 0, numDelays = 5, maxDelay = 6, delayTimeLow = 1, delayTimeHigh = 4,
     decayTimeLow = 1, decayTimeHigh = 1, filterType = 0, cutoffLow = 400, cutoffHigh = 1000, resLow = 0, resHigh = 0.5,
-    panLow = -1, panHigh = 1, pitchShiftArray = 0, group = nil, addAction = 'addToTail'
+    panLow = -1, panHigh = 1, pitchShiftArray = 0
     |
-    faderSynth = Synth(\prm_DelayNetwork_StereoFader, [\inBus, faderBus, \outBus, outBus, \amp, amp, \balance, balance],
-      group, addAction);
-    inputSynth = Synth(\prm_DelayNetwork_Input, [\inBus, inBus, \dryOutBus, faderBus, \wetOutBus, delayBus],
+    faderAmp = amp;
+
+    faderSynth = Synth(\prm_DelayNetwork_StereoFader, [\inBus, faderBus, \outBus, outBus, \amp, faderAmp, \balance, balance],
+      group, \addToTail);
+    inputSynth = Synth(\prm_DelayNetwork_Input, [\inBus, inBus, \dryOutBus, faderBus, \wetOutBus, delayBus, \dryMute, 0],
       faderSynth, \addBefore);
     delayArray = Array.fill(numDelays, {
       var shift;
@@ -120,13 +132,19 @@ DelayNetwork {
 
   //////// Public Functions:
 
+  setInBus { | inBus = 0 |
+    inputSynth.set(\inBus, inBus);
+  }
+
   setAmp { | amp |
-    faderSynth.set(\amp, amp);
+    faderAmp = amp;
+    faderSynth.set(\amp, faderAmp);
     ^amp;
   }
 
   setVol { | vol |
-    this.setAmp(vol.dbamp);
+    faderAmp = vol.dbamp;
+    this.setAmp(faderAmp);
     ^vol;
   }
 
@@ -263,9 +281,44 @@ DelayNetwork {
     delayArray.do({ | synth | synth.set(\pitchShift, pitchShiftArray.choose;) });
   }
 
+  clearDelays {
+
+    var delayRestoreArray = Array.newClear(delayArray.size);
+    var decayRestoreArray = Array.newClear(delayArray.size);
+    var waitTime = 2;
+
+    faderSynth.set(\mute, 0);
+    delayArray.do({ | synth, index |
+      synth.get(\delayTime, { | val |
+        delayRestoreArray[index] = val;
+      });
+      synth.get(\decayTime, { | val |
+        decayRestoreArray[index] = val;
+      });
+      synth.set(\delayTime, 0, \decayTime, 0);
+    });
+
+    {
+      delayArray.do({ | synth, index |
+        synth.set(\delayTime, delayRestoreArray[index], \decayTime, decayRestoreArray[index]);
+      });
+      faderSynth.set(\mute, 1);
+      faderSynth.set(\amp, faderAmp);
+    }.defer(waitTime);
+
+  }
+
+  fadeOutDelays { | rampTime = 3 |
+    { Out.kr(rampBus, Line.kr(faderAmp, 0, rampTime, doneAction: 2)); }.play;
+    faderSynth.set(\amp, rampBus.asMap);
+    { this.clearDelays }.defer(rampTime);
+  }
+
+
   free {
     this.prFreeSynths;
     this.prFreeBusses;
+    this.prFreeGroup;
   }
 
 

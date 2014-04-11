@@ -6,8 +6,8 @@ prm
 
 FakeGuitar {
 
-  var server, group, noteGroup;
-  var procBus, <synth;
+  var server, <group, noteGroup;
+  var procBus, synth;
   var attack, sustain, release;
 
   var noteDict;
@@ -59,17 +59,18 @@ FakeGuitar {
       reverbMix = 1, reverbGain = 0.1, roomSize = 1, damp = 0.3,
       lowGain = 6, highGain = 3,
       threshhold = 0.3555, slope = 0.333,
-      filterType = 0, cutoff = 5364, rq = 1
+      filterType = 0, cutoff = 5364, rq = 1,
+      waveLossAmount = 0
       |
 
       var input, delay, flanger, flangerSum, mix, preFilter, distortion, panner, reverb, sig;
-      var lowShelf, highShelf, compressor, lowpass, bandpass, highpass, filter, hipass;
+      var lowShelf, highShelf, compressor, lowpass, bandpass, highpass, filter, hipass, waveLoss;
 
       input = In.ar(inBus);
       delay = DelayL.ar(input, 0.1, delayTime, 0.5);
       delay = delay + (input * 0.5);
       flanger = LocalIn.ar(1) + delay;
-      flanger = DelayN.ar(flanger, 0.2, SinOsc.ar(flangerSpeed).range(flangerRangeLow, flangerRangeHigh));
+      flanger = DelayN.ar(flanger, 0.2, SinOsc.ar(flangerSpeed).range(flangerRangeLow, flangerRangeHigh) - ControlRate.ir);
 
       LocalOut.ar(flanger * flangerFeedback);
 
@@ -92,7 +93,9 @@ FakeGuitar {
       bandpass = BPF.ar(compressor, cutoff, rq);
       filter = Select.ar(filterType, [lowpass, highpass, bandpass]);
 
-      sig = filter * amp;
+      waveLoss = WaveLoss.ar(filter, waveLossAmount, 100, 2);
+
+      sig = waveLoss * amp;
 
       Out.ar(outBus, sig);
     }).add;
@@ -132,19 +135,39 @@ FakeGuitar {
   }
 
   playNote { | freq = 220, amp = 1 |
-    try { noteDict[freq.asSymbol].set(\gate, 0); };
+    if( noteDict[freq.asSymbol].notNil, { this.releaseNote(freq); });
     noteDict[freq.asSymbol] = Synth(\prm_fakeGuitarOsc,
       [\outBus, procBus, \freq, freq, \amp, amp, \attack, attack, \sustain, sustain, \release, release],
       noteGroup, \addToTail);
   }
 
-  setAttack { | atk = 0.05 | attack = atk }
+  releaseNote { | freq = 220 |
+    var released;
+    if ( noteDict[freq.asSymbol].notNil, {
+      released = noteDict[freq.asSymbol];
+      released.set(\gate, 0, \release, release);
+      noteDict[freq.asSymbol] = nil;
+    });
+  }
 
-  setRelease { | rel = 0.05 | release = rel }
+  setAttack { | atk = 0.05 |
+    attack = atk;
+    noteDict.do({ | synth | synth.set(\attack, attack); });
+  }
 
-  releaseNote { | freq = 220 | noteDict[freq.asSymbol].set(\gate, 0); }
+  setRelease { | rel = 0.05 |
+    release = rel;
+    noteDict.do({ | synth | synth.set(\release, release); });
+  }
 
-  freeNote { | freq = 220 | noteDict[freq.asSymbol].free; }
+  freeNote { | freq = 220 |
+    var freed;
+    if ( noteDict[freq.asSymbol].notNil, {
+      freed = noteDict[freq.asSymbol];
+      freed.free;
+      noteDict[freq.asSymbol] = nil;
+    });
+  }
 
   setNoteAmp { | freq, amp = 1 | noteDict[freq.asSymbol].set(\amp, amp); }
 
@@ -189,6 +212,8 @@ FakeGuitar {
   setRQ { | rq = 1 | synth.set(\rq, rq); }
 
   setFilterType { | type = 0 | synth.set(\filterType, type); }
+
+  setWaveLossAmount { | amount = 0 | synth.set(\waveLossAmount, amount); }
 
 }
 

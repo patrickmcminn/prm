@@ -3,7 +3,7 @@ Sunday, January 19th 2014
 prm
 */
 
-OhmRGB_Page {
+OhmRGB_Page : OhmRGB {
 
   //var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray, animationArray;
@@ -11,7 +11,7 @@ OhmRGB_Page {
   var leftSlidersBankArray, rightSlidersBankArray, leftKnobsBankArray, rightKnobsBankArray, crossfaderBankArray;
   var <activeLeftSlidersBank, <activeRightSlidersBank, <activeLeftKnobsBank, <activeRightKnobsBank, <activeCrossfaderBank;
 
-  var gridBankArray, leftButtonsBankArray, rightButtonsBankArray, crossfaderButtonsBankArray, controlButtonsBankArray;
+  var <gridBankArray, <leftButtonsBankArray, <rightButtonsBankArray, <crossfaderButtonsBankArray, <controlButtonsBankArray;
   var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeCrossfaderButtonsBank, <activeControlButtonsBank;
 
 

@@ -6,7 +6,7 @@ prm
 OhmRGB_Page {
 
   //var midiInPort, midiOutPort;
-  var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray;
+  var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray, animationArray;
 
   var leftSlidersBankArray, rightSlidersBankArray, leftKnobsBankArray, rightKnobsBankArray, crossfaderBankArray;
   var <activeLeftSlidersBank, <activeRightSlidersBank, <activeLeftKnobsBank, <activeRightKnobsBank, <activeCrossfaderBank;
@@ -23,6 +23,7 @@ OhmRGB_Page {
     //this.prInitMIDI;
     this.prMakeResponders;
     this.prMakeColorArray;
+    this.prMakeAnimationArray;
     this.prMakeNoteBanks;
     this.prMakeControlBanks;
   }
@@ -65,6 +66,10 @@ OhmRGB_Page {
 
   prMakeColorArray {
     colorArray = Array.fill(81, { 'off' });
+  }
+
+  prMakeAnimationArray {
+    animationArray = Array.fill(81, { TaskProxy.new; });
   }
 
   setFunc { | num = 0, type = \noteOn, func = nil |

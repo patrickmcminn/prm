@@ -7,6 +7,20 @@ OhmRGB_Animation.sc
 
   // Setting Animations:
 
+  stopGridAnimations { | bank = 'active', page = 'active' |
+    //var num = (column * 8) + row;
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    64.do({ | led | pageDict[page].gridBankArray[bank][led][3].stop; });
+  }
+
+  playGridAnimations { | bank = 'active', page = 'active' |
+    //var num = (column * 8) + row;
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    64.do({ | led | pageDict[page].gridBankArray[bank][led][3].play; });
+  }
+
   blinkGridPlay { | column = 0, row = 0, color = 'red', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
@@ -52,6 +66,18 @@ OhmRGB_Animation.sc
     pageDict[page].gridBankArray[bank][num][3].stop;
   }
 
+  stopLeftButtonAnimations { | bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    4.do({ | led | pageDict[page].leftButtonsBankArray[bank][led][3].stop; });
+  }
+
+  playLeftButtonAnimations { | bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    4.do({ | led | pageDict[page].leftButtonsBankArray[bank][led][3].play; });
+  }
+
   blinkLeftButtonPlay { | num = 0, color = 'red', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     //var buttonArray = [65, 73, 66, 74];
     if( page == 'active', { page = activePageKey; });
@@ -88,10 +114,16 @@ OhmRGB_Animation.sc
     pageDict[page].leftButtonsBankArray[bank][num][3].play(clock);
   }
 
-  alternateLeftButtonStop { | num = 0, bank = 'active', page = 'active' |
+  stopRightButtonAnimations { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank });
-    pageDict[page].leftButtonsBankArray[bank][num][3].stop;
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    4.do({ | led | pageDict[page].rightButtonsBankArray[bank][led][3].stop; });
+  }
+
+  playRightButtonAnimations { | bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    4.do({ | led | pageDict[page].rightButtonsBankArray[bank][led][3].play; });
   }
 
   blinkRightButtonPlay { | num = 0, color = 'red', clock = nil, mul = 1, width = 0.5,bank = 'active', page = 'active' |
@@ -135,6 +167,18 @@ OhmRGB_Animation.sc
     pageDict[page].rightButtonsBankArray[bank][num][3].stop;
   }
 
+  stopCrossfaderButtonAnimations { | bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    2.do({ | led | pageDict[page].crossfaderButtonsBankArray[bank][led][3].stop; });
+  }
+
+  playCrossfaderButtonAnimations { | bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    2.do({ | led | pageDict[page].crossfaderButtonsBankArray[bank][led][3].play; });
+  }
+
   blinkCrossfaderButtonPlay { | num = 0, color = 'red', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank });
@@ -176,42 +220,58 @@ OhmRGB_Animation.sc
     pageDict[page].crossfaderButtonsBankArray[bank][num][3].stop;
   }
 
-  blinkControlButtonPlay { | num = 0, color = 'red', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
+  stopControlButtonAnimations { | bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    7.do({ | led | pageDict[page].controlButtonsBankArray[bank][led][3].stop; });
+  }
+
+  playControlButtonAnimations { | bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    7.do({ | led | pageDict[page].controlButtonsBankArray[bank][led][3].play; });
+  }
+
+  blinkControlButtonPlay { | column = 0, row = 0, color = 'red', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
+    var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
     pageDict[page].controlButtonsBankArray[bank][num][3].source = {
       loop {
-        this.turnControlButtonColor(num, color, bank, page);
+        this.turnControlButtonColor(column, row, color, bank, page);
         (((1.0 * mul)/2)/width).wait;
-        this.turnControlButtonOff(num, bank, page);
+        this.turnControlButtonOff(column, row, bank, page);
         (((1.0 * mul)/2)/(1-width)).wait;
       };
     };
-    pageDict[page].controlButtonsBankArray[bank][num][3].stop;
+    pageDict[page].controlButtonsBankArray[bank][num][3].play;
   }
 
-  blinkControlButtonStop { | num = 0, bank = 'active', page = 'active' |
+  blinkControlButtonStop { | column = 0, row = 0, bank = 'active', page = 'active' |
+    var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
     pageDict[page].controlButtonsBankArray[bank][num][3].stop;
   }
 
   alternateControlButtonPlay {
-    | num = 0, color1 = 'red', color2 = 'green', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
+    | column = 0, row = 0, color1 = 'red', color2 = 'green', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
+    var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
     pageDict[page].controlButtonsBankArray[bank][num][3].source = {
       loop {
-        this.turnControlButtonColor(num, color1, bank, page);
+        this.turnControlButtonColor(column, row, color1, bank, page);
         ((1.0 * mul)/width).wait;
-        this.turnControlButtonColor(num, color2, bank, page);
+        this.turnControlButtonColor(column, row, color2, bank, page);
         ((1.0 * mul)/(1-width)).wait;
       };
     };
     pageDict[page].controlButtonsBankArray[bank][num][3].play;
   }
 
-  alternateControlButtonStop { | num = 0, bank = 'active', page = 'active' |
+  alternateControlButtonStop { | column = 0, row = 0, bank = 'active', page = 'active' |
+    var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
     pageDict[page].controlButtonsBankArray[bank][num][3].stop;

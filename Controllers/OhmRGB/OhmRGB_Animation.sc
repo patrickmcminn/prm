@@ -36,11 +36,12 @@ OhmRGB_Animation.sc
    pageDict[page].gridBankArray[bank][num][3].play(clock);
   }
 
-  blinkGridStop { | column = 0, row = 0, bank = 'active', page = 'active' |
+  blinkGridStop { | column = 0, row = 0, stopColor = 'off', bank = 'active', page = 'active' |
     var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeGridBank });
     pageDict[page].gridBankArray[bank][num][3].stop;
+    this.turnGridColor(column, row, stopColor, bank, page);
   }
 
   alternateGridPlay {
@@ -59,11 +60,12 @@ OhmRGB_Animation.sc
     pageDict[page].gridBankArray[bank][num][3].play(clock);
   }
 
-  alternateGridStop { | column = 0, row = 0, bank = 'active', page = 'active' |
+  alternateGridStop { | column = 0, row = 0, stopColor = 'off', bank = 'active', page = 'active' |
     var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeGridBank });
     pageDict[page].gridBankArray[bank][num][3].stop;
+    this.turnGridColor(column, row, stopColor, bank, page);
   }
 
   stopLeftButtonAnimations { | bank = 'active', page = 'active' |
@@ -93,10 +95,12 @@ OhmRGB_Animation.sc
     pageDict[page].leftButtonsBankArray[bank][num][3].play(clock);
   }
 
-  blinkLeftButtonStop { | num = 0, bank = 'active', page = 'active' |
+  blinkLeftButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank });
     pageDict[page].leftButtonsBankArray[bank][num][3].stop;
+    this.turnLeftButtonColor(num, stopColor, bank, page);
+
   }
 
   alternateLeftButtonPlay {
@@ -112,6 +116,13 @@ OhmRGB_Animation.sc
       }
     };
     pageDict[page].leftButtonsBankArray[bank][num][3].play(clock);
+  }
+
+  alternateLeftButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank });
+    pageDict[page].leftButtonsBankArray[bank][num][3].stop;
+    this.turnLeftButtonColor(num, stopColor, bank, page);
   }
 
   stopRightButtonAnimations { | bank = 'active', page = 'active' |
@@ -140,10 +151,11 @@ OhmRGB_Animation.sc
     pageDict[page].rightButtonsBankArray[bank][num][3].play(clock);
   }
 
-  blinkRightButtonStop { | num = 0, bank = 'active', page = 'active' |
+  blinkRightButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank });
     pageDict[page].rightButtonsBankArray[bank][num][3].stop;
+    this.turnRightButtonColor(num, stopColor, bank, page);
   }
 
   alternateRightButtonPlay {
@@ -161,10 +173,11 @@ OhmRGB_Animation.sc
     pageDict[page].rightButtonsBankArray[bank][num][3].play(clock);
   }
 
-  alternateRightButtonStop { | num = 0, bank = 'active', page = 'active' |
+  alternateRightButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank });
     pageDict[page].rightButtonsBankArray[bank][num][3].stop;
+    this.turnRightButtonColor(num, stopColor, bank, page);
   }
 
   stopCrossfaderButtonAnimations { | bank = 'active', page = 'active' |
@@ -193,10 +206,11 @@ OhmRGB_Animation.sc
     pageDict[page].crossfaderButtonsBankArray[bank][num][3].play(clock);
   }
 
-  blinkCrossfaderButtonStop { | num = 0, bank = 'active', page = 'active' |
+  blinkCrossfaderButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank });
     pageDict[page].crossfaderButtonsBankArray[bank][num][3].stop;
+    this.turnCrossfaderButtonColor(num, stopColor, bank, page);
   }
 
   alternateCrossfaderButtonPlay {
@@ -214,10 +228,11 @@ OhmRGB_Animation.sc
     pageDict[page].crossfaderButtonsBankArray[bank][num][3].play;
   }
 
-  alternateCrossfaderButtonStop { | num = 0, bank = 'active', page = 'active' |
+  alternateCrossfaderButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank });
     pageDict[page].crossfaderButtonsBankArray[bank][num][3].stop;
+    this.turnCrossfaderButtonColor(num, stopColor, bank, page);
   }
 
   stopControlButtonAnimations { | bank = 'active', page = 'active' |
@@ -247,11 +262,12 @@ OhmRGB_Animation.sc
     pageDict[page].controlButtonsBankArray[bank][num][3].play;
   }
 
-  blinkControlButtonStop { | column = 0, row = 0, bank = 'active', page = 'active' |
+  blinkControlButtonStop { | column = 0, row = 0, stopColor = 'off', bank = 'active', page = 'active' |
     var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
     pageDict[page].controlButtonsBankArray[bank][num][3].stop;
+    this.turnControlButtonColor(column, row, stopColor, bank, page);
   }
 
   alternateControlButtonPlay {
@@ -270,10 +286,11 @@ OhmRGB_Animation.sc
     pageDict[page].controlButtonsBankArray[bank][num][3].play;
   }
 
-  alternateControlButtonStop { | column = 0, row = 0, bank = 'active', page = 'active' |
+  alternateControlButtonStop { | column = 0, row = 0, stopColor = 'off', bank = 'active', page = 'active' |
     var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
     pageDict[page].controlButtonsBankArray[bank][num][3].stop;
+    this.turnControlButtonColor(column, row, stopColor, bank, page);
   }
 }

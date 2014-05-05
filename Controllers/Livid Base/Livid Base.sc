@@ -81,7 +81,7 @@ Base {
 
   prMakeControlResponders {
     controlFuncArray = Array.fill2D(7, 72, { | bank, num |
-      MIDIFunc({ }, num, bank, \cc, midiInPort.uid).fix;
+      MIDIFunc({ }, num, bank, \control, midiInPort.uid).fix;
     });
   }
 
@@ -152,7 +152,7 @@ Base {
   clearFunc { | num = 0, type = 'noteOn', bank = 'active' |
     var bankSelect;
     if( bank == 'active', { bankSelect = currentBank; }, { bankSelect = bank });
-    bankSelect = bankSelect + 1;
+    bankSelect = bankSelect - 1;
     switch(type,
       { \noteOn }, { noteOnFuncArray[bankSelect][num].prFunc_({ }) },
       { \noteOff }, { noteOffFuncArray[bankSelect][num].prFunc_({ }) },

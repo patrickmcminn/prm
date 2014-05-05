@@ -32,40 +32,42 @@
 
   setFaderMode { | num = 10, mode = 'blueFill' |
     switch(mode,
-      { 'invertedWalk' }, { midiOutPort.control(16, num, 64); },
-      { 'invertedFill' }, { midiOutPort.control(16, num, 65); },
-      { 'invertedEQ' }, { midiOutPort.control(16, num, 66); },
-      { 'invertedSpread' }, { midiOutPort.control(16, num, 67); },
-      { 'redWalk' }, { midiOutPort.control(16, num, 68); },
-      { 'redFill' }, { midiOutPort.control(16, num, 69); },
-      { 'redEQ' }, { midiOutPort.control(16, num, 70); },
-      { 'redSpread' }, { midiOutPort.control(16, num, 71); },
-      { 'greenWalk' }, { midiOutPort.control(16, num, 72); },
-      { 'greenFill' }, { midiOutPort.control(16, num, 73); },
-      { 'greenEQ' }, { midiOutPort.control(16, num, 74); },
-      { 'greenSpread' }, { midiOutPort.control(16, num, 75); },
-      { 'yellowWalk' }, { midiOutPort.control(16, num, 76); },
-      { 'yellowFill' }, { midiOutPort.control(16, num, 77); },
-      { 'yellowEQ' }, { midiOutPort.control(16, num, 78); },
-      { 'yellowSpread' }, { midiOutPort.control(16, num, 79); },
-      { 'blueWalk' }, { midiOutPort.control(16, num, 80); },
-      { 'blueFill' }, { midiOutPort.control(16, num, 81); },
-      { 'blueEQ' }, { midiOutPort.control(16, num, 82); },
-      { 'blueSpread' }, { midiOutPort.control(16, num, 83); },
-      { 'magentaWalk' }, { midiOutPort.control(16, num, 84); },
-      { 'magentaFill' }, { midiOutPort.control(16, num, 85); },
-      { 'magentaEQ' }, { midiOutPort.control(16, num, 86); },
-      { 'magentaSpread' }, { midiOutPort.control(16, num, 87); },
-      { 'cyanWalk' }, { midiOutPort.control(16, num, 88); },
-      { 'cyanFill' }, { midiOutPort.control(16, num, 89); },
-      { 'cyanEQ' }, { midiOutPort.control(16, num, 90); },
-      { 'cyanSpread' }, { midiOutPort.control(16, num, 91); },
-      { 'whiteWalk' }, { midiOutPort.control(16, num, 92); },
-      { 'whiteFill' }, { midiOutPort.control(16, num, 93); },
-      { 'whiteEQ' }, { midiOutPort.control(16, num, 94); },
-      { 'whiteSpread' }, { midiOutPort.control(16, num, 95); },
+      { 'invertedWalk' }, { midiOutPort.control(15, num, 64); },
+      { 'invertedFill' }, { midiOutPort.control(15, num, 65); },
+      { 'invertedEQ' }, { midiOutPort.control(15, num, 66); },
+      { 'invertedSpread' }, { midiOutPort.control(15, num, 67); },
+      { 'redWalk' }, { midiOutPort.control(15, num, 68); },
+      { 'redFill' }, { midiOutPort.control(15, num, 69); },
+      { 'redEQ' }, { midiOutPort.control(15, num, 70); },
+      { 'redSpread' }, { midiOutPort.control(15, num, 71); },
+      { 'greenWalk' }, { midiOutPort.control(15, num, 72); },
+      { 'greenFill' }, { midiOutPort.control(15, num, 73); },
+      { 'greenEQ' }, { midiOutPort.control(15, num, 74); },
+      { 'greenSpread' }, { midiOutPort.control(15, num, 75); },
+      { 'yellowWalk' }, { midiOutPort.control(15, num, 76); },
+      { 'yellowFill' }, { midiOutPort.control(15, num, 77); },
+      { 'yellowEQ' }, { midiOutPort.control(15, num, 78); },
+      { 'yellowSpread' }, { midiOutPort.control(15, num, 79); },
+      { 'blueWalk' }, { midiOutPort.control(15, num, 80); },
+      { 'blueFill' }, { midiOutPort.control(15, num, 81); },
+      { 'blueEQ' }, { midiOutPort.control(15, num, 82); },
+      { 'blueSpread' }, { midiOutPort.control(15, num, 83); },
+      { 'magentaWalk' }, { midiOutPort.control(15, num, 84); },
+      { 'magentaFill' }, { midiOutPort.control(15, num, 85); },
+      { 'magentaEQ' }, { midiOutPort.control(15, num, 86); },
+      { 'magentaSpread' }, { midiOutPort.control(15, num, 87); },
+      { 'cyanWalk' }, { midiOutPort.control(15, num, 88); },
+      { 'cyanFill' }, { midiOutPort.control(15, num, 89); },
+      { 'cyanEQ' }, { midiOutPort.control(15, num, 90); },
+      { 'cyanSpread' }, { midiOutPort.control(15, num, 91); },
+      { 'whiteWalk' }, { midiOutPort.control(15, num, 92); },
+      { 'whiteFill' }, { midiOutPort.control(15, num, 93); },
+      { 'whiteEQ' }, { midiOutPort.control(15, num, 94); },
+      { 'whiteSpread' }, { midiOutPort.control(15, num, 95); },
     );
   }
+
+  setFaderValue { | num = 1, val = 64, bank = 'active' | }
 
   // convenience colors (for paging):
 
@@ -74,9 +76,9 @@
       {
         var num = ((column * 8) + row) + 36;
         if( page == 'active', { page = activePageKey });
-        if( subBank == 'active', { subBank = pageDict[page].activeGridBank });
+        if( subBank == 'active', { subBank = pageDict[page].activeGridSubBank });
         pageDict[page].turnGridColor(column, row, color, subBank);
-        this.turnColor(num, activePage.getColor(num));
+        if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
       }
     );
   }

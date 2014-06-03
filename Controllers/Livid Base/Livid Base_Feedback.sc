@@ -1,73 +1,75 @@
 + Base {
 
-  turnButtonColor { | num, color = \off, bank = 'active' |
+  turnButtonColor { | note, color = \off, bank = 'active' |
     var bankSelect;
-    if( bank == 'active', { bankSelect = currentBank; }, { bankSelect = bank });
-    bankSelect = bankSelect - 1;
+    if( bank == 'active', { bankSelect = activeBank; }, { bankSelect = bank  });
+    //bankSelect = bankSelect - 1;
     switch(color,
-      { \off }, { midiOutPort.noteOn(bankSelect, colorArray[num], 0) },
-      { \red }, { midiOutPort.noteOn(bankSelect, colorArray[num], 16) },
-      { \green }, { midiOutPort.noteOn(bankSelect, colorArray[num], 127) },
-      { \blue }, { midiOutPort.noteOn(bankSelect, colorArray[num], 32) },
-      { \yellow }, { midiOutPort.noteOn(bankSelect, colorArray[num], 64) },
-      { \magenta }, { midiOutPort.noteOn(bankSelect, colorArray[num], 8) },
-      { \cyan }, { midiOutPort.noteOn(bankSelect, colorArray[num], 4) },
-      { \white }, { midiOutPort.noteOn(bankSelect, colorArray[num], 1) },
+      { \off }, { midiOutPort.noteOn(bankSelect, colorArray[note], 0) },
+      { \red }, { midiOutPort.noteOn(bankSelect, colorArray[note], 16) },
+      { \green }, { midiOutPort.noteOn(bankSelect, colorArray[note], 127) },
+      { \blue }, { midiOutPort.noteOn(bankSelect, colorArray[note], 32) },
+      { \yellow }, { midiOutPort.noteOn(bankSelect, colorArray[note], 64) },
+      { \magenta }, { midiOutPort.noteOn(bankSelect, colorArray[note], 8) },
+      { \cyan }, { midiOutPort.noteOn(bankSelect, colorArray[note], 4) },
+      { \white }, { midiOutPort.noteOn(bankSelect, colorArray[note], 1) },
     );
   }
+
+  setFaderValue { | cc = 1, val = 64, bank = 'active' |
+    var bankSelect;
+    if( bank == 'active', { bankSelect = activeBank; }, { bankSelect = bank });
+    midiOutPort.control(bankSelect, cc, val);
+  }
+
+  setFaderMode { | cc = 10, mode = 'blueFill' |
+    switch(mode,
+      { 'invertedWalk' }, { midiOutPort.control(15, cc, 64); },
+      { 'invertedFill' }, { midiOutPort.control(15, cc, 65); },
+      { 'invertedEQ' }, { midiOutPort.control(15, cc, 66); },
+      { 'invertedSpread' }, { midiOutPort.control(15, cc, 67); },
+      { 'redWalk' }, { midiOutPort.control(15, cc, 68); },
+      { 'redFill' }, { midiOutPort.control(15, cc, 69); },
+      { 'redEQ' }, { midiOutPort.control(15, cc, 70); },
+      { 'redSpread' }, { midiOutPort.control(15, cc, 71); },
+      { 'greenWalk' }, { midiOutPort.control(15, cc, 72); },
+      { 'greenFill' }, { midiOutPort.control(15, cc, 73); },
+      { 'greenEQ' }, { midiOutPort.control(15, cc, 74); },
+      { 'greenSpread' }, { midiOutPort.control(15, cc, 75); },
+      { 'yellowWalk' }, { midiOutPort.control(15, cc, 76); },
+      { 'yellowFill' }, { midiOutPort.control(15, cc, 77); },
+      { 'yellowEQ' }, { midiOutPort.control(15, cc, 78); },
+      { 'yellowSpread' }, { midiOutPort.control(15, cc, 79); },
+      { 'blueWalk' }, { midiOutPort.control(15, cc, 80); },
+      { 'blueFill' }, { midiOutPort.control(15, cc, 81); },
+      { 'blueEQ' }, { midiOutPort.control(15, cc, 82); },
+      { 'blueSpread' }, { midiOutPort.control(15, cc, 83); },
+      { 'magentaWalk' }, { midiOutPort.control(15, cc, 84); },
+      { 'magentaFill' }, { midiOutPort.control(15, cc, 85); },
+      { 'magentaEQ' }, { midiOutPort.control(15, cc, 86); },
+      { 'magentaSpread' }, { midiOutPort.control(15, cc, 87); },
+      { 'cyanWalk' }, { midiOutPort.control(15, cc, 88); },
+      { 'cyanFill' }, { midiOutPort.control(15, cc, 89); },
+      { 'cyanEQ' }, { midiOutPort.control(15, cc, 90); },
+      { 'cyanSpread' }, { midiOutPort.control(15, cc, 91); },
+      { 'whiteWalk' }, { midiOutPort.control(15, cc, 92); },
+      { 'whiteFill' }, { midiOutPort.control(15, cc, 93); },
+      { 'whiteEQ' }, { midiOutPort.control(15, cc, 94); },
+      { 'whiteSpread' }, { midiOutPort.control(15, cc, 95); },
+    );
+  }
+
+}
+
++ Base {
 
   turnButtonRed { | num = 0, bank = 'active' | this.turnButtonColor(num, \red, bank); }
-
   turnButtonGreen { | num = 0, bank = 'active' | this.turnButtonColor(num, \green, bank); }
-
   turnButtonBlue { | num = 0, bank = 'active' | this.turnButtonColor(num, \blue, bank); }
-
   turnButtonYellow { | num = 0, bank = 'active' | this.turnButtonColor(num, \yellow, bank); }
-
   turnButtonMagenta { | num = 0, bank = 'active' | this.turnButtonColor(num, \magenta, bank); }
-
   turnButtonCyan { | num = 0, bank = 'active' | this.turnButtonColor(num, \cyan, bank); }
-
   turnButtonWhite { | num = 0, bank = 'active' | this.turnButtonColor(num, \white, bank); }
-
-  setFaderMode { | num = 10, mode = 'blueFill' |
-    switch(mode,
-      { 'invertedWalk' }, { midiOutPort.control(15, num, 64); },
-      { 'invertedFill' }, { midiOutPort.control(15, num, 65); },
-      { 'invertedEQ' }, { midiOutPort.control(15, num, 66); },
-      { 'invertedSpread' }, { midiOutPort.control(15, num, 67); },
-      { 'redWalk' }, { midiOutPort.control(15, num, 68); },
-      { 'redFill' }, { midiOutPort.control(15, num, 69); },
-      { 'redEQ' }, { midiOutPort.control(15, num, 70); },
-      { 'redSpread' }, { midiOutPort.control(15, num, 71); },
-      { 'greenWalk' }, { midiOutPort.control(15, num, 72); },
-      { 'greenFill' }, { midiOutPort.control(15, num, 73); },
-      { 'greenEQ' }, { midiOutPort.control(15, num, 74); },
-      { 'greenSpread' }, { midiOutPort.control(15, num, 75); },
-      { 'yellowWalk' }, { midiOutPort.control(15, num, 76); },
-      { 'yellowFill' }, { midiOutPort.control(15, num, 77); },
-      { 'yellowEQ' }, { midiOutPort.control(15, num, 78); },
-      { 'yellowSpread' }, { midiOutPort.control(15, num, 79); },
-      { 'blueWalk' }, { midiOutPort.control(15, num, 80); },
-      { 'blueFill' }, { midiOutPort.control(15, num, 81); },
-      { 'blueEQ' }, { midiOutPort.control(15, num, 82); },
-      { 'blueSpread' }, { midiOutPort.control(15, num, 83); },
-      { 'magentaWalk' }, { midiOutPort.control(15, num, 84); },
-      { 'magentaFill' }, { midiOutPort.control(15, num, 85); },
-      { 'magentaEQ' }, { midiOutPort.control(15, num, 86); },
-      { 'magentaSpread' }, { midiOutPort.control(15, num, 87); },
-      { 'cyanWalk' }, { midiOutPort.control(15, num, 88); },
-      { 'cyanFill' }, { midiOutPort.control(15, num, 89); },
-      { 'cyanEQ' }, { midiOutPort.control(15, num, 90); },
-      { 'cyanSpread' }, { midiOutPort.control(15, num, 91); },
-      { 'whiteWalk' }, { midiOutPort.control(15, num, 92); },
-      { 'whiteFill' }, { midiOutPort.control(15, num, 93); },
-      { 'whiteEQ' }, { midiOutPort.control(15, num, 94); },
-      { 'whiteSpread' }, { midiOutPort.control(15, num, 95); },
-    );
-  }
-
-  setFaderValue { | num = 1, val = 64, bank = 'active' | }
 
   // convenience colors (for paging):
 

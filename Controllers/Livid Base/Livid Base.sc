@@ -7,7 +7,7 @@ Base {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
-  var <pageDict, <activePage, activePageKey, currentBank;
+  var <pageDict, <activePage, activePageKey, <activeBank;
   var colorArray;
 
   *new { | localControl = 'allOff' |
@@ -15,7 +15,7 @@ Base {
   }
 
   prInit { | localControl = 'allOff' |
-    currentBank = 1;
+    activeBank = 0;
     this.prInitMIDI;
     this.setLocalControl(localControl);
     this.prMakeResponders;
@@ -27,6 +27,7 @@ Base {
     MIDIIn.connectAll;
     midiInPort = MIDIIn.findPort("Base", "Controls");
     midiOutPort = MIDIOut.newByName("Base", "Controls");
+    //midiInPort.latency = 0;
     midiOutPort.latency = 0;
   }
 
@@ -138,8 +139,8 @@ Base {
 
   setFunc { | num = 0, type = \noteOn, func = nil, bank = 'active' |
     var bankSelect;
-    if( bank == 'active', { bankSelect = currentBank; }, { bankSelect = bank });
-    bankSelect = bankSelect - 1;
+    if( bank == 'active', { bankSelect = activeBank; }, { bankSelect = bank });
+    //bankSelect = bankSelect - 1;
     switch(type,
       { \noteOn }, { noteOnFuncArray[bankSelect][num].prFunc_(func); },
       { \noteOff }, { noteOffFuncArray[bankSelect][num].prFunc_(func) },
@@ -151,8 +152,8 @@ Base {
 
   clearFunc { | num = 0, type = 'noteOn', bank = 'active' |
     var bankSelect;
-    if( bank == 'active', { bankSelect = currentBank; }, { bankSelect = bank });
-    bankSelect = bankSelect - 1;
+    if( bank == 'active', { bankSelect = activeBank; }, { bankSelect = bank; });
+    //bankSelect = bankSelect + 1;
     switch(type,
       { \noteOn }, { noteOnFuncArray[bankSelect][num].prFunc_({ }) },
       { \noteOff }, { noteOffFuncArray[bankSelect][num].prFunc_({ }) },
@@ -204,10 +205,10 @@ Base {
 
   //////// Bank Functions:
 
-  setBank { | bank = 1, page = 'active' |
+  setBank { | bank = 0, page = 'active' |
 
-    currentBank = bank - 1;
-    midiOutPort.program(midiOutPort.uid, currentBank);
+    activeBank = bank;
+    midiOutPort.program(midiOutPort.uid, activeBank);
   }
 
 

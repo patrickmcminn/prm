@@ -14,6 +14,8 @@
     ^colorArray[num];
   }
 
+  //////// functions for use w/ banks:
+
   turnGridColor { | column = 0, row = 0, color = \off, bank = 'active' |
     var num = (column * 8) + row;
     //var bankSet;

@@ -1,4 +1,3 @@
-
 + OhmRGB {
   //////// colors:
 
@@ -60,7 +59,7 @@
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeGridBank });
     pageDict[page].turnGridColor(column, row, color, bank);
-    this.turnColor(num, activePage.getColor(num));
+    if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
   }
 
   turnGridOff { | column = 0, row = 0, bank = 'active', page = 'active' |
@@ -136,7 +135,7 @@
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank; });
     pageDict[page].turnLeftButtonColor(num, color, bank);
-    this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num]));
+    if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
 
   turnLeftButtonOff { | num, bank = 'active', page = 'active' |
@@ -176,7 +175,7 @@
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank; });
     pageDict[page].turnRightButtonColor(num, color, bank);
-    this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num]));
+    if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
 
   turnRightButtonOff { | num, bank = 'active', page = 'active' |
@@ -216,7 +215,7 @@
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank; });
     pageDict[page].turnCrossfaderButtonColor(num, color, bank);
-    this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num]));
+    if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
 
   turnCrossfaderButtonOff { | num = 0, bank = 'active', page = 'active' |
@@ -257,7 +256,7 @@
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank; });
     pageDict[page].turnControlButtonColor(column, row, color, bank);
-    this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num]));
+    if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
 
   turnControlButtonOff { | column = 0, row = 0, bank = 'active', page = 'active' |

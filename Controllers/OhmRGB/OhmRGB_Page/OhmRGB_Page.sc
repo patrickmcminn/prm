@@ -3,15 +3,15 @@ Sunday, January 19th 2014
 prm
 */
 
-OhmRGB_Page {
+OhmRGB_Page : OhmRGB {
 
   //var midiInPort, midiOutPort;
-  var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray;
+  var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray, animationArray;
 
   var leftSlidersBankArray, rightSlidersBankArray, leftKnobsBankArray, rightKnobsBankArray, crossfaderBankArray;
   var <activeLeftSlidersBank, <activeRightSlidersBank, <activeLeftKnobsBank, <activeRightKnobsBank, <activeCrossfaderBank;
 
-  var gridBankArray, leftButtonsBankArray, rightButtonsBankArray, crossfaderButtonsBankArray, controlButtonsBankArray;
+  var <gridBankArray, <leftButtonsBankArray, <rightButtonsBankArray, <crossfaderButtonsBankArray, <controlButtonsBankArray;
   var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeCrossfaderButtonsBank, <activeControlButtonsBank;
 
 
@@ -23,6 +23,7 @@ OhmRGB_Page {
     //this.prInitMIDI;
     this.prMakeResponders;
     this.prMakeColorArray;
+    this.prMakeAnimationArray;
     this.prMakeNoteBanks;
     this.prMakeControlBanks;
   }
@@ -65,6 +66,10 @@ OhmRGB_Page {
 
   prMakeColorArray {
     colorArray = Array.fill(81, { 'off' });
+  }
+
+  prMakeAnimationArray {
+    animationArray = Array.fill(81, { TaskProxy.new; });
   }
 
   setFunc { | num = 0, type = \noteOn, func = nil |

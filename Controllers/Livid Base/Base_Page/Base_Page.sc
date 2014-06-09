@@ -12,7 +12,7 @@ Base_Page : Base {
     this.prMakeResponders;
     this.prMakeButtonColorArray;
     this.prMakeFaderModeArray;
-    //this.prMakeSubBanks;
+    this.prMakeSubBanks;
   }
 
   prMakeResponders {
@@ -250,7 +250,7 @@ Base_Page : Base {
     if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
     if( subBank == 'active', { subBankSelect = activeFaderSubBank }, { subBankSelect = subBank });
     if( fader > 9, { "out of range!" }, {
-      faderSubBankArray[subBankSelect][fader][2] = func;
+      faderSubBankArray[subBankSelect][fader][0] = func;
       if( subBank == 'active', { this.setControlFunc(num, func, bank); }); });
   }
 
@@ -258,7 +258,7 @@ Base_Page : Base {
     var bankSelect, subBankSelect;
     if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
     if( subBank == 'active', { subBankSelect = activeFaderSubBank }, { subBankSelect = subBank });
-    faderSubBankArray[subBankSelect][8][2] = func;
+    faderSubBankArray[subBankSelect][8][0] = func;
     if( subBank == 'active', { this.setControlFunc(9, func, bank); });
   }
 }

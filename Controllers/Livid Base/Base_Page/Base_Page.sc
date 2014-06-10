@@ -3,8 +3,8 @@ Base_Page : Base {
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
   var buttonColorArray, faderModeArray;
 
-  var gridSubBankArray, controlButtonSubBankArray, faderSubBankArray, touchButtonSubBankArray;
-  var <activeGridSubBank, <activeControlButtonSubBank, <activeFaderSubBank, <activeTouchButtonSubBank, <activeBank;
+  var gridSubBankArray, controlButtonsSubBankArray, faderSubBankArray, touchButtonsSubBankArray;
+  var <activeGridSubBank, <activeControlButtonsSubBank, <activeFaderSubBank, <activeTouchButtonsSubBank, <activeBank;
 
   *new { ^super.new.prInit }
 
@@ -125,8 +125,6 @@ Base_Page : Base {
     );
   }
 
-  //prMakeSubBanks { }
-
 }
 
 //////// convenience note functions:
@@ -214,14 +212,14 @@ Base_Page : Base {
     var bankSelect, subBankSelect;
     var num = button + 17;
     if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
-    if( subBank == 'active', { subBankSelect = activeControlButtonSubBank }, { subBankSelect = subBank });
+    if( subBank == 'active', { subBankSelect = activeControlButtonsSubBank }, { subBankSelect = subBank });
     if( button > 8, { "out of range!" }, {
       switch(type,
         { \noteOn }, {
-          controlButtonSubBankArray[subBankSelect][button][0] = func;
+          controlButtonsSubBankArray[subBankSelect][button][0] = func;
           if( subBank == 'active', { this.setNoteOnFunc(num, func, bank); }); },
         { \noteOff }, {
-          controlButtonSubBankArray[subBankSelect][button][1] = func;
+          controlButtonsSubBankArray[subBankSelect][button][1] = func;
           if( subBank == 'active', { this.setNoteOffFunc(num, func, bank); }); }
       );
     });
@@ -231,14 +229,14 @@ Base_Page : Base {
     var bankSelect, subBankSelect;
     var num = button + 10;
     if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
-    if( subBank == 'active', { subBankSelect = activeTouchButtonSubBank }, { subBankSelect = subBank });
+    if( subBank == 'active', { subBankSelect = activeTouchButtonsSubBank }, { subBankSelect = subBank });
     if( button > 8, { "out of range!" }, {
       switch(type,
         { \noteOn }, {
-          touchButtonSubBankArray[subBankSelect][button][0] = func;
+          touchButtonsSubBankArray[subBankSelect][button][0] = func;
           if( subBank == 'active', { this.setNoteOnFunc(num, func, bank); }); },
         { \noteOff }, {
-          touchButtonSubBankArray[subBankSelect][button][1] = func;
+          touchButtonsSubBankArray[subBankSelect][button][1] = func;
           if( subBank == 'active', { this.setNoteOffFunc(num, func, bank); }); }
       );
     });

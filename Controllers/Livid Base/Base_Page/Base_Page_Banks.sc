@@ -24,16 +24,16 @@ Base_Page_Banks.sc
   prMakeSubBanks { | numBanks = 1 |
     gridSubBankArray = Array.new;
     this.addGridSubBanks(numBanks);
-    controlButtonSubBankArray = Array.new;
+    controlButtonsSubBankArray = Array.new;
     this.addControlButtonSubBanks(numBanks);
-    touchButtonSubBankArray = Array.new;
+    touchButtonsSubBankArray = Array.new;
     this.addTouchButtonSubBanks(numBanks);
     faderSubBankArray = Array.new;
     this.addFaderSubBanks(numBanks);
 
     activeGridSubBank = 0;
-    activeControlButtonSubBank = 0;
-    activeTouchButtonSubBank = 0;
+    activeControlButtonsSubBank = 0;
+    activeTouchButtonsSubBank = 0;
     activeFaderSubBank = 0;
   }
 
@@ -51,8 +51,8 @@ Base_Page_Banks.sc
 
   addControlButtonSubBanks { | numBanks = 1 |
     numBanks.do({
-      controlButtonSubBankArray = controlButtonSubBankArray.add(Array.fill2D(8, 4, nil));
-      controlButtonSubBankArray[controlButtonSubBankArray.size - 1].do({ | item, index |
+      controlButtonsSubBankArray = controlButtonsSubBankArray.add(Array.fill2D(8, 4, nil));
+      controlButtonsSubBankArray[controlButtonsSubBankArray.size - 1].do({ | item, index |
         item[0] = { };
         item[1] = { };
         item[2] = \off;
@@ -63,8 +63,8 @@ Base_Page_Banks.sc
 
   addTouchButtonSubBanks { | numBanks = 1 |
     numBanks.do({
-      touchButtonSubBankArray = touchButtonSubBankArray.add(Array.fill2D(8, 4, nil));
-      touchButtonSubBankArray[touchButtonSubBankArray.size - 1].do({ | item, index |
+      touchButtonsSubBankArray = touchButtonsSubBankArray.add(Array.fill2D(8, 4, nil));
+      touchButtonsSubBankArray[touchButtonsSubBankArray.size - 1].do({ | item, index |
         item[0] = { };
         item[1] = { };
         item[2] = \off;
@@ -84,7 +84,63 @@ Base_Page_Banks.sc
     });
   }
 
+  //////// Setting SubBanks:
 
+  setActiveGridSubBank { | subBank = 0 |
+    activeGridSubBank = subBank;
+    32.do({ | index |
+      this.setNoteOnFunc(index + 36, gridSubBankArray[activeGridSubBank][index][0]);
+      this.setNoteOffFunc(index + 36, gridSubBankArray[activeGridSubBank][index][1]);
+      this.turnColor(index + 36, gridSubBankArray[activeGridSubBank][index][2]);
+    });
+  }
 
+  setActiveControlSubBank { | subBank = 0 |
+    activeControlButtonsSubBank = subBank;
+    8.do({ | index |
+      this.setNoteOnFunc(index, controlButtonsSubBankArray[activeControlButtonsSubBank][index][0]);
+      this.setNoteOffFunc(index, controlButtonsSubBankArray[activeControlButtonsSubBank][index][1]);
+      // not working yet:
+      //this.turnColor(index, controlButtonsSubBankArray[activeControlButtonsSubBank][index][2]);
+    });
+  }
+
+  setActiveTouchButtonsSubBank { | subBank = 0 |
+    activeTouchButtonsSubBank = subBank;
+    8.do({ | index |
+      this.setNoteOnFunc(index, touchButtonsSubBankArray[activeTouchButtonsSubBank][index][0]);
+      this.setNoteOffFunc(index, touchButtonsSubBankArray[activeTouchButtonsSubBank][index][1]);
+      // not working yet:
+      //this.turnColor(index, touchButtonsSubBankArray[activeTouchButtonsSubBank][index][2]);
+    });
+  }
+
+  setActiveFaderSubBank { | subBank = 0 |
+    activeFaderSubBank = subBank;
+    8.do({ | index |
+      this.setControlFunc(index, faderSubBankArray[activeFaderSubBank][index][0]);
+      this.setFaderMode(index + 10, faderSubBankArray[activeFaderSubBank][index][1]);
+    });
+  }
+
+  numSubBanks { | type = 'grid' |
+    switch(type,
+      { 'grid' }, { ^gridSubBankArray.size; },
+      { 'controlButtons' }, { ^controlButtonsSubBankArray.size; },
+      { 'touchButtons' }, { ^touchButtonsSubBankArray.size; },
+      { 'faders' }, { ^faderSubBankArray.size; }
+    );
+  }
+
+}
+
++ Base_Page {
+
+  //////// convenience functions for getting number of banks:
+
+  numGridSubBanks { this.numSubBanks('grid'); }
+  numControlButtonsSubBanks { this.numSubBanks('controlButtons'); }
+  numTouchButtonsSubBanks { this.numSubBanks('touchButtons'); }
+  numFaderSubBanks { this.numSubBanks('faders'); }
 
 }

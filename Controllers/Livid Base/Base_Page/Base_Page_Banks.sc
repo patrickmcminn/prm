@@ -28,13 +28,13 @@ Base_Page_Banks.sc
     this.addControlButtonSubBanks(numBanks);
     touchButtonsSubBankArray = Array.new;
     this.addTouchButtonSubBanks(numBanks);
-    faderSubBankArray = Array.new;
+    fadersSubBankArray = Array.new;
     this.addFaderSubBanks(numBanks);
 
     activeGridSubBank = 0;
     activeControlButtonsSubBank = 0;
     activeTouchButtonsSubBank = 0;
-    activeFaderSubBank = 0;
+    activeFadersSubBank = 0;
   }
 
   addGridSubBanks { | numBanks = 1 |
@@ -51,32 +51,28 @@ Base_Page_Banks.sc
 
   addControlButtonSubBanks { | numBanks = 1 |
     numBanks.do({
-      controlButtonsSubBankArray = controlButtonsSubBankArray.add(Array.fill2D(8, 4, nil));
-      controlButtonsSubBankArray[controlButtonsSubBankArray.size - 1].do({ | item, index |
-        item[0] = { };
-        item[1] = { };
-        item[2] = \off;
-        item[3] = TaskProxy.new;
-      });
+      controlButtonsSubBankArray = controlButtonsSubBankArray.add(Array.newClear(4));
+      controlButtonsSubBankArray[controlButtonsSubBankArray.size - 1][0] = Array.fill(8, { });
+      controlButtonsSubBankArray[controlButtonsSubBankArray.size - 1][1] = Array.fill(8, { });
+      controlButtonsSubBankArray[controlButtonsSubBankArray.size - 1][2] = Array.fill(16, \off);
+      controlButtonsSubBankArray[controlButtonsSubBankArray.size - 1][3] = Array.fill(8, { TaskProxy.new });
     });
   }
 
   addTouchButtonSubBanks { | numBanks = 1 |
     numBanks.do({
-      touchButtonsSubBankArray = touchButtonsSubBankArray.add(Array.fill2D(8, 4, nil));
-      touchButtonsSubBankArray[touchButtonsSubBankArray.size - 1].do({ | item, index |
-        item[0] = { };
-        item[1] = { };
-        item[2] = \off;
-        item[3] = TaskProxy.new;
-      });
+      touchButtonsSubBankArray = touchButtonsSubBankArray.add(Array.newClear(4));
+      touchButtonsSubBankArray[touchButtonsSubBankArray.size - 1][0] = Array.fill(8, { });
+      touchButtonsSubBankArray[touchButtonsSubBankArray.size - 1][1] = Array.fill(8, { });
+      touchButtonsSubBankArray[touchButtonsSubBankArray.size - 1][2] = Array.fill(16, \off);
+      touchButtonsSubBankArray[touchButtonsSubBankArray.size - 1][3] = Array.fill(8, { TaskProxy.new });
     });
   }
 
-  addFaderSubBanks { | numBanks = 1 |
+  addFadersSubBanks { | numBanks = 1 |
     numBanks.do({
-      faderSubBankArray = faderSubBankArray.add(Array.fill2D(9, 3, nil));
-      faderSubBankArray[faderSubBankArray.size - 1].do({ | item, index |
+      fadersSubBankArray = fadersSubBankArray.add(Array.fill2D(9, 3, nil));
+      fadersSubBankArray[fadersSubBankArray.size - 1].do({ | item, index |
         item[0] = { };
         item[1] = 'redFill';
         item[2] = TaskProxy.new;
@@ -98,28 +94,33 @@ Base_Page_Banks.sc
   setActiveControlSubBank { | subBank = 0 |
     activeControlButtonsSubBank = subBank;
     8.do({ | index |
-      this.setNoteOnFunc(index, controlButtonsSubBankArray[activeControlButtonsSubBank][index][0]);
-      this.setNoteOffFunc(index, controlButtonsSubBankArray[activeControlButtonsSubBank][index][1]);
-      // not working yet:
-      //this.turnColor(index, controlButtonsSubBankArray[activeControlButtonsSubBank][index][2]);
+      this.setNoteOnFunc(index + 18, controlButtonsSubBankArray[activeControlButtonsSubBank][index][0]);
+      this.setNoteOffFunc(index + 18, controlButtonsSubBankArray[activeControlButtonsSubBank][index][1]);
+    });
+    16.do({ | index |
+      this.turnColor(index + 18, controlButtonsSubBankArray[activeControlButtonsSubBank][index][2]);
     });
   }
 
   setActiveTouchButtonsSubBank { | subBank = 0 |
     activeTouchButtonsSubBank = subBank;
     8.do({ | index |
-      this.setNoteOnFunc(index, touchButtonsSubBankArray[activeTouchButtonsSubBank][index][0]);
-      this.setNoteOffFunc(index, touchButtonsSubBankArray[activeTouchButtonsSubBank][index][1]);
-      // not working yet:
-      //this.turnColor(index, touchButtonsSubBankArray[activeTouchButtonsSubBank][index][2]);
+      this.setNoteOnFunc(index + 10, touchButtonsSubBankArray[activeTouchButtonsSubBank][index][0]);
+      this.setNoteOffFunc(index + 10, touchButtonsSubBankArray[activeTouchButtonsSubBank][index][1]);
+    });
+    8.do({ | index |
+      this.turnColor(index + 10, touchButtonsSubBankArray[activeTouchButtonsSubBank][index][2]);
+    });
+    8.do({ | index |
+      this.turnColor(index + 68, touchButtonsSubBankArray[activeTouchButtonsSubBank][index + 8][2]);
     });
   }
 
-  setActiveFaderSubBank { | subBank = 0 |
-    activeFaderSubBank = subBank;
+  setactiveFadersSubBank { | subBank = 0 |
+    activeFadersSubBank = subBank;
     8.do({ | index |
-      this.setControlFunc(index, faderSubBankArray[activeFaderSubBank][index][0]);
-      this.setFaderMode(index + 10, faderSubBankArray[activeFaderSubBank][index][1]);
+      this.setControlFunc(index, fadersSubBankArray[activeFadersSubBank][index][0]);
+      this.setFaderMode(index + 10, fadersSubBankArray[activeFadersSubBank][index][1]);
     });
   }
 
@@ -128,7 +129,7 @@ Base_Page_Banks.sc
       { 'grid' }, { ^gridSubBankArray.size; },
       { 'controlButtons' }, { ^controlButtonsSubBankArray.size; },
       { 'touchButtons' }, { ^touchButtonsSubBankArray.size; },
-      { 'faders' }, { ^faderSubBankArray.size; }
+      { 'faders' }, { ^fadersSubBankArray.size; }
     );
   }
 

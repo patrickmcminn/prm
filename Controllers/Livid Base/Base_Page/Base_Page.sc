@@ -3,8 +3,8 @@ Base_Page : Base {
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
   var buttonColorArray, faderModeArray;
 
-  var gridSubBankArray, controlButtonsSubBankArray, faderSubBankArray, touchButtonsSubBankArray;
-  var <activeGridSubBank, <activeControlButtonsSubBank, <activeFaderSubBank, <activeTouchButtonsSubBank, <activeBank;
+  var gridSubBankArray, controlButtonsSubBankArray, fadersSubBankArray, touchButtonsSubBankArray;
+  var <activeGridSubBank, <activeControlButtonsSubBank, <activeFadersSubBank, <activeTouchButtonsSubBank, <activeBank;
 
   *new { ^super.new.prInit }
 
@@ -246,17 +246,17 @@ Base_Page : Base {
     var bankSelect, subBankSelect;
     var num = fader + 1;
     if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
-    if( subBank == 'active', { subBankSelect = activeFaderSubBank }, { subBankSelect = subBank });
+    if( subBank == 'active', { subBankSelect = activeFadersSubBank }, { subBankSelect = subBank });
     if( fader > 9, { "out of range!" }, {
-      faderSubBankArray[subBankSelect][fader][0] = func;
+      fadersSubBankArray[subBankSelect][fader][0] = func;
       if( subBank == 'active', { this.setControlFunc(num, func, bank); }); });
   }
 
   setMasterFaderFunc { | func, bank = 'active', subBank = 'active' |
     var bankSelect, subBankSelect;
     if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
-    if( subBank == 'active', { subBankSelect = activeFaderSubBank }, { subBankSelect = subBank });
-    faderSubBankArray[subBankSelect][8][0] = func;
+    if( subBank == 'active', { subBankSelect = activeFadersSubBank }, { subBankSelect = subBank });
+    fadersSubBankArray[subBankSelect][8][0] = func;
     if( subBank == 'active', { this.setControlFunc(9, func, bank); });
   }
 }

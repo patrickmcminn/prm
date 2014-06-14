@@ -3,7 +3,7 @@ Base_Page {
   var <noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
   var buttonColorArray, faderModeArray, faderValueArray;
 
-  var <gridBankArray, controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
+  var <gridBankArray, <controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
   var <activeGridBank, <activeControlButtonsBank, <activeFadersBank, <activeTouchButtonsBank;
 
   *new { ^super.new.prInit }
@@ -194,17 +194,18 @@ Base_Page {
 
   setControlButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
-    var num = button + 17;
+    var num = button - 1;
+    var midinum = button + 17;
     if( bank == activeControlButtonsBank, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeControlButtonsBank }, { bankSelect = bank });
-    if( button > 8, { "out of range!" }, {
+    if( num > 7, { "out of range!" }, {
       switch(type,
         { \noteOn }, {
-          controlButtonsBankArray[bankSelect][button][0] = func;
-          if( bank == 'active', { this.setNoteOnFunc(num, func); }); },
+          controlButtonsBankArray[bankSelect][0][num] = func;
+          if( bank == 'active', { this.setNoteOnFunc(midinum, func); }); },
         { \noteOff }, {
-          controlButtonsBankArray[bankSelect][button][1] = func;
-          if( bank == 'active', { this.setNoteOffFunc(num, func); }); }
+          controlButtonsBankArray[bankSelect][1][num] = func;
+          if( bank == 'active', { this.setNoteOffFunc(midinum, func); }); }
       );
     });
   }
@@ -214,13 +215,13 @@ Base_Page {
     var num = button + 10;
     if( bank == activeTouchButtonsBank, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeTouchButtonsBank }, { bankSelect = bank });
-    if( button > 8, { "out of range!" }, {
+    if( button > 7, { "out of range!" }, {
       switch(type,
         { \noteOn }, {
-          touchButtonsBankArray[bankSelect][button][0] = func;
+          touchButtonsBankArray[bankSelect][0][button] = func;
           if( bank == 'active', { this.setNoteOnFunc(num, func); }); },
         { \noteOff }, {
-          touchButtonsBankArray[bankSelect][button][1] = func;
+          touchButtonsBankArray[bankSelect][1][button] = func;
           if( bank == 'active', { this.setNoteOffFunc(num, func); }); }
       );
     });

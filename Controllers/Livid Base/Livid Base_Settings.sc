@@ -17,7 +17,6 @@ Tuesday, April 15th 2014
       { \analogAndEncoders }, { midiOutPort.control(16, 122, 78) },
       { \buttonToggleOnly }, { midiOutPort.control(16, 122, 80) },
       { \analogAndButtonToggle }, { midiOutPort.control(16, 122, 82) }
-
     );
   }
 

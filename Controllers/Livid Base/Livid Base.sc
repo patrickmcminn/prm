@@ -7,7 +7,7 @@ Base {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
-  var <pageDict, <activePage, activePageKey, <activeBank;
+  var <pageDict, <activePage, activePageKey;
   var colorArray;
 
   *new { | localControl = 'allOff' |
@@ -15,7 +15,6 @@ Base {
   }
 
   prInit { | localControl = 'allOff' |
-    activeBank = 0;
     this.prInitMIDI;
     this.setLocalControl(localControl);
     this.prMakeResponders;
@@ -27,22 +26,21 @@ Base {
     MIDIIn.connectAll;
     midiInPort = MIDIIn.findPort("Base", "Controls");
     midiOutPort = MIDIOut.newByName("Base", "Controls");
-    //midiInPort.latency = 0;
     midiOutPort.latency = 0;
   }
 
   prMakeResponders {
     this.prMakeNoteResponders;
     this.prMakeControlResponders;
-    this.prMakeAftertouchResponders;
-    this.prMakeBendResponders;
+    //this.prMakeAftertouchResponders;
+    //this.prMakeBendResponders;
   }
 
   prFreeResponders {
     this.prFreeNoteResponders;
     this.prFreeControlResponders;
-    this.prFreeAftertouchResponders;
-    this.prFreeBendResponders;
+    //this.prFreeAftertouchResponders;
+    //this.prFreeBendResponders;
   }
 
   prMakeColorArray {
@@ -60,42 +58,33 @@ Base {
       MIDIFunc({ }, num, nil, \noteOff, midiInPort.uid).fix;
     });
     */
-    noteOnFuncArray = Array.fill2D(7, 72, { | bank, num |
-      MIDIFunc({ }, num, bank, \noteOn, midiInPort.uid).fix;
+    noteOnFuncArray = Array.fill(72, { | num |
+      MIDIFunc({ }, num, nil, \noteOn, midiInPort.uid).fix;
     });
-    noteOffFuncArray = Array.fill2D(7, 72, { | bank, num |
-      MIDIFunc({ }, num, bank, \noteOff, midiInPort.uid).fix;
+    noteOffFuncArray = Array.fill(72, { | num |
+      MIDIFunc({ }, num, nil, \noteOff, midiInPort.uid).fix;
     });
 
   }
 
   prFreeNoteResponders {
-    7.do({ | rItem, rIndex |
-      72.do({ | cItem, cIndex |
-        noteOnFuncArray[rIndex][cIndex].free;
-        noteOffFuncArray[rIndex][cIndex].free;
-      });
-    });
+    noteOnFuncArray.do({ | func | func.free; });
+    noteOffFuncArray.do({ | func | func.free; });
   }
 
   // Control Responders:
 
   prMakeControlResponders {
-    controlFuncArray = Array.fill2D(7, 72, { | bank, num |
-      MIDIFunc({ }, num, bank, \control, midiInPort.uid).fix;
+    controlFuncArray = Array.fill(72, { | num |
+      MIDIFunc({ }, num, nil, \control, midiInPort.uid).fix;
     });
   }
 
-  prFreeControlResponders {
-    7.do({ | rItem, rIndex |
-      72.do({ | cItem, cIndex |
-        controlFuncArray[rIndex][cIndex].free;
-      });
-    });
-  }
+  prFreeControlResponders { controlFuncArray.do({ | func | func.free; }); }
 
   // Polyphonic Aftertouch Responders:
 
+  /*
   prMakeAftertouchResponders {
     touchFuncArray = Array.fill2D(7, 32, { | bank, num |
       MIDIFunc({ }, num, bank, \polyTouch, midiInPort.uid).fix;
@@ -126,6 +115,7 @@ Base {
       });
     });
   }
+  */
 
   // pages:
 
@@ -137,80 +127,65 @@ Base {
 
   // Settings:
 
-  setFunc { | num = 0, type = \noteOn, func = nil, bank = 'active' |
-    var bankSelect;
-    if( bank == 'active', { bankSelect = activeBank; }, { bankSelect = bank });
-    //bankSelect = bankSelect - 1;
+  setFunc { | num = 0, type = \noteOn, func = nil |
     switch(type,
-      { \noteOn }, { noteOnFuncArray[bankSelect][num].prFunc_(func); },
-      { \noteOff }, { noteOffFuncArray[bankSelect][num].prFunc_(func) },
-      { \control }, { controlFuncArray[bankSelect][num].prFunc_(func); },
-      { \polyTouch }, { touchFuncArray[bankSelect][num].prFunc_(func); },
-      { \bend }, { bendFuncArray[bankSelect][num].prFunc_(func); }
+      { \noteOn }, { noteOnFuncArray[num].prFunc_(func); },
+      { \noteOff }, { noteOffFuncArray[num].prFunc_(func) },
+      { \control }, { controlFuncArray[num].prFunc_(func); },
+      //{ \polyTouch }, { touchFuncArray[bankSelect][num].prFunc_(func); },
+      //{ \bend }, { bendFuncArray[bankSelect][num].prFunc_(func); }
     );
   }
 
-  clearFunc { | num = 0, type = 'noteOn', bank = 'active' |
-    var bankSelect;
-    if( bank == 'active', { bankSelect = activeBank; }, { bankSelect = bank; });
-    //bankSelect = bankSelect + 1;
+  clearFunc { | num = 0, type = 'noteOn' |
     switch(type,
-      { \noteOn }, { noteOnFuncArray[bankSelect][num].prFunc_({ }) },
-      { \noteOff }, { noteOffFuncArray[bankSelect][num].prFunc_({ }) },
-      { \control }, { controlFuncArray[bankSelect][num].prFunc_({ }) },
-      { \polyTouch }, { touchFuncArray[bankSelect][num].prFunc_({ }) },
-      { \bend }, { bendFuncArray[bankSelect][num].prFunc_({ }) },
+      { \noteOn }, { noteOnFuncArray[num].prFunc_({ }) },
+      { \noteOff }, { noteOffFuncArray[num].prFunc_({ }) },
+      { \control }, { controlFuncArray[num].prFunc_({ }) },
+      //{ \polyTouch }, { touchFuncArray[bankSelect][num].prFunc_({ }) },
+      //{ \bend }, { bendFuncArray[bankSelect][num].prFunc_({ }) },
     );
   }
 
-  setNoteOnFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, 'noteOn', func, bank);
+  setNoteOnFunc { | num = 0, func = nil |
+    this.setFunc(num, 'noteOn', func);
   }
 
-  clearNoteOnFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, 'noteOn', bank);
+  clearNoteOnFunc { | num = 0 |
+    this.clearFunc(num, 'noteOn');
   }
 
-  setNoteOffFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, 'noteOff', func, bank);
+  setNoteOffFunc { | num = 0, func = nil |
+    this.setFunc(num, 'noteOff', func);
   }
 
-  clearNoteOffFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, 'noteOff', bank);
+  clearNoteOffFunc { | num = 0 |
+    this.clearFunc(num, 'noteOff');
   }
 
-  setControlFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, 'control', func, bank);
+  setControlFunc { | num = 0, func = nil |
+    this.setFunc(num, 'control', func);
   }
 
-  clearControlFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, 'control', bank);
+  clearControlFunc { | num = 0 |
+    this.clearFunc(num, 'control');
   }
 
-  setPolyTouchFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, 'polyTouch', func, bank);
+  setPolyTouchFunc { | num = 0, func = nil |
+    this.setFunc(num, 'polyTouch', func);
   }
 
-  clearPolyTouchFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, 'polyTouch', bank);
+  clearPolyTouchFunc { | num = 0 |
+    this.clearFunc(num, 'polyTouch');
   }
 
-  setBendFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, 'bend', func, bank);
+  setBendFunc { | num = 0, func = nil |
+    this.setFunc(num, 'bend', func);
   }
 
-  clearBendFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, 'bend', bank);
+  clearBendFunc { | num = 0 |
+    this.clearFunc(num, 'bend');
   }
-
-  //////// Bank Functions:
-
-  setBank { | bank = 0, page = 'active' |
-
-    activeBank = bank;
-    midiOutPort.program(midiOutPort.uid, activeBank);
-  }
-
 
   ///////// Page Functions:
 
@@ -218,15 +193,22 @@ Base {
     pageDict[name] = Base_Page.new;
   }
 
-  setPage { | name = 'newPage', bank = 1 |
+  setPage { | name = 'newPage' |
     activePageKey = name;
     activePage = pageDict[activePageKey];
-   // 72.do({ | num | this.setNoteOnFunc(num, activePage.getNoteOnFunc(num)); });
-    //72.do({ | num | this.setNoteOffFunc(num, activePage.getNoteOffFunc(num)); });
-    //36.do({ | num | this.setCCFunc(num, activePage.getCCFunc(num)); });
+    72.do({ | num |
+      this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
+      this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
+    });
+    36.do({ | num | this.setControlFunc(num, activePage.getControlFunc(num)); });
     //72.do({ | num | this.setPolyTouchFunc(num, activePage.getPolyTouchFunc(num)) });
     //72.do({ | num | this.setBendFunc(num, activePage.getBendFunc(num)) });
-    //81.do({ | num | this.turnColor(num, activePage.getColor(num)); });
+    9.do({ | num |
+      this.prSetFaderValue(num + 1, activePage.getFaderValue(num));
+      this.prSetFaderMode(num + 10, activePage.getFaderMode(num));
+    });
+    76.do({ | num | this.turnButtonColor(num, activePage.getButtonColor(num)); });
+
   }
 
 }

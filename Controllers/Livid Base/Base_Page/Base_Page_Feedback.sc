@@ -2,7 +2,7 @@
 
   // color functions:
 
-  getColor { | num = 0 | ^buttonColorArray[num]; }
+  getButtonColor { | num = 0 | ^buttonColorArray[num]; }
   turnButtonColor { | num = 0, color = 'off' | buttonColorArray[num] = color }
 
   // functions for use with Banks:
@@ -10,15 +10,15 @@
   turnGridColor { | column = 0, row = 0, color = 'off', bank = 'active' |
     var num = ((column * 8) + row);
     if( bank == 'active', { bank = activeGridBank });
-    gridBankArray[bank][num][2] = color;
-    this.turnButtonColor(num + 36, gridBankArray[activeGridBank][num][2]);
+    gridBankArray[bank][num][3] = color;
+    this.turnColor(num + 36, gridBankArray[activeGridBank][num][3]);
   }
 
   turnControlButtonColor { | button = 1, led = 'left', color = 'off', bank = 'active' |
     var num = (button - 1) + switch(led, { 'left' }, { 0 }, { 'right' }, { 8 });
     if( bank == 'active', { bank = activeControlButtonsBank });
     controlButtonsBankArray[bank][num][2] = color;
-    this.turnButtonColor(num + 18, controlButtonsBankArray[activeControlButtonsBank][num][2]);
+    this.turnColor(num + 18, controlButtonsBankArray[activeControlButtonsBank][num][2]);
   }
 
   turnTouchButtonColor { | button = 0, led = 'middle', color = 'off', bank = 'active' |
@@ -26,13 +26,19 @@
     var midi = button + switch(led, { 'middle' }, { 10 }, { 'top' }, { 68 });
     if( bank = 'active', { bank = activeTouchButtonsBank });
     touchButtonsBankArray[bank][num][2] = color;
-    this.turnButtonColor(midi, touchButtonsBankArray[activeTouchButtonsBank][num][2]);
+    this.turnColor(midi, touchButtonsBankArray[activeTouchButtonsBank][num][2]);
   }
 
   setFaderMode { | fader = 0, mode = 'redFill', bank = 'active' |
     if( bank = 'active', { bank = activeFadersBank });
-    fadersBankArray[bank][fader][1] = mode;
+    fadersBankArray[bank][fader][2] = mode;
     faderModeArray[fader] = fadersBankArray[activeFadersBank][fader][1];
+  }
+
+  setFaderValue { | fader = 0, value = 0, bank = 'active' |
+    if( bank = 'active', { bank = activeFadersBank });
+    fadersBankArray[bank][fader][1] = value;
+    faderValueArray[fader] = fadersBankArray[activeFadersBank][fader][1];
   }
 
 }

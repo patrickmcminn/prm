@@ -1,28 +1,21 @@
 + Base {
 
-  turnButtonColor { | note, color = \off, bank = 'active' |
-    var bankSelect;
-    if( bank == 'active', { bankSelect = activeBank; }, { bankSelect = bank  });
-    //bankSelect = bankSelect - 1;
+  turnButtonColor { | note, color = \off |
     switch(color,
-      { \off }, { midiOutPort.noteOn(bankSelect, colorArray[note], 0) },
-      { \red }, { midiOutPort.noteOn(bankSelect, colorArray[note], 16) },
-      { \green }, { midiOutPort.noteOn(bankSelect, colorArray[note], 127) },
-      { \blue }, { midiOutPort.noteOn(bankSelect, colorArray[note], 32) },
-      { \yellow }, { midiOutPort.noteOn(bankSelect, colorArray[note], 64) },
-      { \magenta }, { midiOutPort.noteOn(bankSelect, colorArray[note], 8) },
-      { \cyan }, { midiOutPort.noteOn(bankSelect, colorArray[note], 4) },
-      { \white }, { midiOutPort.noteOn(bankSelect, colorArray[note], 1) },
+      { \off }, { midiOutPort.noteOn(0, colorArray[note], 0) },
+      { \red }, { midiOutPort.noteOn(0, colorArray[note], 16) },
+      { \green }, { midiOutPort.noteOn(0, colorArray[note], 127) },
+      { \blue }, { midiOutPort.noteOn(0, colorArray[note], 32) },
+      { \yellow }, { midiOutPort.noteOn(0, colorArray[note], 64) },
+      { \magenta }, { midiOutPort.noteOn(0, colorArray[note], 8) },
+      { \cyan }, { midiOutPort.noteOn(0, colorArray[note], 4) },
+      { \white }, { midiOutPort.noteOn(0, colorArray[note], 1) },
     );
   }
 
-  setFaderValue { | cc = 1, val = 64, bank = 'active' |
-    var bankSelect;
-    if( bank == 'active', { bankSelect = activeBank; }, { bankSelect = bank });
-    midiOutPort.control(bankSelect, cc, val);
-  }
+  prSetFaderValue { | cc = 1, val = 64 | midiOutPort.control(0, cc, val); }
 
-  setFaderMode { | cc = 10, mode = 'blueFill' |
+  prSetFaderMode { | cc = 10, mode = 'blueFill' |
     switch(mode,
       { 'invertedWalk' }, { midiOutPort.control(15, cc, 64); },
       { 'invertedFill' }, { midiOutPort.control(15, cc, 65); },
@@ -63,98 +56,131 @@
 
 + Base {
 
-  turnButtonRed { | num = 0, bank = 'active' | this.turnButtonColor(num, \red, bank); }
-  turnButtonGreen { | num = 0, bank = 'active' | this.turnButtonColor(num, \green, bank); }
-  turnButtonBlue { | num = 0, bank = 'active' | this.turnButtonColor(num, \blue, bank); }
-  turnButtonYellow { | num = 0, bank = 'active' | this.turnButtonColor(num, \yellow, bank); }
-  turnButtonMagenta { | num = 0, bank = 'active' | this.turnButtonColor(num, \magenta, bank); }
-  turnButtonCyan { | num = 0, bank = 'active' | this.turnButtonColor(num, \cyan, bank); }
-  turnButtonWhite { | num = 0, bank = 'active' | this.turnButtonColor(num, \white, bank); }
+  turnButtonRed { | num = 0 | this.turnButtonColor(num, \red); }
+  turnButtonGreen { | num = 0 | this.turnButtonColor(num, \green); }
+  turnButtonBlue { | num = 0 | this.turnButtonColor(num, \blue); }
+  turnButtonYellow { | num = 0 | this.turnButtonColor(num, \yellow); }
+  turnButtonMagenta { | num = 0  | this.turnButtonColor(num, \magenta); }
+  turnButtonCyan { | num = 0 | this.turnButtonColor(num, \cyan); }
+  turnButtonWhite { | num = 0  | this.turnButtonColor(num, \white); }
 
   // convenience colors (for paging):
 
-  turnGridColor { | column = 0, row = 0, color = 'off', subBank = 'active', page = 'active' |
+  turnGridColor { | column = 0, row = 0, color = 'off', bank = 'active', page = 'active' |
     if( column > 8 || row > 4, { "out of range".postln; },
       {
         var num = ((column * 8) + row) + 36;
         if( page == 'active', { page = activePageKey });
-        if( subBank == 'active', { subBank = pageDict[page].activeGridSubBank });
-        pageDict[page].turnGridColor(column, row, color, subBank);
+        pageDict[page].turnGridColor(column, row, color, bank);
         if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
       }
     );
   }
 
-  turnGridOff { | column = 0, row = 0, subBank = 'active', page = 'active' |
-    this.turnGridColor(column, row, 'off', subBank, page);
+  turnAllGridColor { | color = 'off', bank = 'active', page = 'active' |
+    8.do({ | column | 4.do({ | row | this.turnGridColor(column, row, color, bank, page); }); });
   }
 
-  turnGridRed { | column = 0, row = 0, subBank = 'active', page = 'active' |
-    this.turnGridColor(column, row, 'red', subBank, page);
+  turnControlButtonColor { | button = 1, led = 'left', color = 'off', bank = 'active', page = 'active' |
+    if ( button > 8, { "Out of Range".postln; },
+      {
+        var num = (button - 1) + switch(led, { 'left' }, { 0 }, { 'right' }, { 8 });
+        if( page == 'active', { page = activePageKey });
+        pageDict[page].turnControlButtonColor(button, led, color, bank);
+        if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
+      }
+    );
   }
 
-  turnGridGreen { | column = 0, row = 0, subBank = 'active', page = 'active' |
-    this.turnGridColor(column, row, 'green', subBank, page);
+  turnTouchButtonColor { | button = 0, led = 'middle', color = 'off', bank = 'active', page = 'active' |
+    if( button > 7, { "Out of Range".postln; },
+      {
+        var num = button + switch(led, { 'middle' }, { 10 }, { 'top' }, { 68 });
+        if( page == 'active', { page = activePageKey });
+        pageDict[page].turnTouchButtonColor(button, led, color, bank);
+        if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
+      }
+    );
   }
 
-  turnGridBlue { | column = 0, row = 0, subBank = 'active', page = 'active' |
-    this.turnGridColor(column, row, 'blue', subBank, page);
+  setFaderValue { | fader = 0, value = 0, bank = 'active', page = 'active' |
+    if(fader > 7, { "Out of Range".postln; },
+      {
+        if( page == 'active', { page = activePageKey });
+        pageDict[page].setFaderValue(fader, value, bank);
+        if( page == activePageKey, { this.prSetFaderValue(fader + 1, value); });
+      }
+    );
   }
 
-  turnGridYellow { | column = 0, row = 0, subBank = 'active', page = 'active' |
-    this.turnGridColor(column, row, 'yellow', subBank, page);
+  setFaderMode { | fader = 0, mode = 'redFill', bank = 'active', page = 'active' |
+    if(fader > 7, { "Out of Range".postln; },
+      {
+        if( page == 'active', { page = activePageKey });
+        pageDict[page].setFaderMode(fader, mode, bank);
+        if( page == activePageKey, { this.prSetFaderMode(fader + 10, mode); });
+      }
+    );
   }
 
-  turnGridMagenta { | column = 0, row = 0, subBank = 'active', page = 'active' |
-    this.turnGridColor(column, row, 'magenta', subBank, page);
+
+}
+
+
+// even more convenience:
++ Base {
+
+  // grid functions:
+  turnGridOff { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 'off', bank, page);
+  }
+  turnGridRed { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 'red', bank, page);
+  }
+  turnGridGreen { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 'green', bank, page);
+  }
+  turnGridBlue { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 'blue', bank, page);
+  }
+  turnGridYellow { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 'yellow', bank, page);
+  }
+  turnGridMagenta { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 'magenta', bank, page);
+  }
+  turnGridCyan { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 'cyan', bank, page);
+  }
+  turnGridWhite { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 'white', bank, page);
   }
 
-  turnGridCyan { | column = 0, row = 0, subBank = 'active', page = 'active' |
-    this.turnGridColor(column, row, 'cyan', subBank, page);
+
+  // all grids:
+  turnAllGridOff { | bank = 'active', page = 'active' |
+    this.turnAllGridColor('off', bank, page);
   }
-
-  turnGridWhite { | column = 0, row = 0, subBank = 'active', page = 'active' |
-    this.turnGridColor(column, row, 'white', subBank, page);
+  turnAllGridRed { | bank = 'active', page = 'active' |
+    this.turnAllGridColor('red', bank, page);
   }
-
-  turnAllGridColor { | color = 'off', subBank = 'active', page = 'active' |
-    8.do({ | column | 4.do({ | row | this.turnGridColor(column, row, color, subBank, page); }); });
+  turnAllGridGreen { | bank = 'active', page = 'active' |
+    this.turnAllGridColor('green', bank, page);
   }
-
-  turnAllGridOff { | subBank = 'active', page = 'active' |
-    this.turnAllGridColor('off', subBank, page);
+  turnAllGridBlue { | bank = 'active', page = 'active' |
+    this.turnAllGridColor('blue', bank, page);
   }
-
-  turnAllGridRed { | subBank = 'active', page = 'active' |
-    this.turnAllGridColor('red', subBank, page);
+  turnAllGridYellow { | bank = 'active', page = 'active' |
+    this.turnAllGridColor('yellow', bank, page);
   }
-
-  turnAllGridGreen { | subBank = 'active', page = 'active' |
-    this.turnAllGridColor('green', subBank, page);
+  turnAllGridMagenta { | bank = 'active', page = 'active' |
+    this.turnAllGridColor('magenta', bank, page);
   }
-
-  turnAllGridBlue { | subBank = 'active', page = 'active' |
-    this.turnAllGridColor('blue', subBank, page);
+  turnAllGridCyan { | bank = 'active', page = 'active' |
+    this.turnAllGridColor('cyan', bank, page);
   }
-
-  turnAllGridYellow { | subBank = 'active', page = 'active' |
-    this.turnAllGridColor('yellow', subBank, page);
-  }
-
-  turnAllGridMagenta { | subBank = 'active', page = 'active' |
-    this.turnAllGridColor('magenta', subBank, page);
-  }
-
-  turnAllGridCyan { | subBank = 'active', page = 'active' |
-    this.turnAllGridColor('cyan', subBank, page);
-  }
-
-  turnAllGridWhite { | subBank = 'active', page = 'active' |
-    this.turnAllGridColor('white', subBank, page);
-  }
-
-  turnControlButtonColor { | button = 1, led = 'left', color = 'off' |
-
+  turnAllGridWhite { | bank = 'active', page = 'active' |
+    this.turnAllGridColor('white', bank, page);
   }
 
 }

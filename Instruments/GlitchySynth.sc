@@ -121,6 +121,10 @@ GlitchySynth {
     this.prFreeGroups;
   }
 
+  setAmp { | amp = 1 |
+    synth.set(\amp, amp);
+  }
+
   playNote { | freq = 220, amp = 1, cutoff = 5309, rq = 0.3 |
     if( noteDict[freq.asSymbol].notNil, { this.releaseNote(freq); });
     if( numVoices == 0,

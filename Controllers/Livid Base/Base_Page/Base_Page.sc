@@ -1,10 +1,10 @@
-Base_Page : Base {
+Base_Page {
 
-  var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
-  var buttonColorArray, faderModeArray;
+  var <noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
+  var buttonColorArray, faderModeArray, faderValueArray;
 
-  var gridSubBankArray, controlButtonsSubBankArray, fadersSubBankArray, touchButtonsSubBankArray;
-  var <activeGridSubBank, <activeControlButtonsSubBank, <activeFadersSubBank, <activeTouchButtonsSubBank, <activeBank;
+  var <gridBankArray, controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
+  var <activeGridBank, <activeControlButtonsBank, <activeFadersBank, <activeTouchButtonsBank;
 
   *new { ^super.new.prInit }
 
@@ -12,49 +12,35 @@ Base_Page : Base {
     this.prMakeResponders;
     this.prMakeButtonColorArray;
     this.prMakeFaderModeArray;
-    this.prMakeSubBanks;
+    this.prMakeFaderValueArray;
+    this.prMakeBanks;
   }
 
   prMakeResponders {
     this.prMakeNoteResponders;
     this.prMakeControlResponders;
-    this.prMakeAftertouchResponders;
-    this.prMakeBendResponders;
+    //this.prMakeAftertouchResponders;
+    //this.prMakeBendResponders;
   }
 
   prFreeResponders {
     this.prFreeNoteResponders;
     this.prFreeControlResponders;
-    this.prFreeAftertouchResponders;
-    this.prFreeBendResponders;
+    //this.prFreeAftertouchResponders;
+    //this.prFreeBendResponders;
   }
 
   prMakeNoteResponders {
-    noteOnFuncArray = Array.fill2D(7, 72, { });
-    noteOffFuncArray = Array.fill2D(7, 72, { });
+    noteOnFuncArray = Array.fill(72, { });
+    noteOffFuncArray = Array.fill(72, { });
   }
 
-  prFreeNoteResponders {
-    7.do({ | rItem, rIndex |
-      72.do({ | cItem, cIndex |
-        noteOnFuncArray[rIndex][cIndex] = nil;
-        noteOffFuncArray[rIndex][cIndex] = nil;
-      });
-    });
-  }
+  prFreeNoteResponders { noteOnFuncArray.do({ | func | func.free; }); }
 
-  prMakeControlResponders {
-    controlFuncArray = Array.fill2D(7, 72, { });
-  }
+  prMakeControlResponders { controlFuncArray = Array.fill(72, { }); }
+  prFreeControlResponders { controlFuncArray.do({ | func | func.free; }); }
 
-  prFreeControlResponders {
-     7.do({ | rItem, rIndex |
-      72.do({ | cItem, cIndex |
-        controlFuncArray[rIndex][cIndex] = nil;
-      });
-    });
-  }
-
+  /*
   prMakeAftertouchResponders {
     touchFuncArray = Array.fill2D(7, 32, { });
   }
@@ -78,52 +64,47 @@ Base_Page : Base {
       });
     });
   }
+  */
 
-  prMakeButtonColorArray {
-    buttonColorArray = Array.fill(64, { 'off' });
-  }
+  prMakeButtonColorArray { buttonColorArray = Array.fill(64, { 'off' }); }
 
-  prMakeFaderModeArray {
-    faderModeArray = Array.fill(9, { 'redFill' });
-  }
+  prMakeFaderModeArray { faderModeArray = Array.fill(9, { 'redFill' }); }
+  prMakeFaderValueArray { faderValueArray = Array.fill(9, { 0 });}
 
   ////////
 
-  setFunc { | num = 0, type = 'noteOn', func = nil, bank = 'active' |
-    var bankSelect;
-    if( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank; });
+  setFunc { | num = 0, type = 'noteOn', func = nil |
     switch(type,
-      { \noteOn }, { noteOnFuncArray[bankSelect][num] = func },
-      { \noteOff }, { noteOffFuncArray[bankSelect][num] = func },
-      { \control }, { controlFuncArray[bankSelect][num] = func },
-      { \polyTouch }, { touchFuncArray[bankSelect][num] = func },
-      { \bend }, { bendFuncArray[bankSelect][num] = func }
+      { \noteOn }, { noteOnFuncArray[num] = func },
+      { \noteOff }, { noteOffFuncArray[num] = func },
+      { \control }, { controlFuncArray[num] = func },
+      //{ \polyTouch }, { touchFuncArray[num] = func },
+      //{ \bend }, { bendFuncArray[num] = func }
     );
   }
 
-  clearFunc { | num = 0, type = 'noteOn', bank = 'active' |
-    var bankSelect;
-    if( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank; });
+  clearFunc { | num = 0, type = 'noteOn' |
     switch(type,
-      { \noteOn }, { noteOnFuncArray[bankSelect][num] = { } },
-      { \noteOff }, { noteOffFuncArray[bankSelect][num] = { } },
-      { \control }, { controlFuncArray[bankSelect][num] = { } },
-      { \polyTouch }, { touchFuncArray[bankSelect][num] = { } },
-      { \bend }, { bendFuncArray[bankSelect][num] = { } }
+      { \noteOn }, { noteOnFuncArray[num] = { } },
+      { \noteOff }, { noteOffFuncArray[num] = { } },
+      { \control }, { controlFuncArray[num] = { } },
+      //{ \polyTouch }, { touchFuncArray[num] = { } },
+      //{ \bend }, { bendFuncArray[num] = { } }
     );
   }
 
-  getFunc { | num = 0, type = 'noteOn', bank = 'active' |
-    var bankSelect;
-    if( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank; });
+  getFunc { | num = 0, type = 'noteOn' |
     switch(type,
-      { \noteOn }, { ^noteOnFuncArray[bankSelect][num]; },
-      { \noteOff }, { ^noteOffFuncArray[bankSelect][num]; },
-      { \control }, { ^controlFuncArray[bankSelect][num]; },
-      { \polyTouch }, { ^touchFuncArray[bankSelect][num]; },
-      { \bend }, { bendFuncArray[bankSelect][num] = { } }
+      { \noteOn }, { ^noteOnFuncArray[num]; },
+      { \noteOff }, { ^noteOffFuncArray[num]; },
+      { \control }, { ^controlFuncArray[num]; },
+      //{ \polyTouch }, { ^touchFuncArray[num]; },
+      //{ \bend }, { bendFuncArray[num] = { } }
     );
   }
+
+  getFaderValue { | num = 0 | ^faderValueArray[num]; }
+  getFaderMode { | num = 0 | ^faderModeArray[num]; }
 
 }
 
@@ -131,54 +112,54 @@ Base_Page : Base {
 
 + Base_Page {
 
-  setNoteOnFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, \noteOn, func, bank);
+  setNoteOnFunc { | num = 0, func = nil |
+    this.setFunc(num, \noteOn, func);
   }
-  clearNoteOnFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, \noteOn, bank);
+  clearNoteOnFunc { | num = 0 |
+    this.clearFunc(num, \noteOn);
   }
-  getNoteOnFunc { | num = 0, bank = 'active' |
-    this.getFunc(num, \noteOn, bank);
-  }
-
-  setNoteOffFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, \noteOff, func, bank);
-  }
-  clearNoteOffFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, \noteOff, bank);
-  }
-  getNoteOffFunc { | num = 0, bank = 'active' |
-    this.getFunc(num, 'noteOff', bank);
+  getNoteOnFunc { | num = 0 |
+    this.getFunc(num, \noteOn);
   }
 
-  setControlFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, \control, func, bank);
+  setNoteOffFunc { | num = 0, func = nil |
+    this.setFunc(num, \noteOff, func);
   }
-  clearControlFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, \control, bank);
+  clearNoteOffFunc { | num = 0 |
+    this.clearFunc(num, \noteOff);
   }
-  getControlFunc { | num = 0, bank = 'active' |
-    this.getFunc(num, \control, bank);
-  }
-
-  setPolyTouchFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, \polyTouch, func, bank);
-  }
-  clearPolyTouchFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, \polyTouch, bank);
-  }
-  getPolyTouchFunc { | num = 0, bank = 'active' |
-    this.getFunc(num, 'polyTouch', bank);
+  getNoteOffFunc { | num = 0 |
+    this.getFunc(num, 'noteOff');
   }
 
-  setBendFunc { | num = 0, func = nil, bank = 'active' |
-    this.setFunc(num, \bend, func, bank);
+  setControlFunc { | num = 0, func = nil |
+    this.setFunc(num, \control, func);
   }
-  clearBendFunc { | num = 0, bank = 'active' |
-    this.clearFunc(num, \bend, bank);
+  clearControlFunc { | num = 0 |
+    this.clearFunc(num, \control);
   }
-  getBendFunc { | num = 0, bank = 'active' |
-    this.getFunc(num, 'bend', bank);
+  getControlFunc { | num = 0 |
+    this.getFunc(num, \control);
+  }
+
+  setPolyTouchFunc { | num = 0, func = nil|
+    this.setFunc(num, \polyTouch, func);
+  }
+  clearPolyTouchFunc { | num = 0 |
+    this.clearFunc(num, \polyTouch);
+  }
+  getPolyTouchFunc { | num = 0 |
+    this.getFunc(num, 'polyTouch');
+  }
+
+  setBendFunc { | num = 0, func = nil |
+    this.setFunc(num, \bend, func);
+  }
+  clearBendFunc { | num = 0 |
+    this.clearFunc(num, \bend);
+  }
+  getBendFunc { | num = 0 |
+    this.getFunc(num, 'bend');
   }
 
 }
@@ -187,76 +168,79 @@ Base_Page : Base {
 
 + Base_Page {
 
-  setGridFunc { | column = 0, row = 0, func, type = 'noteOn', bank = 'active', subBank = 'active' |
-    var bankSelect, subBankSelect;
+  setGridFunc { | column = 0, row = 0, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
     // row is from bottom up
     // column is from left to right
     var num = ((row * 8) + column);
     var midiNum = num + 36;
-    if( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank; });
-    if( subBank == 'active', { subBankSelect = activeGridSubBank }, { subBankSelect = subBank });
+    bank.postln;
+    if( bank == activeGridBank, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeGridBank }, { bankSelect = bank });
     if( (row >3) || (column > 7), { "out of range!"}, {
       switch(type,
         { \noteOn }, {
-          gridSubBankArray[subBankSelect][num][0] = func;
-          if( subBank == 'active', { this.setNoteOnFunc(midiNum, func, bank); }); },
+          gridBankArray[bankSelect][num][0] = func;
+          if( bank == 'active', { this.setNoteOnFunc(midiNum, func); });},
         { \noteOff }, {
-          gridSubBankArray[subBankSelect][num][1] = func;
-          if( subBank == 'active', { this.setNoteOffFunc(midiNum, func, bank); }); }
+          gridBankArray[bankSelect][num][1] = func;
+          if( bank == 'active', { this.setNoteOffFunc(midiNum, func); }); },
+        { \pressure }, {
+          gridBankArray[bankSelect][num][2] = func;
+          if( bank == 'active', { this.setControlFunc(midiNum, func); }); }
       );
     });
-
   }
 
-  setControlButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active', subBank = 'active' |
-    var bankSelect, subBankSelect;
+  setControlButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
     var num = button + 17;
-    if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
-    if( subBank == 'active', { subBankSelect = activeControlButtonsSubBank }, { subBankSelect = subBank });
+    if( bank == activeControlButtonsBank, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeControlButtonsBank }, { bankSelect = bank });
     if( button > 8, { "out of range!" }, {
       switch(type,
         { \noteOn }, {
-          controlButtonsSubBankArray[subBankSelect][button][0] = func;
-          if( subBank == 'active', { this.setNoteOnFunc(num, func, bank); }); },
+          controlButtonsBankArray[bankSelect][button][0] = func;
+          if( bank == 'active', { this.setNoteOnFunc(num, func); }); },
         { \noteOff }, {
-          controlButtonsSubBankArray[subBankSelect][button][1] = func;
-          if( subBank == 'active', { this.setNoteOffFunc(num, func, bank); }); }
+          controlButtonsBankArray[bankSelect][button][1] = func;
+          if( bank == 'active', { this.setNoteOffFunc(num, func); }); }
       );
     });
   }
 
-  setTouchButtonFunc { | button = 0, func, type = 'noteOn', bank = 'active', subBank = 'active' |
-    var bankSelect, subBankSelect;
+  setTouchButtonFunc { | button = 0, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
     var num = button + 10;
-    if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
-    if( subBank == 'active', { subBankSelect = activeTouchButtonsSubBank }, { subBankSelect = subBank });
+    if( bank == activeTouchButtonsBank, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeTouchButtonsBank }, { bankSelect = bank });
     if( button > 8, { "out of range!" }, {
       switch(type,
         { \noteOn }, {
-          touchButtonsSubBankArray[subBankSelect][button][0] = func;
-          if( subBank == 'active', { this.setNoteOnFunc(num, func, bank); }); },
+          touchButtonsBankArray[bankSelect][button][0] = func;
+          if( bank == 'active', { this.setNoteOnFunc(num, func); }); },
         { \noteOff }, {
-          touchButtonsSubBankArray[subBankSelect][button][1] = func;
-          if( subBank == 'active', { this.setNoteOffFunc(num, func, bank); }); }
+          touchButtonsBankArray[bankSelect][button][1] = func;
+          if( bank == 'active', { this.setNoteOffFunc(num, func); }); }
       );
     });
   }
 
-  setFaderFunc { | fader = 0, func, bank = 'active', subBank = 'active' |
-    var bankSelect, subBankSelect;
+  setFaderFunc { | fader = 0, func, bank = 'active' |
+    var bankSelect;
     var num = fader + 1;
-    if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
-    if( subBank == 'active', { subBankSelect = activeFadersSubBank }, { subBankSelect = subBank });
+    if( bank == activeFadersBank, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeFadersBank }, { bankSelect = bank });
     if( fader > 9, { "out of range!" }, {
-      fadersSubBankArray[subBankSelect][fader][0] = func;
-      if( subBank == 'active', { this.setControlFunc(num, func, bank); }); });
+      fadersBankArray[bankSelect][fader][0] = func;
+      if( bank == 'active', { this.setControlFunc(num, func); }); });
   }
 
-  setMasterFaderFunc { | func, bank = 'active', subBank = 'active' |
-    var bankSelect, subBankSelect;
-    if ( bank == 'active', { bankSelect = super.activeBank; }, { bankSelect = bank });
-    if( subBank == 'active', { subBankSelect = activeFadersSubBank }, { subBankSelect = subBank });
-    fadersSubBankArray[subBankSelect][8][0] = func;
-    if( subBank == 'active', { this.setControlFunc(9, func, bank); });
+  setMasterFaderFunc { | func, bank = 'active' |
+    var bankSelect;
+    if( bank == activeFadersBank, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeFadersBank }, { bankSelect = bank });
+    fadersBankArray[bankSelect][8][0] = func;
+    if( bank == 'active', { this.setControlFunc(9, func); });
   }
 }

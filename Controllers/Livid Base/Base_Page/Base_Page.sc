@@ -66,7 +66,7 @@ Base_Page {
   }
   */
 
-  prMakeButtonColorArray { buttonColorArray = Array.fill(64, { 'off' }); }
+  prMakeButtonColorArray { buttonColorArray = Array.fill(81, { 'off' }); }
 
   prMakeFaderModeArray { faderModeArray = Array.fill(9, { 'redFill' }); }
   prMakeFaderValueArray { faderValueArray = Array.fill(9, { 0 });}

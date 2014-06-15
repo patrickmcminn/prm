@@ -8,25 +8,25 @@
   // functions for use with Banks:
 
   turnGridColor { | column = 0, row = 0, color = 'off', bank = 'active' |
-    var num = ((column * 8) + row);
+    var num = (row * 8) + column;
     if( bank == 'active', { bank = activeGridBank });
     gridBankArray[bank][num][3] = color;
-    this.turnColor(num + 36, gridBankArray[activeGridBank][num][3]);
+    this.turnButtonColor(num + 36, gridBankArray[activeGridBank][num][3]);
   }
 
   turnControlButtonColor { | button = 1, led = 'left', color = 'off', bank = 'active' |
     var num = (button - 1) + switch(led, { 'left' }, { 0 }, { 'right' }, { 8 });
     if( bank == 'active', { bank = activeControlButtonsBank });
-    controlButtonsBankArray[bank][num][2] = color;
-    this.turnColor(num + 18, controlButtonsBankArray[activeControlButtonsBank][num][2]);
+    controlButtonsBankArray[bank][2][num] = color;
+    this.turnButtonColor(num + 18, controlButtonsBankArray[activeControlButtonsBank][2][num]);
   }
 
   turnTouchButtonColor { | button = 0, led = 'middle', color = 'off', bank = 'active' |
     var num = button + switch(led, { 'middle' }, { 0 }, { 'top' }, { 8 });
     var midi = button + switch(led, { 'middle' }, { 10 }, { 'top' }, { 68 });
-    if( bank = 'active', { bank = activeTouchButtonsBank });
-    touchButtonsBankArray[bank][num][2] = color;
-    this.turnColor(midi, touchButtonsBankArray[activeTouchButtonsBank][num][2]);
+    if( bank == 'active', { bank = activeTouchButtonsBank });
+    touchButtonsBankArray[bank][2][num] = color;
+    this.turnButtonColor(midi, touchButtonsBankArray[activeTouchButtonsBank][2][num]);
   }
 
   setFaderMode { | fader = 0, mode = 'redFill', bank = 'active' |

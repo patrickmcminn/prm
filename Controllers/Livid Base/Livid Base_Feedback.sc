@@ -69,10 +69,10 @@
   turnGridColor { | column = 0, row = 0, color = 'off', bank = 'active', page = 'active' |
     if( column > 8 || row > 4, { "out of range".postln; },
       {
-        var num = ((column * 8) + row) + 36;
+        var num = ((row * 8) + column) + 36;
         if( page == 'active', { page = activePageKey });
         pageDict[page].turnGridColor(column, row, color, bank);
-        if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
+        if( page == activePageKey, { this.turnButtonColor(num, activePage.getButtonColor(num)); });
       }
     );
   }
@@ -85,9 +85,10 @@
     if ( button > 8, { "Out of Range".postln; },
       {
         var num = (button - 1) + switch(led, { 'left' }, { 0 }, { 'right' }, { 8 });
+        var midinum = num + 18
         if( page == 'active', { page = activePageKey });
         pageDict[page].turnControlButtonColor(button, led, color, bank);
-        if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
+        if( page == activePageKey, { this.turnButtonColor(midinum, activePage.getButtonColor(midinum)); });
       }
     );
   }
@@ -98,7 +99,7 @@
         var num = button + switch(led, { 'middle' }, { 10 }, { 'top' }, { 68 });
         if( page == 'active', { page = activePageKey });
         pageDict[page].turnTouchButtonColor(button, led, color, bank);
-        if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
+        if( page == activePageKey, { this.turnButtonColor(num, activePage.getButtonColor(num)); });
       }
     );
   }

@@ -30,13 +30,13 @@
   }
 
   setFaderMode { | fader = 0, mode = 'redFill', bank = 'active' |
-    if( bank = 'active', { bank = activeFadersBank });
+    if( bank == 'active', { bank = activeFadersBank });
     fadersBankArray[bank][fader][2] = mode;
     faderModeArray[fader] = fadersBankArray[activeFadersBank][fader][1];
   }
 
   setFaderValue { | fader = 0, value = 0, bank = 'active' |
-    if( bank = 'active', { bank = activeFadersBank });
+    if( bank == 'active', { bank = activeFadersBank });
     fadersBankArray[bank][fader][1] = value;
     faderValueArray[fader] = fadersBankArray[activeFadersBank][fader][1];
   }

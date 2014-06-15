@@ -85,7 +85,7 @@
     if ( button > 8, { "Out of Range".postln; },
       {
         var num = (button - 1) + switch(led, { 'left' }, { 0 }, { 'right' }, { 8 });
-        var midinum = num + 18
+        var midinum = num + 18;
         if( page == 'active', { page = activePageKey });
         pageDict[page].turnControlButtonColor(button, led, color, bank);
         if( page == activePageKey, { this.turnButtonColor(midinum, activePage.getButtonColor(midinum)); });

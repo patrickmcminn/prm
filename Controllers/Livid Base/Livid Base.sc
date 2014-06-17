@@ -208,7 +208,12 @@ Base {
       this.prSetFaderMode(num + 10, activePage.getFaderMode(num));
     });
     76.do({ | num | this.turnButtonColor(num, activePage.getButtonColor(num)); });
+    activePage.loadFunction.value;
+  }
 
+  setLoadFunction { | func, page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    pageDict[page].setLoadFunction(func);
   }
 
 }

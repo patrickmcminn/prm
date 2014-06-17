@@ -6,6 +6,8 @@ Base_Page {
   var <gridBankArray, <controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
   var <activeGridBank, <activeControlButtonsBank, <activeFadersBank, <activeTouchButtonsBank;
 
+  var <loadFunction;
+
   *new { ^super.new.prInit }
 
   prInit {
@@ -14,6 +16,7 @@ Base_Page {
     this.prMakeFaderModeArray;
     this.prMakeFaderValueArray;
     this.prMakeBanks;
+    this.setLoadFunction({});
   }
 
   prMakeResponders {
@@ -140,6 +143,10 @@ Base_Page {
   }
   getControlFunc { | num = 0 |
     ^this.getFunc(num, \control);
+  }
+
+  setLoadFunction { | func |
+    loadFunction = func
   }
 
   /*

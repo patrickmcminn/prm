@@ -25,12 +25,12 @@
     this.setFunc(num, type, activePage.getFunc(num, type));
   }
 
-  setFaderFunc { | fader = 0, func, bank = 'active' page = 'active' |
-    var num = fader + 1;
+  setFaderFunc { | fader = 1, func, bank = 'active' page = 'active' |
+    //var num = fader + 1;
     if( page == 'active', { page = activePageKey });
     //if( bank == 'active', { bank = pageDict[page].activeFadersBank; });
     pageDict[page].setFaderFunc(fader, func, bank);
-    this.setFunc(num, 'control', activePage.getFunc(num, 'control'));
+    this.setFunc(fader, 'control', activePage.getFunc(fader, 'control'));
   }
 
 }

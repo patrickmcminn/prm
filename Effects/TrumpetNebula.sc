@@ -4,30 +4,29 @@ TrumpetDefault.sc
 prm
 */
 
-TrumpetDefault {
+TrumpetNebula {
 
-  var server, group, synth;
+  var server, group, <inBus, <synth;
 
   *new {
-    | inBus, outBus, amp = 1, relGroup = nil, addAction = 'addToTail' |
-    ^super.new.prInit(inBus, outBus, amp, relGroup, addAction);
+    | outBus, amp = 1, relGroup = nil, addAction = 'addToTail' |
+    ^super.new.prInit(outBus, amp, relGroup, addAction);
   }
 
   *newCustom {
-    | inBus, outBus, amp = 1,
+    | outBus, amp = 1,
     leftDelayTime = 2.748, rightDelayTime = 0.915, feedback = 0.5, delayAmp = 1,
     relGroup = nil, addAction = 'addToTail' |
   }
 
-  prInit { | inBus, outBus, amp = 1, relGroup = nil, addAction = 'addToTail' |
+  prInit { | outBus, amp = 1, relGroup = nil, addAction = 'addToTail' |
     server = Server.default;
     server.waitForBoot {
       this.prAddSynthDef;
+      this.prMakeGroup(relGroup, addAction);
+      this.prMakeBus;
       server.sync;
-      this.prMakeGroup;
-      //this.prMakeBus;
-      server.sync;
-      this.prMakeSynth;
+      this.prMakeSynth(outBus, amp);
     };
   }
 
@@ -48,7 +47,8 @@ TrumpetDefault {
       reverbMix = 0.75, reverbRoom = 0.7, reverbDamp = 0.1,
       dist = 150, distAmp = 1, postDistortionCutoff = 20000,
       nebulaDepth = 25, nebulaActivity = 50,
-      leftDelayTime = 2.748, rightDelayTime = 0.915, feedback = 0.5, delayAmp = 1,
+      leftDelayTime = 0.748, rightDelayTime = 0.915, feedback = 0.5, delayAmp = 1,
+      bpCenter = 1000, bw = 1,
       cutoff = 20000
       |
       var input, pitchShifter, lowShelf, highShelf, reverb, distortion;
@@ -83,27 +83,29 @@ TrumpetDefault {
 
       // need to add BandPass Filter:
       delayIn = (LocalIn.ar(2) * feedback) + nebula;
-      delayLeft = DelayN.ar(delayIn[0], 3, leftDelayTime);
+      delayLeft = DelayN.ar(BBandPass.ar(delayIn[0], bpCenter, bw), 3, leftDelayTime);
       delayLeft = delayLeft * delayAmp;
-      delayRight = DelayN.ar(delayIn[1], 3, rightDelayTime);
+      delayRight = DelayN.ar(BBandPass.ar(delayIn[1], bpCenter, bw), 3, rightDelayTime);
       delayRight = delayRight * delayAmp;
-
-      LocalOut.ar(nebula);
-
       balancer = Balance2.ar(delayLeft, delayRight, balance);
-      filter = LPF.ar(balancer, cutoff);
-      sig = filter * amp;
+
+      LocalOut.ar(balancer);
+
+      filter = LPF.ar(balancer + nebula, cutoff);
+      sig = filter.softclip;
+      sig = sig * amp;
 
       Out.ar(outBus, sig);
     }).add;
   }
 
-  // prMakeBus { }
+  prMakeBus { inBus = Bus.audio; }
+  prFreeBus { inBus.free; inBus = nil; }
 
   prMakeGroup { | relGroup = nil, addAction = 'addToTail' | group = Group.new(relGroup, addAction); }
   prFreeGroup { group.free; }
 
-  prMakeSynth { | inBus, outBus, amp = 1 |
+  prMakeSynth { | outBus, amp = 1 |
     synth = Synth(\prm_trumpetDefault, [\inBus, inBus, \outBus, outBus, \amp, amp], group);
   }
   prFreeSynth { synth.free; }
@@ -117,5 +119,27 @@ TrumpetDefault {
     synth.free;
     group.free;
   }
+
+  setVol { | vol = 0 | synth.set(\amp, vol.dbamp); }
+  setOutput { | outBus = 0 | synth.set(\outBus, outBus); }
+  setCutoff { | cutoff = 20000 | synth.set(\cutoff, cutoff); }
+
+  setLeftDelayTime { | delayTime = 0.748 | synth.set(\leftDelayTime, delayTime); }
+  setRightDelayTime { | delayTime = 0.915 | synth.set(\rightDelayTime, delayTime); }
+  setFeedback { | feedback = 0.5 | synth.set(\feedback, feedback); }
+
+  setLowGain { | gain = -6 | synth.set(\lowGain, gain); }
+  setHighGain { | gain = -6 | synth.set(\highGain, gain); }
+
+  setDistortionAmount { | distortion = 150 | synth.set(\dist, distortion); }
+  setDistortionGain { | gain = 0 | synth.set(\distAmp, 0.dbamp); }
+  setPostDistortionCutoff { | cutoff = 20000 | synth.set(\postDistortionCutoff, cutoff); }
+
+  setDelayFilterCenterFreq { | center = 1000 | synth.set(\bpCenter, center); }
+  setDelayFilterBW { | bw = 1 | synth.set(\bw, bw); }
+
+  setReverbMix { | mix = 0.75 | synth.set(\reverbMix, mix); }
+  setReverbRoom { | room = 0.7 | synth.set(\reverbRoom, room); }
+  setReverbDamp { | damp = 0.1 | synth.set(\reverbDamp, damp); }
 
 }

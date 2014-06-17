@@ -1,7 +1,7 @@
 Base_Page {
 
   var <noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
-  var buttonColorArray, faderModeArray, faderValueArray;
+  var buttonColorArray, <faderModeArray, <faderValueArray;
 
   var <gridBankArray, <controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
   var <activeGridBank, <activeControlButtonsBank, <activeFadersBank, <activeTouchButtonsBank;
@@ -119,7 +119,7 @@ Base_Page {
     this.clearFunc(num, \noteOn);
   }
   getNoteOnFunc { | num = 0 |
-    this.getFunc(num, \noteOn);
+    ^this.getFunc(num, \noteOn);
   }
 
   setNoteOffFunc { | num = 0, func = nil |
@@ -129,7 +129,7 @@ Base_Page {
     this.clearFunc(num, \noteOff);
   }
   getNoteOffFunc { | num = 0 |
-    this.getFunc(num, 'noteOff');
+    ^this.getFunc(num, 'noteOff');
   }
 
   setControlFunc { | num = 0, func = nil |
@@ -139,9 +139,10 @@ Base_Page {
     this.clearFunc(num, \control);
   }
   getControlFunc { | num = 0 |
-    this.getFunc(num, \control);
+    ^this.getFunc(num, \control);
   }
 
+  /*
   setPolyTouchFunc { | num = 0, func = nil|
     this.setFunc(num, \polyTouch, func);
   }
@@ -161,6 +162,7 @@ Base_Page {
   getBendFunc { | num = 0 |
     this.getFunc(num, 'bend');
   }
+  */
 
 }
 
@@ -174,7 +176,6 @@ Base_Page {
     // column is from left to right
     var num = ((row * 8) + column);
     var midiNum = num + 36;
-    bank.postln;
     if( bank == activeGridBank, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeGridBank }, { bankSelect = bank });
     if( (row >3) || (column > 7), { "out of range!"}, {
@@ -229,11 +230,12 @@ Base_Page {
 
   setFaderFunc { | fader = 0, func, bank = 'active' |
     var bankSelect;
-    var num = fader + 1;
+    var faderIndex = fader - 1;
+    var num = fader;
     if( bank == activeFadersBank, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeFadersBank }, { bankSelect = bank });
     if( fader > 9, { "out of range!" }, {
-      fadersBankArray[bankSelect][fader][0] = func;
+      fadersBankArray[bankSelect][faderIndex][0] = func;
       if( bank == 'active', { this.setControlFunc(num, func); }); });
   }
 

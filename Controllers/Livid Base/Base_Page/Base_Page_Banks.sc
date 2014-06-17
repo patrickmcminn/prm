@@ -37,7 +37,7 @@ Base_Page_Banks.sc
     controlButtonsBankArray = Array.new;
     this.addControlButtonsBanks(numBanks);
     touchButtonsBankArray = Array.new;
-    this.addTouchButtonBanks(numBanks);
+    this.addTouchButtonsBanks(numBanks);
     fadersBankArray = Array.new;
     this.addFadersBanks(numBanks);
 
@@ -70,7 +70,7 @@ Base_Page_Banks.sc
     });
   }
 
-  addTouchButtonBanks { | numBanks = 1 |
+  addTouchButtonsBanks { | numBanks = 1 |
     numBanks.do({
       touchButtonsBankArray = touchButtonsBankArray.add(Array.newClear(4));
       touchButtonsBankArray[touchButtonsBankArray.size - 1][0] = Array.fill(8, { });
@@ -100,41 +100,41 @@ Base_Page_Banks.sc
       this.setNoteOnFunc(index + 36, gridBankArray[activeGridBank][index][0]);
       this.setNoteOffFunc(index + 36, gridBankArray[activeGridBank][index][1]);
       this.setControlFunc(index + 36, gridBankArray[activeGridBank][index][2]);
-      this.turnColor(index + 36, gridBankArray[activeGridBank][index][3]);
+      this.turnButtonColor(index + 36, gridBankArray[activeGridBank][index][3]);
     });
   }
 
-  setActiveControlBank { | bank = 0 |
+  setActiveControlButtonsBank { | bank = 0 |
     activeControlButtonsBank = bank;
     8.do({ | index |
-      this.setNoteOnFunc(index + 18, controlButtonsBankArray[activeControlButtonsBank][index][0]);
-      this.setNoteOffFunc(index + 18, controlButtonsBankArray[activeControlButtonsBank][index][1]);
+      this.setNoteOnFunc(index + 18, controlButtonsBankArray[activeControlButtonsBank][0][index]);
+      this.setNoteOffFunc(index + 18, controlButtonsBankArray[activeControlButtonsBank][1][index]);
     });
     16.do({ | index |
-      this.turnColor(index + 18, controlButtonsBankArray[activeControlButtonsBank][index][2]);
+      this.turnButtonColor(index + 18, controlButtonsBankArray[activeControlButtonsBank][2][index]);
     });
   }
 
   setActiveTouchButtonsBank { | bank = 0 |
     activeTouchButtonsBank = bank;
     8.do({ | index |
-      this.setNoteOnFunc(index + 10, touchButtonsBankArray[activeTouchButtonsBank][index][0]);
-      this.setNoteOffFunc(index + 10, touchButtonsBankArray[activeTouchButtonsBank][index][1]);
+      this.setNoteOnFunc(index + 10, touchButtonsBankArray[activeTouchButtonsBank][0][index]);
+      this.setNoteOffFunc(index + 10, touchButtonsBankArray[activeTouchButtonsBank][1][index]);
     });
     8.do({ | index |
-      this.turnColor(index + 10, touchButtonsBankArray[activeTouchButtonsBank][index][2]);
+      this.turnButtonColor(index + 10, touchButtonsBankArray[activeTouchButtonsBank][2][index]);
     });
     8.do({ | index |
-      this.turnColor(index + 68, touchButtonsBankArray[activeTouchButtonsBank][index + 8][2]);
+      this.turnButtonColor(index + 68, touchButtonsBankArray[activeTouchButtonsBank][2][index + 8]);
     });
   }
 
   setActiveFadersBank { | bank = 0 |
     activeFadersBank = bank;
-    8.do({ | index |
-      this.setControlFunc(index, fadersBankArray[activeFadersBank][index][0]);
-      this.setFaderValue(index + 1,fadersBankArray[activeFadersBank][index][1]);
-      this.setFaderMode(index + 10, fadersBankArray[activeFadersBank][index][2]);
+    9.do({ | index |
+      this.setControlFunc(index + 1, fadersBankArray[activeFadersBank][index][0]);
+      this.setFaderValue(index + 1, fadersBankArray[activeFadersBank][index][1]);
+      this.setFaderMode(index + 1, fadersBankArray[activeFadersBank][index][2]);
     });
   }
 

@@ -29,16 +29,16 @@
     this.turnButtonColor(midi, touchButtonsBankArray[activeTouchButtonsBank][2][num]);
   }
 
-  setFaderMode { | fader = 0, mode = 'redFill', bank = 'active' |
+  setFaderMode { | fader = 1, mode = 'redFill', bank = 'active' |
     if( bank == 'active', { bank = activeFadersBank });
-    fadersBankArray[bank][fader][2] = mode;
-    faderModeArray[fader] = fadersBankArray[activeFadersBank][fader][1];
+    fadersBankArray[bank][fader - 1][2] = mode;
+    faderModeArray[fader-1] = fadersBankArray[activeFadersBank][fader - 1][2];
   }
 
-  setFaderValue { | fader = 0, value = 0, bank = 'active' |
+  setFaderValue { | fader = 1, value = 0, bank = 'active' |
     if( bank == 'active', { bank = activeFadersBank });
-    fadersBankArray[bank][fader][1] = value;
-    faderValueArray[fader] = fadersBankArray[activeFadersBank][fader][1];
+    fadersBankArray[bank][fader - 1][1] = value;
+    faderValueArray[fader-1] = fadersBankArray[activeFadersBank][fader - 1][1];
   }
 
 }
@@ -213,11 +213,7 @@
   }
 
   setMasterFaderMode { | mode = 'redFill', bank = 'active' |
-    this.setFaderMode(8, mode, bank);
+    this.setFaderMode(9, mode, bank);
   }
-  setAllFaderModes { | mode = 'redFill', bank = 'active' |
-    9.do({ | index | this.setFaderMode(index, mode, bank); });
-  }
-
 
 }

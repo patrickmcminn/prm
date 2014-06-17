@@ -77,10 +77,6 @@
     );
   }
 
-  turnAllGridColor { | color = 'off', bank = 'active', page = 'active' |
-    8.do({ | column | 4.do({ | row | this.turnGridColor(column, row, color, bank, page); }); });
-  }
-
   turnControlButtonColor { | button = 1, led = 'left', color = 'off', bank = 'active', page = 'active' |
     if ( button > 8, { "Out of Range".postln; },
       {
@@ -104,22 +100,22 @@
     );
   }
 
-  setFaderValue { | fader = 0, value = 0, bank = 'active', page = 'active' |
-    if(fader > 7, { "Out of Range".postln; },
+  setFaderValue { | fader = 1, value = 0, bank = 'active', page = 'active' |
+    if(fader > 9, { "Out of Range".postln; },
       {
         if( page == 'active', { page = activePageKey });
         pageDict[page].setFaderValue(fader, value, bank);
-        if( page == activePageKey, { this.prSetFaderValue(fader + 1, value); });
+        if( page == activePageKey, { this.prSetFaderValue(fader, value); });
       }
     );
   }
 
-  setFaderMode { | fader = 0, mode = 'redFill', bank = 'active', page = 'active' |
-    if(fader > 7, { "Out of Range".postln; },
+  setFaderMode { | fader = 1, mode = 'redFill', bank = 'active', page = 'active' |
+    if(fader > 9, { "Out of Range".postln; },
       {
         if( page == 'active', { page = activePageKey });
         pageDict[page].setFaderMode(fader, mode, bank);
-        if( page == activePageKey, { this.prSetFaderMode(fader + 10, mode); });
+        if( page == activePageKey, { this.prSetFaderMode(fader + 9, mode); });
       }
     );
   }
@@ -157,8 +153,11 @@
     this.turnGridColor(column, row, 'white', bank, page);
   }
 
-
   // all grids:
+   turnAllGridColor { | color = 'off', bank = 'active', page = 'active' |
+    8.do({ | column | 4.do({ | row | this.turnGridColor(column, row, color, bank, page); }); });
+  }
+
   turnAllGridOff { | bank = 'active', page = 'active' |
     this.turnAllGridColor('off', bank, page);
   }
@@ -184,4 +183,119 @@
     this.turnAllGridColor('white', bank, page);
   }
 
+  // control buttons:
+  turnControlButtonOff { | button = 1, led = 'left', bank = 'active', page = 'active' |
+    this.turnControlButtonColor(button, led, 'off', bank, page);
+  }
+  turnControlButtonRed { | button = 1, led = 'left', bank = 'active', page = 'active' |
+    this.turnControlButtonColor(button, led, 'red', bank, page);
+  }
+  turnControlButtonGreen { | button = 1, led = 'left', bank = 'active', page = 'active' |
+    this.turnControlButtonColor(button, led, 'green', bank, page);
+  }
+  turnControlButtonBlue { | button = 1, led = 'left', bank = 'active', page = 'active' |
+    this.turnControlButtonColor(button, led, 'blue', bank, page);
+  }
+  turnControlButtonYellow { | button = 1, led = 'left', bank = 'active', page = 'active' |
+    this.turnControlButtonColor(button, led, 'yellow', bank, page);
+  }
+  turnControlButtonMagenta { | button = 1, led = 'left', bank = 'active', page = 'active' |
+    this.turnControlButtonColor(button, led, 'magenta', bank, page);
+  }
+  turnControlButtonCyan { | button = 1, led = 'left', bank = 'active', page = 'active' |
+    this.turnControlButtonColor(button, led, 'cyan', bank, page);
+  }
+  turnControlButtonWhite { | button = 1, led = 'left', bank = 'active', page = 'active' |
+    this.turnControlButtonColor(button, led, 'white', bank, page);
+  }
+
+  turnAllControlButtonsColor { | color = 'off', bank = 'active', page = 'active' |
+    8.do({ | button | this.turnControlButtonColor(button + 1, 'left', color, bank, page); });
+    8.do({ | button | this.turnControlButtonColor(button + 1, 'right', color, bank, page); });
+  }
+  turnAllControlButtonsOff { | bank = 'active', page = 'active' |
+    this.turnAllControlButtonsColor('off', bank, page);
+  }
+  turnAllControlButtonsRed { | bank = 'active', page = 'active' |
+    this.turnAllControlButtonsColor('red', bank, page);
+  }
+  turnAllControlButtonsGreen { | bank = 'active', page = 'active' |
+    this.turnAllControlButtonsColor('green', bank, page);
+  }
+  turnAllControlButtonsBlue { | bank = 'active', page = 'active' |
+    this.turnAllControlButtonsColor('blue', bank, page);
+  }
+  turnAllControlButtonsYellow { | bank = 'active', page = 'active' |
+    this.turnAllControlButtonsColor('yellow', bank, page);
+  }
+  turnAllControlButtonsMagenta { | bank = 'active', page = 'active' |
+    this.turnAllControlButtonsColor('magenta', bank, page);
+  }
+  turnAllControlButtonsCyan { | bank = 'active', page = 'active' |
+    this.turnAllControlButtonsColor('cyan', bank, page);
+  }
+  turnAllControlButtonsWhite { | bank = 'active', page = 'active' |
+    this.turnAllControlButtonsColor('white', bank, page);
+  }
+
+  turnTouchButtonOff { | button = 0, led = 'middle', bank = 'active', page = 'active' |
+    this.turnTouchButtonColor(button, led, 'off', bank, page);
+  }
+  turnTouchButtonRed { | button = 0, led = 'middle', bank = 'active', page = 'active' |
+    this.turnTouchButtonColor(button, led, 'red', bank, page);
+  }
+  turnTouchButtonGreen { | button = 0, led = 'middle', bank = 'active', page = 'active' |
+    this.turnTouchButtonColor(button, led, 'green', bank, page);
+  }
+  turnTouchButtonBlue { | button = 0, led = 'middle', bank = 'active', page = 'active' |
+    this.turnTouchButtonColor(button, led, 'blue', bank, page);
+  }
+  turnTouchButtonYellow { | button = 0, led = 'middle', bank = 'active', page = 'active' |
+    this.turnTouchButtonColor(button, led, 'yellow', bank, page);
+  }
+  turnTouchButtonMagenta { | button = 0, led = 'middle', bank = 'active', page = 'active' |
+    this.turnTouchButtonColor(button, led, 'magenta', bank, page);
+  }
+  turnTouchButtonCyan { | button = 0, led = 'middle', bank = 'active', page = 'active' |
+    this.turnTouchButtonColor(button, led, 'cyan', bank, page);
+  }
+  turnTouchButtonWhite { | button = 0, led = 'middle', bank = 'active', page = 'active' |
+    this.turnTouchButtonColor(button, led, 'white', bank, page);
+  }
+
+  turnAllTouchButtonsColor { | color = 'off', bank = 'active', page = 'active' |
+    8.do({ | button | this.turnTouchButtonColor(button, 'middle', color, bank, page); });
+    8.do({ | button | this.turnTouchButtonColor(button, 'top', color, bank, page); });
+  }
+  turnAllTouchButtonsOff { | bank = 'active', page = 'active' |
+    this.turnAllTouchButtonsColor('off', bank, page);
+  }
+  turnAllTouchButtonsRed { | bank = 'active', page = 'active' |
+    this.turnAllTouchButtonsColor('red', bank, page);
+  }
+  turnAllTouchButtonsGreen { | bank = 'active', page = 'active' |
+    this.turnAllTouchButtonsColor('green', bank, page);
+  }
+  turnAllTouchButtonsBlue { | bank = 'active', page = 'active' |
+    this.turnAllTouchButtonsColor('blue', bank, page);
+  }
+  turnAllTouchButtonsYellow { | bank = 'active', page = 'active' |
+    this.turnAllTouchButtonsColor('yellow', bank, page);
+  }
+  turnAllTouchButtonsCyan { | bank = 'active', page = 'active' |
+    this.turnAllTouchButtonsColor('cyan', bank, page);
+  }
+  turnAllTouchButtonsMagenta { | bank = 'active', page = 'active' |
+    this.turnAllTouchButtonsColor('magenta', bank, page);
+  }
+  turnAllTouchButtonsWhite { | bank = 'active', page = 'active' |
+    this.turnAllTouchButtonsColor('white', bank, page);
+  }
+
+  setAllFaderModes { | mode = 'redFill', bank = 'active', page = 'active' |
+    9.do({ | index | this.setFaderMode(index + 1, mode, bank, page); });
+  }
+  setAllFaderValues { | value = 0, bank = 'active', page = 'active' |
+    9.do({ | index | this.setFaderValue(index + 1, value, bank, page); });
+  }
 }

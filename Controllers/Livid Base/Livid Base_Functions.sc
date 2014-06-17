@@ -3,10 +3,12 @@
   setGridFunc { | column = 0, row = 0, func, type = 'noteOn', bank = 'active', page = 'active' |
     var num = ((row * 8) + column);
     var midiNum = num + 36;
+    var midiType;
     if( page == 'active', { page = activePageKey });
+    if( type == 'pressure', { midiType = 'control' }, { midiType = type });
     //if( bank == 'active', { bank = pageDict[page].activeGridBank; });
     pageDict[page].setGridFunc(column, row, func, type, bank);
-    this.setFunc(midiNum, type, activePage.getFunc(midiNum, type));
+    this.setFunc(midiNum, midiType, activePage.getFunc(midiNum, midiType));
   }
 
   setControlButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active', page = 'active' |

@@ -1,9 +1,9 @@
 Base_Page {
 
-  var <noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
+  var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
   var buttonColorArray, <faderModeArray, <faderValueArray;
 
-  var <gridBankArray, <controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
+  var <gridBankArray, controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
   var <activeGridBank, <activeControlButtonsBank, <activeFadersBank, <activeTouchButtonsBank;
 
   var <loadFunction;

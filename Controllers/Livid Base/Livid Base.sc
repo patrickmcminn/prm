@@ -200,7 +200,7 @@ Base {
       this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
     });
-    36.do({ | num | this.setControlFunc(num, activePage.getControlFunc(num)); });
+    68.do({ | num | this.setControlFunc(num, activePage.getControlFunc(num)); });
     //72.do({ | num | this.setPolyTouchFunc(num, activePage.getPolyTouchFunc(num)) });
     //72.do({ | num | this.setBendFunc(num, activePage.getBendFunc(num)) });
     9.do({ | num |

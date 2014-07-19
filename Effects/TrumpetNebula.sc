@@ -4,32 +4,36 @@ TrumpetDefault.sc
 prm
 */
 
-TrumpetNebula {
+TrumpetNebula : IM_Processor {
 
-  var server, group, <inBus, <synth;
+  var <synth;
 
   *new {
-    | outBus, amp = 1, relGroup = nil, addAction = 'addToTail' |
-    ^super.new.prInit(outBus, amp, relGroup, addAction);
+    | outBus, relGroup = nil, addAction = 'addToTail' |
+    ^super.new(1, 1, outBus, relGroup: relGroup, addAction: addAction).prInit;
   }
 
+  // not working yet:
+  /*
   *newCustom {
     | outBus, amp = 1,
-    leftDelayTime = 2.748, rightDelayTime = 0.915, feedback = 0.5, delayAmp = 1,
+    leftDelayTime = 0.3, rightDelayTime = 0.2, feedback = 0.5, delayAmp = 1,
     relGroup = nil, addAction = 'addToTail' |
   }
+  */
 
   prInit { | outBus, amp = 1, relGroup = nil, addAction = 'addToTail' |
-    server = Server.default;
+    var server = Server.default;
     server.waitForBoot {
       this.prAddSynthDef;
-      this.prMakeGroup(relGroup, addAction);
-      this.prMakeBus;
       server.sync;
-      this.prMakeSynth(outBus, amp);
+      while( { mixer.isLoaded == false }, { 0.0001.wait; });
+
+      synth = Synth(\prm_trumpetDefault, [\inBus, inBus, \outBus, mixer.chanStereo(0)], group, \addToHead);
     };
   }
 
+  /*
   prInitCustom {
     this.prAddSynthDef;
     server.sync;
@@ -37,6 +41,7 @@ TrumpetNebula {
     server.sync;
     this.prMakeSynthCustom;
   }
+  */
 
   prAddSynthDef {
     SynthDef(\prm_trumpetDefault, {
@@ -44,21 +49,23 @@ TrumpetNebula {
       inBus = 0, outBus = 0, amp = 1, balance = 0, inputMute = 1, mute = 1,
       pitchShift = 0,
       lowGain = -6, highGain = -6, lowFrequency = 250, highFrequency = 2500,
-      reverbMix = 0.75, reverbRoom = 0.7, reverbDamp = 0.1,
-      dist = 150, distAmp = 1, postDistortionCutoff = 20000,
+      reverbMix = 0.75, reverbRoom = 0.7, reverbDamp = 1,
+      dist = 150, distAmp = 0.5, postDistortionCutoff = 6000,
       nebulaDepth = 25, nebulaActivity = 50,
       leftDelayTime = 0.748, rightDelayTime = 0.915, feedback = 0.5, delayAmp = 1,
-      bpCenter = 1000, bw = 1,
+      bpCenter = 1000, bw = 3,
       cutoff = 20000
       |
-      var input, pitchShifter, lowShelf, highShelf, reverb, distortion;
+      var input, interval, pitchShifter, lowShelf, highShelf, reverb, distortion;
       var nebulaRange, nebulaOffset, nebulaRate, nebulaTrigger, nebulaLeft, nebulaRight, nebula;
       var bandPass, delayIn, delayLeft, delayRight;
       var filter, balancer, sig;
 
       input = In.ar(inBus);
-      pitchShifter = PitchShift.ar(input, 0.05, pitchShift.midiratio);
-      input = (input + pitchShift)/2;
+      //interval = exp(0.057762265 * pitchShift);
+      pitchShifter = PitchShift.ar(input, 0.05, pitchShift.midiratio, 0.001, 0.04);
+      input = (input + pitchShifter)/2;
+      //input = pitchShifter;
 
       lowShelf = BLowShelf.ar(input, lowFrequency, db: lowGain);
       highShelf = BHiShelf.ar(lowShelf, highFrequency, db: highGain);
@@ -83,15 +90,13 @@ TrumpetNebula {
 
       // need to add BandPass Filter:
       delayIn = (LocalIn.ar(2) * feedback) + nebula;
-      delayLeft = DelayN.ar(BBandPass.ar(delayIn[0], bpCenter, bw), 3, leftDelayTime);
-      delayLeft = delayLeft * delayAmp;
-      delayRight = DelayN.ar(BBandPass.ar(delayIn[1], bpCenter, bw), 3, rightDelayTime);
-      delayRight = delayRight * delayAmp;
+      delayLeft = DelayN.ar(BBandPass.ar(delayIn[0], bpCenter, bw), 3, leftDelayTime.lag2(0.2));
+      delayRight = DelayN.ar(BBandPass.ar(delayIn[1], bpCenter, bw), 3, rightDelayTime.lag2(0.2));
       balancer = Balance2.ar(delayLeft, delayRight, balance);
 
       LocalOut.ar(balancer);
 
-      filter = LPF.ar(balancer + nebula, cutoff);
+      filter = LPF.ar((balancer * delayAmp) + nebula, cutoff);
       sig = filter.softclip;
       sig = sig * amp;
 
@@ -105,11 +110,6 @@ TrumpetNebula {
   prMakeGroup { | relGroup = nil, addAction = 'addToTail' | group = Group.new(relGroup, addAction); }
   prFreeGroup { group.free; }
 
-  prMakeSynth { | outBus, amp = 1 |
-    synth = Synth(\prm_trumpetDefault, [\inBus, inBus, \outBus, outBus, \amp, amp], group);
-  }
-  prFreeSynth { synth.free; }
-
   prMakeSynthCustom { }
   prFreeSynthCustom { }
 
@@ -117,29 +117,33 @@ TrumpetNebula {
 
   free {
     synth.free;
-    group.free;
+    synth = nil;
+    this.freeProcessor;
   }
 
-  setVol { | vol = 0 | synth.set(\amp, vol.dbamp); }
-  setOutput { | outBus = 0 | synth.set(\outBus, outBus); }
   setCutoff { | cutoff = 20000 | synth.set(\cutoff, cutoff); }
 
   setLeftDelayTime { | delayTime = 0.748 | synth.set(\leftDelayTime, delayTime); }
   setRightDelayTime { | delayTime = 0.915 | synth.set(\rightDelayTime, delayTime); }
   setFeedback { | feedback = 0.5 | synth.set(\feedback, feedback); }
+  setDelayFilterCenterFreq { | center = 1000 | synth.set(\bpCenter, center); }
+  setDelayFilterBW { | bw = 1 | synth.set(\bw, bw); }
+  setDelayVol { | vol = 0 | synth.set(\delayAmp, vol.dbamp); }
 
   setLowGain { | gain = -6 | synth.set(\lowGain, gain); }
   setHighGain { | gain = -6 | synth.set(\highGain, gain); }
 
   setDistortionAmount { | distortion = 150 | synth.set(\dist, distortion); }
-  setDistortionGain { | gain = 0 | synth.set(\distAmp, 0.dbamp); }
+  setDistortionGain { | gain = 0 | synth.set(\distAmp, gain.dbamp); }
   setPostDistortionCutoff { | cutoff = 20000 | synth.set(\postDistortionCutoff, cutoff); }
-
-  setDelayFilterCenterFreq { | center = 1000 | synth.set(\bpCenter, center); }
-  setDelayFilterBW { | bw = 1 | synth.set(\bw, bw); }
 
   setReverbMix { | mix = 0.75 | synth.set(\reverbMix, mix); }
   setReverbRoom { | room = 0.7 | synth.set(\reverbRoom, room); }
   setReverbDamp { | damp = 0.1 | synth.set(\reverbDamp, damp); }
+
+  setPitchShiftAmount { | pitchShift = 0 | synth.set(\pitchShift, pitchShift) }
+
+  setNebulaDepth { | depth = 25 | synth.set(\nebulaDepth, depth); }
+  setNebulaActivity { | activity = 50 | synth.set(\nebulaActivity, activity); }
 
 }

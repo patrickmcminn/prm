@@ -7,6 +7,7 @@ prm
 TrumpetNebula : IM_Processor {
 
   var <synth;
+  var <inputIsMuted;
 
   *new {
     | outBus, relGroup = nil, addAction = 'addToTail' |
@@ -28,7 +29,7 @@ TrumpetNebula : IM_Processor {
       this.prAddSynthDef;
       server.sync;
       while( { mixer.isLoaded == false }, { 0.0001.wait; });
-
+      inputIsMuted = false;
       synth = Synth(\prm_trumpetDefault, [\inBus, inBus, \outBus, mixer.chanStereo(0)], group, \addToHead);
     };
   }
@@ -61,7 +62,7 @@ TrumpetNebula : IM_Processor {
       var bandPass, delayIn, delayLeft, delayRight;
       var filter, balancer, sig;
 
-      input = In.ar(inBus);
+      input = In.ar(inBus) * inputMute;
       //interval = exp(0.057762265 * pitchShift);
       pitchShifter = PitchShift.ar(input, 0.05, pitchShift.midiratio, 0.001, 0.04);
       input = (input + pitchShifter)/2;
@@ -80,15 +81,14 @@ TrumpetNebula : IM_Processor {
       nebulaOffset = 0.945 - nebulaRange + (nebulaRange / 5);
       nebulaRate = ( (( nebulaActivity / 100 ) - 1) * (-500 + 11)) / 1000;
       nebulaTrigger = Impulse.kr(1/nebulaRate);
-      nebulaLeft = Mix.fill(4, { (TRand.kr(0, nebulaRange, nebulaTrigger) + nebulaOffset).lag(0.7); });
+      nebulaLeft = Mix.fill(4, { (TRand.kr(0, nebulaRange, nebulaTrigger) + nebulaOffset).lag(0.3); });
       nebulaLeft = nebulaLeft / 4;
       nebulaLeft = distortion * nebulaLeft;
-      nebulaRight = Mix.fill(4, { (TRand.kr(0, nebulaRange, nebulaTrigger) + nebulaOffset).lag(0.7); });
+      nebulaRight = Mix.fill(4, { (TRand.kr(0, nebulaRange, nebulaTrigger) + nebulaOffset).lag(0.3); });
       nebulaRight = nebulaRight / 4;
       nebulaRight = distortion * nebulaRight;
       nebula = [nebulaLeft, nebulaRight];
 
-      // need to add BandPass Filter:
       delayIn = (LocalIn.ar(2) * feedback) + nebula;
       delayLeft = DelayN.ar(BBandPass.ar(delayIn[0], bpCenter, bw), 3, leftDelayTime.lag2(0.2));
       delayRight = DelayN.ar(BBandPass.ar(delayIn[1], bpCenter, bw), 3, rightDelayTime.lag2(0.2));
@@ -97,6 +97,7 @@ TrumpetNebula : IM_Processor {
       LocalOut.ar(balancer);
 
       filter = LPF.ar((balancer * delayAmp) + nebula, cutoff);
+      filter = HPF.ar(filter, 40);
       sig = filter.softclip;
       sig = sig * amp;
 
@@ -121,6 +122,17 @@ TrumpetNebula : IM_Processor {
     this.freeProcessor;
   }
 
+  muteInput {
+    synth.set(\inputMute, 0);
+    inputIsMuted = true;
+  }
+  unMuteInput {
+    synth.set(\inputMute, 1);
+    inputIsMuted = false;
+  }
+  toggleMuteInput {
+    if( inputIsMuted == true, { this.unMuteInput }, { this.muteInput });
+  }
   setCutoff { | cutoff = 20000 | synth.set(\cutoff, cutoff); }
 
   setLeftDelayTime { | delayTime = 0.748 | synth.set(\leftDelayTime, delayTime); }

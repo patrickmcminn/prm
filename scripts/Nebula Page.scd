@@ -1,5 +1,11 @@
 var pitchShiftColorReset;
 var page = 'nebula';
+var shiftAmount = 0;
+
+var cutoffShiftRate = 10;
+var cutoffLow = 700;
+var cutoffHigh = 2500;
+var cutoffShiftRoutine;
 
 
 // only if not made/active already:
@@ -14,11 +20,17 @@ var page = 'nebula';
 y = { Out.ar(~nebula.inBus, SoundIn.ar(0)) }.play;
 
 (
-////// Left Sliders:
+//////// Left Buttons:
+~ohm.turnLeftButtonGreen(2, page: page);
+~ohm.setLeftButtonFunc(2, {
+  ~nebula.toggleMuteInput;
+  if( ~nebula.inputIsMuted, { ~ohm.turnLeftButtonRed(3); }, { ~ohm.turnLeftButtonGreen(3); });
+}, page: page);
 
+////// Left Sliders:
 // overall volume:
 ~ohm.setLeftSliderFunc(3, { | val |
-  ~nebula.mixer.setVol(0, val.ccdbfs(-70, 0), 0.1);
+  ~nebula.setVol(0, val.ccdbfs(-70, 0), 0.1);
 }, page: page);
 
 // Left Delay:
@@ -128,6 +140,8 @@ pitchShiftColorReset = {
   ~ohm.turnGridBlue(2, 0, page: page);
   ~ohm.turnGridBlue(3, 0, page: page);
   ~ohm.turnGridBlue(4, 0, page: page);
+  ~ohm.turnGridCyan(0, 1, page: page);
+  ~ohm.turnGridWhite(1, 1, page: page);
 };
 
 pitchShiftColorReset.value;
@@ -137,34 +151,74 @@ pitchShiftColorReset.value;
 ~ohm.setGridFunc(0, 0, {
   pitchShiftColorReset.value;
   ~ohm.turnGridGreen(0, 0);
-  ~nebula.setPitchShiftAmount(-24);
+  shiftAmount = -24;
+  ~nebula.setPitchShiftAmount(shiftAmount);
 }, page: page);
 
 // 8vb:
 ~ohm.setGridFunc(1, 0, {
   pitchShiftColorReset.value;
   ~ohm.turnGridGreen(1, 0);
-  ~nebula.setPitchShiftAmount(-12);
+  shiftAmount = -12;
+  ~nebula.setPitchShiftAmount(shiftAmount);
 }, page: page);
 
 // 0:
 ~ohm.setGridFunc(2, 0, {
   pitchShiftColorReset.value;
   ~ohm.turnGridGreen(2, 0);
-  ~nebula.setPitchShiftAmount(0);
+  shiftAmount = 0;
+  ~nebula.setPitchShiftAmount(shiftAmount);
 }, page: page);
 
 // 8va:
 ~ohm.setGridFunc(3, 0, {
   pitchShiftColorReset.value;
   ~ohm.turnGridGreen(3, 0);
-  ~nebula.setPitchShiftAmount(12);
+  shiftAmount = 12;
+  ~nebula.setPitchShiftAmount(shiftAmount);
 }, page: page);
 
 // 15ma:
 ~ohm.setGridFunc(4, 0, {
   pitchShiftColorReset.value;
   ~ohm.turnGridGreen(4, 0);
-  ~nebula.setPitchShiftAmount(24);
+  shiftAmount = 24;
+  ~nebula.setPitchShiftAmount(shiftAmount);
 }, page: page);
+
+// -1:
+~ohm.setGridFunc(0, 1, {
+  ~ohm.turnGridYellow(0, 1);
+  shiftAmount = shiftAmount - 1;
+  ~nebula.setPitchShiftAmount(shiftAmount);
+}, page: page);
+
+// +1:
+~ohm.setGridFunc(1, 1, {
+  ~ohm.turnGridYellow(1, 1);
+  shiftAmount = shiftAmount + 1;
+  ~nebula.setPitchShiftAmount(shiftAmount);
+}, page: page);
+
+
+// cutoff shift routine:
+cutoffShiftRoutine = r {
+  loop {
+    ~nebula.setPostDistortionCutoff(exprand(cutoffLow, cutoffHigh));
+    (1/cutoffShiftRate).wait;
+  }
+};
+
+~ohm.turnGridCyan(0, 4, page: page);
+~ohm.setGridFunc(0, 4, r {
+  loop {
+    cutoffShiftRoutine.reset.play;
+    ~ohm.turnGridGreen(0, 4).yield;
+
+    cutoffShiftRoutine.stop;
+    ~ohm.turnGridRed(0, 4).yield;
+  };
+}, page: page);
+
 )

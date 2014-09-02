@@ -193,7 +193,8 @@ Base {
     pageDict[name] = Base_Page.new;
   }
 
-  setPage { | name = 'newPage' |
+  setPage { | name = 'page' |
+    activePage.offLoadFunction.value;
     activePageKey = name;
     activePage = pageDict[activePageKey];
     72.do({ | num |
@@ -214,6 +215,11 @@ Base {
   setLoadFunction { | func, page = 'active' |
     if( page == 'active', { page = activePageKey });
     pageDict[page].setLoadFunction(func);
+  }
+
+  setOffLoadFunction { | func, page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    pageDict[page].setOffLoadFunction(func);
   }
 
 }

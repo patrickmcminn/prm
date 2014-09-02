@@ -1,4 +1,3 @@
-
 GlitchySynth {
 
   var server, group, noteGroup;
@@ -123,6 +122,10 @@ GlitchySynth {
 
   setAmp { | amp = 1 |
     synth.set(\amp, amp);
+  }
+
+  setVol { | vol = 0 |
+    synth.set(\amp, vol.dbamp);
   }
 
   playNote { | freq = 220, amp = 1, cutoff = 5309, rq = 0.3 |

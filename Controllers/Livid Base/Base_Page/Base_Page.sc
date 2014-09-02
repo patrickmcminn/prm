@@ -6,7 +6,7 @@ Base_Page {
   var <gridBankArray, controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
   var <activeGridBank, <activeControlButtonsBank, <activeFadersBank, <activeTouchButtonsBank;
 
-  var <loadFunction;
+  var <loadFunction, <offLoadFunction;
 
   *new { ^super.new.prInit }
 
@@ -146,7 +146,11 @@ Base_Page {
   }
 
   setLoadFunction { | func |
-    loadFunction = func
+    loadFunction = func;
+  }
+
+  setOffLoadFunction { | func |
+    offLoadFunction = func;
   }
 
   /*

@@ -4,29 +4,35 @@ Guitar.sc
 prm
 */
 
-FakeGuitar {
+FakeGuitar : IM_Module {
 
-  var server, <group, noteGroup;
+  var <isLoaded;
+
+  var server,  noteGroup;
   var procBus, <synth;
   var attack, sustain, release;
   var vibratoSpeed, vibratoDepth;
 
   var noteDict, sequencerDict, <sequencerClock, <tempo;
 
-  *new { | outBus = 0, amp = 1, pan = 0, relGroup = nil, addAction = 'addToTail' |
-    ^super.new.prInit(outBus, amp, pan, relGroup, addAction);
+  *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, relGroup = nil, addAction = 'addToTail' |
+    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
   }
 
-  prInit { | outBus = 0, amp = 1, pan = 0, relGroup = nil, addAction = 'addToTail' |
+  prInit {
     server = Server.default;
     server.waitForBoot {
+      isLoaded = false;
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait });
       this.prInitializeParameters;
       this.prAddSynthDefs;
+      this.prMakeGroup;
       server.sync;
-      this.prMakeGroup(relGroup, addAction);
       this.prMakeBus;
       server.sync;
-      this.prMakeSynth(outBus, amp, pan);
+      this.prMakeSynth;
+      while({ synth == nil }, { 0.001.wait; });
+      isLoaded = true;
     }
   }
 
@@ -130,18 +136,17 @@ FakeGuitar {
   }
 
   prMakeGroup { | relGroup = nil, addAction = 'addToTail' |
-    group = Group.new(relGroup, addAction);
     noteGroup = Group.new(group, \addToHead);
   }
 
-  prFreeGroup { group.free; noteGroup.free; }
+  prFreeGroup { noteGroup.free; }
 
   prMakeBus { procBus = Bus.audio; }
 
   prFreeBus { procBus.free; }
 
   prMakeSynth { | outBus = 0, amp = 1, pan = 0 |
-    synth = Synth(\prm_fakeGuitarProc, [\inBus, procBus, \outBus, outBus, \amp, amp, \pan, pan], group, \addToTail);
+    synth = Synth(\prm_fakeGuitarProc, [\inBus, procBus, \outBus, mixer.chanStereo(0), \amp, amp, \pan, pan], group, \addToHead);
   }
 
   prFreeSynth { synth.free; }
@@ -161,8 +166,9 @@ FakeGuitar {
   playNote { | freq = 220, amp = 1 |
     if( noteDict[freq.asSymbol].notNil, { this.releaseNote(freq); });
     noteDict[freq.asSymbol] = Synth(\prm_fakeGuitarOsc,
-      [\outBus, procBus, \freq, freq, \amp, amp, \attack, attack, \sustain, sustain, \release, release, \vibratoSpeed, vibratoSpeed, \vibratoAmp, vibratoDepth],
-      noteGroup, \addToTail);
+      [\outBus, procBus, \freq, freq, \amp, amp, \attack, attack, \sustain, sustain, \release, release, \vibratoSpeed,
+        vibratoSpeed, \vibratoAmp, vibratoDepth],
+      group, \addToHead);
   }
 
   releaseNote { | freq = 220 |
@@ -245,7 +251,7 @@ FakeGuitar {
     fork {
       switch(type,
         { 'note' }, {
-          sequencerDict[uniqueName] = PatternSequencer.new(uniqueName, noteGroup, \addToTail);
+          sequencerDict[uniqueName] = PatternSequencer.new(uniqueName, group, \addToHead);
           server.sync;
           sequencerDict[uniqueName].addKey(\instrument, \prm_fakeGuitarOsc);
           sequencerDict[uniqueName].addKey(\outBus, procBus);

@@ -3,7 +3,7 @@
 
   makeSequence { | uniqueName |
     fork {
-      sequencerDict[uniqueName] = PatternSequencer.new(uniqueName,  lfo, \addAfter);
+      sequencerDict[uniqueName] = PatternSequencer.new(uniqueName,  synthGroup, \addToTail);
       server.sync;
       //1.wait;
       sequencerDict[uniqueName].addKey(\instrument, \prm_Subtractive_Voice_Seq);
@@ -133,6 +133,7 @@
   pauseSequence { | uniqueName | sequencerDict[uniqueName].pause }
   resumeSequence { | uniqueName | sequencerDict[uniqueName].resume; }
   isSequencePlaying { | uniqueName | ^sequencerDict[uniqueName].isPlaying }
+  setSequenceQuant { | uniqueName, quant = 0 | sequencerDict[uniqueName].setQuant(quant) }
 
   setSequencerClockTempo { | bpm = 60 |
     var bps = bpm/60;

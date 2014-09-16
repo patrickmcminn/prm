@@ -5,11 +5,11 @@ Subtractive_Voice {
   var server;
   var parent;
 
-  *new { | freq = 220, subtractive, relGroup = nil, addAction = 'addToHead' |
-    ^super.new.prInit(freq, subtractive, relGroup, addAction);
+  *new { | freq = 220, subtractive, group = nil, addAction = 'addToHead' |
+    ^super.new.prInit(freq, subtractive, group, addAction);
   }
 
-  prInit { | freq = 220, subtractive, relGroup, addAction |
+  prInit { | freq = 220, subtractive, group, addAction |
     server = Server.default;
     parent = subtractive;
     server.waitForBoot {
@@ -84,7 +84,7 @@ Subtractive_Voice {
 
         \pan, parent.pan, \panLFOBottom, parent.panLFOBottom, \panLFOTop, parent.panLFOTop,
         \panLFO2Bottom, parent.panLFO2Bottom, \panLFO2Top, parent.panLFO2Top
-      ], relGroup, addAction);
+      ], group, addAction);
 
       isPlaying = true;
       isReleasing = false;

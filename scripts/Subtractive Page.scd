@@ -457,16 +457,16 @@ osc2OctaveReset.value;
 
 // filter LFO 1:
 ~ohm.setLeftKnobFunc(1, 2, { | val |
-  var lowAmount = val.linlin(0, 127, 1, 0.125);
-  var highAmount = val.linlin(0, 127, 1, 8);
+  var lowAmount = val.linlin(0, 127, 1, 0.0625);
+  var highAmount = val.linlin(0, 127, 1, 4);
   ~sub.setFilterCutoffLFOBottomRatio(lowAmount);
   ~sub.setFilterCutoffLFOTopRatio(highAmount);
 }, page: page, bank: mainBank);
 
 // filter LFO 2:
 ~ohm.setLeftKnobFunc(2, 2, { | val |
-  var lowAmount = val.linlin(0, 127, 1, 0.125);
-  var highAmount = val.linlin(0, 127, 1, 8);
+  var lowAmount = val.linlin(0, 127, 1, 0.0625);
+  var highAmount = val.linlin(0, 127, 1, 4);
   ~sub.setFilterCutoffLFO2BottomRatio(lowAmount);
   ~sub.setFilterCutoffLFO2TopRatio(highAmount);
 }, page: page, bank: mainBank);

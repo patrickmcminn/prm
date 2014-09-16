@@ -8,10 +8,11 @@ TrumpetNebula : IM_Processor {
 
   var <synth;
   var <inputIsMuted;
+  var <isLoaded;
 
   *new {
-    | outBus, relGroup = nil, addAction = 'addToTail' |
-    ^super.new(1, 1, outBus, relGroup: relGroup, addAction: addAction).prInit;
+    | outBus, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, relGroup = nil, addAction = 'addToTail' |
+    ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup: relGroup, addAction: addAction).prInit;
   }
 
   // not working yet:
@@ -26,11 +27,13 @@ TrumpetNebula : IM_Processor {
   prInit { | outBus, amp = 1, relGroup = nil, addAction = 'addToTail' |
     var server = Server.default;
     server.waitForBoot {
+      isLoaded = false;
       this.prAddSynthDef;
       server.sync;
       while( { mixer.isLoaded == false }, { 0.0001.wait; });
       inputIsMuted = false;
       synth = Synth(\prm_trumpetDefault, [\inBus, inBus, \outBus, mixer.chanStereo(0)], group, \addToHead);
+      isLoaded = true;
     };
   }
 

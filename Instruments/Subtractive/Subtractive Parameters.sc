@@ -51,20 +51,19 @@
     //// Filter:
   setFilterCutoff { | cutoff = 2000 |
     filterCutoff = cutoff;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterCutoff, cutoff); }); }); });
+    if( applyMode == true, {  synthGroup.set(\filterCutoff, cutoff); });
   }
 
   setFilterRes { | res = 0.0 |
     filterRes = res;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterRes, res); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterRes, res); });
   }
 
   setFilterDrive { | drive = 1.0 |
     filterDrive = drive;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\drive, filterDrive); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\drive, filterDrive); });
   }
 
   setFilterType { | type = 'lowPass' |
@@ -76,183 +75,183 @@
           { 'bandPass' }, { filterType = 2 },
         );
     });
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterType, filterType); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterType, filterType); });
   }
 
   // filter Envelope:
   setFilterEnvAttackTime { | attack = 0.05 |
     filterEnvAttackTime = attack;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterEnvAttackTime, filterEnvAttackTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterEnvAttackTime, filterEnvAttackTime); });
   }
   setFilterEnvDecayTime { | decay = 0 |
     filterEnvDecayTime = decay;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterEnvDecayTime, filterEnvDecayTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterEnvDecayTime, filterEnvDecayTime); });
   }
   setFilterEnvReleaseTime { | release = 0.05 |
     filterEnvReleaseTime = release;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterEnvReleaseTime, filterEnvReleaseTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterEnvReleaseTime, filterEnvReleaseTime); });
   }
   setFilterEnvAttackRatio { | ratio = 1.0 |
     filterEnvAttackRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterEnvAttackRatio, filterEnvAttackRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterEnvAttackRatio, filterEnvAttackRatio); });
   }
   setFilterEnvPeakRatio { | ratio = 1.0 |
     filterEnvPeakRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterEnvPeakRatio, filterEnvPeakRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterEnvPeakRatio, filterEnvPeakRatio); });
   }
   setFilterEnvSustainRatio { | ratio = 1.0 |
     filterEnvSustainRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterEnvSustainRatio, filterEnvSustainRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterEnvSustainRatio, filterEnvSustainRatio); });
   }
   setFilterEnvReleaseRatio { | ratio = 1.0 |
     filterEnvReleaseRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterEnvReleaseRatio, filterEnvReleaseRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterEnvReleaseRatio, filterEnvReleaseRatio); });
   }
   setFilterEnvLoop { | loop = false |
     if( loop, { filterEnvLoop = 1; },{ filterEnvLoop = 0 });
     if( loop.isInteger, { filterEnvLoop = loop; });
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterEnvLoop, filterEnvLoop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterEnvLoop, filterEnvLoop); });
   }
 
   // Filter LFO:
   setFilterCutoffLFOBottomRatio { | ratio = 1.0 |
     filterCutoffLFOBottomRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterCutoffLFOBottomRatio, filterCutoffLFOBottomRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterCutoffLFOBottomRatio, filterCutoffLFOBottomRatio); });
   }
   setFilterCutoffLFOTopRatio { | ratio = 1.0 |
     filterCutoffLFOTopRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterCutoffLFOTopRatio, filterCutoffLFOTopRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterCutoffLFOTopRatio, filterCutoffLFOTopRatio); });
   }
   setFilterResLFOBottom { | bottom = 0.0 |
     filterResLFOBottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterResLFOBottom, filterResLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterResLFOBottom, filterResLFOBottom); });
   }
   setFilterResLFOTop { | top = 0.0 |
     filterResLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterResLFOTop, filterResLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterResLFOTop, filterResLFOTop); });
   }
 
   // LFO2:
   setFilterCutoffLFO2BottomRatio { | ratio = 1.0 |
     filterCutoffLFO2BottomRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterCutoffLFO2BottomRatio, filterCutoffLFO2BottomRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterCutoffLFO2BottomRatio, filterCutoffLFO2BottomRatio); });
   }
   setFilterCutoffLFO2TopRatio { | ratio = 1.0 |
     filterCutoffLFO2TopRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterCutoffLFO2TopRatio, filterCutoffLFO2TopRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterCutoffLFO2TopRatio, filterCutoffLFO2TopRatio); });
   }
   setFilterResLFO2Bottom { | bottom = 0.0 |
     filterResLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterResLFO2Bottom, filterResLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterResLFO2Bottom, filterResLFO2Bottom); });
   }
   setFilterResLFO2Top { | top = 0.0 |
     filterResLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\filterResLFO2Top, filterResLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\filterResLFO2Top, filterResLFO2Top); });
   }
 
 
   //// Amplitude Envelope:
   setAttackTime { | attack = 0.05 |
     attackTime = attack;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\attackTime, attackTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\attackTime, attackTime); });
   }
 
   setDecayTime { | decay = 0 |
     decayTime = decay;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\decayTime, decayTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\decayTime, decayTime); });
   }
 
   setSustainLevel { | sustain = 1.0 |
     sustainLevel = sustain;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\sustainLevel, sustainLevel); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\sustainLevel, sustainLevel); });
   }
 
   setReleaseTime { | release = 0.05 |
     releaseTime = release;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\releaseTime, releaseTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\releaseTime, releaseTime); });
   }
 
   setVoiceAmp { | voiceAmp = 0.2 |
     amp = voiceAmp;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\amp, amp); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\amp, amp); });
   }
 
   setPan { | panning = 0 |
     pan = panning;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\pan, pan); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\pan, pan); });
   }
 
   // Amplitude LFO 1:
   setAmplitudeLFOBottom { | bottom = 1.0 |
     ampLFOBottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\ampLFOBottom, ampLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\ampLFOBottom, ampLFOBottom); });
   }
 
   setAmplitudeLFOTop { | top = 1.0 |
     ampLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\ampLFOTop, ampLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\ampLFOTop, ampLFOTop); });
   }
 
   setPanLFOBottom { | bottom = 0 |
     panLFOBottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\panLFOBottom, panLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\panLFOBottom, panLFOBottom); });
   }
 
   setPanLFOTop { | top = 0 |
     panLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\panLFOTop, panLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\panLFOTop, panLFOTop); });
   }
 
   // Amplitude LFO 2:
   setAmplitudeLFO2Bottom { | bottom = 1.0 |
     ampLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\ampLFO2Bottom, ampLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\ampLFO2Bottom, ampLFO2Bottom); });
   }
 
   setAmplitudeLFO2Top { | top = 1.0 |
     ampLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\ampLFO2Top, ampLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\ampLFO2Top, ampLFO2Top); });
   }
 
   setPanLFO2Bottom { | bottom = 0 |
     panLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\panLFO2Bottom, panLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\panLFO2Bottom, panLFO2Bottom); });
   }
 
   setPanLFO2Top { | top = 0 |
     panLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\panLFO2Top, panLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\panLFO2Top, panLFO2Top); });
   }
 
 
@@ -260,14 +259,14 @@
 
   setOsc1Vol { | vol = -6 |
     osc1Amp = vol.dbamp;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1Amp, osc1Amp); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1Amp, osc1Amp); });
   }
 
   setOsc1SubVol { | vol = -70 |
     osc1SubAmp = vol.dbamp;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1SubAmp, osc1SubAmp); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1SubAmp, osc1SubAmp); });
   }
 
   setOsc1Waveform { | waveform = 'saw' |
@@ -280,14 +279,14 @@
           { 'rect' }, { osc1Waveform = 3 }
         );
     });
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1Waveform, osc1Waveform); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1Waveform, osc1Waveform); });
   }
 
   setOsc1OctaveMul { | octaveMul = 1 |
     osc1OctaveMul = octaveMul;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1OctaveMul, osc1OctaveMul); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1OctaveMul, osc1OctaveMul); });
   }
 
   setOsc1Octave { | octave = 3 |
@@ -304,126 +303,125 @@
 
   setOsc1PulseWidth { | pulseWidth = 0.5 |
     osc1PulseWidth = pulseWidth;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1PulseWidth, osc1PulseWidth); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1PulseWidth, osc1PulseWidth); });
   }
 
 
   // frequency envelope:
   setOsc1FreqEnvStartRatio { | ratio = 1.0 |
     osc1FreqEnvStartRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1FreqEnvStartRatio, osc1FreqEnvStartRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1FreqEnvStartRatio, osc1FreqEnvStartRatio); });
   }
   setOsc1FreqEnvEndRatio { | ratio = 1.0 |
     osc1FreqEnvEndRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1FreqEnvEndRatio, osc1FreqEnvEndRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1FreqEnvEndRatio, osc1FreqEnvEndRatio); });
   }
   setOsc1FreqEnvTime { | time = 0.0 |
     osc1FreqEnvTime = time;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1FreqEnvTime, osc1FreqEnvTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1FreqEnvTime, osc1FreqEnvTime); });
   }
 
   // Oscillator 1 LFO 1:
   setOsc1FreqLFOBottomRatio { | ratio = 1.0 |
     osc1FreqLFOBottomRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1FreqLFOBottomRatio, osc1FreqLFOBottomRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1FreqLFOBottomRatio, osc1FreqLFOBottomRatio); });
 
   }
 
   setOsc1FreqLFOTopRatio { | ratio = 1.0 |
     osc1FreqLFOTopRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1FreqLFOTopRatio, osc1FreqLFOTopRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1FreqLFOTopRatio, osc1FreqLFOTopRatio); });
   }
 
   setOsc1PulseWidthLFOBottom { | bottom = 0.0 |
     osc1PulseWidthLFOBottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1PulseWidthLFOBottom, osc1PulseWidthLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1PulseWidthLFOBottom, osc1PulseWidthLFOBottom); });
   }
 
   setOsc1PulseWidthLFOTop { | top = 0.0 |
     osc1PulseWidthLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1PulseWidthLFOTop, osc1PulseWidthLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1PulseWidthLFOTop, osc1PulseWidthLFOTop); });
   }
 
   setOsc1AmpLFOBottom { | bottom = 1.0 |
     osc1AmpLFOBottom = bottom;
-    if( applyMode, { synthDict.do({ | synth | if( synth.notNil, { synth.set(\osc1AmpLFOBottom, osc1AmpLFOBottom); }); }); });
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1AmpLFOBottom, osc1AmpLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1AmpLFOBottom, osc1AmpLFOBottom); });
   }
 
   setOsc1AmpLFOTop { | top = 1.0 |
     osc1AmpLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1AmpLFOTop, osc1AmpLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1AmpLFOTop, osc1AmpLFOTop); });
   }
 
   setOsc1WaveformLFOBottom { | bottom = 0.0 |
     osc1WaveformLFOBottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1WaveformLFOBottom, osc1WaveformLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1WaveformLFOBottom, osc1WaveformLFOBottom); });
   }
 
   setOsc1WaveformLFOTop { | top = 0.0 |
     osc1WaveformLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1WaveformLFOTop, osc1WaveformLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1WaveformLFOTop, osc1WaveformLFOTop); });
   }
 
    // Oscillator 1 LFO 2:
   setOsc1FreqLFO2BottomRatio { | ratio = 1.0 |
     osc1FreqLFO2BottomRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1FreqLFO2BottomRatio, osc1FreqLFO2BottomRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1FreqLFO2BottomRatio, osc1FreqLFO2BottomRatio); });
   }
 
   setOsc1FreqLFO2TopRatio { | ratio = 1.0 |
     osc1FreqLFO2TopRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1FreqLFO2TopRatio, osc1FreqLFO2TopRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1FreqLFO2TopRatio, osc1FreqLFO2TopRatio); });
   }
 
   setOsc1PulseWidthLFO2Bottom { | bottom = 0.0 |
     osc1PulseWidthLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1PulseWidthLFO2Bottom, osc1PulseWidthLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1PulseWidthLFO2Bottom, osc1PulseWidthLFO2Bottom); });
   }
 
   setOsc1PulseWidthLFO2Top { | top = 0.0 |
     osc1PulseWidthLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1PulseWidthLFO2Top, osc1PulseWidthLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1PulseWidthLFO2Top, osc1PulseWidthLFO2Top); });
   }
 
   setOsc1AmpLFO2Bottom { | bottom = 1.0 |
     osc1AmpLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1AmpLFO2Bottom, osc1AmpLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1AmpLFO2Bottom, osc1AmpLFO2Bottom); });
   }
 
   setOsc1AmpLFO2Top { | top = 1.0 |
     osc1AmpLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1AmpLFO2Top, osc1AmpLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1AmpLFO2Top, osc1AmpLFO2Top); });
   }
 
   setOsc1WaveformLFO2Bottom { | bottom = 0.0 |
     osc1WaveformLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1WaveformLFO2Bottom, osc1WaveformLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1WaveformLFO2Bottom, osc1WaveformLFO2Bottom); });
   }
 
   setOsc1WaveformLFO2Top { | top = 0.0 |
     osc1WaveformLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc1WaveformLFO2Top, osc1WaveformLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc1WaveformLFO2Top, osc1WaveformLFO2Top); });
   }
 
 
@@ -431,15 +429,15 @@
 
   setOsc2Vol { | vol = -6 |
     osc2Amp = vol.dbamp;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2Amp, osc2Amp); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2Amp, osc2Amp); });
 
   }
 
   setOsc2SubVol { | vol = -70 |
     osc2SubAmp = vol.dbamp;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2SubAmp, osc2SubAmp); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2SubAmp, osc2SubAmp); });
   }
 
   setOsc2Waveform { | waveform = 'saw' |
@@ -452,14 +450,14 @@
           { 'rect' }, { osc2Waveform = 3 }
         );
     });
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2Waveform, osc2Waveform); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2Waveform, osc2Waveform); });
   }
 
   setOsc2OctaveMul { | octaveMul = 1 |
     osc2OctaveMul = octaveMul;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2OctaveMul, osc2OctaveMul); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2OctaveMul, osc2OctaveMul); });
   }
 
   setOsc2Octave { | octave = 3 |
@@ -476,202 +474,202 @@
 
   setOsc2PulseWidth { | pulseWidth = 0.5 |
     osc2PulseWidth = pulseWidth;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2PulseWidth, osc2PulseWidth); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2PulseWidth, osc2PulseWidth); });
   }
 
   setOsc2DetuneCents { | detune = 0 |
     osc2DetuneCents = detune;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2DetuneCents, osc2DetuneCents); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2DetuneCents, osc2DetuneCents); });
   }
 
   // frequency envelope:
   setOsc2FreqEnvStartRatio { | ratio = 1.0 |
     osc2FreqEnvStartRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2FreqEnvStartRatio, osc2FreqEnvStartRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2FreqEnvStartRatio, osc2FreqEnvStartRatio); });
   }
   setOsc2FreqEnvEndRatio { | ratio = 1.0 |
     osc2FreqEnvEndRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2FreqEnvEndRatio, osc2FreqEnvEndRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2FreqEnvEndRatio, osc2FreqEnvEndRatio); });
   }
   setOsc2FreqEnvTime { | time = 0.0 |
     osc2FreqEnvTime = time;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2FreqEnvTime, osc2FreqEnvTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2FreqEnvTime, osc2FreqEnvTime); });
   }
 
   // Oscillator 2 LFO 1:
   setOsc2FreqLFOBottomRatio { | ratio = 1.0 |
     osc2FreqLFOBottomRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2FreqLFOBottomRatio, osc2FreqLFOBottomRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2FreqLFOBottomRatio, osc2FreqLFOBottomRatio); });
   }
 
   setOsc2FreqLFOTopRatio { | ratio = 1.0 |
     osc2FreqLFOTopRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2FreqLFOTopRatio, osc2FreqLFOTopRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2FreqLFOTopRatio, osc2FreqLFOTopRatio); });
   }
 
   setOsc2PulseWidthLFOBottom { | bottom = 0.0 |
     osc2PulseWidthLFOBottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2PulseWidthLFOBottom, osc2PulseWidthLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2PulseWidthLFOBottom, osc2PulseWidthLFOBottom); });
   }
 
   setOsc2PulseWidthLFOTop { | top = 0.0 |
     osc2PulseWidthLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2PulseWidthLFOTop, osc2PulseWidthLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2PulseWidthLFOTop, osc2PulseWidthLFOTop); });
   }
 
   setOsc2AmpLFOBottom { | bottom = 1.0 |
     osc2AmpLFOBottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2AmpLFOBottom, osc2AmpLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2AmpLFOBottom, osc2AmpLFOBottom); });
   }
 
   setOsc2AmpLFOTop { | top = 1.0 |
     osc2AmpLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2AmpLFOTop, osc2AmpLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2AmpLFOTop, osc2AmpLFOTop); });
   }
 
   setOsc2WaveformLFOBottom { | bottom = 0.0 |
     osc2WaveformLFOBottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2WaveformLFOBottom, osc2WaveformLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2WaveformLFOBottom, osc2WaveformLFOBottom); });
   }
 
   setOsc2WaveformLFOTop { | top = 0.0 |
     osc2WaveformLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2WaveformLFOTop, osc2WaveformLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2WaveformLFOTop, osc2WaveformLFOTop); });
   }
 
   // Oscillator 2 LFO 2:
   setOsc2FreqLFO2BottomRatio { | ratio = 1.0 |
     osc2FreqLFO2BottomRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2FreqLFO2BottomRatio, osc2FreqLFO2BottomRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2FreqLFO2BottomRatio, osc2FreqLFO2BottomRatio); });
   }
 
   setOsc2FreqLFO2TopRatio { | ratio = 1.0 |
     osc2FreqLFO2TopRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2FreqLFO2TopRatio, osc2FreqLFO2TopRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2FreqLFO2TopRatio, osc2FreqLFO2TopRatio); });
   }
 
   setOsc2PulseWidthLFO2Bottom { | bottom = 0.0 |
     osc2PulseWidthLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2PulseWidthLFO2Bottom, osc2PulseWidthLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2PulseWidthLFO2Bottom, osc2PulseWidthLFO2Bottom); });
   }
 
   setOsc2PulseWidthLFO2Top { | top = 0.0 |
     osc2PulseWidthLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2PulseWidthLFO2Top, osc2PulseWidthLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2PulseWidthLFO2Top, osc2PulseWidthLFO2Top); });
   }
 
   setOsc2AmpLFO2Bottom { | bottom = 1.0 |
     osc2AmpLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2AmpLFO2Bottom, osc2AmpLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2AmpLFO2Bottom, osc2AmpLFO2Bottom); });
   }
 
   setOsc2AmpLFO2Top { | top = 1.0 |
     osc2AmpLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2AmpLFO2Top, osc2AmpLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2AmpLFO2Top, osc2AmpLFO2Top); });
   }
 
   setOsc2WaveformLFO2Bottom { | bottom = 0.0 |
     osc2WaveformLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2WaveformLFO2Bottom, osc2WaveformLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2WaveformLFO2Bottom, osc2WaveformLFO2Bottom); });
   }
 
   setOsc2WaveformLFO2Top { | top = 0.0 |
     osc2WaveformLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\osc2WaveformLFO2Top, osc2WaveformLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\osc2WaveformLFO2Top, osc2WaveformLFO2Top); });
   }
 
 
   //// Noise Oscillator:
   setNoiseOscVol { | vol = -70 |
     noiseOscAmp = vol.dbamp;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\noiseOscAmp, noiseOscAmp); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\noiseOscAmp, noiseOscAmp); });
   }
 
   setNoiseOscCutoff { | cutoff = 1000 |
     noiseOscCutoff = cutoff;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\noiseOscCutoff, noiseOscCutoff); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\noiseOscCutoff, noiseOscCutoff); });
   }
 
   // Noise Oscillator LFO 1:
 
   setNoiseOscAmpLFOBottom { | bottom = 1.0 |
     noiseOscAmpLFOBottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\noiseOscAmpLFOBottom, noiseOscAmpLFOBottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\noiseOscAmpLFOBottom, noiseOscAmpLFOBottom); });
   }
 
   setNoiseOscAmpLFOTop { | top = 1.0 |
     noiseOscAmpLFOTop = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\noiseOscAmpLFOTop, noiseOscAmpLFOTop); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\noiseOscAmpLFOTop, noiseOscAmpLFOTop); });
   }
 
   setNoiseOscFilterLFOBottomRatio { | ratio = 1.0 |
     noiseOscFilterLFOBottomRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\noiseOscFilterLFOBottomRatio, noiseOscFilterLFOBottomRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\noiseOscFilterLFOBottomRatio, noiseOscFilterLFOBottomRatio); });
   }
 
   setNoiseOscFilterLFOTopRatio { | ratio = 1.0 |
     noiseOscFilterLFOTopRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\noiseOscFilterLFOTopRatio, noiseOscFilterLFOTopRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\noiseOscFilterLFOTopRatio, noiseOscFilterLFOTopRatio); });
   }
 
   // Noise Oscillator LFO 2:
 
   setNoiseOscAmpLFO2Bottom { | bottom = 1.0 |
     noiseOscAmpLFO2Bottom = bottom;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\noiseOscAmpLFO2Bottom, noiseOscAmpLFO2Bottom); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\noiseOscAmpLFO2Bottom, noiseOscAmpLFO2Bottom); });
   }
 
   setNoiseOscAmpLFO2Top { | top = 1.0 |
     noiseOscAmpLFO2Top = top;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\noiseOScAmpLFO2Top, noiseOscAmpLFO2Top); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\noiseOScAmpLFO2Top, noiseOscAmpLFO2Top); });
   }
 
   setNoiseOscFilterLFO2BottomRatio { | ratio = 1.0 |
     noiseOscFilterLFO2BottomRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\nosieOscFilterLFO2BottomRatio, noiseOscFilterLFO2BottomRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\nosieOscFilterLFO2BottomRatio, noiseOscFilterLFO2BottomRatio); });
   }
 
   setNoiseOscFilterLFO2TopRatio { | ratio = 1.0 |
     noiseOscFilterLFO2TopRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\noiseOscFilterLFO2TopRatio, noiseOscFilterLFO2TopRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\noiseOscFilterLFO2TopRatio, noiseOscFilterLFO2TopRatio); });
   }
 
   //// LFO1:
   setLFO1Freq { | freq = 1 |
     lfoFreq = freq;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\lfoFreq, lfoFreq); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\lfoFreq, lfoFreq); });
   }
 
   setLFO1Waveform { | waveform = 'sine' |
@@ -686,14 +684,14 @@
           { 'noise' }, { lfoWaveform = 5 }
         );
     });
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\lfoWaveform, lfoWaveform); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\lfoWaveform, lfoWaveform); });
   }
 
   setLFOPulseWidth { | pulseWidth = 0.5 |
     lfoPulseWidth = pulseWidth;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\lfoPulseWidth, lfoPulseWidth); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\lfoPulseWidth, lfoPulseWidth); });
   }
 
   setLFOEnvType { | type = 'none' |
@@ -704,32 +702,32 @@
       { 'attackAndRelease' }, { lfoEnvType = 3 }
     );
     if( type.isInteger, { lfoEnvType = type; });
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\lfoEnvType, lfoEnvType); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\lfoEnvType, lfoEnvType); });
   }
 
   setLFOAttackTime { | attack = 0.05 |
     lfoAttackTime = attack;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\lfoAttackTime, lfoAttackTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\lfoAttackTime, lfoAttackTime); });
   }
 
   setLFOReleaseTime { | release = 0.05 |
     lfoReleaseTime = release;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\lfoReleaseTime, lfoReleaseTime); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\lfoReleaseTime, lfoReleaseTime); });
   }
 
   setLFOFreqLFO2BottomRatio { | ratio = 1.0 |
     lfoFreqLFOBottomRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\lfoFreqLFOBottomRatio, lfoFreqLFOBottomRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\lfoFreqLFOBottomRatio, lfoFreqLFOBottomRatio); });
   }
 
   setLFOFreqLFO2TopRatio { | ratio = 1.0 |
     lfoFreqLFOTopRatio = ratio;
-    if( applyMode == true, { synthDict.do({ | voice |
-      if( voice.notNil, { voice.synth.set(\lfoFreqLFOTopRatio, lfoFreqLFOTopRatio); }); }); });
+    if( applyMode == true, {
+      synthGroup.set(\lfoFreqLFOTopRatio, lfoFreqLFOTopRatio); });
   }
 
   // LFO 2:
@@ -755,7 +753,6 @@
         );
     });
   }
-
 }
 
 //////// Presets:

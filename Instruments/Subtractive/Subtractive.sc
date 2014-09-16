@@ -6,7 +6,9 @@ prm
 
 Subtractive : IM_Module {
 
-  var lfo, <synthDict, orderArray, <lfoBus, <maxVoices, numVoices, orderNum;
+  var <isLoaded;
+
+  var lfo, <synthDict, <synthGroup, orderArray, <lfoBus, <maxVoices, numVoices, orderNum;
 
   var presetDict;
 
@@ -53,25 +55,30 @@ Subtractive : IM_Module {
 
   var <sequencerDict, <sequencerClock, <tempo, <beats;
 
-  *new { | outBus, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(relGroup);
+  *new { | outBus, send1Bus = nil, send2Bus = nil, send3Bus = nil, send4Bus = nil, relGroup = nil, addAction = 'addToHead' |
+    ^super.new(1, outBus, send1Bus, send2Bus, send3Bus, send4Bus, false, relGroup, addAction).prInit(relGroup);
   }
 
   prInit { | relGroup = nil |
     server = Server.default;
     server.waitForBoot {
+      isLoaded = false;
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait });
+
       this.prAddSynthDefs;
       this.prInitializeParameters;
+
       synthDict = IdentityDictionary.new;
       orderArray = Array.fill(maxVoices, { nil });
       presetDict = IdentityDictionary.new;
       sequencerDict = IdentityDictionary.new;
       sequencerClock = TempoClock.new(tempo, beats);
-
       lfoBus = Bus.control;
-
       server.sync;
       lfo = Synth(\prm_Subtractive_LFO, [\outBus, lfoBus], relGroup, \addToHead);
+      synthGroup = Group.new(lfo, \addAfter);
+      server.sync;
+      isLoaded = true;
     }
   }
 
@@ -81,8 +88,8 @@ Subtractive : IM_Module {
       | outBus = 0, lfoWaveform = 0, freq = 1, lfoPulseWidth = 0.5 |
       var lfo, lfoSine, lfoSaw, lfoRevSaw, lfoRect, lfoNoise0, lfoNoise2;
       lfoSine = SinOsc.kr(freq);
-      lfoSaw = LFSaw.kr(freq);
-      lfoRevSaw = LFSaw.kr(freq) * -1;
+      lfoSaw = LFSaw.kr(freq, 1);
+      lfoRevSaw = LFSaw.kr(freq, 1) * -1;
       lfoRect = LFPulse.kr(freq, width: lfoPulseWidth);
       lfoNoise0 = LFNoise0.kr(freq);
       lfoNoise2 = LFNoise2.kr(freq);
@@ -171,8 +178,8 @@ Subtractive : IM_Module {
       lfoFreqLFO = lfo2.linlin(-1, 1, lfoFreqLFOBottomRatio, lfoFreqLFOTopRatio);
       thisLFOFreq = lfoFreq * lfoFreqLFO;
       lfoSine = SinOsc.kr(thisLFOFreq);
-      lfoSaw = LFSaw.kr(thisLFOFreq);
-      lfoRevSaw = LFSaw.kr(thisLFOFreq) * -1;
+      lfoSaw = LFSaw.kr(thisLFOFreq, 1);
+      lfoRevSaw = LFSaw.kr(thisLFOFreq, 1) * -1;
       lfoRect = (LFPulse.kr(thisLFOFreq, width: lfoPulseWidth) - 0.5) * 2;
       lfoNoise0 = LFNoise0.kr(thisLFOFreq);
       lfoNoise2 = LFNoise2.kr(thisLFOFreq);
@@ -367,8 +374,8 @@ Subtractive : IM_Module {
       lfoFreqLFO = lfo2.linlin(-1, 1, lfoFreqLFOBottomRatio, lfoFreqLFOTopRatio);
       thisLFOFreq = lfoFreq * lfoFreqLFO;
       lfoSine = SinOsc.kr(thisLFOFreq);
-      lfoSaw = LFSaw.kr(thisLFOFreq);
-      lfoRevSaw = LFSaw.kr(thisLFOFreq) * -1;
+      lfoSaw = LFSaw.kr(thisLFOFreq,1);
+      lfoRevSaw = LFSaw.kr(thisLFOFreq, 1) * -1;
       lfoRect = (LFPulse.kr(thisLFOFreq, width: lfoPulseWidth) - 0.5) * 2;
       lfoNoise0 = LFNoise0.kr(thisLFOFreq);
       lfoNoise2 = LFNoise2.kr(thisLFOFreq);
@@ -517,6 +524,8 @@ Subtractive : IM_Module {
     lfo = nil;
     lfoBus.free;
     lfoBus = nil;
+    synthGroup.free;
+    synthGroup = nil;
 
     this.freeModule;
   }
@@ -528,7 +537,7 @@ Subtractive : IM_Module {
       if( playTest == true, { synthDict[freq].steal(freq); }, {
         if( numVoices < maxVoices, {
           // assign synth to a the synth dict:
-          synthDict[freq] = Subtractive_Voice.new(freq, this, lfo, \addAfter);
+          synthDict[freq] = Subtractive_Voice.new(freq, this, synthGroup, \addToTail);
           // put synth marker in the correct order slot:
           orderArray[orderNum] = freq;
           // increment the number of voices:

@@ -6,29 +6,54 @@ prm
 
 Looper : IM_Processor {
 
-  var isPlaying, isRecording, looper;
+  var <isLoaded;
+  var <isPlaying, <isRecording, looper;
   var buffer, server;
+  var isStereo;
 
-  * new { | outBus = 0, bufferSize = 1, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(2, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(bufferSize);
+  *newStereo { | outBus = 0, bufferSize = 10, relGroup = nil, addAction = 'addToHead' |
+    ^super.new(2, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInitStereo(bufferSize);
   }
 
-  prInit { | bufferSize = 1 |
+  *newMono { | outBus = 0, bufferSize = 10, relGroup = nil, addAction = 'addToHead' |
+    ^super.new(1, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInitMono(bufferSize);
+  }
+
+  prInitStereo { | bufferSize = 1 |
     server = Server.default;
     server.waitForBoot {
-      this.prAddSynthDef;
+      isLoaded = false;
+      this.prAddSynthDefs;
       server.sync;
       isPlaying = 0;
       isRecording = 0;
+      isStereo = true;
       buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 2);
-      while( { try { mixer.chanStereo(0) } == nil }, { 0.01.wait } );
-      looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+      looper = Synth(\prm_looperStereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
+      isLoaded = true;
     }
   }
 
-  prAddSynthDef {
-    SynthDef(\prm_looper, {
-      | inBus = 0, outBus = 0, amp = 2, buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1 |
+  prInitMono { | bufferSize = 1 |
+    server = Server.default;
+    server.waitForBoot {
+      isLoaded = false;
+      this.prAddSynthDefs;
+      server.sync;
+      isPlaying = 0;
+      isRecording = 0;
+      isStereo = false;
+      buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 1);
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+      looper = Synth(\prm_looperMono, [\inBus, inBus, \outBus, mixer.chanMono(0), \buffer, buffer], group, \addToHead);
+      isLoaded = true;
+    }
+  }
+
+  prAddSynthDefs {
+    SynthDef(\prm_looperStereo, {
+      | inBus = 0, outBus = 0, amp = 1, buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1 |
 
       var input,  sum, firstTrig, recGate, recTrigger, playGate, playTrigger, time;
       var recEnv, playEnv, recorder, player;
@@ -46,7 +71,33 @@ Looper : IM_Processor {
       recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
       recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
       playEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), playGate);
-      player = PlayBuf.ar(2, buffer, BufRateScale.kr(buffer), playTrigger;, loop: 1);
+      player = PlayBuf.ar(2, buffer, BufRateScale.kr(buffer), playTrigger, loop: 1);
+
+      sig = player * playEnv;
+      sig = sig * amp;
+      Out.ar(outBus, sig);
+    }).add;
+
+    SynthDef(\prm_looperMono, {
+      | inBus = 0, outBus = 0, amp = 1, buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1 |
+
+      var input,  sum, firstTrig, recGate, recTrigger, playGate, playTrigger, time;
+      var recEnv, playEnv, recorder, player;
+      var sig;
+
+      input = In.ar(inBus);
+
+      firstTrig = Trig.kr(SetResetFF.kr(t_recTrig, t_reset), 0.05);
+      recGate = PulseCount.kr(t_recTrig, t_reset) > 1;
+      time = Latch.kr(Timer.kr(t_recTrig), recGate);
+      recTrigger = TDuty.kr(time, recGate, 1) * recGate + firstTrig;
+      playGate = PulseCount.kr(t_playTrig, t_stopTrig);
+      playTrigger = TDuty.kr(time, playGate, 1) * playGate;
+
+      recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
+      recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
+      playEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), playGate);
+      player = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), playTrigger, loop: 1);
 
       sig = player * playEnv;
       sig = sig * amp;
@@ -54,7 +105,15 @@ Looper : IM_Processor {
     }).add;
   }
 
-  // public functions:
+  //////// public functions:
+
+  free {
+    looper.free;
+    looper = nil;
+    buffer.free;
+    buffer = nil;
+    this.freeProcessor;
+  }
 
   toggleRecordLoop {
     if( isRecording == 0,
@@ -77,11 +136,19 @@ Looper : IM_Processor {
     isPlaying = 0;
   }
 
-  clearLoop { | newBufLength = 1 |
+  clearLoop { | newBufLength = 10 |
     this.stopLoop;
     looper.free;
     buffer.free;
-    buffer = Buffer.alloc(server, server.sampleRate * newBufLength);
-     looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
+    if( isStereo == true,
+      {
+        buffer = Buffer.alloc(server, server.sampleRate * newBufLength, 2);
+        looper = Synth(\prm_looperStereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
+      },
+      {
+        buffer = Buffer.alloc(server, server.sampleRate * newBufLength, 1);
+        looper = Synth(\prm_looperMono, [\inBus, inBus, \outBus, mixer.chanMono(0), \buffer, buffer],  group, \addToHead);
+      }
+    );
   }
 }

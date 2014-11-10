@@ -8,6 +8,7 @@ Looper : IM_Processor {
 
   var isPlaying, isRecording, looper;
   var buffer, server;
+  var prLooperRoutine;
 
   * new { | outBus = 0, bufferSize = 1, relGroup = nil, addAction = 'addToHead' |
     ^super.new(2, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(bufferSize);
@@ -23,6 +24,7 @@ Looper : IM_Processor {
       buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 2);
       while( { try { mixer.chanStereo(0) } == nil }, { 0.01.wait } );
       looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
+      this.prMakeLooperRoutine;
     }
   }
 
@@ -54,14 +56,36 @@ Looper : IM_Processor {
     }).add;
   }
 
+  prMakeLooperRoutine {
+    prLooperRoutine = r {
+      this.toggleRecordLoop.yield;
+
+      this.toggleRecordLoop;
+      this.playLoop.yield;
+
+      loop {
+        this.toggleRecordLoop.yield;
+        this.toggleRecordLoop.yield;
+      };
+    };
+  }
+
   // public functions:
 
+  // please god pick a better name:
+  loop {
+    prLooperRoutine.next;
+  }
+
   toggleRecordLoop {
-    if( isRecording == 0,
-      { looper.set(\t_recTrig, 1); isRecording = 1; },
-      { looper.set(\t_recTrig, 1); isRecording = 0; }
+    if( isRecording == false,
+      { looper.set(\t_recTrig, 1); isRecording = true; },
+      { looper.set(\t_recTrig, 1); isRecording = false; }
     );
   }
+
+  //recordLoop { looper.set(\t_recTrig, 1); isRecording = true; }
+  //stopRecordLoop { looper.set(\t_recTrig, 0); isRecording = false; }
 
   togglePlayLoop {
     if( isPlaying == 0, { this.playLoop }, { this.stopLoop } );
@@ -78,10 +102,16 @@ Looper : IM_Processor {
   }
 
   clearLoop { | newBufLength = 1 |
-    this.stopLoop;
-    looper.free;
-    buffer.free;
-    buffer = Buffer.alloc(server, server.sampleRate * newBufLength);
-     looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
+    {
+      this.stopLoop;
+      looper.free;
+      buffer.free;
+      server.sync;
+      buffer = Buffer.alloc(server, server.sampleRate * newBufLength, 2);
+      server.sync;
+      looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
+      server.sync;
+      prLooperRoutine.reset;
+    }.fork;
   }
 }

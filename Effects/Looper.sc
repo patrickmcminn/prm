@@ -6,25 +6,30 @@ prm
 
 Looper : IM_Processor {
 
-  var isPlaying, isRecording, looper;
+  var <isLoaded;
+  var <isPlaying, <isRecording, looper;
   var buffer, server;
   var prLooperRoutine;
 
-  * new { | outBus = 0, bufferSize = 1, relGroup = nil, addAction = 'addToHead' |
+  * newStereo { | outBus = 0, bufferSize = 1, relGroup = nil, addAction = 'addToHead' |
     ^super.new(2, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(bufferSize);
   }
 
   prInit { | bufferSize = 1 |
     server = Server.default;
     server.waitForBoot {
+      isLoaded = false;
       this.prAddSynthDef;
       server.sync;
       isPlaying = 0;
       isRecording = 0;
       buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 2);
-      while( { try { mixer.chanStereo(0) } == nil }, { 0.01.wait } );
+      while( { try { mixer.isLoaded } != true }, { 0.001.wait } );
       looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
+      server.sync;
+      while( { try { looper } == nil }, { 0.001.wait; });
       this.prMakeLooperRoutine;
+      isLoaded = true;
     }
   }
 

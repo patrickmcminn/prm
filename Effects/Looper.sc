@@ -72,6 +72,15 @@ Looper : IM_Processor {
 
   // public functions:
 
+  free {
+    this.clearLoop;
+    looper.free;
+    looper = nil;
+    buffer.free;
+    buffer = nil;
+    this.freeProcessor;
+  }
+
   // please god pick a better name:
   loop {
     prLooperRoutine.next;
@@ -83,9 +92,6 @@ Looper : IM_Processor {
       { looper.set(\t_recTrig, 1); isRecording = false; }
     );
   }
-
-  //recordLoop { looper.set(\t_recTrig, 1); isRecording = true; }
-  //stopRecordLoop { looper.set(\t_recTrig, 0); isRecording = false; }
 
   togglePlayLoop {
     if( isPlaying == 0, { this.playLoop }, { this.stopLoop } );

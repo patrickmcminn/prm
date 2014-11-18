@@ -16,13 +16,14 @@ Mixer_1Ch_Looper : IM_Processor {
 
   *new {
     |
-    outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, feedback = false,
+    outBus = 0, bufLength = 5, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, feedback = false,
     relGroup = nil, addAction = \addToHead
     |
-    ^super.new(1, 1,outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInit;
+    ^super.new(1, 1,outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).
+    prInit(bufLength);
   }
 
-  prInit {
+  prInit { | bufLength = 5 |
     var server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -43,7 +44,7 @@ Mixer_1Ch_Looper : IM_Processor {
       while ( { try { outputMixer } == nil }, { 0.001.wait } );
       mixer1Ch = IM_Mixer_1Ch.new(mixerBus, relGroup:group, addAction:\addToHead);
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
-      looper = Looper.newStereo(looperBus, 30, relGroup: group, addAction: \addToHead);
+      looper = Looper.newStereo(looperBus, bufLength, relGroup: group, addAction: \addToHead);
       while({ try { looper.isLoaded } != true }, { 0.001.wait; });
 
       inputSplitter = Synth(\prm_mixerLooper_InputSplitter, [\inBus, inBus,
@@ -99,4 +100,35 @@ Mixer_1Ch_Looper : IM_Processor {
   setMix { | mix = -1 | outputMixer.set(\mix, mix); }
 }
 
-+ Mixer_1Ch_Looper { }
++ Mixer_1Ch_Looper {
+  inBus { ^mixer1Ch.inBus }
+  chanMono { ^mixer1Ch.chanMono }
+  chanStereo { ^mixer1Ch.chanStereo }
+
+  mute { mixer1Ch.mute }
+  unMute { mixer1Ch.unMute }
+  tglMute { mixer1Ch.tglMute }
+  isMuted { ^mixer1Ch.isMuted }
+
+  setPreVol { |db = 0| mixer1Ch.setPreVol(db) }
+  setVol { |db = 0, lagTime = 0| mixer1Ch.setVol(db, lagTime) }
+  fadeOut { |dur = 1| mixer1Ch.fadeOut(dur) }
+  fade { | targetdb = 0, dur = 1 | mixer1Ch.fade(targetdb, dur); }
+
+  setSendVol { |sendNum = 0, db = 0| mixer1Ch.setSendVol(sendNum, db) }
+  setSendPre { mixer1Ch.setSendPre }
+  setSendPost { mixer1Ch.setSendPost }
+
+  setPanBal { |panBal = 0| mixer1Ch.setPanBal(panBal) }
+
+  muteMaster { mixer1Ch.mute }
+  unMuteMaster { mixer1Ch.unMute }
+  tglMuteMaster { mixer1Ch.tglMute }
+
+  setMasterVol { |db = 0, lagTime = 0| mixer1Ch.setVol(db, lagTime) }
+  fadeOutMaster { |dur = 1| mixer1Ch.fadeOut(dur) }
+
+  loop { looper.loop; }
+  stopLoop { looper.stopLoop }
+  clearLoop { | newBufLength = 5 | looper.clearLoop(newBufLength) }
+}

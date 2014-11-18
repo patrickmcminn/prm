@@ -78,12 +78,15 @@ Looper : IM_Processor {
   // public functions:
 
   free {
-    this.clearLoop;
-    looper.free;
-    looper = nil;
-    buffer.free;
-    buffer = nil;
-    this.freeProcessor;
+    {
+      this.stopLoop;
+      server.sync;
+      looper.free;
+      looper = nil;
+      buffer.free;
+      buffer = nil;
+      this.freeProcessor;
+    }.fork;
   }
 
   // please god pick a better name:

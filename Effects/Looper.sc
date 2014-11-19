@@ -12,8 +12,14 @@ Looper : IM_Processor {
   var prLooperRoutine;
   var <mix;
 
-  * newStereo { | outBus = 0, bufferSize = 1, loopMix = 0, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(2, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(bufferSize, loopMix);
+  * newStereo {
+    |
+    outBus = 0, bufferSize = 1, loopMix = 0,
+    send0Bus, send1Bus, send2Bus, send3Bus,
+    relGroup = nil, addAction = 'addToHead'
+    |
+    ^super.new(2, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).
+    prInit(bufferSize, loopMix);
   }
 
   prInit { | bufferSize = 1, loopMix = 0 |

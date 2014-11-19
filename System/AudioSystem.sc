@@ -44,29 +44,31 @@ AudioSystem {
       server.sync;
       while ( { try { systemMixer.isLoaded} != true }, { 0.001.wait } );
 
-      irLibrary = IM_IRLibrary.new;
+      irLibrary = IM_IRLibrary.new("~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses");
       server.sync;
-      //while( { try { irLibrary.irDict['3.4Cathedral'] } == nil }, { 0.001.wait });
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = IM_Granulator(systemMixer.inBus(0),
-        relGroup: systemGroup, addAction: \addToHead);
+      //granulator = IM_Granulator(systemMixer.inBus(0),
+        //relGroup: systemGroup, addAction: \addToHead);
+      granulator = GranularDelay.new(systemMixer.inBus, relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( {  try { granulator.isLoaded } != true }, { 0.001.wait; });
+      granulator.granulator.setCrossfade(1);
+      granulator.delay.setMix(0);
 
       reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.4Cathedral'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
 
-      submixerA = IM_Mixer_1Ch.new(systemMixer.inBus, reverb.inBus, granulator.inBus, nil, nil, false,
+      submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
         procGroup, \addToHead);
-      submixerB = IM_Mixer_1Ch.new(systemMixer.inBus, reverb.inBus, granulator.inBus, nil, nil, false,
+      submixerB = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
         procGroup, \addToHead);
-      submixerC = IM_Mixer_1Ch.new(systemMixer.inBus, reverb.inBus, granulator.inBus, nil, nil, false,
+      submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
         procGroup, \addToHead);
 
-      songBook = IM_SongBook(systemMixer.inBus, reverb.inBus, granulator.inBus, nil, nil, procGroup);
+      //songBook = IM_SongBook(systemMixer.inBus, reverb.inBus, granulator.inBus, nil, nil, procGroup);
 
       isLoaded = true;
 

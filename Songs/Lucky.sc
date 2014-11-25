@@ -240,8 +240,8 @@ Lucky : IM_Module {
         Pwhite(0.2, 0.27, 16), Pwhite(0.33, 0.38, 16), Pwhite(0.17, 0.22, 12), Pwhite(0.19, 0.29, 20)], inf));
       melodySubtractive.addKey(\luckySection1, \note, Pseq([
         Pseq([[3, 5, 7]], 16), Pseq([[1, 6, 8]], 16), Pseq([[-2, 0, 5]], 12), Pseq([[3, 5, 10]], 20)], inf));
-      melodySubtractive.addKey(\luckySection1, \amp, Pwhite(0.09, 0.15, inf));
-      melodySubtractive.addKey(\luckySection1, \filterCutoff, Pwhite(1200, 2500, inf));
+      melodySubtractive.addKey(\luckySection1, \amp, Pwhite(0.1, 0.2, inf));
+      melodySubtractive.addKey(\luckySection1, \filterCutoff, Pwhite(2000, 4500, inf));
       melodySubtractive.addKey(\luckySection1, \osc1Amp, Pwhite(0.7, 1, inf));
       melodySubtractive.addKey(\luckySection1, \osc2Amp, Pwhite(0.7, 1, inf));
 

@@ -10,51 +10,45 @@ Looper : IM_Processor {
   var <isPlaying, <isRecording, looper;
   var buffer, server;
   var isStereo;
+  var prLooperRoutine;
+  var <mix;
 
-  *newStereo { | outBus = 0, bufferSize = 10, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(2, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInitStereo(bufferSize);
+  * newStereo {
+    |
+    outBus = 0, bufferSize = 1, loopMix = 0,
+    send0Bus, send1Bus, send2Bus, send3Bus,
+    relGroup = nil, addAction = 'addToHead'
+    |
+    ^super.new(2, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).
+    prInit(bufferSize, loopMix);
   }
 
-  *newMono { | outBus = 0, bufferSize = 10, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInitMono(bufferSize);
-  }
-
-  prInitStereo { | bufferSize = 1 |
+  prInit { | bufferSize = 1, loopMix = 0 |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
-      this.prAddSynthDefs;
+      mix = loopMix;
+      this.prAddSynthDef;
       server.sync;
       isPlaying = 0;
       isRecording = 0;
       isStereo = true;
       buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 2);
-      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
-      looper = Synth(\prm_looperStereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
-      isLoaded = true;
-    }
-  }
-
-  prInitMono { | bufferSize = 1 |
-    server = Server.default;
-    server.waitForBoot {
-      isLoaded = false;
-      this.prAddSynthDefs;
+      looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer, \mix, mix],
+        group, \addToHead);
       server.sync;
-      isPlaying = 0;
-      isRecording = 0;
-      isStereo = false;
-      buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 1);
-      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
-      looper = Synth(\prm_looperMono, [\inBus, inBus, \outBus, mixer.chanMono(0), \buffer, buffer], group, \addToHead);
+      while( { try { looper } == nil }, { 0.001.wait; });
+      this.prMakeLooperRoutine;
       isLoaded = true;
     }
   }
 
-  prAddSynthDefs {
-    SynthDef(\prm_looperStereo, {
-      | inBus = 0, outBus = 0, amp = 1, buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1 |
-
+  prAddSynthDef {
+    SynthDef(\prm_looper, {
+      |
+      inBus = 0, outBus = 0, amp = 1, mix = 0,
+      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1
+      |
       var input,  sum, firstTrig, recGate, recTrigger, playGate, playTrigger, time;
       var recEnv, playEnv, recorder, player;
       var sig;
@@ -100,6 +94,7 @@ Looper : IM_Processor {
       player = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), playTrigger, loop: 1);
 
       sig = player * playEnv;
+      sig = XFade2.ar(input, sig, mix);
       sig = sig * amp;
       Out.ar(outBus, sig);
     }).add;
@@ -107,18 +102,43 @@ Looper : IM_Processor {
 
   //////// public functions:
 
+  prMakeLooperRoutine {
+    prLooperRoutine = r {
+      this.toggleRecordLoop.yield;
+
+      this.toggleRecordLoop;
+      this.playLoop.yield;
+
+      loop {
+        this.toggleRecordLoop.yield;
+        this.toggleRecordLoop.yield;
+      };
+    };
+  }
+
+  // public functions:
+
   free {
-    looper.free;
-    looper = nil;
-    buffer.free;
-    buffer = nil;
-    this.freeProcessor;
+    {
+      this.stopLoop;
+      server.sync;
+      looper.free;
+      looper = nil;
+      buffer.free;
+      buffer = nil;
+      this.freeProcessor;
+    }.fork;
+  }
+
+  // please god pick a better name:
+  loop {
+    prLooperRoutine.next;
   }
 
   toggleRecordLoop {
-    if( isRecording == 0,
-      { looper.set(\t_recTrig, 1); isRecording = 1; },
-      { looper.set(\t_recTrig, 1); isRecording = 0; }
+    if( isRecording == false,
+      { looper.set(\t_recTrig, 1); isRecording = true; },
+      { looper.set(\t_recTrig, 1); isRecording = false; }
     );
   }
 
@@ -136,19 +156,23 @@ Looper : IM_Processor {
     isPlaying = 0;
   }
 
-  clearLoop { | newBufLength = 10 |
-    this.stopLoop;
-    looper.free;
-    buffer.free;
-    if( isStereo == true,
-      {
-        buffer = Buffer.alloc(server, server.sampleRate * newBufLength, 2);
-        looper = Synth(\prm_looperStereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer],  group, \addToHead);
-      },
-      {
-        buffer = Buffer.alloc(server, server.sampleRate * newBufLength, 1);
-        looper = Synth(\prm_looperMono, [\inBus, inBus, \outBus, mixer.chanMono(0), \buffer, buffer],  group, \addToHead);
-      }
-    );
+  clearLoop { | newBufLength = 1 |
+    {
+      this.stopLoop;
+      looper.free;
+      buffer.free;
+      server.sync;
+      buffer = Buffer.alloc(server, server.sampleRate * newBufLength, 2);
+      server.sync;
+      looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer, \mix, mix],
+        group, \addToHead);
+      server.sync;
+      prLooperRoutine.reset;
+    }.fork;
+  }
+
+  setMix { | loopMix = 0 |
+    mix = loopMix;
+    looper.set(\mix, mix);
   }
 }

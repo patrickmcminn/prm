@@ -102,7 +102,7 @@ AudioSystem {
 
       systemGroup.free;
       procGroup.free;
-      songBook.free;
+      //songBook.free;
 
       hardwareOut = nil;
 
@@ -116,7 +116,7 @@ AudioSystem {
 
       systemGroup = nil;
       procGroup = nil;
-      songBook = nil;
+      //songBook = nil;
 
       // Server.default.quit;
     };

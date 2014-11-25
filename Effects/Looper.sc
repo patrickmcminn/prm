@@ -13,7 +13,7 @@ Looper : IM_Processor {
   var prLooperRoutine;
   var <mix;
 
-  * newStereo {
+  *newStereo {
     |
     outBus = 0, bufferSize = 1, loopMix = 0,
     send0Bus, send1Bus, send2Bus, send3Bus,
@@ -27,6 +27,7 @@ Looper : IM_Processor {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+      while( {  try { mixer.isLoaded } != true }, { 0.001.wait; });
       mix = loopMix;
       this.prAddSynthDef;
       server.sync;

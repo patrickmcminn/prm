@@ -46,7 +46,8 @@ Looper : IM_Processor {
     SynthDef(\prm_looper, {
       |
       inBus = 0, outBus = 0, amp = 1, mix = 0,
-      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1
+      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1,
+      loopRate = 1
       |
 
       var input,  sum, firstTrig, recGate, recTrigger, playGate, playTrigger, time;
@@ -60,12 +61,12 @@ Looper : IM_Processor {
       time = Latch.kr(Timer.kr(t_recTrig), recGate);
       recTrigger = TDuty.kr(time, recGate, 1) * recGate + firstTrig;
       playGate = PulseCount.kr(t_playTrig, t_stopTrig);
-      playTrigger = TDuty.kr(time, playGate, 1) * playGate;
+      playTrigger = TDuty.kr(time/loopRate, playGate, 1) * playGate;
 
       recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
       recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
       playEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), playGate);
-      player = PlayBuf.ar(2, buffer, BufRateScale.kr(buffer), playTrigger;, loop: 1);
+      player = PlayBuf.ar(2, buffer, BufRateScale.kr(buffer) * loopRate, playTrigger;, loop: 1);
 
       sig = player * playEnv;
       sig = XFade2.ar(input, sig, mix);
@@ -145,5 +146,9 @@ Looper : IM_Processor {
   setMix { | loopMix = 0 |
     mix = loopMix;
     looper.set(\mix, mix);
+  }
+
+  setLoopRate { | loopRate = 1 |
+    looper.set(\loopRate, loopRate);
   }
 }

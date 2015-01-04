@@ -131,13 +131,12 @@ Looper : IM_Processor {
   clearLoop { | newBufLength = 1 |
     {
       this.stopLoop;
-      looper.free;
+      //looper.free;
       buffer.free;
       server.sync;
       buffer = Buffer.alloc(server, server.sampleRate * newBufLength, 2);
       server.sync;
-      looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer, \mix, mix],
-        group, \addToHead);
+      looper.set(\buffer, buffer);
       server.sync;
       prLooperRoutine.reset;
     }.fork;

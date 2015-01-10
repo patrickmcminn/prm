@@ -48,7 +48,8 @@ Looper : IM_Processor {
     SynthDef(\prm_looper, {
       |
       inBus = 0, outBus = 0, amp = 1, mix = 0,
-      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1
+      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1,
+      loopRate = 1
       |
       var input,  sum, firstTrig, recGate, recTrigger, playGate, playTrigger, time;
       var recEnv, playEnv, recorder, player;
@@ -61,7 +62,7 @@ Looper : IM_Processor {
       time = Latch.kr(Timer.kr(t_recTrig), recGate);
       recTrigger = TDuty.kr(time, recGate, 1) * recGate + firstTrig;
       playGate = PulseCount.kr(t_playTrig, t_stopTrig);
-      playTrigger = TDuty.kr(time, playGate, 1) * playGate;
+      playTrigger = TDuty.kr(time/loopRate, playGate, 1) * playGate;
 
       recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
       recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
@@ -160,13 +161,12 @@ Looper : IM_Processor {
   clearLoop { | newBufLength = 1 |
     {
       this.stopLoop;
-      looper.free;
+      //looper.free;
       buffer.free;
       server.sync;
       buffer = Buffer.alloc(server, server.sampleRate * newBufLength, 2);
       server.sync;
-      looper = Synth(\prm_looper, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer, \mix, mix],
-        group, \addToHead);
+      looper.set(\buffer, buffer);
       server.sync;
       prLooperRoutine.reset;
     }.fork;
@@ -175,5 +175,9 @@ Looper : IM_Processor {
   setMix { | loopMix = 0 |
     mix = loopMix;
     looper.set(\mix, mix);
+  }
+
+  setLoopRate { | loopRate = 1 |
+    looper.set(\loopRate, loopRate);
   }
 }

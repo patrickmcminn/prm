@@ -20,10 +20,21 @@ Looper : IM_Processor {
     relGroup = nil, addAction = 'addToHead'
     |
     ^super.new(2, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).
-    prInit(bufferSize, loopMix);
+    prInitStereo(bufferSize, loopMix);
   }
 
-  prInit { | bufferSize = 1, loopMix = 0 |
+  *newMono {
+    |
+    outBus = 0, bufferSize = 1, loopMix = 0,
+    send0Bus, send1Bus, send2Bus, send3Bus,
+    relGroup = nil, addAction = 'addToHead'
+    |
+    ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).
+    prInitMono(bufferSize, loopMix);
+  }
+
+
+  prInitStereo { | bufferSize = 1, loopMix = 0 |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -44,12 +55,33 @@ Looper : IM_Processor {
     }
   }
 
+  prInitMono { | bufferSize = 1, loopMix = 0 |
+    server = Server.default;
+    server.waitForBoot {
+      isLoaded = false;
+      while( {  try { mixer.isLoaded } != true }, { 0.001.wait; });
+      mix = loopMix;
+      this.prAddSynthDef;
+      server.sync;
+      isPlaying = 0;
+      isRecording = 0;
+      isStereo = true;
+      buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 1);
+      looper = Synth(\prm_looperMono, [\inBus, inBus, \outBus, mixer.chanStereo(0), \buffer, buffer, \mix, mix],
+        group, \addToHead);
+      server.sync;
+      while( { try { looper } == nil }, { 0.001.wait; });
+      this.prMakeLooperRoutine;
+      isLoaded = true;
+    }
+  }
+
   prAddSynthDef {
     SynthDef(\prm_looper, {
       |
+      loopRate = 1,
       inBus = 0, outBus = 0, amp = 1, mix = 0,
-      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1,
-      loopRate = 1
+      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1
       |
       var input,  sum, firstTrig, recGate, recTrigger, playGate, playTrigger, time;
       var recEnv, playEnv, recorder, player;
@@ -67,16 +99,20 @@ Looper : IM_Processor {
       recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
       recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
       playEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), playGate);
-      player = PlayBuf.ar(2, buffer, BufRateScale.kr(buffer), playTrigger, loop: 1);
+      player = PlayBuf.ar(2, buffer, BufRateScale.kr(buffer) * loopRate, playTrigger, loop: 1);
 
       sig = player * playEnv;
+      sig = XFade2.ar(input, sig, mix);
       sig = sig * amp;
       Out.ar(outBus, sig);
-    }).add;
+    }, [0.1]).add;
 
     SynthDef(\prm_looperMono, {
-      | inBus = 0, outBus = 0, amp = 1, buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1 |
-
+      |
+      loopRate = 1,
+      inBus = 0, outBus = 0, amp = 1, mix = 0,
+      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1
+      |
       var input,  sum, firstTrig, recGate, recTrigger, playGate, playTrigger, time;
       var recEnv, playEnv, recorder, player;
       var sig;
@@ -88,18 +124,18 @@ Looper : IM_Processor {
       time = Latch.kr(Timer.kr(t_recTrig), recGate);
       recTrigger = TDuty.kr(time, recGate, 1) * recGate + firstTrig;
       playGate = PulseCount.kr(t_playTrig, t_stopTrig);
-      playTrigger = TDuty.kr(time, playGate, 1) * playGate;
+      playTrigger = TDuty.kr(time/loopRate, playGate, 1) * playGate;
 
       recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
       recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
       playEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), playGate);
-      player = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer), playTrigger, loop: 1);
+      player = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer) * loopRate, playTrigger, loop: 1);
 
       sig = player * playEnv;
       sig = XFade2.ar(input, sig, mix);
       sig = sig * amp;
       Out.ar(outBus, sig);
-    }).add;
+    }, [0.1]).add;
   }
 
   //////// public functions:
@@ -178,6 +214,6 @@ Looper : IM_Processor {
   }
 
   setLoopRate { | loopRate = 1 |
-    looper.set(\loopRate, loopRate);
+    looper.set(\loopRate, loopRate, \t_playTrig, 1);
   }
 }

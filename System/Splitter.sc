@@ -6,6 +6,7 @@ prm
 
 Splitter {
 
+  var <isLoaded;
   var server;
   var group;
   var <inBus, splitBus, nilBus;
@@ -37,6 +38,7 @@ Splitter {
     server.waitForBoot {
       if( outBusArray.isArray,
         {
+          isLoaded = false;
           this.prAddSynthDef;
           group = Group.new(relGroup, addAction);
           server.sync;
@@ -54,6 +56,9 @@ Splitter {
               \outBus, if( outBusArray[i] != nil, { outBusArray[i] }, { nilBus })
               ], group, \addToTail);
           });
+
+          while({ outputSynthArray[outputSynthArray.size - 1] == nil }, { 0.001.wait; });
+          isLoaded = true;
         },
         { "outBussArray should be an Array of outBusses".postln; });
     };

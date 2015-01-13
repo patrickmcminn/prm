@@ -31,11 +31,6 @@ Song {
       group = Group.new(relGroup, addAction);
       server.sync;
 
-      mixerA = IM_Mixer.new(mixANumChannels, mixAOutBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback,
-        group, 'addToHead');
-      while({ try { mixerA.isLoaded } != true }, { 0.001.wait; });
-
-      /*
       mixerA = IM_Mixer.new(mixANumChannels, mixAOutBus, send0Bus, send1Bus, send2Bus, send3Bus,
         feedback, group, 'addToHead');
       while({ try { mixerA.isLoaded } != true }, { 0.001.wait; });
@@ -47,7 +42,6 @@ Song {
       mixerC = IM_Mixer.new(mixCNumChannels, mixCOutBus, send0Bus, send1Bus, send2Bus, send3Bus,
         feedback, group, 'addToHead');
       while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
-      */
 
     }
   }

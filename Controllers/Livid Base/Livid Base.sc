@@ -7,7 +7,7 @@ Base {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
-  var <pageDict, <activePage, activePageKey;
+  var <pageDict, <activePage, activePageKey, <functionDict;
   var colorArray;
 
   *new { | localControl = 'allOff' |
@@ -20,6 +20,7 @@ Base {
     this.prMakeResponders;
     this.prMakeColorArray;
     this.prMakePageDictionary;
+    functionDict = IdentityDictionary.new(know: true);
   }
 
   prInitMIDI {

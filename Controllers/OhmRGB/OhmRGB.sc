@@ -8,7 +8,7 @@ OhmRGB {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
-  var <pageDict, <activePage, activePageKey;
+  var <pageDict, <activePage, activePageKey, <functionDict;
   var colorArray;
 
   *new {
@@ -16,10 +16,11 @@ OhmRGB {
   }
 
   prInit {
-      this.prInitMIDI;
-      this.prMakeResponders;
-      this.prMakeColorArray;
-      this.prMakePageDictionary;
+    this.prInitMIDI;
+    this.prMakeResponders;
+    this.prMakeColorArray;
+    this.prMakePageDictionary;
+    functionDict = IdentityDictionary.new(know: true);
   }
 
   prInitMIDI {

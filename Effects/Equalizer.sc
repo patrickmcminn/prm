@@ -11,11 +11,11 @@ Equalizer : IM_Processor {
   var synth;
 
   *newMono { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, 1, outBus, relGroup, addAction).prInitMono;
+    ^super.new(1, 1, outBus, relGroup: relGroup, addAction: addAction).prInitMono;
   }
 
   *newStereo { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(2, 1, outBus, relGroup, addAction).prInitStereo;
+    ^super.new(2, 1, outBus, relGroup: relGroup, addAction: addAction).prInitStereo;
   }
 
   prInitMono {
@@ -42,7 +42,7 @@ Equalizer : IM_Processor {
 
       while( { try { mixer.isLoaded } != true }, { 0.001.wait; });
       synth = Synth(\prm_Equalizer_Stereo, [\inBus, inBus, \outBus, mixer.chanMono(0), \amp, 1], group, \addToHead);
-      while({ try { synth } != nil }, { 0.001.wait; });
+      while({ try { synth } == nil }, { 0.001.wait; });
       isLoaded = true;
     };
   }

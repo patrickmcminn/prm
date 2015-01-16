@@ -213,14 +213,28 @@ Base {
     activePage.loadFunction.value;
   }
 
-  setLoadFunction { | func, page = 'active' |
+  sePagetLoadFunction { | func, page = 'active' |
     if( page == 'active', { page = activePageKey });
     pageDict[page].setLoadFunction(func);
   }
 
-  setOffLoadFunction { | func, page = 'active' |
+  setPageOffLoadFunction { | func, page = 'active' |
     if( page == 'active', { page = activePageKey; });
     pageDict[page].setOffLoadFunction(func);
+  }
+
+  // function:
+
+  addGlobalFunction { | name = 'func', function |
+    functionDict.put(name, function);
+  }
+
+  removeGlobalFunction { | name |
+    functionDict.remove(name);
+  }
+
+  callGlobalFunction { | name |
+    functionDict.name
   }
 
 }

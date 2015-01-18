@@ -89,22 +89,22 @@ Distortion : IM_Module {
   prAddSynthDefs {
 
     SynthDef(\prm_DistortionMono, {
-      | inBus = 0, outBus = 0, amp = 1, distortionGain = 10 |
+      |distortionGain = 10,  inBus = 0, outBus = 0, amp = 1  |
       var input, distortion, sig;
       input = In.ar(inBus, 1);
       distortion = (input * distortionGain).distort;
       sig = distortion * amp;
       Out.ar(outBus, sig);
-    }).add;
+    }, [0.05] ).add;
 
     SynthDef(\prm_DistortionStereo, {
-      | inBus = 0, outBus = 0, amp = 1, distortionGain = 10 |
+      |  distortionGain = 10, inBus = 0, outBus = 0, amp = 1 |
       var input, distortion, sig;
       input = In.ar(inBus, 2);
       distortion = (input * distortionGain).distort;
       sig = distortion * amp;
       Out.ar(outBus, sig);
-    }).add;
+    }, [0.05]).add;
 
   }
 

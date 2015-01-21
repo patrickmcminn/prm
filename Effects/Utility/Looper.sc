@@ -96,7 +96,8 @@ Looper : IM_Module {
       |
       loopRate = 1, loopDiv = 1, loopPos = 0,
       inBus = 0, outBus = 0, amp = 1, mix = 0,
-      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1
+      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1,
+      waveLossAmount = 0, waveLossMode = 2
       |
       var input,  sum, firstTrig, recGate, recTrigger, playGate, playTrigger, time, loopSamples;
       var recEnv, playEnv, recorder, player;
@@ -119,6 +120,7 @@ Looper : IM_Module {
 
       sig = player * playEnv;
       sig = XFade2.ar(input, sig, mix);
+      sig = WaveLoss.ar(sig, waveLossAmount, 100, waveLossMode);
       sig = sig * amp;
       Out.ar(outBus, sig);
     }, [0.1, 0.05, 0.05]).add;
@@ -127,7 +129,8 @@ Looper : IM_Module {
       |
       loopRate = 1,
       inBus = 0, outBus = 0, amp = 1, mix = 0,
-      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1
+      buffer, t_recTrig = 0, t_playTrig = 0, t_stopTrig = 0, t_reset = 1,
+      waveLossAmount = 0, waveLossMode = 2
       |
       var input,  sum, firstTrig, recGate, recTrigger, playGate, playTrigger, time;
       var recEnv, playEnv, recorder, player;
@@ -149,6 +152,7 @@ Looper : IM_Module {
 
       sig = player * playEnv;
       sig = XFade2.ar(input, sig, mix);
+      sig = WaveLoss.ar(sig, waveLossAmount, 100, waveLossMode);
       sig = sig * amp;
       Out.ar(outBus, sig);
     }, [0.1]).add;
@@ -241,5 +245,13 @@ Looper : IM_Module {
 
   setLoopPosition { | pos = 0 |
     looper.set(\loopPos, pos, \t_playTrig, 1);
+  }
+
+  setWaveLossAmount { | amount = 0 |
+    looper.set(\waveLossAmount, amount);
+  }
+
+  setWaveLossMode { | mode = 2 |
+    looper.set(\waveLossMode, mode);
   }
 }

@@ -14,11 +14,13 @@ plane from Sydney to Hobart
 
   var mixBank = 0;
   var rateBank = 1;
-  var posBank = 2;
+  var divBank = 2;
+  var posBank = 3;
+
+  var knobChangeRoutine;
 
   ~ohm.addRightButtonsBanks(3);
-  ~ohm.addRightKnobsBanks(2);
-
+  ~ohm.addRightKnobsBanks(3);
 
   // audio system mixer volumes:
 
@@ -49,19 +51,20 @@ plane from Sydney to Hobart
   ~ohm.turnCrossfaderButtonCyan(1);
 
   ~ohm.setCrossfaderButtonFunc(1, r {
-    ~ohm.setActiveRightButtonsBank(recordBank);
-    ~ohm.turnCrossfaderButtonBlue(1).yield;
+    loop {
+      ~ohm.setActiveRightButtonsBank(recordBank);
+      ~ohm.turnCrossfaderButtonBlue(1).yield;
 
-    ~ohm.setActiveRightButtonsBank(playToggleBank);
-    ~ohm.turnCrossfaderButtonGreen(1).yield;
+      ~ohm.setActiveRightButtonsBank(playToggleBank);
+      ~ohm.turnCrossfaderButtonGreen(1).yield;
 
-    ~ohm.setActiveRightButtonsBank(clearBank);
-    ~ohm.turnCrossfaderButtonRed(1).yield;
+      ~ohm.setActiveRightButtonsBank(clearBank);
+      ~ohm.turnCrossfaderButtonRed(1).yield;
 
-    ~ohm.setActiveRightButtonsBank(muteBank);
-    ~ohm.turnCrossfaderButtonCyan(1).yield;
+      ~ohm.setActiveRightButtonsBank(muteBank);
+      ~ohm.turnCrossfaderButtonCyan(1).yield;
+    };
   });
-
 
   //////// Mute Bank:
 
@@ -158,5 +161,121 @@ plane from Sydney to Hobart
 
   // submixer C:
   ~ohm.setRightButtonFunc(2, { ~prm.submixerC.clearLoop(30); }, bank: clearBank);
+
+  //////////// Right Knob Change:
+
+  //// bank change:
+
+  knobChangeRoutine = r {
+    loop {
+      ~ohm.setActiveRightKnobsBank(rateBank);
+      4.do({ | bank | ~ohm.turnRightButtonYellow(3, bank: bank); }).yield;
+
+      ~ohm.setActiveRightKnobsBank(divBank);
+      4.do({ | bank | ~ohm.turnRightBlue(3, bank: bank); }).yield;
+
+      ~ohm.setActiveRightKnobsBank(posBank);
+      4.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
+
+      ~ohm.setActiveRightButtonsBank(mixBank);
+      4.do({ | bank | ~ohm.turnRightButtonGreen(3, bank: bank); }).yield;
+    }
+  };
+
+  //////// Reset Func:
+
+  //// intial colors:
+
+  /// func:
+  4.do({  | bank |
+    ~ohm.setRightButtonFunc(3, { knobChangeRoutine.next; }, bank: bank);
+  });
+
+  //////// Loop Mix Knobs:
+
+  // submixer A:
+  ~ohm.setRightKnobFunc(0, { | val |
+    var mix = val.linlin(0, 127, -1, 1);
+    ~prm.submixerA.setMix(mix);
+  }, bank: mixBank);
+
+  // submixer B:
+  ~ohm.setRightKnobFunc(1, { | val |
+    var mix = val.linlin(0, 127, -1, 1);
+    ~prm.submixerB.setMix(mix);
+  }, bank: mixBank);
+
+  // submixer C:
+  ~ohm.setRightKnobFunc(2, { | val |
+    var mix = val.linlin(0, 127, -1, 1);
+    ~prm.submixerC.setMix(mix);
+  }, bank: mixBank);
+
+  //////// Rate Knobs:
+
+  // Submixer A:
+  ~ohm.setRightKnobFunc(0, { | val |
+    var rate = val.linlin(0, 127, 0.1, 10);
+    ~prm.submixerA.setLoopRate(rate);
+  }, bank: rateBank);
+
+  // Submixer B:
+  ~ohm.setRightKnobFunc(1, { | val |
+    var rate = val.linlin(0, 127, 0.1, 10);
+    ~prm.submixerB.setLoopRate(rate);
+  }, bank: rateBank);
+
+  // Submixer C:
+  ~ohm.setRightKnobFunc(2, { | val |
+    var rate = val.linlin(0, 127, 0.1, 10);
+    ~prm.submixerC.setLoopRate(rate);
+  }, bank: rateBank);
+
+  // reset knob:
+  ~ohm.setRightKnobFunc(3, {
+    ~prm.submixerA.setLoopRate(1);
+    ~prm.submixerB.setLoopRate(1);
+    ~prm.submixerC.setLoopRate(1);
+  }, bank: rateBank);
+
+  //////// Loop Division Knobs:
+
+  // Submixer A:
+  ~ohm.setRightKnobFunc(0, { | val |
+    var div = val.linlin(0, 127, 1, 15).asInt;
+    ~prm.submixerA.setLoopDivison(div);
+  }, bank: divBank);
+
+  // Submixer B:
+  ~ohm.setRightKnobFunc(1, { | val |
+    var div = val.linlin(0, 127, 1, 15).asInt;
+    ~prm.submixerB.setLoopDivison(div);
+  }, bank: divBank);
+
+  // Submixer C:
+  ~ohm.setRightKnobFunc(2, { | val |
+    var div = val.linlin(0, 127, 1, 15).asInt;
+    ~prm.submixerC.setLoopDivison(div);
+  }, bank: divBank);
+
+  //////// Loop Position Knobs:
+
+  // Submixer A:
+  ~ohm.setRightKnobFunc(0, { | val |
+    var pos = val.linlin(0, 127, 0, 1);
+    ~prm.submixerA.setLoopPosition(pos);
+  }, bank: posBank);
+
+  // Submixer B:
+  ~ohm.setRightKnobFunc(1, { | val |
+    var pos = val.linlin(0, 127, 0, 1);
+    ~prm.submixerB.setLoopPosition(pos);
+  }, bank: posBank);
+
+  // Submixer C:
+  ~ohm.setRightKnobFunc(2, { | val |
+    var pos = val.linlin(0, 127, 0, 1);
+    ~prm.submixerC.setLoopPosition(pos);
+  }, bank: posBank);
 
 });

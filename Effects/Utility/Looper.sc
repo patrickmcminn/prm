@@ -235,7 +235,11 @@ Looper : IM_Module {
     looper.set(\loopRate, loopRate, \t_playTrig, 1);
   }
 
-  setLoopDivison { | division = 1, position = 0 |
-    looper.set(\loopDiv, division, \loopPos, position, \t_playTrig, 1);
+  setLoopDivison { | division = 1 |
+    looper.set(\loopDiv, division, \t_playTrig, 1);
+  }
+
+  setLoopPosition { | pos = 0 |
+    looper.set(\loopPos, pos, \t_playTrig, 1);
   }
 }

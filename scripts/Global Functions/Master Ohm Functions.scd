@@ -7,10 +7,14 @@ plane from Sydney to Hobart
 
 ~ohm.addGlobalFunction(\audioSystemMixer, {
 
-  var muteBank = 0;
+  var submixerBank;
+  var returnsBank;
+
+  var submixerMuteBank = 0;
   var recordBank = 1;
   var playToggleBank = 2;
   var clearBank = 3;
+  var returnsMuteBank = 4;
 
   var mixBank = 0;
   var rateBank = 1;
@@ -20,31 +24,50 @@ plane from Sydney to Hobart
 
   var knobChangeRoutine;
 
-  ~ohm.addRightButtonsBanks(3);
+  ~ohm.addRightSlidersBanks(1);
+  ~ohm.addRightButtonsBanks(4);
   ~ohm.addRightKnobsBanks(4);
 
-  // audio system mixer volumes:
+  //// audio system mixer volumes:
 
   // submixer A:
   ~ohm.setRightSliderFunc(0, { | val |
     var vol = val.linlin(0, 127, -70, 0);
     ~prm.submixerA.mixer.setVol(vol);
-  });
+  }, bank: submixerBank);
   // submixer B:
   ~ohm.setRightSliderFunc(1, { | val |
     var vol = val.linlin(0, 127, -70, 0);
     ~prm.submixerB.mixer.setVol(vol);
-  });
+  }, bank: submixerBank);
   // submixer C:
   ~ohm.setRightSliderFunc(2, { | val |
     var vol = val.linlin(0, 127, -70, 0);
     ~prm.submixerC.mixer.setVol(vol);
-  });
+  }, bank: submixerBank);
   // master volume:
   ~ohm.setRightSliderFunc(3, { | val |
     var vol = val.linlin(0, 127, -70, 0);
     ~prm.systemMixer.setVol(0, vol);
-  });
+  }, bank: submixerBank);
+
+  //// returns volumes:
+
+  // Return 0:
+  ~ohm.setRightSliderFunc(0, { | val |
+    var vol = val.linlin(0, 127, -70, 0);
+    ~prm.reverb.mixer.setVol(vol);
+  }, bank: returnsBank);
+
+  // Return 1:
+  ~ohm.setRightSliderFunc(1, { | val |
+    var vol = val.linlin(0, 127, -70, 6);
+    ~prm.granulator.mixer.setVol(vol);
+  }, bank: returnsBank);
+
+  // Return 2:
+
+  // Return 3:
 
   //////// Bank Change:
 
@@ -54,15 +77,23 @@ plane from Sydney to Hobart
   ~ohm.setCrossfaderButtonFunc(1, r {
     loop {
       ~ohm.setActiveRightButtonsBank(recordBank);
+      ~ohm.setActiveRightSlidersBank(submixerBank);
       ~ohm.turnCrossfaderButtonBlue(1).yield;
 
       ~ohm.setActiveRightButtonsBank(playToggleBank);
+      ~ohm.setActiveRightSlidersBank(submixerBank);
       ~ohm.turnCrossfaderButtonGreen(1).yield;
 
       ~ohm.setActiveRightButtonsBank(clearBank);
+      ~ohm.setActiveRightSlidersBank(submixerBank);
       ~ohm.turnCrossfaderButtonRed(1).yield;
 
-      ~ohm.setActiveRightButtonsBank(muteBank);
+      ~ohm.setActiveRightButtonsBank(returnsMuteBank);
+      ~ohm.setActiveRightSlidersBank(returnsBank);
+      ~ohm.turnCrossfaderButtonWhite(1).yield;
+
+      ~ohm.setActiveRightButtonsBank(submixerMuteBank);
+      ~ohm.setActiveRightSlidersBank(submixerBank);
       ~ohm.turnCrossfaderButtonCyan(1).yield;
 
     };
@@ -71,31 +102,31 @@ plane from Sydney to Hobart
   //////// Mute Bank:
 
   // initial color:
-  if( ~prm.submixerA.mixer.isMuted, { ~ohm.turnRightButtonRed(0, bank: muteBank); }, { ~ohm.turnRightButtonGreen(0, bank: muteBank) });
-  if( ~prm.submixerB.mixer.isMuted, { ~ohm.turnRightButtonRed(1, bank: muteBank); }, { ~ohm.turnRightButtonGreen(1, bank: muteBank) });
-  if( ~prm.submixerC.mixer.isMuted, { ~ohm.turnRightButtonRed(2, bank: muteBank); }, { ~ohm.turnRightButtonGreen(2, bank: muteBank) });
-  if( ~prm.systemMixer.isMuted(0), { ~ohm.turnRightButtonRed(3, bank: muteBank); }, { ~ohm.turnRightButtonGreen(3, bank: muteBank) });
+  if( ~prm.submixerA.mixer.isMuted, { ~ohm.turnRightButtonRed(0, bank: submixerMuteBank); }, { ~ohm.turnRightButtonGreen(0, bank: submixerMuteBank) });
+  if( ~prm.submixerB.mixer.isMuted, { ~ohm.turnRightButtonRed(1, bank: submixerMuteBank); }, { ~ohm.turnRightButtonGreen(1, bank: submixerMuteBank) });
+  if( ~prm.submixerC.mixer.isMuted, { ~ohm.turnRightButtonRed(2, bank: submixerMuteBank); }, { ~ohm.turnRightButtonGreen(2, bank: submixerMuteBank) });
+  if( ~prm.systemMixer.isMuted(0), { ~ohm.turnRightButtonRed(3, bank: submixerMuteBank); }, { ~ohm.turnRightButtonGreen(3, bank: submixerMuteBank) });
 
   // submixer A:
   ~ohm.setRightButtonFunc(0, {
     ~prm.submixerA.mixer.tglMute;
     if( ~prm.submixerA.mixer.isMuted, { ~ohm.turnRightButtonRed(0); }, { ~ohm.turnRightButtonGreen(0) });
-  }, bank: muteBank);
+  }, bank: submixerMuteBank);
   // submixer B:
   ~ohm.setRightButtonFunc(1, {
     ~prm.submixerB.mixer.tglMute;
     if( ~prm.submixerB.mixer.isMuted, { ~ohm.turnRightButtonRed(1); }, { ~ohm.turnRightButtonGreen(1) });
-  }, bank: muteBank);
+  }, bank: submixerMuteBank);
   // submixer C:
    ~ohm.setRightButtonFunc(2, {
     ~prm.submixerC.mixer.tglMute;
     if( ~prm.submixerC.mixer.isMuted, { ~ohm.turnRightButtonRed(2); }, { ~ohm.turnRightButtonGreen(2) });
-  }, bank: muteBank);
+  }, bank: submixerMuteBank);
   // master volume:
    ~ohm.setRightButtonFunc(3, {
     ~prm.systemMixer.tglMute(0);
     if( ~prm.systemMixer.isMuted(0), { ~ohm.turnRightButtonRed(3); }, { ~ohm.turnRightButtonGreen(3) });
-  }, bank: muteBank);
+  }, bank: submixerMuteBank);
 
   //////// Loop Recording Bank:
 

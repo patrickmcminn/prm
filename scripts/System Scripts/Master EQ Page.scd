@@ -22,6 +22,8 @@ var submixerBankResetFunc;
 ~ohm.makePage(page);
 ~ohm.addLeftKnobsBanks(8);
 
+~ohm.callGlobalFunction(\audioSystemMixer);
+
 //////////// Grid Functions:
 
 //////// EQ Reset Funcs:

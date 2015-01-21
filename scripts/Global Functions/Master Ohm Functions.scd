@@ -16,11 +16,12 @@ plane from Sydney to Hobart
   var rateBank = 1;
   var divBank = 2;
   var posBank = 3;
+  var waveLossBank = 4;
 
   var knobChangeRoutine;
 
   ~ohm.addRightButtonsBanks(3);
-  ~ohm.addRightKnobsBanks(3);
+  ~ohm.addRightKnobsBanks(4);
 
   // audio system mixer volumes:
 
@@ -63,6 +64,7 @@ plane from Sydney to Hobart
 
       ~ohm.setActiveRightButtonsBank(muteBank);
       ~ohm.turnCrossfaderButtonCyan(1).yield;
+
     };
   });
 
@@ -177,6 +179,9 @@ plane from Sydney to Hobart
       ~ohm.setActiveRightKnobsBank(posBank);
       4.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
 
+      ~ohm.setActiveRightKnobsBank(waveLossBank);
+      4.do({ | bank | ~ohm.turnRightButtonWhite(3, bank: bank); }).yield;
+
       ~ohm.setActiveRightButtonsBank(mixBank);
       4.do({ | bank | ~ohm.turnRightButtonGreen(3, bank: bank); }).yield;
     }
@@ -277,5 +282,33 @@ plane from Sydney to Hobart
     var pos = val.linlin(0, 127, 0, 1);
     ~prm.submixerC.setLoopPosition(pos);
   }, bank: posBank);
+
+  //////// WaveLoss Knobs:
+
+  // Submixer A:
+  ~ohm.setRightKnobFun(0, { | val |
+    var loss = val.linlin(0, 127, 0, 100);
+    ~prm.submixerA.setWaveLossAmount(loss);
+  }, bank: waveLossBank);
+
+  // Submixer B:
+  ~ohm.setRightKnobFun(1, { | val |
+    var loss = val.linlin(0, 127, 0, 100);
+    ~prm.submixerB.setWaveLossAmount(loss);
+  }, bank: waveLossBank);
+
+  // Submixer C:
+  ~ohm.setRightKnobFun(2, { | val |
+    var loss = val.linlin(0, 127, 0, 100);
+    ~prm.submixerC.setWaveLossAmount(loss);
+  }, bank: waveLossBank);
+
+  //// waveloss mode:
+  ~ohm.setRightKnobFunc(3, {  | val |
+    var mode = val.linlin(0, 127, 1, 2).asInt;
+    ~prm.submixerA.setWaveLossMode(mode);
+    ~prm.submixerB.setWaveLossMode(mode);
+    ~prm.submixerC.setWaveLossMode(mode);
+  }, bank: waveLossBank);
 
 });

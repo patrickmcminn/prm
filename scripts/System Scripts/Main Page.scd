@@ -7,7 +7,17 @@ Sydney, Australia
 
 var page = 'main';
 
-~ohm = OhmRGB.new;
+~ohm.setPageLoadFunction({
+  ~ohm.callGlobalFunction(\audioSystemMixer);
+}, page);
+
+//////////// Grid Functions:
+
+// Master EQ Page:
+~ohm.turnGridPurple(6, 7, page: page);
+~ohm.setGridFunc(6, 7, { ~ohm.setPage('masterEQ'); }, page: page);
+
+
 
 
 

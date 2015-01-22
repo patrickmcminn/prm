@@ -22,7 +22,9 @@ var submixerBankResetFunc;
 ~ohm.makePage(page);
 ~ohm.addLeftKnobsBanks(8);
 
-~ohm.callGlobalFunction(\audioSystemMixer);
+~ohm.setPageLoadFunction({
+  ~ohm.callGlobalFunction(\audioSystemMixer);
+}, page);
 
 //////////// Grid Functions:
 

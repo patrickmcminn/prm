@@ -43,8 +43,8 @@ Looper : IM_Module {
       mix = loopMix;
       this.prAddSynthDef;
       server.sync;
-      isPlaying = 0;
-      isRecording = 0;
+      isPlaying = false;
+      isRecording = false;
       isStereo = true;
 
       buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 2);
@@ -72,8 +72,8 @@ Looper : IM_Module {
       mix = loopMix;
       this.prAddSynthDef;
       server.sync;
-      isPlaying = 0;
-      isRecording = 0;
+      isPlaying = false;
+      isRecording = false;
       isStereo = true;
       buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 1);
       inBus = Bus.audio(server);
@@ -203,17 +203,17 @@ Looper : IM_Module {
   }
 
   togglePlayLoop {
-    if( isPlaying == 0, { this.playLoop }, { this.stopLoop } );
+    if( isPlaying == false, { this.playLoop }, { this.stopLoop } );
   }
 
   playLoop {
     looper.set(\t_playTrig, 1);
-    isPlaying = 1;
+    isPlaying = true;
   }
 
   stopLoop {
     looper.set(\t_stopTrig, 1, \t_playTrig, 0);
-    isPlaying = 0;
+    isPlaying = false;
   }
 
   clearLoop { | newBufLength = 1 |

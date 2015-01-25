@@ -23,7 +23,7 @@ var submixerBankResetFunc;
 ~ohm.addLeftKnobsBanks(8);
 
 ~ohm.setPageLoadFunction({
-  ~ohm.callGlobalFunction(\audioSystemMixer);
+  ~ohm.globalStorage[\audioSystemMixer].value;
 }, page);
 
 //////////// Grid Functions:
@@ -197,17 +197,17 @@ var submixerBankResetFunc;
 
 //////// Bank Change Functions:
 
-submixerBankResetFunc = { | rowOffset = 4 |
-  ~ohm.turnCyan(0, 4, page: page);
-  ~ohm.turnPurple(1, 4, page: page);
-  ~ohm.turnYellow(2, 4, page: page);
+submixerBankResetFunc = { | rowOffset = 4, thisPage = 'current' |
+  ~ohm.turnCyan(0, 4, page: thisPage);
+  ~ohm.turnPurple(1, 4, page: thisPage);
+  ~ohm.turnYellow(2, 4, page: thisPage);
 };
 
 //// initial colors:
 ~ohm.turnGridGreen(0, 3, page: page);
-submixerBankResetFunc.value(4);
-submixerBankResetFunc.value(5);
-submixerBankResetFunc.value(6);
+submixerBankResetFunc.value(4, page);
+submixerBankResetFunc.value(5, page);
+submixerBankResetFunc.value(6, page);
 
 // sends bank:
 ~ohm.setGridFunc(0, 3, {

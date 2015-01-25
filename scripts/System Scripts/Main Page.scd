@@ -7,8 +7,9 @@ Sydney, Australia
 
 var page = 'main';
 
+~ohm.globalStorage[\globalSubmixerFunc].value;
 ~ohm.setPageLoadFunction({
-  ~ohm.callGlobalFunction(\audioSystemMixer);
+  ~ohm.globalStorage[\globalSubmixerFunc].value;
 }, page);
 
 //////////// Grid Functions:

@@ -18,7 +18,7 @@ EnvelopeTrigger : IM_Processor {
     triggerBus = nil, envelopeBus = nil, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
     feedback = 'false', relGroup = nil, addAction = 'addToHead'
     |
-    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitMono(
+    ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitMono(
       attackTime, decayTime, sustainLevel, releaseTime, threshold, triggerBus, envelopeBus);
   }
 
@@ -29,7 +29,7 @@ EnvelopeTrigger : IM_Processor {
     triggerBus = nil, envelopeBus = nil, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
     feedback = 'false', relGroup = nil, addAction = 'addToHead'
     |
-    ^super.new(2, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitStereo(
+    ^super.new(2, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitStereo(
       attackTime, decayTime, sustainLevel, releaseTime, threshold, triggerBus, envelopeBus);}
 
   prInitMono {
@@ -43,6 +43,7 @@ EnvelopeTrigger : IM_Processor {
       this.prAddSynthDefs;
       nilBus = Bus.audio(server, 1);
       server.sync;
+      /*
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
       if( triggerBus == nil, { triggerBus = nilBus });
@@ -54,6 +55,7 @@ EnvelopeTrigger : IM_Processor {
         group, 'addToHead');
 
       while({ try { synth } == nil }, { 0.001.wait; });
+      */
       isLoaded = true;
     };
   }

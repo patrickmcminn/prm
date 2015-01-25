@@ -8,7 +8,7 @@ OhmRGB {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
-  var <pageDict, <activePage, activePageKey, functionDict;
+  var <pageDict, <activePage, activePageKey, <storageDict;
   var colorArray;
 
   *new {
@@ -20,7 +20,7 @@ OhmRGB {
     this.prMakeResponders;
     this.prMakeColorArray;
     this.prMakePageDictionary;
-    functionDict = IdentityDictionary.new(know: true);
+    storageDict = IdentityDictionary.new(know: true);
   }
 
   prInitMIDI {
@@ -158,17 +158,4 @@ OhmRGB {
     pageDict[page].setOffLoadFunction(func);
   }
 
-  // function:
-
-  addGlobalFunction { | name = 'func', function |
-    functionDict.put(name, function);
-  }
-
-  removeGlobalFunction { | name |
-    functionDict.remove(name);
-  }
-
-  callGlobalFunction { | name |
-    functionDict.name
-  }
 }

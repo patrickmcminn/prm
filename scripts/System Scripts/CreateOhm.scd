@@ -5,4 +5,5 @@ prm
 Sydney, Australia
 */
 
+~prm = AudioSystem.new(2);
 ~ohm = OhmRGB.new;

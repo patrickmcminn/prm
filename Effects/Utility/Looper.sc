@@ -220,6 +220,7 @@ Looper : IM_Module {
     {
       this.stopLoop;
       //looper.free;
+      looper.set(\loopDiv, 1, \loopPos, 0, \loopRate, 1);
       buffer.free;
       server.sync;
       buffer = Buffer.alloc(server, server.sampleRate * newBufLength, 2);

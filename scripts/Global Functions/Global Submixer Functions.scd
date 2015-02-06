@@ -26,26 +26,31 @@ var waveLossBank = 4;
 
 ~ohm.storageDict[\globalRightKnobsChangeRoutine] = r {
     loop {
-      ~ohm.setActiveRightKnobsBank(rateBank);
+    ~ohm.setActiveRightKnobsBank(rateBank);
     ~ohm.storageDict[\globalRightKnobsBank] = rateBank;
+    ~ohm.storageDict[\globalRightKnobsBank].postln;
     5.do({ | bank | ~ohm.turnRightButtonYellow(3, bank: bank); }).yield;
 
     ~ohm.setActiveRightKnobsBank(divBank);
     ~ohm.storageDict[\globalRightKnobsBank] = divBank;
+    ~ohm.storageDict[\globalRightKnobsBank].postln;
     5.do({ | bank | ~ohm.turnRightButtonBlue(3, bank: bank); }).yield;
 
     ~ohm.setActiveRightKnobsBank(posBank);
     ~ohm.storageDict[\globalRightKnobsBank] = posBank;
+    ~ohm.storageDict[\globalRightKnobsBank].postln;
     5.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
 
 
     ~ohm.setActiveRightKnobsBank(waveLossBank);
     ~ohm.storageDict[\globalRightKnobsBank] = waveLossBank;
+    ~ohm.storageDict[\globalRightKnobsBank].postln;
     5.do({ | bank | ~ohm.turnRightButtonWhite(3, bank: bank); }).yield;
 
 
-    ~ohm.setActiveRightButtonsBank(mixBank);
+    ~ohm.setActiveRightKnobsBank(mixBank);
     ~ohm.storageDict[\globalRightKnobsBank] = mixBank;
+    ~ohm.storageDict[\globalRightKnobsBank].postln;
     5.do({ | bank | ~ohm.turnRightButtonGreen(3, bank: bank); }).yield;
   }
 };

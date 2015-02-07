@@ -13,12 +13,14 @@ var recordBank = 1;
 var playToggleBank = 2;
 var clearBank = 3;
 var returnsMuteBank = 4;
+var numRightButtonsBanks = 5;
 
 var mixBank = 0;
 var rateBank = 1;
 var divBank = 2;
 var posBank = 3;
 var waveLossBank = 4;
+
 
 ~ohm.storageDict[\globalRightButtonsBank] = submixerMuteBank;
 ~ohm.storageDict[\globalRightKnobsBank] = mixBank;
@@ -28,30 +30,25 @@ var waveLossBank = 4;
     loop {
     ~ohm.setActiveRightKnobsBank(rateBank);
     ~ohm.storageDict[\globalRightKnobsBank] = rateBank;
-    ~ohm.storageDict[\globalRightKnobsBank].postln;
-    5.do({ | bank | ~ohm.turnRightButtonYellow(3, bank: bank); }).yield;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonYellow(3, bank: bank); }).yield;
 
     ~ohm.setActiveRightKnobsBank(divBank);
     ~ohm.storageDict[\globalRightKnobsBank] = divBank;
-    ~ohm.storageDict[\globalRightKnobsBank].postln;
-    5.do({ | bank | ~ohm.turnRightButtonBlue(3, bank: bank); }).yield;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonBlue(3, bank: bank); }).yield;
 
     ~ohm.setActiveRightKnobsBank(posBank);
     ~ohm.storageDict[\globalRightKnobsBank] = posBank;
-    ~ohm.storageDict[\globalRightKnobsBank].postln;
-    5.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
 
 
     ~ohm.setActiveRightKnobsBank(waveLossBank);
     ~ohm.storageDict[\globalRightKnobsBank] = waveLossBank;
-    ~ohm.storageDict[\globalRightKnobsBank].postln;
-    5.do({ | bank | ~ohm.turnRightButtonWhite(3, bank: bank); }).yield;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonWhite(3, bank: bank); }).yield;
 
 
     ~ohm.setActiveRightKnobsBank(mixBank);
     ~ohm.storageDict[\globalRightKnobsBank] = mixBank;
-    ~ohm.storageDict[\globalRightKnobsBank].postln;
-    5.do({ | bank | ~ohm.turnRightButtonGreen(3, bank: bank); }).yield;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonGreen(3, bank: bank); }).yield;
   }
 };
 
@@ -204,19 +201,25 @@ var waveLossBank = 4;
   // submixer A:
   ~ohm.setRightButtonFunc(0, {
     ~prm.submixerA.loop;
-    if( ~prm.submixerA.isRecording, { ~ohm.turnRightButtonGreen(0) }, { ~ohm.turnRightButtonBlue(0) });
+    if( ~prm.submixerA.isRecording,
+      {  ~ohm.turnRightButtonGreen(0); if( ~prm.submixerA.isPlaying, { ~ohm.turnRightButtonGreen(0, bank: playToggleBank) });},
+      { ~ohm.turnRightButtonBlue(0); if( ~prm.submixerA.isPlaying, { ~ohm.turnRightButtonGreen(0, bank: playToggleBank) }); })
   }, bank: recordBank);
 
   // submixer B:
   ~ohm.setRightButtonFunc(1, {
     ~prm.submixerB.loop;
-    if( ~prm.submixerB.isRecording, { ~ohm.turnRightButtonGreen(1) }, { ~ohm.turnRightButtonBlue(1) });
+    if( ~prm.submixerB.isRecording,
+      {  ~ohm.turnRightButtonGreen(1); if( ~prm.submixerB.isPlaying, { ~ohm.turnRightButtonGreen(1, bank: playToggleBank) });},
+      { ~ohm.turnRightButtonBlue(1); if( ~prm.submixerB.isPlaying, { ~ohm.turnRightButtonGreen(1, bank: playToggleBank) }); })
   }, bank: recordBank);
 
   // submixer C:
   ~ohm.setRightButtonFunc(2, {
-    ~prm.submixerB.loop;
-    if( ~prm.submixerB.isRecording, { ~ohm.turnRightButtonGreen(2) }, { ~ohm.turnRightButtonBlue(2) });
+    ~prm.submixerC.loop;
+    if( ~prm.submixerC.isRecording,
+      {  ~ohm.turnRightButtonGreen(2); if( ~prm.submixerC.isPlaying, { ~ohm.turnRightButtonGreen(2, bank: playToggleBank) });},
+      { ~ohm.turnRightButtonBlue(2); if( ~prm.submixerC.isPlaying, { ~ohm.turnRightButtonGreen(2, bank: playToggleBank) }); })
   }, bank: recordBank);
 
   //////// Play Toggle Bank:

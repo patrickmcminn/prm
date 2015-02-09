@@ -23,7 +23,7 @@ var page = 'main';
     while({ try { ~prm.songBook[\nebula].isLoaded } != true }, { 0.001.wait; });
     ~prm.songBook[\nebulaInput] = IM_HardwareIn.new(0, ~prm.songBook[\nebula].inBus, ~prm.procGroup, \addToHead);
     while({ try { ~prm.songBook[\nebulaInput].isLoaded } != true }, { 0.001.wait; });
-    ~ohm.setGridFunc(1, 0, { ~ohm.setPage('nebula'); }, page: page);
+    ~ohm.setGridFunc(1, 0, { ~ohm.setPage('nebula'); }, page: 'main');
     ~ohm.turnGridGreen(1, 0).yield;
 
     ~prm.songBook[\nebulaInput].free;

@@ -17,11 +17,11 @@ var nebulaBank = 0;
 var sendsBank = 1;
 
 
-~ohm.makePage(page);
+~ohm.makePage('nebula');
 
 ~ohm.setPageLoadFunction({
   ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
-}, page);
+}, 'nebula');
 
 ~ohm.addLeftKnobsBanks(1);
 
@@ -150,7 +150,7 @@ var sendsBank = 1;
 }, page: page, bank: nebulaBank);
 
 //////// sends bank:
-
+/*
 // reverb:
 ~ohm.setLeftKnobFunc(2, 2, { | val |
   var vol = val.linlin(0, 127, -50, 0);
@@ -162,7 +162,7 @@ var sendsBank = 1;
   var vol = val.linlin(0, 127, -50, 6);
   ~prm.songBook[\nebula].mixer.setSendVol(1, vol);
 }, page: page, bank: sendsBank);
-
+*/
 
 ////// Grid:
 

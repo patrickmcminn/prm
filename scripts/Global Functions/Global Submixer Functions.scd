@@ -322,19 +322,19 @@ var waveLossBank = 4;
 
   // Submixer A:
   ~ohm.setRightKnobFunc(0, { | val |
-    var rate = val.linlin(0, 127, 0.1, 10);
+    var rate = val.linlin(0, 127, 0.1, 4);
     ~prm.submixerA.setLoopRate(rate);
   }, bank: rateBank);
 
   // Submixer B:
   ~ohm.setRightKnobFunc(1, { | val |
-    var rate = val.linlin(0, 127, 0.1, 10);
+    var rate = val.linlin(0, 127, 0.1, 4);
     ~prm.submixerB.setLoopRate(rate);
   }, bank: rateBank);
 
   // Submixer C:
   ~ohm.setRightKnobFunc(2, { | val |
-    var rate = val.linlin(0, 127, 0.1, 10);
+    var rate = val.linlin(0, 127, 0.1, 4);
     ~prm.submixerC.setLoopRate(rate);
   }, bank: rateBank);
 
@@ -389,19 +389,19 @@ var waveLossBank = 4;
 
   // Submixer A:
   ~ohm.setRightKnobFunc(0, { | val |
-    var loss = val.linlin(0, 127, 0, 100);
+    var loss = val.linlin(0, 127, 0, 85);
     ~prm.submixerA.setWaveLossAmount(loss);
   }, bank: waveLossBank);
 
   // Submixer B:
   ~ohm.setRightKnobFunc(1, { | val |
-    var loss = val.linlin(0, 127, 0, 100);
+    var loss = val.linlin(0, 127, 0, 85);
     ~prm.submixerB.setWaveLossAmount(loss);
   }, bank: waveLossBank);
 
   // Submixer C:
   ~ohm.setRightKnobFunc(2, { | val |
-    var loss = val.linlin(0, 127, 0, 100);
+    var loss = val.linlin(0, 127, 0, 85);
     ~prm.submixerC.setWaveLossAmount(loss);
   }, bank: waveLossBank);
 

@@ -1,6 +1,6 @@
 /*
 Thursday, January 22nd 2015
-CreateOhm.scd
+startup.scd
 prm
 Sydney, Australia
 */

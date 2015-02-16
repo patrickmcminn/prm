@@ -109,7 +109,7 @@ Looper : IM_Module {
       firstTrig = Trig.kr(SetResetFF.kr(t_recTrig, t_reset), 0.05);
       recGate = PulseCount.kr(t_recTrig, t_reset) > 1;
       time = Latch.kr(Timer.kr(t_recTrig), recGate);
-      loopSamples = time * SampleRate.ir;
+      loopSamples = Latch.kr(time * SampleRate.ir, recGate);
       recTrigger = TDuty.kr(time, recGate, 1) * recGate + firstTrig;
       playGate = PulseCount.kr(t_playTrig, t_stopTrig);
       playReset = Trig.kr(t_resetPlayTrig);
@@ -117,7 +117,8 @@ Looper : IM_Module {
 
       playPhasor = Phasor.ar(playReset, BufRateScale.kr(buffer) * loopRate,
         loopPos * loopSamples, loopSamples/loopDiv, loopPos * loopSamples);
-      playPhasor.poll;
+      //(loopPos * loopSamples).poll;
+      loopSamples.poll;
 
       recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
       recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
@@ -167,7 +168,6 @@ Looper : IM_Module {
       sig = sig * amp;
       Out.ar(outBus, sig);
     }, [0.1, 0.05, 0.05]).add;
-
 
     SynthDef(\prm_looperMono, {
       |

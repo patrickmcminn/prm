@@ -92,7 +92,6 @@ Looper : IM_Module {
   }
 
   prAddSynthDef {
-    /*
     SynthDef(\prm_looper, {
       |
       loopRate = 1, loopDiv = 1, loopPos = 0,
@@ -116,9 +115,12 @@ Looper : IM_Module {
       //playTrigger = TDuty.kr(time/(loopRate * loopDiv), playGate + playReset, 1) * playGate;
 
       playPhasor = Phasor.ar(playReset, BufRateScale.kr(buffer) * loopRate,
-        loopPos * loopSamples, loopSamples/loopDiv, loopPos * loopSamples);
+        loopPos * loopSamples, (loopSamples/loopDiv) + (loopPos * loopSamples), loopPos * loopSamples);
+
+      playPhasor.poll(5, "phasor");
+      //(loopSamples/loopDiv).poll;
       //(loopPos * loopSamples).poll;
-      loopSamples.poll;
+      //loopSamples.poll;
 
       recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
       recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
@@ -132,8 +134,8 @@ Looper : IM_Module {
       sig = sig * amp;
       Out.ar(outBus, sig);
     }, [0.1, 0.05, 0.05]).add;
-    */
 
+    /*
     SynthDef(\prm_looper, {
       |
       loopRate = 1, loopDiv = 1, loopPos = 0,
@@ -151,6 +153,7 @@ Looper : IM_Module {
       recGate = PulseCount.kr(t_recTrig, t_reset) > 1;
       time = Latch.kr(Timer.kr(t_recTrig), recGate);
       loopSamples = time * server.sampleRate;
+      loopSamples.poll;
       recTrigger = TDuty.kr(time, recGate, 1) * recGate + firstTrig;
       playGate = PulseCount.kr(t_playTrig, t_stopTrig);
       //playReset = Trig.kr(t_playResetTrig);
@@ -168,6 +171,7 @@ Looper : IM_Module {
       sig = sig * amp;
       Out.ar(outBus, sig);
     }, [0.1, 0.05, 0.05]).add;
+    */
 
     SynthDef(\prm_looperMono, {
       |

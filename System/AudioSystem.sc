@@ -69,7 +69,7 @@ AudioSystem {
       submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
         procGroup, \addToHead);
 
-      //songBook = IM_SongBook(systemMixer.inBus, reverb.inBus, granulator.inBus, nil, nil, procGroup);
+      songBook = IdentityDictionary.new;
 
       isLoaded = true;
 

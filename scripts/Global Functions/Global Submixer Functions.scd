@@ -1,6 +1,6 @@
 /*
 Friday, January 16th 2015
-Master Ohm Functions.scd
+Global Submixer Functions.scd
 prm
 plane from Sydney to Hobart
 */
@@ -13,6 +13,7 @@ var recordBank = 1;
 var playToggleBank = 2;
 var clearBank = 3;
 var returnsMuteBank = 4;
+var numRightButtonsBanks = 5;
 
 var mixBank = 0;
 var rateBank = 1;
@@ -20,33 +21,34 @@ var divBank = 2;
 var posBank = 3;
 var waveLossBank = 4;
 
+
 ~ohm.storageDict[\globalRightButtonsBank] = submixerMuteBank;
 ~ohm.storageDict[\globalRightKnobsBank] = mixBank;
 ~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
 
 ~ohm.storageDict[\globalRightKnobsChangeRoutine] = r {
     loop {
-      ~ohm.setActiveRightKnobsBank(rateBank);
-    ~ohm.storageDict[\globalRightKnobsBank] = rateBank.yield;
-    4.do({ | bank | ~ohm.turnRightButtonYellow(3, bank: bank); }).yield;
+    ~ohm.setActiveRightKnobsBank(rateBank);
+    ~ohm.storageDict[\globalRightKnobsBank] = rateBank;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonYellow(3, bank: bank); }).yield;
 
     ~ohm.setActiveRightKnobsBank(divBank);
     ~ohm.storageDict[\globalRightKnobsBank] = divBank;
-    4.do({ | bank | ~ohm.turnRightButtonBlue(3, bank: bank); }).yield;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonBlue(3, bank: bank); }).yield;
 
     ~ohm.setActiveRightKnobsBank(posBank);
     ~ohm.storageDict[\globalRightKnobsBank] = posBank;
-    4.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
 
 
     ~ohm.setActiveRightKnobsBank(waveLossBank);
     ~ohm.storageDict[\globalRightKnobsBank] = waveLossBank;
-    4.do({ | bank | ~ohm.turnRightButtonWhite(3, bank: bank); }).yield;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonWhite(3, bank: bank); }).yield;
 
 
-    ~ohm.setActiveRightButtonsBank(mixBank);
+    ~ohm.setActiveRightKnobsBank(mixBank);
     ~ohm.storageDict[\globalRightKnobsBank] = mixBank;
-    4.do({ | bank | ~ohm.turnRightButtonGreen(3, bank: bank); }).yield;
+    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonGreen(3, bank: bank); }).yield;
   }
 };
 
@@ -85,33 +87,10 @@ var waveLossBank = 4;
   };
 };
 
-~ohm.storageDict[\globalRightChangeRoutine] = r {
-  loop {
-     ~ohm.setActiveRightButtonsBank(recordBank);
-      ~ohm.setActiveRightSlidersBank(submixerBank);
-      ~ohm.turnCrossfaderButtonBlue(1).yield;
 
-      ~ohm.setActiveRightButtonsBank(playToggleBank);
-      ~ohm.setActiveRightSlidersBank(submixerBank);
-      ~ohm.turnCrossfaderButtonGreen(1).yield;
+//////////// MAIN GLOBAL FUNCTION FOR RIGHT SIDE OF OHM
 
-      ~ohm.setActiveRightButtonsBank(clearBank);
-      ~ohm.setActiveRightSlidersBank(submixerBank);
-      ~ohm.turnCrossfaderButtonRed(1).yield;
-
-      ~ohm.setActiveRightButtonsBank(returnsMuteBank);
-      ~ohm.setActiveRightSlidersBank(returnsBank);
-      ~ohm.turnCrossfaderButtonWhite(1).yield;
-
-      ~ohm.setActiveRightButtonsBank(submixerMuteBank);
-      ~ohm.setActiveRightSlidersBank(submixerBank);
-      ~ohm.turnCrossfaderButtonCyan(1).yield;
-
-  }
-};
-
-
-~ohm.storageDict[\globalSubmixerFunc] =  {
+~ohm.storageDict[\loadGlobalSubmixerFunc] =  {
 
   ~ohm.addRightSlidersBanks(1);
   ~ohm.addRightButtonsBanks(4);
@@ -125,22 +104,22 @@ var waveLossBank = 4;
 
   // submixer A:
   ~ohm.setRightSliderFunc(0, { | val |
-    var vol = val.linlin(0, 127, -40, 0);
+    var vol = val.linlin(0, 127, -60, 0);
     ~prm.submixerA.mixer.setVol(vol);
   }, bank: submixerBank);
   // submixer B:
   ~ohm.setRightSliderFunc(1, { | val |
-    var vol = val.linlin(0, 127, -40, 0);
+    var vol = val.linlin(0, 127, -60, 0);
     ~prm.submixerB.mixer.setVol(vol);
   }, bank: submixerBank);
   // submixer C:
   ~ohm.setRightSliderFunc(2, { | val |
-    var vol = val.linlin(0, 127, -40, 0);
+    var vol = val.linlin(0, 127, -60, 0);
     ~prm.submixerC.mixer.setVol(vol);
   }, bank: submixerBank);
   // master volume:
   ~ohm.setRightSliderFunc(3, { | val |
-    var vol = val.linlin(0, 127, -40, 0);
+    var vol = val.linlin(0, 127, -60, 0);
     ~prm.systemMixer.setVol(0, vol);
   }, bank: submixerBank);
 
@@ -148,19 +127,20 @@ var waveLossBank = 4;
 
   // Return 0:
   ~ohm.setRightSliderFunc(0, { | val |
-    var vol = val.linlin(0, 127, -40, 0);
+    var vol = val.linlin(0, 127, -60, 0);
     ~prm.reverb.mixer.setVol(vol);
   }, bank: returnsBank);
 
   // Return 1:
   ~ohm.setRightSliderFunc(1, { | val |
-    var vol = val.linlin(0, 127, -40, 6);
+    var vol = val.linlin(0, 127, -60, 6);
     ~prm.granulator.mixer.setVol(vol);
   }, bank: returnsBank);
 
   // Return 2:
 
   // Return 3:
+
 
   ///////////// Buttons:
 
@@ -172,9 +152,9 @@ var waveLossBank = 4;
   switch(~ohm.storageDict[\globalRightButtonsBank],
     submixerMuteBank, { ~ohm.turnCrossfaderButtonCyan(1) },
     recordBank, { ~ohm.turnCrossfaderButtonBlue(1) },
-    playToggleBank { ~ohm.turnCrossfaderButtonGreen(1) },
+    playToggleBank, { ~ohm.turnCrossfaderButtonGreen(1) },
     clearBank, { ~ohm.turnCrossfaderButtonRed(1) },
-    returnsMuteBank { ~ohm.turnCrossfaderButtonWhite(1) }
+    returnsMuteBank, { ~ohm.turnCrossfaderButtonWhite(1) }
   );
 
   // function:
@@ -221,19 +201,25 @@ var waveLossBank = 4;
   // submixer A:
   ~ohm.setRightButtonFunc(0, {
     ~prm.submixerA.loop;
-    if( ~prm.submixerA.isRecording, { ~ohm.turnRightButtonGreen(0) }, { ~ohm.turnRightButtonBlue(0) });
+    if( ~prm.submixerA.isRecording,
+      {  ~ohm.turnRightButtonGreen(0); if( ~prm.submixerA.isPlaying, { ~ohm.turnRightButtonGreen(0, bank: playToggleBank) });},
+      { ~ohm.turnRightButtonBlue(0); if( ~prm.submixerA.isPlaying, { ~ohm.turnRightButtonGreen(0, bank: playToggleBank) }); })
   }, bank: recordBank);
 
   // submixer B:
   ~ohm.setRightButtonFunc(1, {
     ~prm.submixerB.loop;
-    if( ~prm.submixerB.isRecording, { ~ohm.turnRightButtonGreen(1) }, { ~ohm.turnRightButtonBlue(1) });
+    if( ~prm.submixerB.isRecording,
+      {  ~ohm.turnRightButtonGreen(1); if( ~prm.submixerB.isPlaying, { ~ohm.turnRightButtonGreen(1, bank: playToggleBank) });},
+      { ~ohm.turnRightButtonBlue(1); if( ~prm.submixerB.isPlaying, { ~ohm.turnRightButtonGreen(1, bank: playToggleBank) }); })
   }, bank: recordBank);
 
   // submixer C:
   ~ohm.setRightButtonFunc(2, {
-    ~prm.submixerB.loop;
-    if( ~prm.submixerB.isRecording, { ~ohm.turnRightButtonGreen(2) }, { ~ohm.turnRightButtonBlue(2) });
+    ~prm.submixerC.loop;
+    if( ~prm.submixerC.isRecording,
+      {  ~ohm.turnRightButtonGreen(2); if( ~prm.submixerC.isPlaying, { ~ohm.turnRightButtonGreen(2, bank: playToggleBank) });},
+      { ~ohm.turnRightButtonBlue(2); if( ~prm.submixerC.isPlaying, { ~ohm.turnRightButtonGreen(2, bank: playToggleBank) }); })
   }, bank: recordBank);
 
   //////// Play Toggle Bank:
@@ -277,6 +263,24 @@ var waveLossBank = 4;
   // submixer C:
   ~ohm.setRightButtonFunc(2, { ~prm.submixerC.clearLoop(30); }, bank: clearBank);
 
+  //////// Returns Mute Bank:
+
+  //// initial colors:
+  if( ~prm.reverb.mixer.isMuted, { ~ohm.turnRightButtonRed(0, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(0, bank: returnsMuteBank); });
+  if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(1, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
+
+  // reverb:
+  ~ohm.setRightButtonFunc(0, {
+    ~prm.reverb.mixer.tglMute;
+    if( ~prm.reverb.mixer.isMuted, { ~ohm.turnRightButtonRed(0); }, { ~ohm.turnRightButtonGreen(0); });
+  }, bank: returnsMuteBank);
+
+  // granulator:
+  ~ohm.setRightButtonFunc(1, {
+    ~prm.granulator.mixer.tglMute;
+     if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(1); }, { ~ohm.turnRightButtonGreen(1); });
+  }, bank: returnsMuteBank);
+
   //////////// Right Knob Change:
 
   //// bank change:
@@ -318,19 +322,19 @@ var waveLossBank = 4;
 
   // Submixer A:
   ~ohm.setRightKnobFunc(0, { | val |
-    var rate = val.linlin(0, 127, 0.1, 10);
+    var rate = val.linlin(0, 127, 0.1, 4);
     ~prm.submixerA.setLoopRate(rate);
   }, bank: rateBank);
 
   // Submixer B:
   ~ohm.setRightKnobFunc(1, { | val |
-    var rate = val.linlin(0, 127, 0.1, 10);
+    var rate = val.linlin(0, 127, 0.1, 4);
     ~prm.submixerB.setLoopRate(rate);
   }, bank: rateBank);
 
   // Submixer C:
   ~ohm.setRightKnobFunc(2, { | val |
-    var rate = val.linlin(0, 127, 0.1, 10);
+    var rate = val.linlin(0, 127, 0.1, 4);
     ~prm.submixerC.setLoopRate(rate);
   }, bank: rateBank);
 
@@ -385,19 +389,19 @@ var waveLossBank = 4;
 
   // Submixer A:
   ~ohm.setRightKnobFunc(0, { | val |
-    var loss = val.linlin(0, 127, 0, 100);
+    var loss = val.linlin(0, 127, 0, 85);
     ~prm.submixerA.setWaveLossAmount(loss);
   }, bank: waveLossBank);
 
   // Submixer B:
   ~ohm.setRightKnobFunc(1, { | val |
-    var loss = val.linlin(0, 127, 0, 100);
+    var loss = val.linlin(0, 127, 0, 85);
     ~prm.submixerB.setWaveLossAmount(loss);
   }, bank: waveLossBank);
 
   // Submixer C:
   ~ohm.setRightKnobFunc(2, { | val |
-    var loss = val.linlin(0, 127, 0, 100);
+    var loss = val.linlin(0, 127, 0, 85);
     ~prm.submixerC.setWaveLossAmount(loss);
   }, bank: waveLossBank);
 

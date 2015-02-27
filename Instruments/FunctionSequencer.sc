@@ -8,7 +8,7 @@ London, England
 FunctionSequencer {
 
   var isLoaded;
-  var <functionArray;
+  var <functionArray, <activeArray;
   var <clock;
   var sequenceRoutine;
   var forwardRoutine, reverseRoutine, backAndForthRoutine, randomRoutine, driftRoutine;
@@ -22,6 +22,7 @@ FunctionSequencer {
   prInit { | initSize = 16, tempoClock = 'internal' |
     isLoaded = false;
     functionArray = Array.newClear(initSize);
+    activeArray = Array.fill(initSize, { true; });
     numberSteps = initSize;
     if( tempoClock == 'internal', { clock = TempoClock.new(1); });
   }
@@ -53,16 +54,15 @@ FunctionSequencer {
   prMakeRoutines {
     forwardRoutine = r {
       loop {
-        functionArray.wrapAt(count).value;
+        if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
         count = count + 1;
         activeStep = count % numberSteps;
-        activeStep.postln;
         beatDivision.wait;
       };
     };
     reverseRoutine = r { | beatDiv = 0.25 |
       loop {
-        functionArray.wrapAt(count).value;
+        if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
         count = count - 1;
         activeStep = count % numberSteps;
         beatDivision.wait;
@@ -70,7 +70,7 @@ FunctionSequencer {
     };
     backAndForthRoutine = r { | beatDiv = 0.25 |
       loop {
-        functionArray.wrapAt(count).value;
+        if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
         count = count + 1;
         count = count - 1;
         activeStep = count % numberSteps;
@@ -80,20 +80,23 @@ FunctionSequencer {
     randomRoutine = r { | beatDiv = 0.25 |
       loop {
         var step = functionArray.size.rand;
-        functionArray[step].value;
+        if( activeArray[step] == true, { functionArray.wrapAt(count).value });
         activeStep = step;
         beatDivision.wait;
       };
     };
     driftRoutine = r { | beatDiv = 0.25 |
       loop {
-        functionArray.wrapAt(count).value;
+        if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
         count = choose([count + 1, count - 1]);
         activeStep = count % numberSteps;
         beatDivision.wait;
       };
     };
   }
+
+  //////////////// Public Functions:
+
 
   setDirection { | direction = 'forward', quant = 0 |
     sequenceRoutine.stop;
@@ -119,7 +122,16 @@ FunctionSequencer {
     | size = 16 |
     functionArray = nil;
     functionArray = Array.newClear(size);
+    activeArray = Array.fill(size, { true });
   }
 
+  isActive { | step = 0 |
+    ^activeArray[step];
+  }
 
+  activateStep { | step = 0 | activeArray[step] = true; }
+  deactivateStep { | step = 0 | activeArray[step] = false; }
+  toggleActivateStep { | step = 0 |
+    if(activeArray[step] == true, { this.deactivateStep(step) }, { this.activateStep(step) });
+  }
 }

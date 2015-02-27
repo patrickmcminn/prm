@@ -34,8 +34,8 @@ var filterSelectReset;
 
 
 // (if needed)
-~ohm = OhmRGB.new;
-~sub = Subtractive.new;
+//~ohm = OhmRGB.new;
+//~sub = Subtractive.new;
 
 MIDIIn.connectAll;
 ~inPort = MIDIIn.findPort("LPK25", "LPK25");

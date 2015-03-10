@@ -104,37 +104,30 @@ var waveLossBank = 4;
 
   // submixer A:
   ~ohm.setRightSliderFunc(0, { | val |
-    var vol = val.linlin(0, 127, -60, 0);
-    ~prm.submixerA.mixer.setVol(vol);
+    ~prm.submixerA.mixer.setVol(val.ccdbfs(-70, 0));
   }, bank: submixerBank);
   // submixer B:
   ~ohm.setRightSliderFunc(1, { | val |
-    var vol = val.linlin(0, 127, -60, 0);
-    ~prm.submixerB.mixer.setVol(vol);
+    ~prm.submixerB.mixer.setVol(val.ccdbfs(-70, 0));
   }, bank: submixerBank);
   // submixer C:
   ~ohm.setRightSliderFunc(2, { | val |
-    var vol = val.linlin(0, 127, -60, 0);
-    ~prm.submixerC.mixer.setVol(vol);
+    ~prm.submixerC.mixer.setVol(val.ccdbfs(-70, 0));
   }, bank: submixerBank);
   // master volume:
   ~ohm.setRightSliderFunc(3, { | val |
-    var vol = val.linlin(0, 127, -60, 0);
-    ~prm.systemMixer.setVol(0, vol);
+    ~prm.systemMixer.setVol(0, val.ccdbfs(-70, 0));
   }, bank: submixerBank);
-
   //// returns volumes:
 
   // Return 0:
   ~ohm.setRightSliderFunc(0, { | val |
-    var vol = val.linlin(0, 127, -60, 0);
-    ~prm.reverb.mixer.setVol(vol);
+    ~prm.reverb.mixer.setVol(val.ccdbfs(-70, 0));
   }, bank: returnsBank);
 
   // Return 1:
   ~ohm.setRightSliderFunc(1, { | val |
-    var vol = val.linlin(0, 127, -60, 6);
-    ~prm.granulator.mixer.setVol(vol);
+    ~prm.granulator.mixer.setVol(val.ccdbfs(-70, 6));
   }, bank: returnsBank);
 
   // Return 2:

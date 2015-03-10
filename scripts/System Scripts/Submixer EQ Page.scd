@@ -32,23 +32,27 @@ var submixerBankResetFunc;
 
 //// initial colors:
 // submixer A:
-~ohm.turnGridBlue(0, 0, page: page);
-~ohm.turnGridCyan(1, 0, page: page);
-~ohm.turnGridPurple(2, 0, page: page);
-~ohm.turnGridYellow(3, 0, page: page);
-~ohm.turnGridWhite(4, 0, page: page);
+~ohm.turnGridCyan(0, 0, page: page);
+~ohm.turnGridBlue(1, 0, page: page);
+~ohm.turnGridCyan(2, 0, page: page);
+~ohm.turnGridPurple(3, 0, page: page);
+~ohm.turnGridYellow(4, 0, page: page);
+~ohm.turnGridWhite(5, 0, page: page);
+
 // submixer B:
-~ohm.turnGridBlue(0, 1, page: page);
-~ohm.turnGridCyan(1, 1, page: page);
-~ohm.turnGridPurple(2, 1, page: page);
-~ohm.turnGridYellow(3, 1, page: page);
-~ohm.turnGridWhite(4, 1, page: page);
+~ohm.turnGridCyan(0, 1, page: page);
+~ohm.turnGridBlue(1, 1, page: page);
+~ohm.turnGridCyan(2, 1, page: page);
+~ohm.turnGridPurple(3, 1, page: page);
+~ohm.turnGridYellow(4, 1, page: page);
+~ohm.turnGridWhite(5, 1, page: page);
 // submixer C:
-~ohm.turnGridBlue(0, 2, page: page);
-~ohm.turnGridCyan(1, 2, page: page);
-~ohm.turnGridPurple(2, 2, page: page);
-~ohm.turnGridYellow(3, 2, page: page);
-~ohm.turnGridWhite(4, 2, page: page);
+~ohm.turnGridCyan(0, 2, page: page);
+~ohm.turnGridBlue(1, 2, page: page);
+~ohm.turnGridCyan(2, 2, page: page);
+~ohm.turnGridPurple(3, 2, page: page);
+~ohm.turnGridYellow(4, 2, page: page);
+~ohm.turnGridWhite(5, 2, page: page);
 
 //// submixer A:
 

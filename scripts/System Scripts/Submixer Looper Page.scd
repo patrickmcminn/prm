@@ -5,15 +5,15 @@ prm
 LAX to BWI
 */
 
-var page = 'returns';
+var page = 'submixer';
 var divResetFunc, posResetFunc, rateResetFunc;
 var submixerABank = 0;
 var submixerBBank = 1;
 var submixerCBank = 2;
 
-~ohm.makePage('page');
+~ohm.makePage(page);
 
-~ohm.addGridBanks(2);
+~ohm.addGridBanks(2, page: page);
 
 ~ohm.setPageLoadFunction({
   ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
@@ -27,6 +27,7 @@ divResetFunc = { | bank |
   8.do({ | i | ~ohm.turnGridCyan(i, 1, bank: bank, page: page); });
 };
 // Inital color:
+3.do({ | i | divResetFunc.value(i); });
 3.do({ | i | ~ohm.turnGridGreen(0, 0, bank: i, page: page); });
 //// functions:
 // Submixer A:
@@ -37,6 +38,7 @@ divResetFunc = { | bank |
   if( i < 8, { row = 0 }, { row = 1 });
   ~ohm.setGridFunc(column, row, {
     ~prm.submixerA.setLoopDivison(div);
+    divResetFunc.value(submixerABank);
     ~ohm.turnGridGreen(column, row);
     }, bank: submixerABank, page: page);
 });
@@ -48,6 +50,7 @@ divResetFunc = { | bank |
   if( i < 8, { row = 0 }, { row = 1 });
   ~ohm.setGridFunc(column, row, {
     ~prm.submixerB.setLoopDivison(div);
+    divResetFunc.value(submixerBBank);
     ~ohm.turnGridGreen(column, row);
     }, bank: submixerBBank, page: page);
 });
@@ -59,6 +62,7 @@ divResetFunc = { | bank |
   if( i < 8, { row = 0 }, { row = 1 });
   ~ohm.setGridFunc(column, row, {
     ~prm.submixerC.setLoopDivison(div);
+    divResetFunc.value(submixerCBank);
     ~ohm.turnGridGreen(column, row);
     }, bank: submixerCBank, page: page);
 });
@@ -69,6 +73,7 @@ posResetFunc =  { | bank |
   8.do({ | i | ~ohm.turnGridBlue(i, 4, page: page, bank: bank); });
 };
 // intial color:
+3.do({ | i | posResetFunc.value(i); });
 3.do({ | i |  ~ohm.turnGridGreen(0, 3, page: page, bank: i); });
 //// functions:
 // Submixer A:
@@ -80,6 +85,7 @@ posResetFunc =  { | bank |
   if( i < 8, { row = 3 }, { row = 4 });
   ~ohm.setGridFunc(column, row, {
     ~prm.submixerA.setLoopPosition(pos);
+    posResetFunc.value(submixerABank);
     ~ohm.turnGridGreen(column, row);
   }, bank: submixerABank, page: page);
 });
@@ -92,6 +98,7 @@ posResetFunc =  { | bank |
   if( i < 8, { row = 3 }, { row = 4 });
   ~ohm.setGridFunc(column, row, {
     ~prm.submixerB.setLoopPosition(pos);
+    posResetFunc.value(submixerBBank);
     ~ohm.turnGridGreen(column, row);
   }, bank: submixerBBank, page: page);
 });
@@ -104,6 +111,7 @@ posResetFunc =  { | bank |
   if( i < 8, { row = 3 }, { row = 4 });
   ~ohm.setGridFunc(column, row, {
     ~prm.submixerC.setLoopPosition(pos);
+    posResetFunc.value(submixerCBank);
     ~ohm.turnGridGreen(column, row);
   }, bank: submixerCBank, page: page);
 });
@@ -115,6 +123,7 @@ rateResetFunc = {
   8.do({ | i | ~ohm.turnGridYellow(i, 7, page: page); });
 };
 // initial colors:
+3.do({ | i | rateResetFunc.value(i); });
 3.do({ | i | ~ohm.turnGridGreen(7, 6, bank: i, page: page); });
 
 // Submixer A:
@@ -126,6 +135,8 @@ rateResetFunc = {
   if( i < 8, { row = 6 }, { row = 7 });
   ~ohm.setGridFunc(column, row, {
     ~prm.submixerA.setLoopRate(rate);
+    rateResetFunc.value(submixerABank);
+    ~ohm.turnGridGreen(column, row);
   }, bank: submixerABank, page: page);
 });
 // Submixer B:
@@ -137,6 +148,8 @@ rateResetFunc = {
   if( i < 8, { row = 6 }, { row = 7 });
   ~ohm.setGridFunc(column, row, {
     ~prm.submixerB.setLoopRate(rate);
+    rateResetFunc.value(submixerBBank);
+    ~ohm.turnGridGreen(column, row);
   }, bank: submixerBBank, page: page);
 });
 // Submixer C:
@@ -148,6 +161,7 @@ rateResetFunc = {
   if( i < 8, { row = 6 }, { row = 7 });
   ~ohm.setGridFunc(column, row, {
     ~prm.submixerB.setLoopRate(rate);
+    rateResetFunc.value(submixerCBank);
+    ~ohm.turnGridGreen(column, row);
   }, bank: submixerBBank, page: page);
 });
-  

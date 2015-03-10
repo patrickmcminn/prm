@@ -64,10 +64,13 @@ AudioSystem {
 
       submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
         procGroup, \addToHead);
+      while( { try { submixerA.isLoaded } != true }, { 0.001.wait; });
       submixerB = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
         procGroup, \addToHead);
+      while( { try { submixerB.isLoaded } != true }, { 0.001.wait; });
       submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
         procGroup, \addToHead);
+      while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
 
       songBook = IdentityDictionary.new;
 

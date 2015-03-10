@@ -21,6 +21,21 @@ var submixerCBank = 2;
 
 ///////////// Grid Functions:
 
+//////// Bank Change:
+~ohm.turnCrossfaderButtonBlue(0, page: page);
+
+~ohm.setCrossfaderButtonFunc(0, r {
+  ~ohm.setActiveGridBank(submixerBBank);
+  ~ohm.turnCrossfaderButtonCyan(0).yield;
+
+  ~ohm.setActiveGridBank(submixerCBank);
+  ~ohm.turnCrossfaderButtonPurple(0).yield;
+
+  ~ohm.setActiveGridBank(submixerABank);
+  ~ohm.turnCrossfaderButtonBlue(0).yield;
+}.loop, page: page);
+
+
 //////// division:
 divResetFunc = { | bank |
   8.do({ | i | ~ohm.turnGridCyan(i, 0, bank: bank, page: page); });
@@ -33,11 +48,11 @@ divResetFunc = { | bank |
 // Submixer A:
 16.do({ | i |
   var column = i%8;
-  var div = pow(2, i);
+  //var div = pow(2, i);
   var row;
   if( i < 8, { row = 0 }, { row = 1 });
   ~ohm.setGridFunc(column, row, {
-    ~prm.submixerA.setLoopDivison(div);
+    ~prm.submixerA.setLoopDivison(i + 1);
     divResetFunc.value(submixerABank);
     ~ohm.turnGridGreen(column, row);
     }, bank: submixerABank, page: page);
@@ -118,9 +133,9 @@ posResetFunc =  { | bank |
 
 
 //////// rate:
-rateResetFunc = {
-  8.do({ | i | ~ohm.turnGridYellow(i, 6, page: page); });
-  8.do({ | i | ~ohm.turnGridYellow(i, 7, page: page); });
+rateResetFunc = { | bank |
+  8.do({ | i | ~ohm.turnGridYellow(i, 6, bank: bank, page: page); });
+  8.do({ | i | ~ohm.turnGridYellow(i, 7, bank: bank, page: page); });
 };
 // initial colors:
 3.do({ | i | rateResetFunc.value(i); });
@@ -160,8 +175,73 @@ rateResetFunc = {
   var row;
   if( i < 8, { row = 6 }, { row = 7 });
   ~ohm.setGridFunc(column, row, {
-    ~prm.submixerB.setLoopRate(rate);
+    ~prm.submixerC.setLoopRate(rate);
     rateResetFunc.value(submixerCBank);
     ~ohm.turnGridGreen(column, row);
-  }, bank: submixerBBank, page: page);
+  }, bank: submixerCBank, page: page);
 });
+
+//////// Knobs:
+
+//// Submixer A Sends:
+// Reverb:
+~ohm.setLeftKnobFunc(0, 2, { | val |
+  ~prm.submixerA.mixer.setSendVol(0, val.ccdbfs(-70, 0));
+}, page: page);
+// Granulator:
+~ohm.setLeftKnobFunc(0, 1, { | val |
+  ~prm.submixerA.mixer.setSendVol(1, val.ccdbfs(-70, 6));
+}, page: page);
+
+//// Submixer B Sends:
+// Reverb:
+~ohm.setLeftKnobFunc(1, 2, { | val |
+  ~prm.submixerB.mixer.setSendVol(0, val.ccdbfs(-70, 0));
+}, page: page);
+// Granulator:
+~ohm.setLeftKnobFunc(1, 1, { | val |
+  ~prm.submixerB.mixer.setSendVol(1, val.ccdbfs(-70, 6));
+}, page: page);
+
+//// Submixer C Sends:
+// Reverb:
+~ohm.setLeftKnobFunc(2, 2, { | val |
+  ~prm.submixerC.mixer.setSendVol(0, val.ccdbfs(-70, 0));
+}, page: page);
+// Granulator:
+~ohm.setLeftKnobFunc(2, 1, { | val |
+  ~prm.submixerC.mixer.setSendVol(1, val.ccdbfs(-70, 6));
+}, page: page);
+
+//////// Left Buttons:
+
+// setting pre or post:
+
+// initial colors:
+~ohm.turnLeftButtonCyan(0, page: page);
+~ohm.turnLeftButtonCyan(1, page: page);
+~ohm.turnLeftButtonCyan(2, page: page);
+
+~ohm.setLeftButtonFunc(0, r {
+  ~prm.submixerA.mixer.setSendPre;
+  ~ohm.turnLeftButtonWhite(0).yield;
+
+  ~prm.submixerA.mixer.setSendPost;
+  ~ohm.turnLeftButtonCyan(0).yield;
+}.loop, page: page);
+
+~ohm.setLeftButtonFunc(1, r {
+  ~prm.submixerB.mixer.setSendPre;
+  ~ohm.turnLeftButtonWhite(1).yield;
+
+  ~prm.submixerB.mixer.setSendPost;
+  ~ohm.turnLeftButtonCyan(1).yield;
+}.loop, page: page);
+
+~ohm.setLeftButtonFunc(2, r {
+  ~prm.submixerC.mixer.setSendPre;
+  ~ohm.turnLeftButtonWhite(2).yield;
+
+  ~prm.submixerC.mixer.setSendPost;
+  ~ohm.turnLeftButtonCyan(2).yield;
+}.loop, page: page);

@@ -35,7 +35,7 @@ var page = 'main';
 
 // Returns Page:
 ~ohm.turnGridBlue(5, 7, page: page);
-~ohm.setGridFunc(5, 7, { ~ohm.setPage('returns'); }, page: page);
+~ohm.setGridFunc(5, 7, { ~ohm.setPage('submixer'); }, page: page);
 // Master EQ Page:
 ~ohm.turnGridPurple(6, 7, page: page);
 ~ohm.setGridFunc(6, 7, { ~ohm.setPage('masterEQ'); }, page: page);

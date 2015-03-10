@@ -56,147 +56,171 @@ var submixerBankResetFunc;
 
 //// submixer A:
 
-// Low:
+// LowPass:
 ~ohm.setGridFunc(0, 0, {
-  ~prm.submixerA.eq.setLowFreq(250);
-  ~prm.submixerA.eq.setLowGain(0);
-  ~prm.submixerA.eq.setLowRQ(1);
+  ~prm.submixerA.eq.setLowPassCutoff(20000);
+  ~prm.submixerA.eq.setLowPassRQ(1);
   ~ohm.blinkGridPlay(0, 0, 'green', mul: 2);
   { ~ohm.blinkGridStop(0, 0, 'blue'); }.defer(1);
 }, page: page);
 
-// Peak 1:
+// Low:
 ~ohm.setGridFunc(1, 0, {
+  ~prm.submixerA.eq.setLowFreq(250);
+  ~prm.submixerA.eq.setLowGain(0);
+  ~prm.submixerA.eq.setLowRQ(1);
+  ~ohm.blinkGridPlay(1, 0, 'green', mul: 2);
+  { ~ohm.blinkGridStop(1, 0, 'blue'); }.defer(1);
+}, page: page);
+
+// Peak 1:
+~ohm.setGridFunc(2, 0, {
   ~prm.submixerA.eq.setPeak1Freq(600);
   ~prm.submixerA.eq.setPeak1Gain(0);
   ~prm.submixerA.eq.setPeak1RQ(1);
-   ~ohm.blinkGridPlay(1, 0, 'green', mul: 2);
-  { ~ohm.blinkGridStop(1, 0, 'cyan'); }.defer(1);
+   ~ohm.blinkGridPlay(2, 0, 'green', mul: 2);
+  { ~ohm.blinkGridStop(2, 0, 'cyan'); }.defer(1);
 }, page: page);
 
 // Peak 2:
-~ohm.setGridFunc(2, 0, {
+~ohm.setGridFunc(3, 0, {
   ~prm.submixerA.eq.setPeak2Freq(1000);
   ~prm.submixerA.eq.setPeak2Gain(0);
   ~prm.submixerA.eq.setPeak2Freq(1000);
-   ~ohm.blinkGridPlay(2, 0, 'green', mul: 2);
-  { ~ohm.blinkGridStop(2, 0, 'purple'); }.defer(1);
+   ~ohm.blinkGridPlay(3, 0, 'green', mul: 2);
+  { ~ohm.blinkGridStop(3, 0, 'purple'); }.defer(1);
 }, page: page);
 
 // Peak 3:
-~ohm.setGridFunc(3, 0, {
+~ohm.setGridFunc(4, 0, {
   ~prm.submixerA.eq.setPeak3Freq(1500);
   ~prm.submixerA.eq.setPeak3Gain(0);
   ~prm.submixerA.eq.setPeak3RQ(1);
-   ~ohm.blinkGridPlay(3, 0, 'green', mul: 2);
-  { ~ohm.blinkGridStop(3, 0, 'yellow'); }.defer(1);
+   ~ohm.blinkGridPlay(4, 0, 'green', mul: 2);
+  { ~ohm.blinkGridStop(4, 0, 'yellow'); }.defer(1);
 }, page: page);
 
 
 // High:
-~ohm.setGridFunc(4, 0, {
+~ohm.setGridFunc(5, 0, {
   ~prm.submixerA.eq.setHighFreq(2500);
   ~prm.submixerA.eq.setHighGain(0);
   ~prm.submixerA.eq.setHighRQ(1);
-  ~ohm.blinkGridPlay(4, 0, 'green', mul: 2);
-  { ~ohm.blinkGridStop(4, 0, 'white'); }.defer(1);
+  ~ohm.blinkGridPlay(5, 0, 'green', mul: 2);
+  { ~ohm.blinkGridStop(5, 0, 'white'); }.defer(1);
 }, page: page);
 
 //// submixer B:
 
-// Low:
+// Lowpass
 ~ohm.setGridFunc(0, 1, {
-  ~prm.submixerB.eq.setLowFreq(250);
-  ~prm.submixerB.eq.setLowGain(0);
-  ~prm.submixerB.eq.setLowRQ(1);
+  ~prm.submixerB.eq.setLowPassCutoff(20000);
+  ~prm.submixerB.eq.setLowPassRQ(1);
   ~ohm.blinkGridPlay(0, 1, 'green', mul: 2);
   { ~ohm.blinkGridStop(0, 1, 'blue'); }.defer(1);
 }, page: page);
 
-// Peak 1:
+// Low:
 ~ohm.setGridFunc(1, 1, {
+  ~prm.submixerB.eq.setLowFreq(250);
+  ~prm.submixerB.eq.setLowGain(0);
+  ~prm.submixerB.eq.setLowRQ(1);
+  ~ohm.blinkGridPlay(1, 1, 'green', mul: 2);
+  { ~ohm.blinkGridStop(1, 1, 'blue'); }.defer(1);
+}, page: page);
+
+// Peak 1:
+~ohm.setGridFunc(2, 1, {
   ~prm.submixerB.eq.setPeak1Freq(600);
   ~prm.submixerB.eq.setPeak1Gain(0);
   ~prm.submixerB.eq.setPeak1RQ(1);
-   ~ohm.blinkGridPlay(1, 1, 'green', mul: 2);
-  { ~ohm.blinkGridStop(1, 1, 'cyan'); }.defer(1);
+   ~ohm.blinkGridPlay(2, 1, 'green', mul: 2);
+  { ~ohm.blinkGridStop(2, 1, 'cyan'); }.defer(1);
 }, page: page);
 
 // Peak 2:
-~ohm.setGridFunc(2, 1, {
+~ohm.setGridFunc(3, 1, {
   ~prm.submixerB.eq.setPeak2Freq(1000);
   ~prm.submixerB.eq.setPeak2Gain(0);
   ~prm.submixerB.eq.setPeak2Freq(1000);
-   ~ohm.blinkGridPlay(2, 1, 'green', mul: 2);
-  { ~ohm.blinkGridStop(2, 1, 'purple'); }.defer(1);
+   ~ohm.blinkGridPlay(3, 1, 'green', mul: 2);
+  { ~ohm.blinkGridStop(3, 1, 'purple'); }.defer(1);
 }, page: page);
 
 // Peak 3:
-~ohm.setGridFunc(3, 1, {
+~ohm.setGridFunc(4, 1, {
   ~prm.submixerB.eq.setPeak3Freq(1500);
   ~prm.submixerB.eq.setPeak3Gain(0);
   ~prm.submixerB.eq.setPeak3RQ(1);
-   ~ohm.blinkGridPlay(3, 1, 'green', mul: 2);
-  { ~ohm.blinkGridStop(3, 1, 'yellow'); }.defer(1);
+   ~ohm.blinkGridPlay(4, 1, 'green', mul: 2);
+  { ~ohm.blinkGridStop(4, 1, 'yellow'); }.defer(1);
 }, page: page);
 
 
 // High:
-~ohm.setGridFunc(4, 1, {
+~ohm.setGridFunc(5, 1, {
   ~prm.submixerB.eq.setHighFreq(2500);
   ~prm.submixerB.eq.setHighGain(0);
   ~prm.submixerB.eq.setHighRQ(1);
-  ~ohm.blinkGridPlay(4, 1, 'green', mul: 2);
-  { ~ohm.blinkGridStop(4, 1, 'white'); }.defer(1);
+  ~ohm.blinkGridPlay(5, 1, 'green', mul: 2);
+  { ~ohm.blinkGridStop(5, 1, 'white'); }.defer(1);
 }, page: page);
 
 
 //// submixer C:
 
-// Low:
+//Lowpass:
 ~ohm.setGridFunc(0, 2, {
-  ~prm.submixerC.eq.setLowFreq(250);
-  ~prm.submixerC.eq.setLowGain(0);
-  ~prm.submixerC.eq.setLowRQ(1);
+  ~prm.submixerC.eq.setLowPassCutoff(20000);
+  ~prm.submixerC.eq.setLowPassRQ(1);
   ~ohm.blinkGridPlay(0, 2, 'green', mul: 2);
   { ~ohm.blinkGridStop(0, 2, 'blue'); }.defer(1);
 }, page: page);
 
-// Peak 1:
+// Low:
 ~ohm.setGridFunc(1, 2, {
+  ~prm.submixerC.eq.setLowFreq(250);
+  ~prm.submixerC.eq.setLowGain(0);
+  ~prm.submixerC.eq.setLowRQ(1);
+  ~ohm.blinkGridPlay(1, 2, 'green', mul: 2);
+  { ~ohm.blinkGridStop(1, 2, 'blue'); }.defer(1);
+}, page: page);
+
+// Peak 1:
+~ohm.setGridFunc(2, 2, {
   ~prm.submixerC.eq.setPeak1Freq(600);
   ~prm.submixerC.eq.setPeak1Gain(0);
   ~prm.submixerC.eq.setPeak1RQ(1);
-   ~ohm.blinkGridPlay(1, 2, 'green', mul: 2);
-  { ~ohm.blinkGridStop(1, 2, 'cyan'); }.defer(1);
+   ~ohm.blinkGridPlay(2, 2, 'green', mul: 2);
+  { ~ohm.blinkGridStop(2, 2, 'cyan'); }.defer(1);
 }, page: page);
 
 // Peak 2:
-~ohm.setGridFunc(2, 2, {
+~ohm.setGridFunc(3, 2, {
   ~prm.submixerC.eq.setPeak2Freq(1000);
   ~prm.submixerC.eq.setPeak2Gain(0);
   ~prm.submixerC.eq.setPeak2Freq(1000);
-   ~ohm.blinkGridPlay(2, 2, 'green', mul: 2);
-  { ~ohm.blinkGridStop(2, 2, 'purple'); }.defer(1);
+   ~ohm.blinkGridPlay(3, 2, 'green', mul: 2);
+  { ~ohm.blinkGridStop(3, 2, 'purple'); }.defer(1);
 }, page: page);
 
 // Peak 3:
-~ohm.setGridFunc(3, 2, {
+~ohm.setGridFunc(4, 2, {
   ~prm.submixerC.eq.setPeak3Freq(1500);
   ~prm.submixerC.eq.setPeak3Gain(0);
   ~prm.submixerC.eq.setPeak3RQ(1);
-   ~ohm.blinkGridPlay(3, 2, 'green', mul: 2);
-  { ~ohm.blinkGridStop(3, 2, 'yellow'); }.defer(1);
+   ~ohm.blinkGridPlay(4, 2, 'green', mul: 2);
+  { ~ohm.blinkGridStop(4, 2, 'yellow'); }.defer(1);
 }, page: page);
 
 
 // High:
-~ohm.setGridFunc(4, 2, {
+~ohm.setGridFunc(5, 2, {
   ~prm.submixerC.eq.setHighFreq(2500);
   ~prm.submixerC.eq.setHighGain(0);
   ~prm.submixerC.eq.setHighRQ(1);
-  ~ohm.blinkGridPlay(4, 2, 'green', mul: 2);
-  { ~ohm.blinkGridStop(4, 2, 'white'); }.defer(1);
+  ~ohm.blinkGridPlay(5, 2, 'green', mul: 2);
+  { ~ohm.blinkGridStop(5, 2, 'white'); }.defer(1);
 }, page: page);
 
 //////// Bank Change Functions:
@@ -369,6 +393,22 @@ submixerBankResetFunc.value(6, page);
 
 ////// Submix A EQ:
 
+//// Lowpass:
+// Cutoff:
+3.do({ | bank |
+  ~ohm.setLeftKnobFunc(3, 2, { | val |
+    var freq = val.linexp(0, 127, 40, 20000);
+    ~prm.submixerA.eq.setLowPassCutoff(freq);
+  }, bank: bank + 1, page: page);
+});
+// RQ:
+3.do({ | bank |
+  ~ohm.setLeftKnobFunc(3, 1, { | val |
+    var rq = val.linlin(0, 127, 1, 0.05);
+    ~prm.sebmixerA.eq.setLowPassRQ(rq);
+  }, bank: bank + 1, page: page);
+});
+
 //// Low:
 // Low Freq:
 3.do({ | bank |
@@ -478,6 +518,22 @@ submixerBankResetFunc.value(6, page);
 
 ////// Submix B EQ:
 
+//// Lowpass:
+// Cutoff:
+3.do({ | bank |
+  ~ohm.setLeftKnobFunc(3, 2, { | val |
+    var freq = val.linexp(0, 127, 40, 20000);
+    ~prm.submixerB.eq.setLowPassCutoff(freq);
+  }, bank: bank + 4, page: page);
+});
+// RQ:
+3.do({ | bank |
+  ~ohm.setLeftKnobFunc(3, 1, { | val |
+    var rq = val.linlin(0, 127, 1, 0.05);
+    ~prm.sebmixerB.eq.setLowPassRQ(rq);
+  }, bank: bank + 4, page: page);
+});
+
 //// Low:
 // Low Freq:
 3.do({ | bank |
@@ -585,6 +641,23 @@ submixerBankResetFunc.value(6, page);
 });
 
 ////// Submix C EQ:
+
+//// Lowpass:
+// Cutoff:
+3.do({ | bank |
+  ~ohm.setLeftKnobFunc(3, 2, { | val |
+    var freq = val.linexp(0, 127, 40, 20000);
+    ~prm.submixerC.eq.setLowPassCutoff(freq);
+  }, bank: bank + 7, page: page);
+});
+// RQ:
+3.do({ | bank |
+  ~ohm.setLeftKnobFunc(3, 1, { | val |
+    var rq = val.linlin(0, 127, 1, 0.05);
+    ~prm.sebmixerC.eq.setLowPassRQ(rq);
+  }, bank: bank + 7, page: page);
+});
+
 //// Low:
 // Low Freq:
 3.do({ | bank |

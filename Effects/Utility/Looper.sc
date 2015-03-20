@@ -126,7 +126,7 @@ Looper : IM_Module {
       sig = WaveLoss.ar(sig, waveLossAmount, 100, waveLossMode);
       sig = sig * amp;
       Out.ar(outBus, sig);
-    }, [0.1, 0.05, 0.05]).add;
+    }, [0.005, 0.05, 0.05]).add;
 
     SynthDef(\prm_looperMono, {
       |
@@ -162,7 +162,7 @@ Looper : IM_Module {
       sig = WaveLoss.ar(sig, waveLossAmount, 100, waveLossMode);
       sig = sig * amp;
       Out.ar(outBus, sig);
-    }, [0.1, 0.05, 0.05]).add;
+    }, [0.005, 0.05, 0.05]).add;
 
   }
 

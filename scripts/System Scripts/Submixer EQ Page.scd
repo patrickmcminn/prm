@@ -405,7 +405,7 @@ submixerBankResetFunc.value(6, page);
 3.do({ | bank |
   ~ohm.setLeftKnobFunc(3, 1, { | val |
     var rq = val.linlin(0, 127, 1, 0.05);
-    ~prm.sebmixerA.eq.setLowPassRQ(rq);
+    ~prm.submixerA.eq.setLowPassRQ(rq);
   }, bank: bank + 1, page: page);
 });
 
@@ -530,7 +530,7 @@ submixerBankResetFunc.value(6, page);
 3.do({ | bank |
   ~ohm.setLeftKnobFunc(3, 1, { | val |
     var rq = val.linlin(0, 127, 1, 0.05);
-    ~prm.sebmixerB.eq.setLowPassRQ(rq);
+    ~prm.submixerB.eq.setLowPassRQ(rq);
   }, bank: bank + 4, page: page);
 });
 
@@ -654,7 +654,7 @@ submixerBankResetFunc.value(6, page);
 3.do({ | bank |
   ~ohm.setLeftKnobFunc(3, 1, { | val |
     var rq = val.linlin(0, 127, 1, 0.05);
-    ~prm.sebmixerC.eq.setLowPassRQ(rq);
+    ~prm.submixerC.eq.setLowPassRQ(rq);
   }, bank: bank + 7, page: page);
 });
 

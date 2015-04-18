@@ -1,4 +1,4 @@
-sBase_Page {
+Base_Page {
 
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
   var buttonColorArray, <faderModeArray, <faderValueArray;

@@ -195,9 +195,9 @@ Base {
   }
 
   setPage { | name = 'page' |
-    activePage.offLoadFunction.value;
     activePageKey = name;
     activePage = pageDict[activePageKey];
+    activePage.offLoadFunction.value;
     72.do({ | num |
       this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));

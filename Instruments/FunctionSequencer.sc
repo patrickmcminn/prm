@@ -54,42 +54,42 @@ FunctionSequencer {
   prMakeRoutines {
     forwardRoutine = r {
       loop {
+        activeStep = count % numberSteps;
         if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
         count = count + 1;
-        activeStep = count % numberSteps;
         beatDivision.wait;
       };
     };
     reverseRoutine = r { | beatDiv = 0.25 |
       loop {
+        activeStep = count % numberSteps;
         if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
         count = count - 1;
-        activeStep = count % numberSteps;
         beatDivision.wait;
       };
     };
     backAndForthRoutine = r { | beatDiv = 0.25 |
       loop {
+        activeStep = count % numberSteps;
         if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
         count = count + 1;
         count = count - 1;
-        activeStep = count % numberSteps;
         beatDivision.wait;
       };
     };
     randomRoutine = r { | beatDiv = 0.25 |
       loop {
         var step = functionArray.size.rand;
-        if( activeArray[step] == true, { functionArray.wrapAt(count).value });
         activeStep = step;
+        if( activeArray[step] == true, { functionArray.wrapAt(count).value });
         beatDivision.wait;
       };
     };
     driftRoutine = r { | beatDiv = 0.25 |
       loop {
+        activeStep = count % numberSteps;
         if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
         count = choose([count + 1, count - 1]);
-        activeStep = count % numberSteps;
         beatDivision.wait;
       };
     };

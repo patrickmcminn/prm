@@ -56,18 +56,20 @@ Equalizer : IM_Processor {
       peak2Freq = 1000, peak2RQ = 1, peak2Gain = 0,
       peak3Freq = 1500, peak3RQ = 1, peak3Gain = 0,
       highFreq = 2500, highRQ = 1, highGain = 0,
+      lowPassCutoff = 20000, lowPassRQ = 1.0,
       inBus = 0, outBus = 0
       |
-      var input,  lowShelf, peak1, peak2, peak3, highShelf, sig;
+      var input,  lowShelf, peak1, peak2, peak3, highShelf, lowPass, sig;
       input = In.ar(inBus, 1);
       lowShelf = BLowShelf.ar(input, lowFreq, lowRQ, lowGain);
       peak1 = BPeakEQ.ar(lowShelf, peak1Freq, peak1RQ, peak1Gain);
       peak2 = BPeakEQ.ar(peak1, peak2Freq, peak2RQ, peak2Gain);
       peak3 = BPeakEQ.ar(peak2, peak3Freq, peak3RQ, peak3Gain);
       highShelf = BHiShelf.ar(peak3, highFreq, highRQ, highGain);
-      sig = highShelf * amp;
+      lowPass = RLPF.ar(highShelf, lowPassCutoff, lowPassRQ);
+      sig = lowPass * amp;
       Out.ar(outBus, sig);
-    }, [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]).add;
+    }, [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]).add;
 
     SynthDef(\prm_Equalizer_Stereo, {
       |
@@ -77,18 +79,20 @@ Equalizer : IM_Processor {
       peak2Freq = 1000, peak2RQ = 1, peak2Gain = 0,
       peak3Freq = 1500, peak3RQ = 1, peak3Gain = 0,
       highFreq = 2500, highRQ = 1, highGain = 0,
+      lowPassCutoff = 20000, lowPassRQ = 1.0,
       inBus = 0, outBus = 0
       |
-      var input,  lowShelf, peak1, peak2, peak3, highShelf, sig;
+      var input,  lowShelf, peak1, peak2, peak3, highShelf, lowPass, sig;
       input = In.ar(inBus, 2);
       lowShelf = BLowShelf.ar(input, lowFreq, lowRQ, lowGain);
       peak1 = BPeakEQ.ar(lowShelf, peak1Freq, peak1RQ, peak1Gain);
       peak2 = BPeakEQ.ar(peak1, peak2Freq, peak2RQ, peak2Gain);
       peak3 = BPeakEQ.ar(peak2, peak3Freq, peak3RQ, peak3Gain);
       highShelf = BHiShelf.ar(peak3, highFreq, highRQ, highGain);
-      sig = highShelf * amp;
+      lowPass = RLPF.ar(highShelf, lowPassCutoff, lowPassRQ);
+      sig = lowPass * amp;
       Out.ar(outBus, sig);
-    }, [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]).add;
+    }, [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]).add;
   }
 
   //////// public functions:
@@ -117,5 +121,8 @@ Equalizer : IM_Processor {
   setHighFreq { | freq = 2500 | synth.set(\highFreq, freq); }
   setHighRQ { | rq = 1 | synth.set(\highRQ, rq); }
   setHighGain { | gain = 0 | synth.set(\highGain, gain); }
+
+  setLowPassCutoff { | cutoff = 20000 | synth.set(\lowPassCutoff, cutoff); }
+  setLowPassRQ { | rq = 1.0 | synth.set(\lowPassRQ, rq); }
 
 }

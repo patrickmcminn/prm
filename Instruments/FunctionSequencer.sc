@@ -7,18 +7,6 @@ London, England
 
 FunctionSequencer {
 
-<<<<<<< HEAD
-  var functionArray;
-
-  *new { | initSize = 16, clock = 'internal', initDirection = 'forward' |
-    ^super.new.prInit(initSize, clock);
-  }
-
-  prInit { | initSize = 16, clock = 'internal' |
-    functionArray = Array.newClear(initSize);
-  }
-
-=======
   var isLoaded;
   var <functionArray, <activeArray;
   var <clock;
@@ -146,5 +134,4 @@ FunctionSequencer {
   toggleActivateStep { | step = 0 |
     if(activeArray[step] == true, { this.deactivateStep(step) }, { this.activateStep(step) });
   }
->>>>>>> dev
 }

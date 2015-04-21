@@ -10,6 +10,8 @@ var page = 'granulator';
 var granulatorBank = 0;
 var delayBank = 1;
 
+var grainEnvResetFunc, grainRateResetFunc, delayFilterResetFunc;
+
 ~ohm.makePage(page);
 ~ohm.addLeftKnobsBanks(1);
 

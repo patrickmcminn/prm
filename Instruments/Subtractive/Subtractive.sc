@@ -14,7 +14,7 @@ Subtractive : IM_Module {
 
   var applyMode;
 
-  var <lfoFreqLFOBottomRatio, <lfoFreqLFOTopRatio;
+  var <lfoFreqLFO2BottomRatio, <lfoFreqLFO2TopRatio;
   var <lfoWaveform, <lfoFreq, <lfoPulseWidth;
   var <lfoEnvType, <lfoAttackTime, <lfoReleaseTime;
 
@@ -103,7 +103,7 @@ Subtractive : IM_Module {
       freq = 220,
       gate = 1,
 
-      lfoFreqLFOBottomRatio = 1.0, lfoFreqLFOTopRatio = 1.0
+      lfoFreqLFO2BottomRatio = 1.0, lfoFreqLFO2TopRatio = 1.0
       lfoWaveform = 0, lfoFreq = 1, lfoPulseWidth = 0.5,
       lfoEnvType = 0, lfoAttackTime = 0.05, lfoReleaseTime = 0.05,
 
@@ -175,7 +175,7 @@ Subtractive : IM_Module {
       lfo2 = In.kr(lfo2InBus);
 
       // Voice LFO:
-      lfoFreqLFO = lfo2.linlin(-1, 1, lfoFreqLFOBottomRatio, lfoFreqLFOTopRatio);
+      lfoFreqLFO = lfo2.linlin(-1, 1, lfoFreqLFO2BottomRatio, lfoFreqLFO2TopRatio);
       thisLFOFreq = lfoFreq * lfoFreqLFO;
       lfoSine = SinOsc.kr(thisLFOFreq);
       lfoSaw = LFSaw.kr(thisLFOFreq, 1);
@@ -299,7 +299,7 @@ Subtractive : IM_Module {
       freq = 220,
       gate = 1,
 
-      lfoFreqLFOBottomRatio = 1.0, lfoFreqLFOTopRatio = 1.0
+      lfoFreqLFO2BottomRatio = 1.0, lfoFreqLFO2TopRatio = 1.0
       lfoWaveform = 0, lfoFreq = 1, lfoPulseWidth = 0.5,
       lfoEnvType = 0, lfoAttackTime = 0.05, lfoReleaseTime = 0.05,
 
@@ -371,7 +371,7 @@ Subtractive : IM_Module {
       lfo2 = In.kr(lfo2InBus);
 
       // Voice LFO:
-      lfoFreqLFO = lfo2.linlin(-1, 1, lfoFreqLFOBottomRatio, lfoFreqLFOTopRatio);
+      lfoFreqLFO = lfo2.linlin(-1, 1, lfoFreqLFO2BottomRatio, lfoFreqLFO2TopRatio);
       thisLFOFreq = lfoFreq * lfoFreqLFO;
       lfoSine = SinOsc.kr(thisLFOFreq);
       lfoSaw = LFSaw.kr(thisLFOFreq,1);

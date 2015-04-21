@@ -9,8 +9,8 @@
       sequencerDict[uniqueName].addKey(\instrument, \prm_Subtractive_Voice_Seq);
       sequencerDict[uniqueName].addKey(\outBus,  mixer.chanStereo(0));
       sequencerDict[uniqueName].addKey(\lfo2InBus,  Pfunc({lfoBus}) );
-      sequencerDict[uniqueName].addKey(\lfoFreqLFOBottomRatio, Pfunc({ lfoFreqLFOBottomRatio }));
-      sequencerDict[uniqueName].addKey(  \lfoFreqLFOTopRatio,  Pfunc({ lfoFreqLFOTopRatio }));
+      sequencerDict[uniqueName].addKey(\lfoFreqLFO2BottomRatio, Pfunc({ lfoFreqLFO2BottomRatio }));
+      sequencerDict[uniqueName].addKey(  \lfoFreqLFO2TopRatio,  Pfunc({ lfoFreqLFO2TopRatio }));
       sequencerDict[uniqueName].addKey( \lfoWaveform,  Pfunc({ lfoWaveform }));
       sequencerDict[uniqueName].addKey(  \lfoFreq,  Pfunc({ lfoFreq }));
       sequencerDict[uniqueName].addKey( \lfoPulseWidth,  Pfunc({ lfoPulseWidth }));

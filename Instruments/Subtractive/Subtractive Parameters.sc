@@ -6,7 +6,7 @@
 
     maxVoices = 8; numVoices = 0; orderNum = 0; amp = 0.2;
 
-    lfoFreqLFOBottomRatio = 1.0; lfoFreqLFOTopRatio = 1.0; lfoWaveform = 0;
+    lfoFreqLFO2BottomRatio = 1.0; lfoFreqLFO2TopRatio = 1.0; lfoWaveform = 0;
     lfoFreq = 1; lfoPulseWidth = 0.5; lfoEnvType = 0; lfoAttackTime = 0.05; lfoReleaseTime = 0.05;
 
     osc1OctaveMul = 1; osc1FreqEnvStartRatio = 1.0; osc1FreqEnvEndRatio = 1.0; osc1FreqEnvTime = 0;
@@ -719,15 +719,15 @@
   }
 
   setLFOFreqLFO2BottomRatio { | ratio = 1.0 |
-    lfoFreqLFOBottomRatio = ratio;
+    lfoFreqLFO2BottomRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\lfoFreqLFOBottomRatio, lfoFreqLFOBottomRatio); });
+      synthGroup.set(\lfoFreqLFO2BottomRatio, lfoFreqLFO2BottomRatio); });
   }
 
   setLFOFreqLFO2TopRatio { | ratio = 1.0 |
-    lfoFreqLFOTopRatio = ratio;
+    lfoFreqLFO2TopRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\lfoFreqLFOTopRatio, lfoFreqLFOTopRatio); });
+      synthGroup.set(\lfoFreqLFO2TopRatio, lfoFreqLFO2TopRatio); });
   }
 
   // LFO 2:
@@ -754,7 +754,7 @@
     });
   }
 }
-
+/*
 //////// Presets:
 + Subtractive {
 
@@ -828,3 +828,4 @@
     */
   }
 }
+*/

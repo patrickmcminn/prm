@@ -16,7 +16,7 @@ Subtractive_Voice {
       synth = Synth(\prm_Subtractive_Voice, [
         \outBus, parent.mixer.chanStereo(0), \lfo2InBus, parent.lfoBus, \amp, parent.amp, \freq, freq, \gate, 1,
 
-        \lfoFreqLFOBottomRatio, parent.lfoFreqLFOBottomRatio, \lfoFreqLFOTopRatio, parent.lfoFreqLFOTopRatio,
+        \lfoFreqLFO2BottomRatio, parent.lfoFreqLFO2BottomRatio, \lfoFreqLFO2TopRatio, parent.lfoFreqLFO2TopRatio,
         \lfoWaveform, parent.lfoWaveform, \lfoFreq, parent.lfoFreq, \lfoPulseWidth, parent.lfoPulseWidth,
         \lfoEnvType, parent.lfoEnvType, \lfoAttackTime, parent.lfoAttackTime,
         \lfoReleaseTime, parent.lfoReleaseTime,

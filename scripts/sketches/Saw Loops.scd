@@ -30,7 +30,7 @@ Pbindef(\saws,
   \decayTime, 0,
   \sustainLevel, 1,
   \releaseTime, 12,
-  \amp, 0.8,
+  \amp, 1,
   \cutoff, Pwhite(500, 3500),
   \waveLossAmount, Pwhite(0, 30, inf)
 );
@@ -44,22 +44,39 @@ Pbindef(\saws).stop;
 ~prm.submixerA.loop;
 ~prm.submixerA.stopLoop;
 ~prm.submixerA.clearLoop(30);
-~prm.submixerA.setLoopDivison(5);
-~prm.submixerA.setLoopPosition(0.25);
-~prm.submixerA.setLoopRate(0.1);
+~prm.submixerA.setLoopDivison(15);
+~prm.submixerA.setLoopPositizon(0.1);
+~prm.submixerA.setLoopRate(1);
 
-~prm.submixerA.eq.setLowGain(6);
+~prm.submixerA.setMix(-0.25);
+
+~prm.submixerA.eq.setLowGain(4);
 ~prm.submixerA.eq.setLowRQ(0.5);
 ~prm.submixerA.eq.setHighGain(0);
 ~prm.submixerA.eq.setHighFreq(1500);
 ~prm.submixerA.eq.setPeak1Gain(0);
 ~prm.submixerA.eq.setPeak1Freq(900);
+~prm.submixerA.eq.setLowPassCutoff(3500);
 s.meter;
 s.makeWindow;
 
-~prm.submixerA.mixer.setVol(0);
-~prm.submixerA.mixer.setSendVol(1, -70);
+~prm.submixerA.mixer.setVol(16);
+~prm.submixerA.mixer.setSendVol(1, 0);
 ~prm.submixerA.mixer.tglMute;
-~prm.granulator.setGrainDur(0.5, 4);
+~prm.granulator.setGrainDur(0.4, 1);
+~prm.granulator.setTrigRate(16);
 
 ~prm.granulator.setGrainEnvelope('rexpodec');
+
+s.meter
+
+
+a = r {
+  ~prm.submixerA.setLoopDivison([8, 10, 12, 16, 20, 24, 32].choose);
+  ~prm.submixerA.setLoopPosition(rrand(0.1, 0.4));
+  1.wait;
+}.loop.play;
+
+a.stop;
+
+s.makeWindow;

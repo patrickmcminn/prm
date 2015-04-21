@@ -100,7 +100,7 @@ Looper : IM_Module {
       waveLossAmount = 0, waveLossMode = 2
       |
       var input,  sum, playReset, firstTrig, recGate, recTrigger, playPhasor, playGate, playTrigger, time, loopSamples;
-      var recEnv, playEnv, recorder, player;
+      var recEnv, playEnv, recInput, recorder, player, recPhasor;
       var sig;
 
       input = In.ar(inBus, 2);
@@ -108,18 +108,21 @@ Looper : IM_Module {
       firstTrig = Trig.kr(SetResetFF.kr(t_recTrig, t_reset), 0.05);
       recGate = PulseCount.kr(t_recTrig, t_reset) > 1;
       time = Latch.kr(Timer.kr(t_recTrig), recGate);
+      playReset = Trig.kr(t_resetPlayTrig);
       loopSamples = Latch.kr(time * SampleRate.ir, recGate);
       recTrigger = TDuty.kr(time, recGate, 1) * recGate + firstTrig;
       playGate = PulseCount.kr(t_playTrig, t_stopTrig);
-      playReset = Trig.kr(t_resetPlayTrig);
 
       playPhasor = Phasor.ar(playReset, BufRateScale.kr(buffer) * loopRate,
         loopPos * loopSamples, (loopSamples/loopDiv) + (loopPos * loopSamples), loopPos * loopSamples);
 
       recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
-      recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
       playEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), playGate);
       player = BufRd.ar(2, buffer, playPhasor, 1, 2);
+      recPhasor = Select.ar(PulseCount.kr(t_playTrig.clip(0, 1), t_reset),
+        [Phasor.ar(recTrigger, BufRateScale.kr(buffer) * loopRate, 0, BufSamples.kr(buffer), 0), playPhasor]);
+      recInput = player + (input * recEnv);
+      recorder = BufWr.ar(recInput, buffer, recPhasor, 1);
 
       sig = player * playEnv;
       sig = XFade2.ar(input, sig, mix);
@@ -127,6 +130,7 @@ Looper : IM_Module {
       sig = sig * amp;
       Out.ar(outBus, sig);
     }, [0.005, 0.05, 0.05]).add;
+
 
     SynthDef(\prm_looperMono, {
       |
@@ -136,7 +140,7 @@ Looper : IM_Module {
       waveLossAmount = 0, waveLossMode = 2
       |
       var input,  sum, playReset, firstTrig, recGate, recTrigger, playPhasor, playGate, playTrigger, time, loopSamples;
-      var recEnv, playEnv, recorder, player;
+      var recEnv, playEnv, recInput, recorder, player, recPhasor;
       var sig;
 
       input = In.ar(inBus);
@@ -144,18 +148,21 @@ Looper : IM_Module {
       firstTrig = Trig.kr(SetResetFF.kr(t_recTrig, t_reset), 0.05);
       recGate = PulseCount.kr(t_recTrig, t_reset) > 1;
       time = Latch.kr(Timer.kr(t_recTrig), recGate);
+      playReset = Trig.kr(t_resetPlayTrig);
       loopSamples = Latch.kr(time * SampleRate.ir, recGate);
       recTrigger = TDuty.kr(time, recGate, 1) * recGate + firstTrig;
       playGate = PulseCount.kr(t_playTrig, t_stopTrig);
-      playReset = Trig.kr(t_resetPlayTrig);
 
       playPhasor = Phasor.ar(playReset, BufRateScale.kr(buffer) * loopRate,
         loopPos * loopSamples, (loopSamples/loopDiv) + (loopPos * loopSamples), loopPos * loopSamples);
 
       recEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), PulseCount.kr(t_recTrig, t_reset) % 2);
-      recorder = RecordBuf.ar(input, buffer, 0, recLevel: recEnv, preLevel: 1, loop: 1, trigger: recTrigger);
       playEnv = EnvGen.kr(Env.asr(0.05, 1, 0.05), playGate);
       player = BufRd.ar(2, buffer, playPhasor, 1, 2);
+      recPhasor = Select.ar(PulseCount.kr(t_playTrig.clip(0, 1), t_reset),
+        [Phasor.ar(recTrigger, BufRateScale.kr(buffer) * loopRate, 0, BufSamples.kr(buffer), 0), playPhasor]);
+      recInput = player + (input * recEnv);
+      recorder = BufWr.ar(recInput, buffer, recPhasor, 1);
 
       sig = player * playEnv;
       sig = XFade2.ar(input, sig, mix);
@@ -198,7 +205,6 @@ Looper : IM_Module {
     }.fork;
   }
 
-  // please god pick a better name:
   loop {
     prLooperRoutine.next;
   }

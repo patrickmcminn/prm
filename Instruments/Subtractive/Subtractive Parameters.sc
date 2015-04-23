@@ -6,43 +6,43 @@
 
     maxVoices = 8; numVoices = 0; orderNum = 0; amp = 0.2;
 
-    lfoFreqLFO2BottomRatio = 1.0; lfoFreqLFO2TopRatio = 1.0; lfoWaveform = 0;
-    lfoFreq = 1; lfoPulseWidth = 0.5; lfoEnvType = 0; lfoAttackTime = 0.05; lfoReleaseTime = 0.05;
+    lfo1FreqLFO2BottomRatio = 1.0; lfo1FreqLFO2TopRatio = 1.0; lfo1Waveform = 0;
+    lfo1Freq = 1; lfo1PulseWidth = 0.5; lfo1EnvType = 0; lfo1AttackTime = 0.05; lfo1ReleaseTime = 0.05;
 
     osc1OctaveMul = 1; osc1FreqEnvStartRatio = 1.0; osc1FreqEnvEndRatio = 1.0; osc1FreqEnvTime = 0;
-    osc1FreqLFOBottomRatio = 1.0; osc1FreqLFOTopRatio = 1.0; osc1FreqLFO2BottomRatio = 1.0;
-    osc1FreqLFO2TopRatio = 1.0; osc1PulseWidthLFOBottom = 0; osc1PulseWidthLFOTop = 0;
-    osc1PulseWidthLFO2Bottom = 0; osc1PulseWidthLFO2Top = 0; osc1AmpLFOBottom = 1; osc1AmpLFOTop = 1;
-    osc1AmpLFO2Bottom = 1; osc1AmpLFO2Top = 1; osc1WaveformLFOBottom = 0; osc1WaveformLFOTop = 0;
+    osc1FreqLFO1BottomRatio = 1.0; osc1FreqLFO1TopRatio = 1.0; osc1FreqLFO2BottomRatio = 1.0;
+    osc1FreqLFO2TopRatio = 1.0; osc1PulseWidthLFO1Bottom = 0; osc1PulseWidthLFO1Top = 0;
+    osc1PulseWidthLFO2Bottom = 0; osc1PulseWidthLFO2Top = 0; osc1AmpLFO1Bottom = 1; osc1AmpLFO1Top = 1;
+    osc1AmpLFO2Bottom = 1; osc1AmpLFO2Top = 1; osc1WaveformLFO1Bottom = 0; osc1WaveformLFO1Top = 0;
     osc1WaveformLFO2Bottom = 0; osc1WaveformLFO2Top = 0; osc1Waveform = 2; osc1PulseWidth = 0.5;
     osc1Amp = 0.5; osc1SubAmp = 0;
 
     osc2OctaveMul = 0.5; osc2DetuneCents = 0;
     osc2FreqEnvStartRatio = 1.0; osc2FreqEnvEndRatio = 1.0; osc2FreqEnvTime = 0;
-    osc2FreqLFOBottomRatio = 1.0; osc2FreqLFOTopRatio = 1.0; osc2FreqLFO2BottomRatio = 1.0; osc2FreqLFO2TopRatio = 1.0;
-    osc2PulseWidthLFOBottom = 0; osc2PulseWidthLFOTop = 0; osc2PulseWidthLFO2Bottom = 0; osc2PulseWidthLFO2Top = 0;
-    osc2AmpLFOBottom = 1; osc2AmpLFOTop = 1; osc2AmpLFO2Bottom = 1; osc2AmpLFO2Top = 1;
-    osc2WaveformLFOBottom = 0; osc2WaveformLFOTop = 0; osc2WaveformLFO2Bottom = 0; osc2WaveformLFO2Top = 0;
+    osc2FreqLFO1BottomRatio = 1.0; osc2FreqLFO1TopRatio = 1.0; osc2FreqLFO2BottomRatio = 1.0; osc2FreqLFO2TopRatio = 1.0;
+    osc2PulseWidthLFO1Bottom = 0; osc2PulseWidthLFO1Top = 0; osc2PulseWidthLFO2Bottom = 0; osc2PulseWidthLFO2Top = 0;
+    osc2AmpLFO1Bottom = 1; osc2AmpLFO1Top = 1; osc2AmpLFO2Bottom = 1; osc2AmpLFO2Top = 1;
+    osc2WaveformLFO1Bottom = 0; osc2WaveformLFO1Top = 0; osc2WaveformLFO2Bottom = 0; osc2WaveformLFO2Top = 0;
     osc2Waveform = 3; osc2PulseWidth = 0.5; osc2Amp = 0.25; osc2SubAmp = 0;
 
-    noiseOscAmpLFOBottom = 1; noiseOscAmpLFOTop = 1; noiseOscAmpLFO2Bottom = 1; noiseOscAmpLFO2Top = 1;
-    noiseOscFilterLFOBottomRatio = 1; noiseOscFilterLFOTopRatio = 1; noiseOscFilterLFO2BottomRatio = 1;
+    noiseOscAmpLFO1Bottom = 1; noiseOscAmpLFO1Top = 1; noiseOscAmpLFO2Bottom = 1; noiseOscAmpLFO2Top = 1;
+    noiseOscFilterLFO1BottomRatio = 1; noiseOscFilterLFO1TopRatio = 1; noiseOscFilterLFO2BottomRatio = 1;
     noiseOscFilterLFO2TopRatio = 1;
     noiseOscAmp = 0; noiseOscCutoff = 10000;
 
     filterEnvAttackRatio = 1.0; filterEnvPeakRatio = 1.0; filterEnvSustainRatio = 1.0; filterEnvReleaseRatio = 1.0;
     filterEnvAttackTime = 0.05; filterEnvDecayTime = 0; filterEnvReleaseTime = 0.05;
     filterEnvLoop = 0;
-    filterCutoffLFOBottomRatio = 1.0; filterCutoffLFOTopRatio = 1.0; filterCutoffLFO2BottomRatio = 1.0;
-    filterCutoffLFO2TopRatio = 1.0; filterResLFOBottom = 0.0; filterResLFOTop = 0.0;
+    filterCutoffLFO1BottomRatio = 1.0; filterCutoffLFO1TopRatio = 1.0; filterCutoffLFO2BottomRatio = 1.0;
+    filterCutoffLFO2TopRatio = 1.0; filterResLFO1Bottom = 0.0; filterResLFO1Top = 0.0;
     filterResLFO2Bottom = 0.0; filterResLFO2Top = 0.0;
     filterDrive = 1.0; filterCutoff = 2000; filterRes = 0.0; filterType = 0;
 
-    ampLFOBottom = 1.0; ampLFOTop = 1.0; ampLFO2Bottom = 1.0; ampLFO2Top = 1.0;
+    ampLFO1Bottom = 1.0; ampLFO1Top = 1.0; ampLFO2Bottom = 1.0; ampLFO2Top = 1.0;
     attackTime = 0.05; decayTime = 0.05; sustainLevel = 1; releaseTime = 0.05;
 
     pan = 0;
-    panLFOBottom = 0.0; panLFOTop = 0.0; panLFO2Bottom = 0.0; panLFO2Top = 0.0;
+    panLFO1Bottom = 0.0; panLFO1Top = 0.0; panLFO2Bottom = 0.0; panLFO2Top = 0.0;
 
     tempo = 1; beats = 0;
 
@@ -123,25 +123,25 @@
   }
 
   // Filter LFO:
-  setFilterCutoffLFOBottomRatio { | ratio = 1.0 |
-    filterCutoffLFOBottomRatio = ratio;
+  setFilterCutoffLFO1BottomRatio { | ratio = 1.0 |
+    filterCutoffLFO1BottomRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\filterCutoffLFOBottomRatio, filterCutoffLFOBottomRatio); });
+      synthGroup.set(\filterCutoffLFO1BottomRatio, filterCutoffLFO1BottomRatio); });
   }
-  setFilterCutoffLFOTopRatio { | ratio = 1.0 |
-    filterCutoffLFOTopRatio = ratio;
+  setFilterCutoffLFO1TopRatio { | ratio = 1.0 |
+    filterCutoffLFO1TopRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\filterCutoffLFOTopRatio, filterCutoffLFOTopRatio); });
+      synthGroup.set(\filterCutoffLFO1TopRatio, filterCutoffLFO1TopRatio); });
   }
-  setFilterResLFOBottom { | bottom = 0.0 |
-    filterResLFOBottom = bottom;
+  setFilterResLFO1Bottom { | bottom = 0.0 |
+    filterResLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\filterResLFOBottom, filterResLFOBottom); });
+      synthGroup.set(\filterResLFO1Bottom, filterResLFO1Bottom); });
   }
-  setFilterResLFOTop { | top = 0.0 |
-    filterResLFOTop = top;
+  setFilterResLFO1Top { | top = 0.0 |
+    filterResLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\filterResLFOTop, filterResLFOTop); });
+      synthGroup.set(\filterResLFO1Top, filterResLFO1Top); });
   }
 
   // LFO2:
@@ -205,28 +205,28 @@
   }
 
   // Amplitude LFO 1:
-  setAmplitudeLFOBottom { | bottom = 1.0 |
-    ampLFOBottom = bottom;
+  setAmplitudeLFO1Bottom { | bottom = 1.0 |
+    ampLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\ampLFOBottom, ampLFOBottom); });
+      synthGroup.set(\ampLFO1Bottom, ampLFO1Bottom); });
   }
 
-  setAmplitudeLFOTop { | top = 1.0 |
-    ampLFOTop = top;
+  setAmplitudeLFO1Top { | top = 1.0 |
+    ampLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\ampLFOTop, ampLFOTop); });
+      synthGroup.set(\ampLFO1Top, ampLFO1Top); });
   }
 
-  setPanLFOBottom { | bottom = 0 |
-    panLFOBottom = bottom;
+  setPanLFO1Bottom { | bottom = 0 |
+    panLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\panLFOBottom, panLFOBottom); });
+      synthGroup.set(\panLFO1Bottom, panLFO1Bottom); });
   }
 
-  setPanLFOTop { | top = 0 |
-    panLFOTop = top;
+  setPanLFO1Top { | top = 0 |
+    panLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\panLFOTop, panLFOTop); });
+      synthGroup.set(\panLFO1Top, panLFO1Top); });
   }
 
   // Amplitude LFO 2:
@@ -326,53 +326,53 @@
   }
 
   // Oscillator 1 LFO 1:
-  setOsc1FreqLFOBottomRatio { | ratio = 1.0 |
-    osc1FreqLFOBottomRatio = ratio;
+  setOsc1FreqLFO1BottomRatio { | ratio = 1.0 |
+    osc1FreqLFO1BottomRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\osc1FreqLFOBottomRatio, osc1FreqLFOBottomRatio); });
+      synthGroup.set(\osc1FreqLFO1BottomRatio, osc1FreqLFO1BottomRatio); });
 
   }
 
-  setOsc1FreqLFOTopRatio { | ratio = 1.0 |
-    osc1FreqLFOTopRatio = ratio;
+  setOsc1FreqLFO1TopRatio { | ratio = 1.0 |
+    osc1FreqLFO1TopRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\osc1FreqLFOTopRatio, osc1FreqLFOTopRatio); });
+      synthGroup.set(\osc1FreqLFO1TopRatio, osc1FreqLFO1TopRatio); });
   }
 
-  setOsc1PulseWidthLFOBottom { | bottom = 0.0 |
-    osc1PulseWidthLFOBottom = bottom;
+  setOsc1PulseWidthLFO1Bottom { | bottom = 0.0 |
+    osc1PulseWidthLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\osc1PulseWidthLFOBottom, osc1PulseWidthLFOBottom); });
+      synthGroup.set(\osc1PulseWidthLFO1Bottom, osc1PulseWidthLFO1Bottom); });
   }
 
-  setOsc1PulseWidthLFOTop { | top = 0.0 |
-    osc1PulseWidthLFOTop = top;
+  setOsc1PulseWidthLFO1Top { | top = 0.0 |
+    osc1PulseWidthLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\osc1PulseWidthLFOTop, osc1PulseWidthLFOTop); });
+      synthGroup.set(\osc1PulseWidthLFO1Top, osc1PulseWidthLFO1Top); });
   }
 
-  setOsc1AmpLFOBottom { | bottom = 1.0 |
-    osc1AmpLFOBottom = bottom;
+  setOsc1AmpLFO1Bottom { | bottom = 1.0 |
+    osc1AmpLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\osc1AmpLFOBottom, osc1AmpLFOBottom); });
+      synthGroup.set(\osc1AmpLFO1Bottom, osc1AmpLFO1Bottom); });
   }
 
-  setOsc1AmpLFOTop { | top = 1.0 |
-    osc1AmpLFOTop = top;
+  setOsc1AmpLFO1Top { | top = 1.0 |
+    osc1AmpLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\osc1AmpLFOTop, osc1AmpLFOTop); });
+      synthGroup.set(\osc1AmpLFO1Top, osc1AmpLFO1Top); });
   }
 
-  setOsc1WaveformLFOBottom { | bottom = 0.0 |
-    osc1WaveformLFOBottom = bottom;
+  setOsc1WaveformLFO1Bottom { | bottom = 0.0 |
+    osc1WaveformLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\osc1WaveformLFOBottom, osc1WaveformLFOBottom); });
+      synthGroup.set(\osc1WaveformLFO1Bottom, osc1WaveformLFO1Bottom); });
   }
 
-  setOsc1WaveformLFOTop { | top = 0.0 |
-    osc1WaveformLFOTop = top;
+  setOsc1WaveformLFO1Top { | top = 0.0 |
+    osc1WaveformLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\osc1WaveformLFOTop, osc1WaveformLFOTop); });
+      synthGroup.set(\osc1WaveformLFO1Top, osc1WaveformLFO1Top); });
   }
 
    // Oscillator 1 LFO 2:
@@ -502,52 +502,52 @@
   }
 
   // Oscillator 2 LFO 1:
-  setOsc2FreqLFOBottomRatio { | ratio = 1.0 |
-    osc2FreqLFOBottomRatio = ratio;
+  setOsc2FreqLFO1BottomRatio { | ratio = 1.0 |
+    osc2FreqLFO1BottomRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\osc2FreqLFOBottomRatio, osc2FreqLFOBottomRatio); });
+      synthGroup.set(\osc2FreqLFO1BottomRatio, osc2FreqLFO1BottomRatio); });
   }
 
-  setOsc2FreqLFOTopRatio { | ratio = 1.0 |
-    osc2FreqLFOTopRatio = ratio;
+  setOsc2FreqLFO1TopRatio { | ratio = 1.0 |
+    osc2FreqLFO1TopRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\osc2FreqLFOTopRatio, osc2FreqLFOTopRatio); });
+      synthGroup.set(\osc2FreqLFO1TopRatio, osc2FreqLFO1TopRatio); });
   }
 
-  setOsc2PulseWidthLFOBottom { | bottom = 0.0 |
-    osc2PulseWidthLFOBottom = bottom;
+  setOsc2PulseWidthLFO1Bottom { | bottom = 0.0 |
+    osc2PulseWidthLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\osc2PulseWidthLFOBottom, osc2PulseWidthLFOBottom); });
+      synthGroup.set(\osc2PulseWidthLFO1Bottom, osc2PulseWidthLFO1Bottom); });
   }
 
-  setOsc2PulseWidthLFOTop { | top = 0.0 |
-    osc2PulseWidthLFOTop = top;
+  setOsc2PulseWidthLFO1Top { | top = 0.0 |
+    osc2PulseWidthLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\osc2PulseWidthLFOTop, osc2PulseWidthLFOTop); });
+      synthGroup.set(\osc2PulseWidthLFO1Top, osc2PulseWidthLFO1Top); });
   }
 
-  setOsc2AmpLFOBottom { | bottom = 1.0 |
-    osc2AmpLFOBottom = bottom;
+  setOsc2AmpLFO1Bottom { | bottom = 1.0 |
+    osc2AmpLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\osc2AmpLFOBottom, osc2AmpLFOBottom); });
+      synthGroup.set(\osc2AmpLFO1Bottom, osc2AmpLFO1Bottom); });
   }
 
-  setOsc2AmpLFOTop { | top = 1.0 |
-    osc2AmpLFOTop = top;
+  setOsc2AmpLFO1Top { | top = 1.0 |
+    osc2AmpLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\osc2AmpLFOTop, osc2AmpLFOTop); });
+      synthGroup.set(\osc2AmpLFO1Top, osc2AmpLFO1Top); });
   }
 
-  setOsc2WaveformLFOBottom { | bottom = 0.0 |
-    osc2WaveformLFOBottom = bottom;
+  setOsc2WaveformLFO1Bottom { | bottom = 0.0 |
+    osc2WaveformLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\osc2WaveformLFOBottom, osc2WaveformLFOBottom); });
+      synthGroup.set(\osc2WaveformLFO1Bottom, osc2WaveformLFO1Bottom); });
   }
 
-  setOsc2WaveformLFOTop { | top = 0.0 |
-    osc2WaveformLFOTop = top;
+  setOsc2WaveformLFO1Top { | top = 0.0 |
+    osc2WaveformLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\osc2WaveformLFOTop, osc2WaveformLFOTop); });
+      synthGroup.set(\osc2WaveformLFO1Top, osc2WaveformLFO1Top); });
   }
 
   // Oscillator 2 LFO 2:
@@ -615,28 +615,28 @@
 
   // Noise Oscillator LFO 1:
 
-  setNoiseOscAmpLFOBottom { | bottom = 1.0 |
-    noiseOscAmpLFOBottom = bottom;
+  setNoiseOscAmpLFO1Bottom { | bottom = 1.0 |
+    noiseOscAmpLFO1Bottom = bottom;
     if( applyMode == true, {
-      synthGroup.set(\noiseOscAmpLFOBottom, noiseOscAmpLFOBottom); });
+      synthGroup.set(\noiseOscAmpLFO1Bottom, noiseOscAmpLFO1Bottom); });
   }
 
-  setNoiseOscAmpLFOTop { | top = 1.0 |
-    noiseOscAmpLFOTop = top;
+  setNoiseOscAmpLFO1Top { | top = 1.0 |
+    noiseOscAmpLFO1Top = top;
     if( applyMode == true, {
-      synthGroup.set(\noiseOscAmpLFOTop, noiseOscAmpLFOTop); });
+      synthGroup.set(\noiseOscAmpLFO1Top, noiseOscAmpLFO1Top); });
   }
 
-  setNoiseOscFilterLFOBottomRatio { | ratio = 1.0 |
-    noiseOscFilterLFOBottomRatio = ratio;
+  setNoiseOscFilterLFO1BottomRatio { | ratio = 1.0 |
+    noiseOscFilterLFO1BottomRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\noiseOscFilterLFOBottomRatio, noiseOscFilterLFOBottomRatio); });
+      synthGroup.set(\noiseOscFilterLFO1BottomRatio, noiseOscFilterLFO1BottomRatio); });
   }
 
-  setNoiseOscFilterLFOTopRatio { | ratio = 1.0 |
-    noiseOscFilterLFOTopRatio = ratio;
+  setNoiseOscFilterLFO1TopRatio { | ratio = 1.0 |
+    noiseOscFilterLFO1TopRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\noiseOscFilterLFOTopRatio, noiseOscFilterLFOTopRatio); });
+      synthGroup.set(\noiseOscFilterLFO1TopRatio, noiseOscFilterLFO1TopRatio); });
   }
 
   // Noise Oscillator LFO 2:
@@ -667,67 +667,67 @@
 
   //// LFO1:
   setLFO1Freq { | freq = 1 |
-    lfoFreq = freq;
+    lfo1Freq = freq;
     if( applyMode == true, {
-      synthGroup.set(\lfoFreq, lfoFreq); });
+      synthGroup.set(\lfo1Freq, lfo1Freq); });
   }
 
   setLFO1Waveform { | waveform = 'sine' |
-    if( waveform.isInteger || waveform.isFloat, { lfoWaveform = waveform },
+    if( waveform.isInteger || waveform.isFloat, { lfo1Waveform = waveform },
       {
         switch(waveform,
-          { 'sine' }, { lfoWaveform = 0 },
-          { 'saw' }, { lfoWaveform = 1 },
-          { 'revSaw' }, { lfoWaveform = 2 },
-          { 'rect' }, { lfoWaveform = 3 },
-          { 'sampleAndHold' }, { lfoWaveform = 4 },
-          { 'noise' }, { lfoWaveform = 5 }
+          { 'sine' }, { lfo1Waveform = 0 },
+          { 'saw' }, { lfo1Waveform = 1 },
+          { 'revSaw' }, { lfo1Waveform = 2 },
+          { 'rect' }, { lfo1Waveform = 3 },
+          { 'sampleAndHold' }, { lfo1Waveform = 4 },
+          { 'noise' }, { lfo1Waveform = 5 }
         );
     });
     if( applyMode == true, {
-      synthGroup.set(\lfoWaveform, lfoWaveform); });
+      synthGroup.set(\lfo1Waveform, lfo1Waveform); });
   }
 
-  setLFOPulseWidth { | pulseWidth = 0.5 |
-    lfoPulseWidth = pulseWidth;
+  setLFO1PulseWidth { | pulseWidth = 0.5 |
+    lfo1PulseWidth = pulseWidth;
     if( applyMode == true, {
-      synthGroup.set(\lfoPulseWidth, lfoPulseWidth); });
+      synthGroup.set(\lfo1PulseWidth, lfo1PulseWidth); });
   }
 
-  setLFOEnvType { | type = 'none' |
+  setLFO1EnvType { | type = 'none' |
     switch(type,
-      { 'none' }, { lfoEnvType = 0 },
-      { 'attack' }, { lfoEnvType = 1 },
-      { 'release' }, { lfoEnvType = 2 },
-      { 'attackAndRelease' }, { lfoEnvType = 3 }
+      { 'none' }, { lfo1EnvType = 0 },
+      { 'attack' }, { lfo1EnvType = 1 },
+      { 'release' }, { lfo1EnvType = 2 },
+      { 'attackAndRelease' }, { lfo1EnvType = 3 }
     );
-    if( type.isInteger, { lfoEnvType = type; });
+    if( type.isInteger, { lfo1EnvType = type; });
     if( applyMode == true, {
-      synthGroup.set(\lfoEnvType, lfoEnvType); });
+      synthGroup.set(\lfo1EnvType, lfo1EnvType); });
   }
 
-  setLFOAttackTime { | attack = 0.05 |
-    lfoAttackTime = attack;
+  setLFO1AttackTime { | attack = 0.05 |
+    lfo1AttackTime = attack;
     if( applyMode == true, {
-      synthGroup.set(\lfoAttackTime, lfoAttackTime); });
+      synthGroup.set(\lfo1AttackTime, lfo1AttackTime); });
   }
 
-  setLFOReleaseTime { | release = 0.05 |
-    lfoReleaseTime = release;
+  setLFO1ReleaseTime { | release = 0.05 |
+    lfo1ReleaseTime = release;
     if( applyMode == true, {
-      synthGroup.set(\lfoReleaseTime, lfoReleaseTime); });
+      synthGroup.set(\lfo1ReleaseTime, lfo1ReleaseTime); });
   }
 
-  setLFOFreqLFO2BottomRatio { | ratio = 1.0 |
-    lfoFreqLFO2BottomRatio = ratio;
+  setLFO1FreqLFO2BottomRatio { | ratio = 1.0 |
+    lfo1FreqLFO2BottomRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\lfoFreqLFO2BottomRatio, lfoFreqLFO2BottomRatio); });
+      synthGroup.set(\lfo1FreqLFO2BottomRatio, lfo1FreqLFO2BottomRatio); });
   }
 
-  setLFOFreqLFO2TopRatio { | ratio = 1.0 |
-    lfoFreqLFO2TopRatio = ratio;
+  setLFO1FreqLFO2TopRatio { | ratio = 1.0 |
+    lfo1FreqLFO2TopRatio = ratio;
     if( applyMode == true, {
-      synthGroup.set(\lfoFreqLFO2TopRatio, lfoFreqLFO2TopRatio); });
+      synthGroup.set(\lfo1FreqLFO2TopRatio, lfo1FreqLFO2TopRatio); });
   }
 
   // LFO 2:

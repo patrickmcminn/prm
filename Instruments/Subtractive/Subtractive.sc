@@ -51,6 +51,10 @@ Subtractive : IM_Module {
 
   var <pan, <panLFO1Bottom, <panLFO1Top, <panLFO2Bottom, <panLFO2Top, <amp;
 
+  var <lfo2Freq, <lfo2PulseWidth, <lfo2Waveform;
+
+  var <parameterArray, presetDict;
+
   var server;
 
   var <sequencerDict, <sequencerClock, <tempo, <beats;
@@ -69,6 +73,7 @@ Subtractive : IM_Module {
       this.prInitializeParameters;
 
       synthDict = IdentityDictionary.new;
+      presetDict = IdentityDictionary.new;
       orderArray = Array.fill(maxVoices, { nil });
       presetDict = IdentityDictionary.new;
       sequencerDict = IdentityDictionary.new;

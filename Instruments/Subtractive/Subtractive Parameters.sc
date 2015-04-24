@@ -44,6 +44,8 @@
     pan = 0;
     panLFO1Bottom = 0.0; panLFO1Top = 0.0; panLFO2Bottom = 0.0; panLFO2Top = 0.0;
 
+    lfo2Freq = 1; lfo2PulseWidth = 0.5; lfo2Waveform = 0;
+
     tempo = 1; beats = 0;
 
   }
@@ -296,8 +298,8 @@
       { 2 }, { this.setOsc1OctaveMul(0.5) },
       { 3 }, { this.setOsc1OctaveMul(1) },
       { 4 }, { this.setOsc1OctaveMul(2) },
-      { 5 }, { this.setOsc1OctaveMul(3) },
-      { 6 }, { this.setOsc1OctaveMul(4) }
+      { 5 }, { this.setOsc1OctaveMul(4) },
+      { 6 }, { this.setOsc1OctaveMul(8) }
     );
   }
 
@@ -467,8 +469,8 @@
       { 2 }, { this.setOsc2OctaveMul(0.5) },
       { 3 }, { this.setOsc2OctaveMul(1) },
       { 4 }, { this.setOsc2OctaveMul(2) },
-      { 5 }, { this.setOsc2OctaveMul(3) },
-      { 6 }, { this.setOsc2OctaveMul(4) }
+      { 5 }, { this.setOsc2OctaveMul(4) },
+      { 6 }, { this.setOsc2OctaveMul(8) }
     );
   }
 
@@ -732,100 +734,176 @@
 
   // LFO 2:
   setLFO2Freq { | freq = 1.0 |
-    lfo.set(\freq, freq);
+    lfo2Freq = freq;
+    lfo.set(\freq, lfo2Freq);
   }
 
 
   setLFO2PulseWidth { | width = 0.5 |
-    lfo.set(\lfoPulseWidth, width);
+    lfo2PulseWidth = width;
+    lfo.set(\lfoPulseWidth, lfo2PulseWidth);
   }
 
   setLFO2Waveform { | waveform = 'sine' |
-    if( waveform.isInteger || waveform.isFloat, { lfo.set(\lfoWaveform, waveform) },
+    if( waveform.isInteger || waveform.isFloat, { lfo.set(\lfoWaveform, waveform); lfo2Waveform = waveform; },
       {
         switch(waveform,
-          { 'sine' }, { lfo.set(\lfoWaveform, 0); },
-          { 'saw' }, { lfo.set(\lfoWaveform, 1); },
-          { 'revSaw' }, { lfo.set(\lfoWaveform, 2); },
-          { 'rect' }, { lfo.set(\lfoWaveform, 3); },
-          { 'sampleAndHold' }, { lfo.set(\lfoWaveform, 4); },
-          { 'noise' }, { lfo.set(\lfoWaveform, 5); }
+          { 'sine' }, { lfo.set(\lfoWaveform, 0); lfo2Waveform = 0; },
+          { 'saw' }, { lfo.set(\lfoWaveform, 1); lfo2Waveform = 1; },
+          { 'revSaw' }, { lfo.set(\lfoWaveform, 2); lfo2Waveform = 2;},
+          { 'rect' }, { lfo.set(\lfoWaveform, 3); lfo2Waveform = 3;},
+          { 'sampleAndHold' }, { lfo.set(\lfoWaveform, 4); lfo2Waveform = 4;},
+          { 'noise' }, { lfo.set(\lfoWaveform, 5); lfo2Waveform = 5; }
         );
     });
   }
 }
-/*
+
 //////// Presets:
 + Subtractive {
 
-  printAllParameters {
-    ("lfoFreqLFOBottomRatio = " + lfoFreqLFOBottomRatio++";" +  "lfoFreqLFOTopRatio = " + lfoFreqLFOTopRatio++";" +
-      "lfoWaveform =" + lfoWaveform++";" + "lfoFreq = " + lfoFreq++";").postln;
-    ("lfoPulseWidth =" + lfoPulseWidth++";" + "lfoEnvType =" + lfoEnvType++";" +  "lfoAttackTime =" + lfoAttackTime++";"
-      + "lfoReleaseTime = " + lfoReleaseTime++";").postln;
-    ("osc1OctaveMul =" + osc1OctaveMul++";" + "osc1FreqEnvStartRatio =" + osc1FreqEnvStartRatio++";" +
-      "osc1FreqEnvEndRatio =" + osc1FreqEnvEndRatio++";" + "osc1FreqEnvTime =" + osc1FreqEnvTime ++";").postln;
-    ("osc1FreqLFOBottomRatio =" + osc1FreqLFOBottomRatio++";" + "osc1FreqLFOTopRatio =" + osc1FreqLFOTopRatio++";" +
-      "osc1FreqLFO2BottomRatio =" + osc1FreqLFO2BottomRatio++";"+
-      "osc1FreqLFO2TopRatio =" + osc1FreqLFO2TopRatio++";").postln;
-    ("osc1PulseWidthLFOBottom ="+osc1PulseWidthLFOBottom++";"+"osc1PulseWidthLFOTop ="+osc1PulseWidthLFOTop++";"+
-      "osc1PulseWidthLFO2Bottom ="+osc1PulseWidthLFO2Bottom++";"+
-      "osc1PulseWidthLFO2Top ="+osc1PulseWidthLFO2Top++";").postln;
-    ("osc1AmpLFOBottom ="+osc1AmpLFOBottom++";"+ "osc1AmpLFOTop ="+osc1AmpLFOTop++";"+
-      "osc1AmpLFO2Bottom ="+osc1AmpLFO2Bottom++";"+ "osc1AmpLFO2Top ="+osc1AmpLFO2Top++";").postln;
-    ("osc1WaveformLFOBottom ="+osc1WaveformLFOBottom++";"+ "osc1WaveformLFOTop ="+osc1WaveformLFOTop++";"+
-      "osc1WaveformLFO2Bottom ="+ osc1WaveformLFO2Bottom++";"+
-      "osc1WaveformLFO2Top ="+ osc1WaveformLFO2Top++";").postln;
-    ("osc1Waveform ="+osc1Waveform++";"+"osc1PulseWidth ="+osc1PulseWidth++";"+
-      "osc1Amp ="+osc1Amp++";"+"osc1SubAmp ="+osc1SubAmp++";").postln;
-/*
-        \osc2OctaveMul, osc2OctaveMul, \osc2DetuneCents, osc2DetuneCents,
-        \osc2FreqEnvStartRatio, osc2FreqEnvStartRatio,
-        \osc2FreqEnvEndRatio , osc2FreqEnvEndRatio, \osc2FreqEnvTime, osc2FreqEnvTime,
-        \osc2FreqLFOBottomRatio, osc2FreqLFOBottomRatio, \osc2FreqLFOTopRatio, osc2FreqLFOTopRatio,
-        \osc2FreqLFO2BottomRatio, osc2FreqLFO2BottomRatio,
-        \osc2FreqLFO2TopRatio, osc2FreqLFO2TopRatio,
-        \osc2PulseWidthLFOBottom, osc2PulseWidthLFOBottom,
-        \osc2PulseWidthLFOTop, osc2PulseWidthLFOTop,
-        \osc2PulseWidthLFO2Bottom, osc2PulseWidthLFO2Bottom,
-        \osc2PulseWidthLFO2Top, osc2PulseWidthLFOTop,
-        \osc2AmpLFOBottom, osc2AmpLFOBottom, \osc2AmpLFOTop, osc2AmpLFOTop,
-        \osc2AmpLFO2Bottom, osc2AmpLFO2Bottom, \osc2AmpLFO2Top, osc2AmpLFO2Top,
-        \osc2WaveformLFOBottom, osc2WaveformLFOBottom, \osc2WaveformLFOTop, osc2WaveformLFOTop,
-        \osc2WaveformLFO2Bottom, osc2WaveformLFO2Bottom, \osc2WaveformLFO2Top, osc2WaveformLFO2Top,
-        \osc2Waveform, osc2Waveform, \osc2PulseWidth, osc2PulseWidth,
-        \osc2Amp, osc2Amp, \osc2SubAmp, osc2SubAmp,
+  prMakeParameterArray {
+    parameterArray =
+    [
+      lfo1FreqLFO2BottomRatio, lfo1FreqLFO2TopRatio, lfo1Waveform,
+      lfo1Freq, lfo1PulseWidth, lfo1EnvType, lfo1AttackTime, lfo1ReleaseTime,
 
-        \noiseOscAmpLFOBottom, noiseOscAmpLFOBottom, \noiseOscAmpLFOTop, noiseOscAmpLFOTop,
-        \noiseOscAmpLFO2Bottom, noiseOscAmpLFO2Bottom, \noiseOscAmpLFO2Top, noiseOscAmpLFO2Top,
-        \noiseOscFilterLFOBottomRatio, noiseOscFilterLFOBottomRatio,
-        \noiseOscFilterLFOTopRatio, noiseOscFilterLFOTopRatio,
-        \noiseOscFilterLFO2BottomRatio, noiseOscFilterLFO2BottomRatio,
-        \noiseOscFilterLFO2TopRatio, noiseOscFilterLFO2TopRatio,
-        \noiseOscAmp, noiseOscAmp, \noiseOscCutoff, noiseOscCutoff,
+      lfo2Freq, lfo2PulseWidth, lfo2Waveform,
 
-        \filterEnvAttackRatio, filterEnvAttackRatio, \filterEnvPeakRatio, filterEnvPeakRatio,
-        \filterEnvSustainRatio, filterEnvSustainRatio,
-        \filterEnvReleaseRatio, filterEnvReleaseRatio,
-        \filterEnvAttackTime, filterEnvAttackTime,
-        \filterEnvDecayTime, filterEnvDecayTime,
-        \filterEnvReleaseTime, filterEnvReleaseTime, \filterEnvLoop, filterEnvLoop,
-        \filterCutoffLFOBottomRatio, filterCutoffLFOBottomRatio,
-        \filterCutoffLFOTopRatio, filterCutoffLFOTopRatio,
-        \filterCutoffLFO2BottomRatio, filterCutoffLFO2BottomRatio,
-        \filterCutoffLFO2TopRatio, filterCutoffLFO2TopRatio,
-        \filterResLFOBottom, filterResLFOBottom, \filterResLFOTop, filterResLFOTop,
-        \filterResLFO2Bottom, filterResLFO2Bottom, \filterResLFO2Top, filterResLFO2Top,
-        \filterCutoff, filterCutoff, \filterRes, filterRes, \filterType, filterType,
+      osc1OctaveMul, osc1FreqEnvStartRatio, osc1FreqEnvEndRatio, osc1FreqEnvTime,
+      osc1FreqLFO1BottomRatio, osc1FreqLFO1TopRatio, osc1FreqLFO2BottomRatio,
+      osc1FreqLFO2TopRatio, osc1PulseWidthLFO1Bottom, osc1PulseWidthLFO1Top,
+      osc1PulseWidthLFO2Bottom, osc1PulseWidthLFO2Top, osc1AmpLFO1Bottom, osc1AmpLFO1Top,
+      osc1AmpLFO2Bottom, osc1AmpLFO2Top, osc1WaveformLFO1Bottom, osc1WaveformLFO1Top,
+      osc1WaveformLFO2Bottom, osc1WaveformLFO2Top, osc1Waveform, osc1PulseWidth,
+      osc1Amp, osc1SubAmp,
 
-        \ampLFOBottom, ampLFOBottom, \ampLFOTop, ampLFOTop,
-        \ampLFO2Bottom, ampLFO2Bottom,
-        \ampLFO2Top, ampLFO2Top, \attackTime, attackTime, \decayTime, decayTime,
-        \sustainLevel, sustainLevel, \releaseTime, releaseTime,
+      osc2OctaveMul, osc2DetuneCents,
+      osc2FreqEnvStartRatio, osc2FreqEnvEndRatio, osc2FreqEnvTime,
+      osc2FreqLFO1BottomRatio, osc2FreqLFO1TopRatio, osc2FreqLFO2BottomRatio, osc2FreqLFO2TopRatio,
+      osc2PulseWidthLFO1Bottom, osc2PulseWidthLFO1Top, osc2PulseWidthLFO2Bottom, osc2PulseWidthLFO2Top,
+      osc2AmpLFO1Bottom, osc2AmpLFO1Top, osc2AmpLFO2Bottom, osc2AmpLFO2Top,
+      osc2WaveformLFO1Bottom, osc2WaveformLFO1Top, osc2WaveformLFO2Bottom, osc2WaveformLFO2Top,
+      osc2Waveform, osc2PulseWidth, osc2Amp, osc2SubAmp,
 
-        \pan, pan, \panLFOBottom, panLFOBottom, \panLFOTop, panLFOTop,
-        \panLFO2Bottom, panLFO2Bottom, \panLFO2Top, panLFO2Top
-    */
+      noiseOscAmpLFO1Bottom, noiseOscAmpLFO1Top, noiseOscAmpLFO2Bottom, noiseOscAmpLFO2Top,
+      noiseOscFilterLFO1BottomRatio, noiseOscFilterLFO1TopRatio, noiseOscFilterLFO2BottomRatio,
+      noiseOscFilterLFO2TopRatio,
+      noiseOscAmp, noiseOscCutoff,
+
+      filterEnvAttackRatio, filterEnvPeakRatio, filterEnvSustainRatio, filterEnvReleaseRatio,
+      filterEnvAttackTime, filterEnvDecayTime, filterEnvReleaseTime,
+      filterEnvLoop,
+      filterCutoffLFO1BottomRatio, filterCutoffLFO1TopRatio, filterCutoffLFO2BottomRatio,
+      filterCutoffLFO2TopRatio, filterResLFO1Bottom, filterResLFO1Top,
+      filterResLFO2Bottom, filterResLFO2Top,
+      filterDrive, filterCutoff, filterRes, filterType,
+
+      ampLFO1Bottom, ampLFO1Top, ampLFO2Bottom, ampLFO2Top,
+      attackTime, decayTime, sustainLevel, releaseTime,
+
+      pan,
+      panLFO1Bottom, panLFO1Top, panLFO2Bottom, panLFO2Top,
+
+    ];
   }
+
+  printAllParameters {
+    this.prMakeParameterArray;
+    parameterArray.postln;
+  }
+
+  savePreset { | name = 'myPreset', array |
+    presetDict[name] = array;
+  }
+
+  saveCurrentAsPreset { | name = 'myPreset' |
+    this.prMakeParameterArray;
+    parameterArray.postln;
+    presetDict[name] = parameterArray;
+  }
+
+  loadPreset { | array |
+
+    // LFO 1:
+    this.setLFO1FreqLFO2BottomRatio(array.at(0));
+    this.setLFO1FreqLFO2TopRatio(array.at(1));
+    this.setLFO1Waveform(array.at(2));
+    this.setLFO1Freq(array.at(3));
+    this.setLFO1PulseWidth(array.at(4));
+    this.setLFO1EnvType(array.at(5));
+    this.setLFO1AttackTime(array.at(6));
+    this.setLFO1ReleaseTime(array.at(7));
+
+    this.setLFO2Freq(array.at(8));
+    this.setLFO2PulseWidth(array.at(9));
+    this.setLFO2Waveform(array.at(10));
+
+    this.setOsc1OctaveMul(array.at(11));
+    this.setOsc1FreqEnvStartRatio(array.at(12));
+    this.setOsc1FreqEnvEndRatio(array.at(13));
+    this.setOsc1FreqEnvTime(array.at(14));
+    this.setOsc1FreqLFO1BottomRatio(array.at(15));
+    this.setOsc1FreqLFO1TopRatio(array.at(16));
+    this.setOsc1FreqLFO2BottomRatio(array.at(17));
+    this.setOsc1FreqLFO2TopRatio(array.at(18));
+    this.setOsc1PulseWidthLFO1Bottom(array.at(19));
+    this.setOsc1PulseWidthLFO1Top(array.at(20));
+    this.setOsc1PulseWidthLFO2Bottom(array.at(21));
+    this.setOsc1PulseWidthLFO2Top(array.at(22));
+    this.setOsc1AmpLFO1Bottom(array.at(23));
+    this.setOsc1AmpLFO1Top(array.at(24));
+    this.setOsc1AmpLFO2Bottom(array.at(25));
+    this.setOsc1AmpLFO2Top(array.at(26));
+    this.setOsc1WaveformLFO1Bottom(array.at(27));
+    this.setOsc1WaveformLFO1Top(array.at(28));
+    this.setOsc1WaveformLFO2Bottom(array.at(29));
+    this.setOsc1WaveformLFO2Top(array.at(30));
+    this.setOsc1Waveform(array.at(31));
+    this.setOsc1PulseWidth(array.at(32));
+    this.setOsc1Amp(array.at(33));
+    this.setOsc1SubVol(array.at(34).ampdb);
+
+    this.setOsc2OctaveMul(array.at(35));
+    this.setOsc2FreqEnvStartRatio(array.at(36));
+    this.setOsc2FreqEnvEndRatio(array.at(37));
+    this.setOsc2FreqEnvTime(array.at(38));
+    this.setOsc2FreqLFO1BottomRatio(array.at(39));
+    this.setOsc2FreqLFO1TopRatio(array.at(40));
+    this.setOsc2FreqLFO2BottomRatio(array.at(41));
+    this.setOsc2FreqLFO2TopRatio(array.at(42));
+    this.setOsc2PulseWidthLFO1Bottom(array.at(43));
+    this.setOsc2PulseWidthLFO1Top(array.at(44));
+    this.setOsc2PulseWidthLFO2Bottom(array.at(45));
+    this.setOsc2PulseWidthLFO2Top(array.at(46));
+    this.setOsc2AmpLFO1Bottom(array.at(47));
+    this.setOsc2AmpLFO1Top(array.at(48));
+    this.setOsc2AmpLFO2Bottom(array.at(49));
+    this.setOsc2AmpLFO2Top(array.at(50));
+    this.setOsc2WaveformLFO1Bottom(array.at(51));
+    this.setOsc2WaveformLFO1Top(array.at(52));
+    this.setOsc2WaveformLFO2Bottom(array.at(53));
+    this.setOsc2WaveformLFO2Top(array.at(54));
+    this.setOsc2Waveform(array.at(55));
+    this.setOsc2PulseWidth(array.at(56));
+    this.setOsc2Amp(array.at(57));
+    this.setOsc2SubVol(array.at(58).ampdb);
+
+    this.setNoiseOscAmpLFO1Bottom(array.at(59));
+    this.setNoiseOscAmpLFO1Top(array.at(60));
+    this.setNoiseOscAmpLFO2Bottom(array.at(61));
+    this.setNoiseOscAmpLFO2Top(array.at(62));
+    this.setNoiseOscFilterLFO1BottomRatio(array.at(63));
+    this.setNoiseOscFilterLFO1TopRatio(array.at(64));
+    this.setNoiseOscFilterLFO2BottomRatio(array.at(65));
+    this.setNoiseOscFilterLFO2TopRatio(array.at(66));
+    this.setNoiseOscAmp(array.at(67));
+    this.setNoiseOscCutoff(array.at(68));
+
+
+
+  }
+
 }
-*/
+
+ 

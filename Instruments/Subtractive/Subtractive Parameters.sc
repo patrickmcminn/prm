@@ -865,40 +865,79 @@
     this.setOsc1SubVol(array.at(34).ampdb);
 
     this.setOsc2OctaveMul(array.at(35));
-    this.setOsc2FreqEnvStartRatio(array.at(36));
-    this.setOsc2FreqEnvEndRatio(array.at(37));
-    this.setOsc2FreqEnvTime(array.at(38));
-    this.setOsc2FreqLFO1BottomRatio(array.at(39));
-    this.setOsc2FreqLFO1TopRatio(array.at(40));
-    this.setOsc2FreqLFO2BottomRatio(array.at(41));
-    this.setOsc2FreqLFO2TopRatio(array.at(42));
-    this.setOsc2PulseWidthLFO1Bottom(array.at(43));
-    this.setOsc2PulseWidthLFO1Top(array.at(44));
-    this.setOsc2PulseWidthLFO2Bottom(array.at(45));
-    this.setOsc2PulseWidthLFO2Top(array.at(46));
-    this.setOsc2AmpLFO1Bottom(array.at(47));
-    this.setOsc2AmpLFO1Top(array.at(48));
-    this.setOsc2AmpLFO2Bottom(array.at(49));
-    this.setOsc2AmpLFO2Top(array.at(50));
-    this.setOsc2WaveformLFO1Bottom(array.at(51));
-    this.setOsc2WaveformLFO1Top(array.at(52));
-    this.setOsc2WaveformLFO2Bottom(array.at(53));
-    this.setOsc2WaveformLFO2Top(array.at(54));
-    this.setOsc2Waveform(array.at(55));
-    this.setOsc2PulseWidth(array.at(56));
-    this.setOsc2Amp(array.at(57));
-    this.setOsc2SubVol(array.at(58).ampdb);
+    this.setOsc2DetuneCents(array.at(36));
+    this.setOsc2FreqEnvStartRatio(array.at(37));
+    this.setOsc2FreqEnvEndRatio(array.at(38));
+    this.setOsc2FreqEnvTime(array.at(39));
+    this.setOsc2FreqLFO1BottomRatio(array.at(40));
+    this.setOsc2FreqLFO1TopRatio(array.at(41));
+    this.setOsc2FreqLFO2BottomRatio(array.at(42));
+    this.setOsc2FreqLFO2TopRatio(array.at(43));
+    this.setOsc2PulseWidthLFO1Bottom(array.at(44));
+    this.setOsc2PulseWidthLFO1Top(array.at(45));
+    this.setOsc2PulseWidthLFO2Bottom(array.at(46));
+    this.setOsc2PulseWidthLFO2Top(array.at(47));
+    this.setOsc2AmpLFO1Bottom(array.at(48));
+    this.setOsc2AmpLFO1Top(array.at(49));
+    this.setOsc2AmpLFO2Bottom(array.at(50));
+    this.setOsc2AmpLFO2Top(array.at(51));
+    this.setOsc2WaveformLFO1Bottom(array.at(52));
+    this.setOsc2WaveformLFO1Top(array.at(53));
+    this.setOsc2WaveformLFO2Bottom(array.at(54));
+    this.setOsc2WaveformLFO2Top(array.at(55));
+    this.setOsc2Waveform(array.at(56));
+    this.setOsc2PulseWidth(array.at(57));
+    this.setOsc2Amp(array.at(58));
+    this.setOsc2SubVol(array.at(59).ampdb);
 
-    this.setNoiseOscAmpLFO1Bottom(array.at(59));
-    this.setNoiseOscAmpLFO1Top(array.at(60));
-    this.setNoiseOscAmpLFO2Bottom(array.at(61));
-    this.setNoiseOscAmpLFO2Top(array.at(62));
-    this.setNoiseOscFilterLFO1BottomRatio(array.at(63));
-    this.setNoiseOscFilterLFO1TopRatio(array.at(64));
-    this.setNoiseOscFilterLFO2BottomRatio(array.at(65));
-    this.setNoiseOscFilterLFO2TopRatio(array.at(66));
-    this.setNoiseOscAmp(array.at(67));
-    this.setNoiseOscCutoff(array.at(68));
+    this.setNoiseOscAmpLFO1Bottom(array.at(60));
+    this.setNoiseOscAmpLFO1Top(array.at(61));
+    this.setNoiseOscAmpLFO2Bottom(array.at(62));
+    this.setNoiseOscAmpLFO2Top(array.at(63));
+    this.setNoiseOscFilterLFO1BottomRatio(array.at(64));
+    this.setNoiseOscFilterLFO1TopRatio(array.at(65));
+    this.setNoiseOscFilterLFO2BottomRatio(array.at(66));
+    this.setNoiseOscFilterLFO2TopRatio(array.at(67));
+    this.setNoiseOscAmp(array.at(68));
+    this.setNoiseOscCutoff(array.at(69));
+
+    this.setFilterEnvAttackRatio(array.at(70));
+    this.setFilterEnvPeakRatio(array.at(71));
+    this.setFilterEnvSustainRatio(array.at(72));
+    this.setFilterEnvReleaseRatio(array.at(73));
+    this.setFilterEnvAttackTime(array.at(74));
+    this.setFilterEnvDecayTime(array.at(75));
+    this.setFilterEnvReleaseTime(array.at(76));
+    this.setFilterEnvLoop(array.at(77));
+    this.setFilterCutoffLFO1BottomRatio(array.at(78));
+    this.setFilterCutoffLFO1TopRatio(array.at(79));
+    this.setFilterCutoffLFO2BottomRatio(array.at(80));
+    this.setFilterCutoffLFO2TopRatio(array.at(81));
+    this.setFilterResLFO1Bottom(array.at(82));
+    this.setFilterResLFO1Top(array.at(83));
+    this.setFilterResLFO2Bottom(array.at(84));
+    this.setFilterResLFO2Top(array.at(85));
+    this.setFilterDrive(array.at(86));
+    this.setFilterCutoff(array.at(87));
+    this.setFilterRes(array.at(88));
+    this.setFilterType(array.at(89));
+
+    this.setAmplitudeLFO1Bottom(array.at(90));
+    this.setAmplitudeLFO1Top(array.at(91));
+    this.setAmplitudeLFO2Bottom(array.at(92));
+    this.setAmplitudeLFO2Top(array.at(93));
+    this.setAttackTime(array.at(94));
+    this.setDecayTime(array.at(95));
+    this.setSustainLevel(array.at(96));
+    this.setReleaseTime(array.at(97));
+
+    this.setPan(array.at(98));
+    this.setPanLFO1Bottom(array.at(99));
+    this.setPanLFO1Top(array.at(100));
+    this.setPanLFO2Bottom(array.at(101));
+    this.setPanLFO2Top(array.at(102));
+
+
 
 
 

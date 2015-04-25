@@ -735,25 +735,25 @@
   // LFO 2:
   setLFO2Freq { | freq = 1.0 |
     lfo2Freq = freq;
-    lfo.set(\freq, lfo2Freq);
+    lfo.set(\lfo2Freq, lfo2Freq);
   }
 
 
   setLFO2PulseWidth { | width = 0.5 |
     lfo2PulseWidth = width;
-    lfo.set(\lfoPulseWidth, lfo2PulseWidth);
+    lfo.set(\lfo2PulseWidth, lfo2PulseWidth);
   }
 
   setLFO2Waveform { | waveform = 'sine' |
-    if( waveform.isInteger || waveform.isFloat, { lfo.set(\lfoWaveform, waveform); lfo2Waveform = waveform; },
+    if( waveform.isInteger || waveform.isFloat, { lfo.set(\lfo2Waveform, waveform); lfo2Waveform = waveform; },
       {
         switch(waveform,
-          { 'sine' }, { lfo.set(\lfoWaveform, 0); lfo2Waveform = 0; },
-          { 'saw' }, { lfo.set(\lfoWaveform, 1); lfo2Waveform = 1; },
-          { 'revSaw' }, { lfo.set(\lfoWaveform, 2); lfo2Waveform = 2;},
-          { 'rect' }, { lfo.set(\lfoWaveform, 3); lfo2Waveform = 3;},
-          { 'sampleAndHold' }, { lfo.set(\lfoWaveform, 4); lfo2Waveform = 4;},
-          { 'noise' }, { lfo.set(\lfoWaveform, 5); lfo2Waveform = 5; }
+          { 'sine' }, { lfo.set(\lfo2Waveform, 0); lfo2Waveform = 0; },
+          { 'saw' }, { lfo.set(\lfo2Waveform, 1); lfo2Waveform = 1; },
+          { 'revSaw' }, { lfo.set(\lfo2Waveform, 2); lfo2Waveform = 2;},
+          { 'rect' }, { lfo.set(\lfo2Waveform, 3); lfo2Waveform = 3;},
+          { 'sampleAndHold' }, { lfo.set(\lfo2Waveform, 4); lfo2Waveform = 4;},
+          { 'noise' }, { lfo.set(\lfo2Waveform, 5); lfo2Waveform = 5; }
         );
     });
   }
@@ -793,7 +793,7 @@
 
       filterEnvAttackRatio, filterEnvPeakRatio, filterEnvSustainRatio, filterEnvReleaseRatio,
       filterEnvAttackTime, filterEnvDecayTime, filterEnvReleaseTime,
-      filterEnvLoop,
+      if(filterEnvLoop == 1, { true }, { false }),
       filterCutoffLFO1BottomRatio, filterCutoffLFO1TopRatio, filterCutoffLFO2BottomRatio,
       filterCutoffLFO2TopRatio, filterResLFO1Bottom, filterResLFO1Top,
       filterResLFO2Bottom, filterResLFO2Top,
@@ -823,7 +823,8 @@
     presetDict[name] = parameterArray;
   }
 
-  loadPreset { | array |
+  setAllParameters { | array |
+
 
     // LFO 1:
     this.setLFO1FreqLFO2BottomRatio(array.at(0));
@@ -861,8 +862,9 @@
     this.setOsc1WaveformLFO2Top(array.at(30));
     this.setOsc1Waveform(array.at(31));
     this.setOsc1PulseWidth(array.at(32));
-    this.setOsc1Amp(array.at(33));
+    this.setOsc1Vol(array.at(33).ampdb);
     this.setOsc1SubVol(array.at(34).ampdb);
+
 
     this.setOsc2OctaveMul(array.at(35));
     this.setOsc2DetuneCents(array.at(36));
@@ -887,7 +889,7 @@
     this.setOsc2WaveformLFO2Top(array.at(55));
     this.setOsc2Waveform(array.at(56));
     this.setOsc2PulseWidth(array.at(57));
-    this.setOsc2Amp(array.at(58));
+    this.setOsc2Vol(array.at(58).ampdb);
     this.setOsc2SubVol(array.at(59).ampdb);
 
     this.setNoiseOscAmpLFO1Bottom(array.at(60));
@@ -898,7 +900,7 @@
     this.setNoiseOscFilterLFO1TopRatio(array.at(65));
     this.setNoiseOscFilterLFO2BottomRatio(array.at(66));
     this.setNoiseOscFilterLFO2TopRatio(array.at(67));
-    this.setNoiseOscAmp(array.at(68));
+    this.setNoiseOscVol(array.at(68).ampdb);
     this.setNoiseOscCutoff(array.at(69));
 
     this.setFilterEnvAttackRatio(array.at(70));
@@ -909,6 +911,7 @@
     this.setFilterEnvDecayTime(array.at(75));
     this.setFilterEnvReleaseTime(array.at(76));
     this.setFilterEnvLoop(array.at(77));
+
     this.setFilterCutoffLFO1BottomRatio(array.at(78));
     this.setFilterCutoffLFO1TopRatio(array.at(79));
     this.setFilterCutoffLFO2BottomRatio(array.at(80));
@@ -921,6 +924,7 @@
     this.setFilterCutoff(array.at(87));
     this.setFilterRes(array.at(88));
     this.setFilterType(array.at(89));
+
 
     this.setAmplitudeLFO1Bottom(array.at(90));
     this.setAmplitudeLFO1Top(array.at(91));
@@ -937,10 +941,10 @@
     this.setPanLFO2Bottom(array.at(101));
     this.setPanLFO2Top(array.at(102));
 
+  }
 
-
-
-
+  loadPreset { | name = 'myPreset' |
+    this.loadAllParameters(presetDict[name]);
   }
 
 }

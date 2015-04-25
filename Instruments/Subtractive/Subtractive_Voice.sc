@@ -47,7 +47,7 @@ Subtractive_Voice {
         \osc2PulseWidthLFO1Bottom, parent.osc2PulseWidthLFO1Bottom,
         \osc2PulseWidthLFO1Top, parent.osc2PulseWidthLFO1Top,
         \osc2PulseWidthLFO2Bottom, parent.osc2PulseWidthLFO2Bottom,
-        \osc2PulseWidthLFO2Top, parent.osc2PulseWidthLFOTop,
+        \osc2PulseWidthLFO2Top, parent.osc2PulseWidthLFO2Top,
         \osc2AmpLFO1Bottom, parent.osc2AmpLFO1Bottom, \osc2AmpLFO1Top, parent.osc2AmpLFO1Top,
         \osc2AmpLFO2Bottom, parent.osc2AmpLFO2Bottom, \osc2AmpLFO2Top, parent.osc2AmpLFO2Top,
         \osc2WaveformLFO1Bottom, parent.osc2WaveformLFO1Bottom, \osc2WaveformLFO1Top, parent.osc2WaveformLFO1Top,

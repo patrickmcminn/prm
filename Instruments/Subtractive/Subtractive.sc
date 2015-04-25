@@ -190,9 +190,9 @@ Subtractive : IM_Module {
       lfo1Noise2 = LFNoise2.kr(thisLFO1Freq);
       lfo1AttackEnv = EnvGen.kr(Env.new([0, 0, 1], [0, lfo1AttackTime], 'cubed', 1), gate);
       lfo1ReleaseEnv = EnvGen.kr(Env.cutoff(lfo1ReleaseTime, 1, 'cubed'), gate);
-      lfo1AttackAndReleaseEnv = EnvGen.kr(Env.asr(lfo1AttackTime, 1, lfo1ReleaseTime), gate);
-      lfo1AttackAndReleaseEnv = EnvGen.kr(Env.new([0, 0, 1, 0], [0, lfo1AttackTime, lfo1ReleaseTime], 'cubed', 1),
-        gate);
+      lfo1AttackAndReleaseEnv = EnvGen.kr(Env.asr(lfo1AttackTime, 1, lfo1ReleaseTime, curve: 'cubed'), gate);
+      //lfo1AttackAndReleaseEnv = EnvGen.kr(Env.new([0, 0, 1, 0], [0, lfo1AttackTime, lfo1ReleaseTime], 'cubed', 1),
+        //gate);
       lfo1 = SelectX.kr(lfo1Waveform, [lfo1Sine, lfo1Saw, lfo1RevSaw, lfo1Rect, lfo1Noise0, lfo1Noise2]);
       lfo1 = Select.kr(lfo1EnvType, [lfo1, lfo1 * lfo1AttackEnv, lfo1 * lfo1ReleaseEnv, lfo1 * lfo1AttackAndReleaseEnv]);
 

@@ -5,16 +5,16 @@ Subtractive_Voice {
   var server;
   var parent;
 
-  *new { | freq = 220, subtractive, group = nil, addAction = 'addToHead' |
-    ^super.new.prInit(freq, subtractive, group, addAction);
+  *new { | freq = 220, vol = -12, subtractive, group = nil, addAction = 'addToHead' |
+    ^super.new.prInit(freq, vol, subtractive, group, addAction);
   }
 
-  prInit { | freq = 220, subtractive, group, addAction |
+  prInit { | freq = 220, vol = -12, subtractive, group, addAction |
     server = Server.default;
     parent = subtractive;
     server.waitForBoot {
       synth = Synth(\prm_Subtractive_Voice, [
-        \outBus, parent.mixer.chanStereo(0), \lfo2InBus, parent.lfoBus, \amp, parent.amp, \freq, freq, \gate, 1,
+        \outBus, parent.mixer.chanStereo(0), \lfo2InBus, parent.lfoBus, \amp, vol.dbamp, \freq, freq, \gate, 1,
 
         \lfo1FreqLFO2BottomRatio, parent.lfo1FreqLFO2BottomRatio, \lfo1FreqLFO2TopRatio, parent.lfo1FreqLFO2TopRatio,
         \lfo1Waveform, parent.lfo1Waveform, \lfo1Freq, parent.lfo1Freq, \lfo1PulseWidth, parent.lfo1PulseWidth,

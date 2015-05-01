@@ -540,12 +540,12 @@ Subtractive : IM_Module {
     this.freeModule;
   }
 
-  playNote { | freq = 220 |
+  playNote { | freq = 220, vol = -12 |
     {
       var playTest, order;
       playTest = try { synthDict[freq] }.isPlaying;
       if( playTest == true, { synthDict[freq].steal(freq); }, {
-        synthDict[freq] = Subtractive_Voice.new(freq, this, synthGroup, \addToTail);
+        synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
         // voice allocation not working well:
         /*
         if( numVoices < maxVoices, {

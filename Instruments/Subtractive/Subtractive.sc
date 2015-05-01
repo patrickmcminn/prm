@@ -8,7 +8,7 @@ Subtractive : IM_Module {
 
   var <isLoaded;
 
-  var lfo, <synthDict, <synthGroup, orderArray, <lfoBus, nilBus, <maxVoices, numVoices, orderNum;
+  var lfo, <synthDict, <synthGroup, orderArray, <lfoBus, <maxVoices, numVoices, orderNum;
 
   var presetDict;
 
@@ -79,7 +79,6 @@ Subtractive : IM_Module {
       sequencerDict = IdentityDictionary.new;
       sequencerClock = TempoClock.new(tempo, beats);
       lfoBus = Bus.control;
-      nilBus = Bus.control;
       server.sync;
       lfo = Synth(\prm_Subtractive_LFO, [\outBus, lfoBus], relGroup, \addToHead);
       synthGroup = Group.new(lfo, \addAfter);
@@ -112,7 +111,6 @@ Subtractive : IM_Module {
       lfo1FreqLFO2BottomRatio = 1.0, lfo1FreqLFO2TopRatio = 1.0
       lfo1Waveform = 0, lfo1Freq = 1, lfo1PulseWidth = 0.5,
       lfo1EnvType = 0, lfo1AttackTime = 0.05, lfo1ReleaseTime = 0.05,
-      lfo1OutBus,
 
       osc1OctaveMul = 1,
       osc1FreqEnvStartRatio = 1.0, osc1FreqEnvEndRatio = 1.0, osc1FreqEnvTime = 0,
@@ -311,7 +309,6 @@ Subtractive : IM_Module {
       lfo1FreqLFO2BottomRatio = 1.0, lfo1FreqLFO2TopRatio = 1.0
       lfo1Waveform = 0, lfo1Freq = 1, lfo1PulseWidth = 0.5,
       lfo1EnvType = 0, lfo1AttackTime = 0.05, lfo1ReleaseTime = 0.05,
-      lfo1OutBus,
 
       osc1OctaveMul = 1,
       osc1FreqEnvStartRatio = 1.0, osc1FreqEnvEndRatio = 1.0, osc1FreqEnvTime = 0,
@@ -545,9 +542,6 @@ Subtractive : IM_Module {
       var playTest, order;
       playTest = try { synthDict[freq] }.isPlaying;
       if( playTest == true, { synthDict[freq].steal(freq); }, {
-        synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
-        // voice allocation not working well:
-        /*
         if( numVoices < maxVoices, {
           // assign synth to a the synth dict:
           synthDict[freq] = Subtractive_Voice.new(freq, this, synthGroup, \addToTail);
@@ -557,10 +551,8 @@ Subtractive : IM_Module {
           numVoices = numVoices + 1;
           // increment the order of voices:
           orderNum = orderNum + 1;
-
           },
           { this.prStealVoice(freq); });
-        */
       });
     }.fork;
   }
@@ -572,15 +564,9 @@ Subtractive : IM_Module {
       if( synthDict[freq].isPlaying == true, {
         synth.release;
         while( { synthDict[freq].isPlaying == true }, { 0.001.wait; });
-        //orderPos = orderArray.find([freq]);
+        orderPos = orderArray.find([freq]);
         //orderPos.postln;
 
-        if( synthDict[freq].isPlaying == false, {
-            synthDict[freq] = nil;
-            synthDict.removeAt(freq);
-            //orderPos.postln;
-        });
-        /*
         if( synthDict[freq].isPlaying == false && orderPos.notNil, {
           synthDict[freq] = nil;
           synthDict.removeAt(freq);
@@ -589,7 +575,6 @@ Subtractive : IM_Module {
           this.prManageOrder(orderPos);
           numVoices = numVoices - 1;
         });
-        */
       });
     }.fork;
   }

@@ -4,7 +4,7 @@
 
     applyMode = true;
 
-    maxVoices = 8; numVoices = 0; orderNum = 0; amp = 0.2;
+    maxVoices = 8; numVoices = 0; orderNum = 0; amp = 0.8;
 
     lfo1FreqLFO2BottomRatio = 1.0; lfo1FreqLFO2TopRatio = 1.0; lfo1Waveform = 0;
     lfo1Freq = 1; lfo1PulseWidth = 0.5; lfo1EnvType = 0; lfo1AttackTime = 0.05; lfo1ReleaseTime = 0.05;
@@ -757,6 +757,7 @@
         );
     });
   }
+
 }
 
 //////// Presets:

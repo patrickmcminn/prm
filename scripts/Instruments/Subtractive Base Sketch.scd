@@ -60,8 +60,9 @@ controlButtonsResetFunc.value;
 //////// Major Grid Bank:
 
 // first row:
-8.do({ | i | ~base.setGridFunc(i, 0, {
-  ~sub.playNote((majorArray[i] + octaveAdd[0]).midicps);
+8.do({ | i | ~base.setGridFunc(i, 0, { | vel |
+  var vol = vel.ccdbfs(-24, 3);
+  ~sub.playNote((majorArray[i] + octaveAdd[0]).midicps, vol);
   ~base.turnGridGreen(i, 0);
   }, 'noteOn', bank: majorGridBank, page: page);
 });
@@ -72,8 +73,9 @@ controlButtonsResetFunc.value;
 });
 
 // second row:
-8.do({ | i | ~base.setGridFunc(i, 1, {
-  ~sub.playNote((majorArray[i] + octaveAdd[1]).midicps);
+8.do({ | i | ~base.setGridFunc(i, 1, { | vel |
+  var vol = vel.ccdbfs(-24, 3);
+  ~sub.playNote((majorArray[i] + octaveAdd[1]).midicps, vol);
   ~base.turnGridGreen(i, 1);
   }, 'noteOn', bank: majorGridBank, page: page);
 });
@@ -84,8 +86,9 @@ controlButtonsResetFunc.value;
 });
 
 // third row:
-8.do({ | i | ~base.setGridFunc(i, 2, {
-  ~sub.playNote((majorArray[i] + octaveAdd[2]).midicps);
+8.do({ | i | ~base.setGridFunc(i, 2, { | vel |
+  var vol = vel.ccdbfs(-24, 3);
+  ~sub.playNote((majorArray[i] + octaveAdd[2]).midicps, vol);
   ~base.turnGridGreen(i, 2);
   }, 'noteOn', bank: majorGridBank, page: page);
 });
@@ -96,8 +99,9 @@ controlButtonsResetFunc.value;
 });
 
 // fourth row:
-8.do({ | i | ~base.setGridFunc(i, 3, {
-  ~sub.playNote((majorArray[i] + octaveAdd[3]).midicps);
+8.do({ | i | ~base.setGridFunc(i, 3, { | vel |
+  var vol = vel.ccdbfs(-24, 3);
+  ~sub.playNote((majorArray[i] + octaveAdd[3]).midicps, vol);
   ~base.turnGridGreen(i, 3);
   }, 'noteOn', bank: majorGridBank, page: page);
 });

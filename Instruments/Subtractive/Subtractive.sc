@@ -544,7 +544,7 @@ Subtractive : IM_Module {
       if( playTest == true, { synthDict[freq].steal(freq); }, {
         if( numVoices < maxVoices, {
           // assign synth to a the synth dict:
-          synthDict[freq] = Subtractive_Voice.new(freq, this, synthGroup, \addToTail);
+          synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
           // put synth marker in the correct order slot:
           orderArray[orderNum] = freq;
           // increment the number of voices:

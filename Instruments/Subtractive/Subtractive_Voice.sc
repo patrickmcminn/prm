@@ -100,6 +100,8 @@ Subtractive_Voice {
   }
 
   release {
+    synth.set(\gate, 0);
+    /*
     {
       synth.set(\gate, 0);
       isReleasing = true;
@@ -110,6 +112,7 @@ Subtractive_Voice {
         isPlaying = false;
       });
     }.fork;
+    */
   }
 
   steal { | freq = 220 |

@@ -101,16 +101,18 @@ Subtractive_Voice {
 //////// public functions:
 
   free {
-    //synth.free;
     //synth = nil;
   }
 
   release {
     synth.set(\gate, 0);
+    isReleasing = true;
     SystemClock.sched(parent.releaseTime, {
       {
         server.sync;
-        synth.isPlaying.postln;
+        isReleasing = false;
+        if( synth.isPlaying, { synth.free; });
+        this.free;
       }.fork;
     });
     // basic: (not working)

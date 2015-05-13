@@ -538,9 +538,32 @@ Subtractive : IM_Module {
   }
 
   playNote { | freq = 220, vol = -12 |
+    /*
+    var playTest, order;
+    playTest = try { synthDict[freq].synth }.isPlaying;
+    if ( playTest == true, { synthDict[freq].steal(freq); },
+      {
+        if( numVoices < maxVoices, {
+          // assign synth to the synth dict:
+          synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
+          // put synth marker in the correct order slot:
+          orderArray[orderNum] = freq;
+          // increment the number of voices:
+          numVoices = numVoices + 1;
+          // increment the order of voices:
+          orderNum = orderNum + 1;
+          },
+          { this.prStealVoice(freq); });
+    });
+    */
+    // working:
+
     synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
     numVoices = numVoices + 1;
     numVoices.postln;
+
+
+
     // basic: (not working)
     /*
     synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
@@ -573,8 +596,29 @@ Subtractive : IM_Module {
 
 
   releaseNote { | freq = 220 |
+    /*
+    var orderPos;
+    {
+      if( try { synthDict[freq].synth.isPlaying } == true, {
+        synthDict[freq].release;
+        while({ synthDict[freq].isPlaying == true }, { 0.001.wait; });
+        server.sync;
+        orderPos = orderArray.find([freq]);
+        if ( orderPos.notNil, {
+          orderArray[orderPos] = nil;
+          this.prManageOrder(orderPos);
+          numVoices = numVoices -1;
+        });
+      });
+    }.fork;
+    */
+
+    // working:
+
     synthDict[freq].release;
     numVoices = numVoices -1;
+
+
     // basic: (not working)
     /*
     var synth = synthDict[freq];

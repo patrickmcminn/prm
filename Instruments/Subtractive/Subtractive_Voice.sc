@@ -1,7 +1,7 @@
 Subtractive_Voice {
 
   var <synth;
-  var <isPlaying, <isReleasing;
+  var <isReleasing, <watcher;
   var server;
   var parent;
 
@@ -12,7 +12,8 @@ Subtractive_Voice {
   prInit { | freq = 220, vol = -12, subtractive, group, addAction |
     server = Server.default;
     parent = subtractive;
-    server.waitForBoot {
+    {
+    watcher = server.makeBundle(false, {
       synth = Synth(\prm_Subtractive_Voice, [
         \outBus, parent.mixer.chanStereo(0), \lfo2InBus, parent.lfoBus, \amp, vol.dbamp, \freq, freq, \gate, 1,
 
@@ -86,21 +87,33 @@ Subtractive_Voice {
         \panLFO2Bottom, parent.panLFO2Bottom, \panLFO2Top, parent.panLFO2Top
       ], group, addAction);
 
-      isPlaying = true;
-      isReleasing = false;
-    };
+      NodeWatcher.register(synth);
+    });
+    server.listSendBundle(nil, watcher);
+    server.sync;
+    //isPlaying = true;
+    isReleasing = false;
+    }.fork;
+
 
   }
 
-  //////// public functions:
+//////// public functions:
 
   free {
-    synth.free;
-    synth = nil;
+    //synth.free;
+    //synth = nil;
   }
 
   release {
-    // basic:
+    synth.set(\gate, 0);
+    SystemClock.sched(parent.releaseTime, {
+      {
+        server.sync;
+        synth.isPlaying.postln;
+      }.fork;
+    });
+    // basic: (not working)
     /*
     synth.set(\gate, 0);
     {
@@ -108,21 +121,18 @@ Subtractive_Voice {
       if( isReleasing == true, {
         isReleasing = false;
         this.free;
-        isPlaying = false;
         if( parent.numVoices == 0, { parent.synthGroup.freeAll });
       });
     }.fork;
     */
-    {
-      synth.set(\gate, 0);
-      isReleasing = true;
-      parent.releaseTime.wait;
-      if( isReleasing == true, {
-        isReleasing = false;
-        this.free;
-        isPlaying = false;
-      });
-    }.fork;
+    /*
+    synth.set(\gate, 0);
+    isReleasing = true;
+    SystemClock.sched( parent.releaseTime, {
+      isReleasing = false;
+      8.do({ if( synth.isPlaying, { synth.free; }); });
+    });
+    */
   }
 
   steal { | freq = 220 |
@@ -133,7 +143,7 @@ Subtractive_Voice {
       synth.set(\freq, freq);
       //this.setAllParameters;
       isReleasing = false;
-      isPlaying = true;
+      //isPlaying = true;
     }.fork;
   }
 

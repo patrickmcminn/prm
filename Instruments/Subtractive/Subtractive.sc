@@ -285,7 +285,7 @@ Subtractive : IM_Module {
       ampLFO2 = lfo2.linlin(-1, 1, ampLFO2Bottom, ampLFO2Top);
       //ampEnv = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate);
       ampEnv = EnvGen.kr(Env.new([0, 0, 1, sustainLevel, 0], [0, attackTime, decayTime, releaseTime],
-        curve: -4, releaseNode: 3), gate, doneAction: 2);
+        curve: -4, releaseNode: 3), gate + Impulse.kr(0), doneAction: 2);
       ampEnv = ampEnv * ampLFO1 * ampLFO2;
 
       panningLFO1 = lfo1.linlin(-1, 1, panLFO1Bottom, panLFO1Top);
@@ -538,14 +538,18 @@ Subtractive : IM_Module {
   }
 
   playNote { | freq = 220, vol = -12 |
-
-    // basic:
+    synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
+    numVoices = numVoices + 1;
+    numVoices.postln;
+    // basic: (not working)
     /*
     synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
     numVoices = numVoices + 1;
     numVoices.postln;
-    */
+    `*/
 
+    // old:
+    /*
     {
       var playTest, order;
       playTest = try { synthDict[freq] }.isPlaying;
@@ -563,37 +567,42 @@ Subtractive : IM_Module {
           { this.prStealVoice(freq); });
       });
     }.fork;
+    */
   }
 
 
 
   releaseNote { | freq = 220 |
-    // basic:
+    synthDict[freq].release;
+    numVoices = numVoices -1;
+    // basic: (not working)
     /*
     var synth = synthDict[freq];
     synth.release;
     numVoices = numVoices -1;
     numVoices.postln;
     */
+    /*
     var orderPos;
     var synth = synthDict[freq];
     {
-      if( synthDict[freq].isPlaying == true, {
+      if( synthDict[freq].synth.isPlaying == true, {
         synth.release;
-        while( { synthDict[freq].isPlaying == true }, { 0.001.wait; });
+        while( { synth.synth.isPlaying == true }, { 0.001.wait; });
         orderPos = orderArray.find([freq]);
         //orderPos.postln;
 
-        if( synthDict[freq].isPlaying == false && orderPos.notNil, {
+        if( synthDict[freq].synth.isPlaying == false && orderPos.notNil, {
           synthDict[freq] = nil;
           synthDict.removeAt(freq);
-          //orderPos.postln;
+          orderPos.postln;
           orderArray[orderPos] = nil;
           this.prManageOrder(orderPos);
           numVoices = numVoices - 1;
         });
       });
     }.fork;
+    */
   }
 
   releaseAllNotes {

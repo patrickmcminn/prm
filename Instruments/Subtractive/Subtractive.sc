@@ -538,9 +538,14 @@ Subtractive : IM_Module {
   }
 
   playNote { | freq = 220, vol = -12 |
-    synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
 
+    // basic:
     /*
+    synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
+    numVoices = numVoices + 1;
+    numVoices.postln;
+    */
+
     {
       var playTest, order;
       playTest = try { synthDict[freq] }.isPlaying;
@@ -558,15 +563,18 @@ Subtractive : IM_Module {
           { this.prStealVoice(freq); });
       });
     }.fork;
-    */
   }
 
 
 
   releaseNote { | freq = 220 |
+    // basic:
+    /*
     var synth = synthDict[freq];
     synth.release;
-    /*
+    numVoices = numVoices -1;
+    numVoices.postln;
+    */
     var orderPos;
     var synth = synthDict[freq];
     {
@@ -586,7 +594,6 @@ Subtractive : IM_Module {
         });
       });
     }.fork;
-    */
   }
 
   releaseAllNotes {

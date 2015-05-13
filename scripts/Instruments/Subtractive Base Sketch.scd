@@ -4,7 +4,7 @@ var basicBank = 0;
 var returnsBank = 7;
 var octaveAdd = [36, 48, 60, 72];
 var majorGridBank = 0;
-var majorArray = [0, 2, 4, 5, 7, 9, 11, 12];
+var majorArray = [0, 2, 4, 5, 7, 9, 11, 12.0001];
 var majorArrayColor = ['white', 'cyan', 'magenta', 'cyan', 'yellow', 'cyan', 'blue', 'white'];
 
 

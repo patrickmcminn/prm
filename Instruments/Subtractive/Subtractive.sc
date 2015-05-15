@@ -557,12 +557,9 @@ Subtractive : IM_Module {
     });
     */
     // working:
-
     synthDict[freq] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
     numVoices = numVoices + 1;
     numVoices.postln;
-
-
 
     // basic: (not working)
     /*
@@ -614,7 +611,6 @@ Subtractive : IM_Module {
     */
 
     // working:
-
     synthDict[freq].release;
     numVoices = numVoices -1;
 

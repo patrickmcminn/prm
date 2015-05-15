@@ -1,5 +1,6 @@
 Subtractive_Voice {
 
+  var <isFree;
   var <synth;
   var <isReleasing, <watcher;
   var server;
@@ -12,87 +13,89 @@ Subtractive_Voice {
   prInit { | freq = 220, vol = -12, subtractive, group, addAction |
     server = Server.default;
     parent = subtractive;
+    isFree = false;
     {
-    watcher = server.makeBundle(false, {
-      synth = Synth(\prm_Subtractive_Voice, [
-        \outBus, parent.mixer.chanStereo(0), \lfo2InBus, parent.lfoBus, \amp, vol.dbamp, \freq, freq, \gate, 1,
+      watcher = server.makeBundle(false, {
+        synth = Synth(\prm_Subtractive_Voice, [
+          \outBus, parent.mixer.chanStereo(0), \lfo2InBus, parent.lfoBus, \amp, vol.dbamp, \freq, freq, \gate, 1,
 
-        \lfo1FreqLFO2BottomRatio, parent.lfo1FreqLFO2BottomRatio, \lfo1FreqLFO2TopRatio, parent.lfo1FreqLFO2TopRatio,
-        \lfo1Waveform, parent.lfo1Waveform, \lfo1Freq, parent.lfo1Freq, \lfo1PulseWidth, parent.lfo1PulseWidth,
-        \lfo1EnvType, parent.lfo1EnvType, \lfo1AttackTime, parent.lfo1AttackTime,
-        \lfo1ReleaseTime, parent.lfo1ReleaseTime,
+          \lfo1FreqLFO2BottomRatio, parent.lfo1FreqLFO2BottomRatio, \lfo1FreqLFO2TopRatio, parent.lfo1FreqLFO2TopRatio,
+          \lfo1Waveform, parent.lfo1Waveform, \lfo1Freq, parent.lfo1Freq, \lfo1PulseWidth, parent.lfo1PulseWidth,
+          \lfo1EnvType, parent.lfo1EnvType, \lfo1AttackTime, parent.lfo1AttackTime,
+          \lfo1ReleaseTime, parent.lfo1ReleaseTime,
 
-        \osc1OctaveMul, parent.osc1OctaveMul, \osc1FreqEnvStartRatio, parent.osc1FreqEnvStartRatio,
-        \osc1FreqEnvEndRatio, parent.osc1FreqEnvEndRatio, \osc1FreqEnvTime, parent.osc1FreqEnvTime,
-        \osc1FreqLFO1BottomRatio, parent.osc1FreqLFO1BottomRatio, \osc1FreqLFO1TopRatio, parent.osc1FreqLFO1TopRatio,
-        \osc1FreqLFO2BottomRatio, parent.osc1FreqLFO2BottomRatio,
-        \osc1FreqLFO2TopRatio, parent.osc1FreqLFO2TopRatio,
-        \osc1PulseWidthLFO1Bottom, parent.osc1PulseWidthLFO1Bottom,
-        \osc1PulseWidthLFO1Top, parent.osc1PulseWidthLFO1Top,
-        \osc1PulseWidthLFO2Bottom, parent.osc1PulseWidthLFO2Bottom,
-        \osc1PulseWidthLFO2Top, parent.osc1PulseWidthLFO2Top,
-        \osc1AmpLFO1Bottom, parent.osc1AmpLFO1Bottom, \osc1AmpLFO1Top, parent.osc1AmpLFO1Top,
-        \osc1AmpLFO2Bottom, parent.osc1AmpLFO2Bottom, \osc1AmpLFO2Top, parent.osc1AmpLFO2Top,
-        \osc1WaveformLFO1Bottom, parent.osc1WaveformLFO1Bottom, \osc1WaveformLFO1Top, parent.osc1WaveformLFO1Top,
-        \osc1WaveformLFO2Bottom, parent.osc1WaveformLFO2Bottom,
-        \osc1WaveformLFO2Top, parent.osc1WaveformLFO2Top,
-        \osc1Waveform, parent.osc1Waveform, \osc1PulseWidth, parent.osc1PulseWidth,
-        \osc1Amp, parent.osc1Amp, \osc1SubAmp, parent.osc1SubAmp,
+          \osc1OctaveMul, parent.osc1OctaveMul, \osc1FreqEnvStartRatio, parent.osc1FreqEnvStartRatio,
+          \osc1FreqEnvEndRatio, parent.osc1FreqEnvEndRatio, \osc1FreqEnvTime, parent.osc1FreqEnvTime,
+          \osc1FreqLFO1BottomRatio, parent.osc1FreqLFO1BottomRatio, \osc1FreqLFO1TopRatio, parent.osc1FreqLFO1TopRatio,
+          \osc1FreqLFO2BottomRatio, parent.osc1FreqLFO2BottomRatio,
+          \osc1FreqLFO2TopRatio, parent.osc1FreqLFO2TopRatio,
+          \osc1PulseWidthLFO1Bottom, parent.osc1PulseWidthLFO1Bottom,
+          \osc1PulseWidthLFO1Top, parent.osc1PulseWidthLFO1Top,
+          \osc1PulseWidthLFO2Bottom, parent.osc1PulseWidthLFO2Bottom,
+          \osc1PulseWidthLFO2Top, parent.osc1PulseWidthLFO2Top,
+          \osc1AmpLFO1Bottom, parent.osc1AmpLFO1Bottom, \osc1AmpLFO1Top, parent.osc1AmpLFO1Top,
+          \osc1AmpLFO2Bottom, parent.osc1AmpLFO2Bottom, \osc1AmpLFO2Top, parent.osc1AmpLFO2Top,
+          \osc1WaveformLFO1Bottom, parent.osc1WaveformLFO1Bottom, \osc1WaveformLFO1Top, parent.osc1WaveformLFO1Top,
+          \osc1WaveformLFO2Bottom, parent.osc1WaveformLFO2Bottom,
+          \osc1WaveformLFO2Top, parent.osc1WaveformLFO2Top,
+          \osc1Waveform, parent.osc1Waveform, \osc1PulseWidth, parent.osc1PulseWidth,
+          \osc1Amp, parent.osc1Amp, \osc1SubAmp, parent.osc1SubAmp,
 
-        \osc2OctaveMul, parent.osc2OctaveMul, \osc2DetuneCents, parent.osc2DetuneCents,
-        \osc2FreqEnvStartRatio, parent.osc2FreqEnvStartRatio,
-        \osc2FreqEnvEndRatio , parent.osc2FreqEnvEndRatio, \osc2FreqEnvTime, parent.osc2FreqEnvTime,
-        \osc2FreqLFO1BottomRatio, parent.osc2FreqLFO1BottomRatio, \osc2FreqLFO1TopRatio, parent.osc2FreqLFO1TopRatio,
-        \osc2FreqLFO2BottomRatio, parent.osc2FreqLFO2BottomRatio,
-        \osc2FreqLFO2TopRatio, parent.osc2FreqLFO2TopRatio,
-        \osc2PulseWidthLFO1Bottom, parent.osc2PulseWidthLFO1Bottom,
-        \osc2PulseWidthLFO1Top, parent.osc2PulseWidthLFO1Top,
-        \osc2PulseWidthLFO2Bottom, parent.osc2PulseWidthLFO2Bottom,
-        \osc2PulseWidthLFO2Top, parent.osc2PulseWidthLFO2Top,
-        \osc2AmpLFO1Bottom, parent.osc2AmpLFO1Bottom, \osc2AmpLFO1Top, parent.osc2AmpLFO1Top,
-        \osc2AmpLFO2Bottom, parent.osc2AmpLFO2Bottom, \osc2AmpLFO2Top, parent.osc2AmpLFO2Top,
-        \osc2WaveformLFO1Bottom, parent.osc2WaveformLFO1Bottom, \osc2WaveformLFO1Top, parent.osc2WaveformLFO1Top,
-        \osc2WaveformLFO2Bottom, parent.osc2WaveformLFO2Bottom, \osc2WaveformLFO2Top, parent.osc2WaveformLFO2Top,
-        \osc2Waveform, parent.osc2Waveform, \osc2PulseWidth, parent.osc2PulseWidth,
-        \osc2Amp, parent.osc2Amp, \osc2SubAmp, parent.osc2SubAmp,
+          \osc2OctaveMul, parent.osc2OctaveMul, \osc2DetuneCents, parent.osc2DetuneCents,
+          \osc2FreqEnvStartRatio, parent.osc2FreqEnvStartRatio,
+          \osc2FreqEnvEndRatio , parent.osc2FreqEnvEndRatio, \osc2FreqEnvTime, parent.osc2FreqEnvTime,
+          \osc2FreqLFO1BottomRatio, parent.osc2FreqLFO1BottomRatio, \osc2FreqLFO1TopRatio, parent.osc2FreqLFO1TopRatio,
+          \osc2FreqLFO2BottomRatio, parent.osc2FreqLFO2BottomRatio,
+          \osc2FreqLFO2TopRatio, parent.osc2FreqLFO2TopRatio,
+          \osc2PulseWidthLFO1Bottom, parent.osc2PulseWidthLFO1Bottom,
+          \osc2PulseWidthLFO1Top, parent.osc2PulseWidthLFO1Top,
+          \osc2PulseWidthLFO2Bottom, parent.osc2PulseWidthLFO2Bottom,
+          \osc2PulseWidthLFO2Top, parent.osc2PulseWidthLFO2Top,
+          \osc2AmpLFO1Bottom, parent.osc2AmpLFO1Bottom, \osc2AmpLFO1Top, parent.osc2AmpLFO1Top,
+          \osc2AmpLFO2Bottom, parent.osc2AmpLFO2Bottom, \osc2AmpLFO2Top, parent.osc2AmpLFO2Top,
+          \osc2WaveformLFO1Bottom, parent.osc2WaveformLFO1Bottom, \osc2WaveformLFO1Top, parent.osc2WaveformLFO1Top,
+          \osc2WaveformLFO2Bottom, parent.osc2WaveformLFO2Bottom, \osc2WaveformLFO2Top, parent.osc2WaveformLFO2Top,
+          \osc2Waveform, parent.osc2Waveform, \osc2PulseWidth, parent.osc2PulseWidth,
+          \osc2Amp, parent.osc2Amp, \osc2SubAmp, parent.osc2SubAmp,
 
-        \noiseOscAmpLFO1Bottom, parent.noiseOscAmpLFO1Bottom, \noiseOscAmpLFO1Top, parent.noiseOscAmpLFO1Top,
-        \noiseOscAmpLFO2Bottom, parent.noiseOscAmpLFO2Bottom, \noiseOscAmpLFO2Top, parent.noiseOscAmpLFO2Top,
-        \noiseOscFilterLFO1BottomRatio, parent.noiseOscFilterLFO1BottomRatio,
-        \noiseOscFilterLFO1TopRatio, parent.noiseOscFilterLFO1TopRatio,
-        \noiseOscFilterLFO2BottomRatio, parent.noiseOscFilterLFO2BottomRatio,
-        \noiseOscFilterLFO2TopRatio, parent.noiseOscFilterLFO2TopRatio,
-        \noiseOscAmp, parent.noiseOscAmp, \noiseOscCutoff, parent.noiseOscCutoff,
+          \noiseOscAmpLFO1Bottom, parent.noiseOscAmpLFO1Bottom, \noiseOscAmpLFO1Top, parent.noiseOscAmpLFO1Top,
+          \noiseOscAmpLFO2Bottom, parent.noiseOscAmpLFO2Bottom, \noiseOscAmpLFO2Top, parent.noiseOscAmpLFO2Top,
+          \noiseOscFilterLFO1BottomRatio, parent.noiseOscFilterLFO1BottomRatio,
+          \noiseOscFilterLFO1TopRatio, parent.noiseOscFilterLFO1TopRatio,
+          \noiseOscFilterLFO2BottomRatio, parent.noiseOscFilterLFO2BottomRatio,
+          \noiseOscFilterLFO2TopRatio, parent.noiseOscFilterLFO2TopRatio,
+          \noiseOscAmp, parent.noiseOscAmp, \noiseOscCutoff, parent.noiseOscCutoff,
 
-        \filterEnvAttackRatio, parent.filterEnvAttackRatio, \filterEnvPeakRatio, parent.filterEnvPeakRatio,
-        \filterEnvSustainRatio, parent.filterEnvSustainRatio,
-        \filterEnvReleaseRatio, parent.filterEnvReleaseRatio,
-        \filterEnvAttackTime, parent.filterEnvAttackTime,
-        \filterEnvDecayTime, parent.filterEnvDecayTime,
-        \filterEnvReleaseTime, parent.filterEnvReleaseTime, \filterEnvLoop, parent.filterEnvLoop,
-        \filterCutoffLFO1BottomRatio, parent.filterCutoffLFO1BottomRatio,
-        \filterCutoffLFO1TopRatio, parent.filterCutoffLFO1TopRatio,
-        \filterCutoffLFO2BottomRatio, parent.filterCutoffLFO2BottomRatio,
-        \filterCutoffLFO2TopRatio, parent.filterCutoffLFO2TopRatio,
-        \filterResLFO1Bottom, parent.filterResLFO1Bottom, \filterResLFO1Top, parent.filterResLFO1Top,
-        \filterResLFO2Bottom, parent.filterResLFO2Bottom, \filterResLFO2Top, parent.filterResLFO2Top,
-        \drive, parent.filterDrive, \filterCutoff, parent.filterCutoff, \filterRes, parent.filterRes, \filterType, parent.filterType,
+          \filterEnvAttackRatio, parent.filterEnvAttackRatio, \filterEnvPeakRatio, parent.filterEnvPeakRatio,
+          \filterEnvSustainRatio, parent.filterEnvSustainRatio,
+          \filterEnvReleaseRatio, parent.filterEnvReleaseRatio,
+          \filterEnvAttackTime, parent.filterEnvAttackTime,
+          \filterEnvDecayTime, parent.filterEnvDecayTime,
+          \filterEnvReleaseTime, parent.filterEnvReleaseTime, \filterEnvLoop, parent.filterEnvLoop,
+          \filterCutoffLFO1BottomRatio, parent.filterCutoffLFO1BottomRatio,
+          \filterCutoffLFO1TopRatio, parent.filterCutoffLFO1TopRatio,
+          \filterCutoffLFO2BottomRatio, parent.filterCutoffLFO2BottomRatio,
+          \filterCutoffLFO2TopRatio, parent.filterCutoffLFO2TopRatio,
+          \filterResLFO1Bottom, parent.filterResLFO1Bottom, \filterResLFO1Top, parent.filterResLFO1Top,
+          \filterResLFO2Bottom, parent.filterResLFO2Bottom, \filterResLFO2Top, parent.filterResLFO2Top,
+          \drive, parent.filterDrive, \filterCutoff, parent.filterCutoff, \filterRes, parent.filterRes, \filterType, parent.filterType,
 
-        \ampLFO1Bottom, parent.ampLFO1Bottom, \ampLFO1Top, parent.ampLFO1Top,
-        \ampLFO2Bottom, parent.ampLFO2Bottom,
-        \ampLFO2Top, parent.ampLFO2Top, \attackTime, parent.attackTime, \decayTime, parent.decayTime,
-        \sustainLevel, parent.sustainLevel, \releaseTime, parent.releaseTime,
+          \ampLFO1Bottom, parent.ampLFO1Bottom, \ampLFO1Top, parent.ampLFO1Top,
+          \ampLFO2Bottom, parent.ampLFO2Bottom,
+          \ampLFO2Top, parent.ampLFO2Top, \attackTime, parent.attackTime, \decayTime, parent.decayTime,
+          \sustainLevel, parent.sustainLevel, \releaseTime, parent.releaseTime,
 
-        \pan, parent.pan, \panLFO1Bottom, parent.panLFO1Bottom, \panLFO1Top, parent.panLFO1Top,
-        \panLFO2Bottom, parent.panLFO2Bottom, \panLFO2Top, parent.panLFO2Top
-      ], group, addAction);
+          \pan, parent.pan, \panLFO1Bottom, parent.panLFO1Bottom, \panLFO1Top, parent.panLFO1Top,
+          \panLFO2Bottom, parent.panLFO2Bottom, \panLFO2Top, parent.panLFO2Top
+        ], group, addAction);
 
-      NodeWatcher.register(synth);
-    });
-    server.listSendBundle(nil, watcher);
-    server.sync;
-    //isPlaying = true;
-    isReleasing = false;
+        NodeWatcher.register(synth);
+      });
+      server.listSendBundle(nil, watcher);
+      server.sync;
+      //isPlaying = true;
+      isReleasing = false;
+
     }.fork;
 
 
@@ -101,7 +104,8 @@ Subtractive_Voice {
 //////// public functions:
 
   free {
-    //synth = nil;
+    synth = nil;
+    isFree = true;
   }
 
   release {

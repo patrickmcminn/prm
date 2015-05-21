@@ -11,8 +11,8 @@ y.setFilterCutoffLFO2BottomRatio(0.75);
 y.setFilterCutoffLFO2TopRatio(2);
 
 y.setLFO2Freq(0.1);
-y.setPanLFO2Bottom(-1);
-y.setPanLFO2Top(1);
+y.setPanLFO2Bottom(-0.5);
+y.setPanLFO2Top(0.5);
 
 y.setOsc2Waveform('rect');
 y.setOsc2Octave(3);
@@ -24,7 +24,7 @@ x.setReverbRoom(0.7);
 x.setLowGain(-3);
 x.setHighGain(-3);
 
-x.setCutoff(2700);
+x.setCutoff(3500);
 
 x.setLeftDelayTime(0.7);
 x.setRightDelayTime(0.9);
@@ -32,47 +32,54 @@ x.setRightDelayTime(0.9);
 y.setLFO1Freq(12);
 y.setFilterCutoffLFO1TopRatio(2);
 y.setFilterCutoffLFO1BottomRatio(0.75);
-y.setLFO1Waveform('rect');
+y.setLFO1Waveform('revSaw');
 
 y.makeSequence('y');
 y.makeSequence(\z);
 y.makeSequence(\3);
+y.makeSequence(\4);
+y.makeSequence(\5);
 
 (
-y.addKey(\y, \note, Pseq([[13, 20], \r, \r, \r, \r, 13, \r, \r, \r, \r, 20, \r, \r, \r], inf));
+y.addKey(\y, \note,
+  Pseq([[13, 20, 25], \r, \r, \r, \r, 13, \r, \r, \r, \r, 20, \r, \r, \r, [13, 20, 25, 27], \r, \r, \r, \r, 13, \r, \r, \r, \r, 18, \r, \r, \r], inf));
 y.addKey(\y, \dur, 1);
-)
+y.addKey(\y, \attackTime, 1.5);
+y.addKey(\y, \legato, 1.5);
+y.addKey(\y, \releaseTime, 2);
+y.addKey(\z, \lfoEnvType, 1);
+y.addKey(\z, \lfo1AttackTime, 1);
 
-y.playSequence(\y);
-
-
-y.addKey(\z, \note, Pseq([15, \r, \r, \r, \r, 10, \r, \r, [15, 17], \r, \r], inf));
-y.addKey(\z, \dur, 8/9);
-y.addKey(\z, \attackTime, 0.75);
-
-y.playSequence(\z);
-
+y.addKey(\z, \note, Pseq([15, \r, \r, \r, \r, 13, \r, \r, \r, 12, \r, \r], inf));
+y.addKey(\z, \dur, 16/9);
+y.addKey(\z, \attackTime, 3);
+y.addKey(\z, \legato, 0.7);
+y.addKey(\z, \releaseTime, 3.5);
+y.addKey(\z, \lfoEnvType, 1);
+y.addKey(\z, \lfo1AttackTime, 0.6);
 
 y.addKey(\3, \note, Pseq([12, \r, \r, \r, \r], inf));
 y.addKey(\3, \dur, 9/8);
 y.addKey(\3, \attackTime, 1);
 y.addKey(\3, \legato, Pwhite(0.75, 1));
-y.playSequence(\3);
 
-
-y.makeSequence(\4);
 y.addKey(\4, \note, Pseq([18, \r, \r, \r, \r, \r], inf));
 y.addKey(\4, \dur, 3/4);
 y.addKey(\4, \attackTime, 1.5);
 y.addKey(\4, \releaseTime, 3);
 y.addKey(\4, \legato, Pwhite(0.5, 1));
-y.playSequence(\4);
 
-y.makeSequence(\5);
 y.addKey(\5, \note, Pseq([Pseq([[20, 27]], 16), Pseq([[25, 27]], 15), Pseq([[25, 32]], 17)], inf));
 y.addKey(\5, \dur, 0.25);
-y.addKey(\5, \amp, 0.4);
+y.addKey(\5, \amp, 0.2);
 y.addKey(\5, \legato, 0.05);
+y.addKey(\5, \filterCutoff, 4000);
+)
+
+y.playSequence(\y);
+y.playSequence(\z);
+y.playSequence(\3);
+y.playSequence(\4);
 y.playSequence(\5);
 
 
@@ -117,9 +124,9 @@ y.playSequence(\5);
 ~bassSynth.setOsc2SubVol(-12);
 ~bassSynth.setOsc2Octave(2);
 ~bassSynth.setOsc2Vol(0);
-~bassSynth.playSequence(\bass);
-
 ~bassSynth.setFilterCutoff(1000);
+
+~bassSynth.playSequence(\bass);
 
 x.mixer.setVol(-3);
 s.meter;
@@ -138,6 +145,7 @@ y.stopSequence(\4);
 y.stopSequence(\3);
 y.stopSequence(\z);
 y.stopSequence(\y);
+y.stopSequence(\5);
 ~bassSynth.stopSequence(\bass);
 
 
@@ -148,4 +156,12 @@ y.mixer.fadeOut(10);
 // bass change:
 ~bassSynth.addKey(\bass, \note, Pseq([[-11, 1], [-13, -1], [-14, -2], \r], inf));
 
-y
+
+
+x.setFeedback(0.9);
+x.setLeftDelayTime(0.25);
+x.setRightDelayTime(0.27);
+x.setDelayFilterBW(1);
+x.mixer.setVol(6);
+x.setDistortionAmount(10);
+x.setLowGain(3);

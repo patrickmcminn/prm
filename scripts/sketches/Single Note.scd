@@ -22,16 +22,16 @@ x.setFeedback(1);
 x.setReverbRoom(0.7);
 
 x.setLowGain(-3);
-x.setHighGain(-6);
+x.setHighGain(-3);
 
-x.setCutoff(2500);
+x.setCutoff(2700);
 
 x.setLeftDelayTime(0.7);
 x.setRightDelayTime(0.9);
 
 y.setLFO1Freq(12);
-y.setFilterCutoffLFOTopRatio(2);
-y.setFilterCutoffLFOBottomRatio(0.75);
+y.setFilterCutoffLFO1TopRatio(2);
+y.setFilterCutoffLFO1BottomRatio(0.75);
 y.setLFO1Waveform('rect');
 
 y.makeSequence('y');
@@ -53,7 +53,7 @@ y.addKey(\z, \attackTime, 0.75);
 y.playSequence(\z);
 
 
-y.addKey(\3, \note, Pseq([11, \r, \r, \r, \r], inf));
+y.addKey(\3, \note, Pseq([12, \r, \r, \r, \r], inf));
 y.addKey(\3, \dur, 9/8);
 y.addKey(\3, \attackTime, 1);
 y.addKey(\3, \legato, Pwhite(0.75, 1));
@@ -67,6 +67,13 @@ y.addKey(\4, \attackTime, 1.5);
 y.addKey(\4, \releaseTime, 3);
 y.addKey(\4, \legato, Pwhite(0.5, 1));
 y.playSequence(\4);
+
+y.makeSequence(\5);
+y.addKey(\5, \note, Pseq([Pseq([[20, 27]], 16), Pseq([[25, 27]], 15), Pseq([[25, 32]], 17)], inf));
+y.addKey(\5, \dur, 0.25);
+y.addKey(\5, \amp, 0.4);
+y.addKey(\5, \legato, 0.05);
+y.playSequence(\5);
 
 
 ~fbRoutine = r {
@@ -86,7 +93,7 @@ y.playSequence(\4);
 ~bassSynth = Subtractive.new(x.inBus);
 ~bassSynth.makeSequence(\bass);
 
-~bassSynth.addKey(\bass, \note, Pseq([[-11, 1], \r, \r, [-13, -1], \r, \r], inf));
+~bassSynth.addKey(\bass, \note, Pseq([Pseq([[-11, 1], \r, \r, [-13, -1], \r, \r], 4), Pseq([[-14, -2], \r, \r])], inf));
 ~bassSynth.addKey(\bass, \dur, Prand([5, 5.5, 6, 6.5], inf));
 ~bassSynth.addKey(\bass, \legato, 1);
 ~bassSynth.addKey(\bass, \amp, 0.24);
@@ -128,8 +135,17 @@ x.setFeedback(1);
 
 
 y.stopSequence(\4);
-y.stopSequnce(\3);
+y.stopSequence(\3);
 y.stopSequence(\z);
 y.stopSequence(\y);
+~bassSynth.stopSequence(\bass);
+
 
 y.mixer.fadeOut(10);
+
+
+
+// bass change:
+~bassSynth.addKey(\bass, \note, Pseq([[-11, 1], [-13, -1], [-14, -2], \r], inf));
+
+y

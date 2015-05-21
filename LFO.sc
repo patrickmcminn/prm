@@ -16,6 +16,7 @@ LFO { // Low Frequency Oscillator naturally outputting in the range of -1 to 1
 
   prInit {  | freq = 1, waveform = 'sine', relGroup = nil, addAction = 'addToHead' |
     var server = Server.default;
+    var wave;
     server.waitForBoot {
       isLoaded = false;
       this.prAddSynthDef;

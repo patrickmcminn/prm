@@ -11,6 +11,8 @@ SamplePlayer : IM_Module {
   var buffer;
   var samplerDict;
   var <attackTime, <decayTime, <sustainLevel, <releaseTime, sustainTime;
+  var <filterCutoff;
+  var <tremoloRate, <tremoloDepth, <tremoloWaveform;
   var monoOrStereo;
 
   *newMono {
@@ -37,29 +39,70 @@ SamplePlayer : IM_Module {
       this.prAddSynthDefs;
       samplerDict = IdentityDictionary.new;
       buffer = Buffer.read(server, path);
+      server.sync;
+      //// parameters:
+      // envelope:
       attackTime = 0.05;
       decayTime = 0;
       sustainLevel = 1;
       releaseTime = 0.05;
+      // filter:
+      filterCutoff = 20000;
+      // tremolo:
+      tremoloRate = 0;
+      tremoloDepth = 0;
+      tremoloWaveform = 0;
+
+      //sustainTime = buffer.numFrames.postln;
       sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
+
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
       server.sync;
+
       isLoaded = true;
     };
   }
 
   prInitMono { | path |
+    server = Server.default;
+    server.waitForBoot {
+      isLoaded = false;
+      monoOrStereo = 'mono';
+      this.prAddSynthDefs;
+      samplerDict = IdentityDictionary.new;
+      buffer = Buffer.read(server, path);
+      server.sync;
+      //// parameters:
+      // envelope:
+      attackTime = 0.05;
+      decayTime = 0;
+      sustainLevel = 1;
+      releaseTime = 0.05;
+      // filter:
+      filterCutoff = 20000;
+      // tremolo:
+      tremoloRate = 0;
+      tremoloDepth = 0;
+      tremoloWaveform = 0;
 
+      //sustainTime = buffer.numFrames.postln;
+      sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
+
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+      server.sync;
+
+      isLoaded = true;
+    };
   }
 
   prAddSynthDefs {
     SynthDef(\prm_SamplePlayer_Stereo_ADSR, {
       |
-      outBus = 0, amp = 1, buffer, rate = 1, loop = 0,
+      outBus = 0, amp = 1, buffer, rate = 1, loop = 1,
       startPos = 0, endPos = 1,
-      tremFreq = 0, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
+      tremFreq = 7, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
       attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
-      cutoff = 20000
+      filterCutoff = 20000
       |
       var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
       var tremolo, playHead, player, filter, env, sig;
@@ -67,13 +110,13 @@ SamplePlayer : IM_Module {
       tremSaw = LFSaw.ar(tremFreq, 1).range((1-tremDepth), 1);
       tremRevSaw = LFSaw.ar(tremFreq, 1).range(-1, (1-tremDepth).neg) * -1;
       tremRect = LFPulse.ar(tremFreq, 0, tremPulseWidth).range((1-tremDepth), 1);
-      tremNoise = LFNoise2.ar(tremFreq).range((1-tremDepth), 1);
-      tremSampleAndHold = LFNoise0.ar(tremFreq).range((1-tremDepth), 1);
+      tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
+      tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
       tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
       playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
         BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(2, buffer, playHead, loop);
-      filter = LPF.ar(player, cutoff);
+      filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate, doneAction: 2);
       sig = filter * env;
       sig = sig * tremolo;
@@ -87,7 +130,7 @@ SamplePlayer : IM_Module {
       startPos = 0, endPos = 1,
       tremFreq = 0, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
       attackTime = 0.05, sustainTime = 1, releaseTime = 0.05,
-      cutoff = 20000
+      filterCutoff = 20000
       |
       var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
       var tremolo, playHead, player, filter, env, sig;
@@ -95,13 +138,13 @@ SamplePlayer : IM_Module {
       tremSaw = LFSaw.ar(tremFreq, 1).range((1-tremDepth), 1);
       tremRevSaw = LFSaw.ar(tremFreq, 1).range(-1, (1-tremDepth).neg) * -1;
       tremRect = LFPulse.ar(tremFreq, 0, tremPulseWidth).range((1-tremDepth), 1);
-      tremNoise = LFNoise2.ar(tremFreq).range((1-tremDepth), 1);
-      tremSampleAndHold = LFNoise0.ar(tremFreq).range((1-tremDepth), 1);
+      tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
+      tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
       tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
       playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
         BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(2, buffer, playHead, loop);
-      filter = LPF.ar(player, cutoff);
+      filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, 1, -4), 1, doneAction: 2);
       sig = filter * env;
       sig = sig * tremolo;
@@ -115,7 +158,7 @@ SamplePlayer : IM_Module {
       startPos = 0, endPos = 1,
       tremFreq = 0, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
       attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
-      cutoff = 20000
+      filterCutoff = 20000
       |
       var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
       var tremolo, playHead, player, filter, env, sig;
@@ -123,13 +166,13 @@ SamplePlayer : IM_Module {
       tremSaw = LFSaw.ar(tremFreq, 1).range((1-tremDepth), 1);
       tremRevSaw = LFSaw.ar(tremFreq, 1).range(-1, (1-tremDepth).neg) * -1;
       tremRect = LFPulse.ar(tremFreq, 0, tremPulseWidth).range((1-tremDepth), 1);
-      tremNoise = LFNoise2.ar(tremFreq).range((1-tremDepth), 1);
-      tremSampleAndHold = LFNoise0.ar(tremFreq).range((1-tremDepth), 1);
+      tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
+      tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
       tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
       playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
         BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(1, buffer, playHead, loop);
-      filter = LPF.ar(player, cutoff);
+      filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate, doneAction: 2);
       sig = filter * env;
       sig = sig * tremolo;
@@ -143,7 +186,7 @@ SamplePlayer : IM_Module {
       startPos = 0, endPos = 1,
       tremFreq = 0, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
       attackTime = 0.05, sustainTime = 1, releaseTime = 0.05,
-      cutoff = 20000
+      filterCutoff = 20000
       |
       var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
       var tremolo, playHead, player, filter, env, sig;
@@ -151,13 +194,13 @@ SamplePlayer : IM_Module {
       tremSaw = LFSaw.ar(tremFreq, 1).range((1-tremDepth), 1);
       tremRevSaw = LFSaw.ar(tremFreq, 1).range(-1, (1-tremDepth).neg) * -1;
       tremRect = LFPulse.ar(tremFreq, 0, tremPulseWidth).range((1-tremDepth), 1);
-      tremNoise = LFNoise2.ar(tremFreq).range((1-tremDepth), 1);
-      tremSampleAndHold = LFNoise0.ar(tremFreq).range((1-tremDepth), 1);
+      tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
+      tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
       tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
       playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
         BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(1, buffer, playHead, loop);
-      filter = LPF.ar(player, cutoff);
+      filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, 1, -4), 1, doneAction: 2);
       sig = filter * env;
       sig = sig * tremolo;
@@ -175,46 +218,99 @@ SamplePlayer : IM_Module {
     this.freeModule;
   }
 
-  playSampleSustaining { | name, rate = 1, loop = 'false', startPos = 0, endPos = 1 |
+  playSampleSustaining { | name, rate = 1, startPos = 0, endPos = 1 |
+    var loop;
     if( monoOrStereo == 'stereo',
       {
         samplerDict[name] = Synth(\prm_SamplePlayer_Stereo_ADSR,
-          [\outBus, mixer.chanStereo(0),\rate, rate, \loop, loop, \startPos, startPos, \endPos, endPos
-
+          [
+            \outBus, mixer.chanStereo(0),\rate, rate, \startPos, startPos, \endPos, endPos,
+            \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
+            \tremWaveform, tremoloWaveform,
+            \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime
           ],
           group, \addToHead);
       },
       {
         samplerDict[name] = Synth(\prm_SamplePlayer_Mono_ADSR,
-          [\outBus, mixer.chanMono(0), \rate, rate, \loop, loop, \startPos, startPos, \endPos, endPos,
-          \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime
+          [
+            \outBus, mixer.chanStereo(0),\rate, rate, \startPos, startPos, \endPos, endPos,
+            \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
+            \tremWaveform, tremoloWaveform,
+            \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime
           ],
           group, \addToHead);
     });
   }
 
   releaseSampleSustaining { | name |
+    samplerDict[name].set(\releaseTime, releaseTime);
     samplerDict[name].set(\gate, 0);
   }
-/*
-  playSampleOneShot {
-    if( monoOrStereo = 'stereo',
+
+  playSampleOneShot { | rate = 1, startPos = 0, endPos = 1 |
+    sustainTime = (((buffer.numFrames * (endPos-startPos))* (1/rate)) / server.sampleRate) - (attackTime + releaseTime);
+    if( monoOrStereo == 'stereo',
       {
         Synth(\prm_SamplePlayer_Stereo_OneShot,
-          [\outBus, mixer.chanStereo(0), \rate, rate, \loop, loop, \startPos, startPos, \endPos, endPos],
+          [
+            \outBus, mixer.chanStereo(0), \rate, rate, \loop, 0, \startPos, startPos, \endPos, endPos,
+            \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
+            \tremWaveform, tremoloWaveform,
+            \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime
+          ],
           group, \addToHead);
       },
       {
-    });
+         Synth(\prm_SamplePlayer_Mono_OneShot,
+          [
+            \outBus, mixer.chanStereo(0), \rate, rate, \loop, 0, \startPos, startPos, \endPos, endPos,
+            \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
+            \tremWaveform, tremoloWaveform,
+            \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime
+          ],
+          group, \addToHead);
+
+      }
+    );
 
   }
-*/
 
+
+  // envelope:
   setAttackTime { | attack = 0.05 | attackTime = attack; }
   setDecayTime { | decay = 0 | decayTime = decay; }
   setSustainLevel { | sustain = 1 | sustainLevel = sustain; }
   setReleaseTime { | release = 0.05 | releaseTime = release; }
 
+  // filter:
+  setFilterCutoff { | cutoff = 20000 |
+    filterCutoff = cutoff;
+    samplerDict.do({ | synth | synth.set(\filterCutoff, filterCutoff); });
+  }
 
+  // tremolo:
+  setTremoloRate { | rate = 0 |
+    tremoloRate = rate;
+    samplerDict.do({ | synth | synth.set(\tremFreq, tremoloRate); });
+  }
+  setTremoloDepth { | depth = 0 |
+    tremoloDepth = depth;
+    samplerDict.do({ | synth | synth.set(\tremDepth, tremoloDepth); });
+  }
+  setTremoloWaveform { | waveform = 'sine' |
+    if( waveform.isInteger || waveform.isFloat, { tremoloWaveform = waveform },
+      {
+        switch (waveform,
+          'sine', { tremoloWaveform = 0 },
+          'saw', { tremoloWaveform = 1 },
+          'revSaw', { tremoloWaveform = 2 },
+          'rect', { tremoloWaveform = 3 },
+          'noise', { tremoloWaveform = 4 },
+          'sampleAndHold', { tremoloWaveform = 5 }
+        );
+    });
+    samplerDict.do({ | synth | synth.set(\tremWaveform, tremoloWaveform);});
+  }
 
 }

@@ -1,7 +1,5 @@
 /*
-Thursday, May 14th 2015
-SamplePlayer.sc
-Minneapolis, MN
+Sampler.sc
 */
 
 // Multi-Sample version of SamplePlayer to allow for multiple sample layers
@@ -11,7 +9,6 @@ Sampler : IM_Module {
 
   var <isLoaded;
   var server;
-  var buffer;
   var samplerDict, bufferArray;
   var <attackTime, <decayTime, <sustainLevel, <releaseTime, sustainTime;
   var <filterCutoff;
@@ -93,7 +90,7 @@ Sampler : IM_Module {
       tremoloWaveform = 0;
 
       //sustainTime = buffer.numFrames.postln;
-      sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
+      //sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
       server.sync;
@@ -109,7 +106,7 @@ Sampler : IM_Module {
       startPos = 0, endPos = 1,
       tremFreq = 7, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
       attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
-      filterCutoff = 20000
+      filterCutoff = 20000, pan = 0
       |
       var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
       var tremolo, playHead, player, filter, env, sig;
@@ -125,9 +122,10 @@ Sampler : IM_Module {
       player = BufRd.ar(2, buffer, playHead, loop);
       filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate, doneAction: 2);
-      sig = filter * env;
-      sig = sig * tremolo;
+      sig = tremolo * env;
+      sig = sig * filter;
       sig = sig * amp;
+      sig = Balance2.ar(sig[0], sig[1], pan);
       Out.ar(outBus, sig);
     }).add;
 
@@ -137,7 +135,7 @@ Sampler : IM_Module {
       startPos = 0, endPos = 1,
       tremFreq = 0, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
       attackTime = 0.05, sustainTime = 1, releaseTime = 0.05,
-      filterCutoff = 20000
+      filterCutoff = 20000, pan = 0
       |
       var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
       var tremolo, playHead, player, filter, env, sig;
@@ -153,9 +151,10 @@ Sampler : IM_Module {
       player = BufRd.ar(2, buffer, playHead, loop);
       filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, 1, -4), 1, doneAction: 2);
-      sig = filter * env;
-      sig = sig * tremolo;
+      sig = tremolo * env;
+      sig = sig * filter;
       sig = sig * amp;
+      sig = Balance2.ar(sig[0], sig[1], pan);
       Out.ar(outBus, sig);
     }).add;
 
@@ -165,7 +164,7 @@ Sampler : IM_Module {
       startPos = 0, endPos = 1,
       tremFreq = 0, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
       attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
-      filterCutoff = 20000
+      filterCutoff = 20000, pan = 0
       |
       var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
       var tremolo, playHead, player, filter, env, sig;
@@ -181,9 +180,10 @@ Sampler : IM_Module {
       player = BufRd.ar(1, buffer, playHead, loop);
       filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate, doneAction: 2);
-      sig = filter * env;
-      sig = sig * tremolo;
+      sig = tremolo * env;
+      sig = sig * filter;
       sig = sig * amp;
+      sig = Pan2.ar(sig, pan);
       Out.ar(outBus, sig);
     }).add;
 
@@ -193,7 +193,7 @@ Sampler : IM_Module {
       startPos = 0, endPos = 1,
       tremFreq = 0, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
       attackTime = 0.05, sustainTime = 1, releaseTime = 0.05,
-      filterCutoff = 20000
+      filterCutoff = 20000, pan = 0
       |
       var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
       var tremolo, playHead, player, filter, env, sig;
@@ -209,9 +209,10 @@ Sampler : IM_Module {
       player = BufRd.ar(1, buffer, playHead, loop);
       filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, 1, -4), 1, doneAction: 2);
-      sig = filter * env;
-      sig = sig * tremolo;
+      sig = tremolo * env;
+      sig = sig * filter;
       sig = sig * amp;
+      sig = Pan2.ar(sig, pan);
       Out.ar(outBus, sig);
     }).add;
   }
@@ -220,13 +221,13 @@ Sampler : IM_Module {
   free {
     bufferArray.do({ | buf | buf.free; });
     bufferArray = nil;
-    samplerDict.free;
+    samplerDict.do({ | synth | synth.free; });
     samplerDict = nil;
     this.freeModule;
   }
 
-  playSampleSustaining { | name, sampleNum, rate = 1, startPos = 0, endPos = 1 |
-    var loop;
+  playSampleSustaining { | name, sampleNum, vol = 0, rate = 1, startPos = 0, endPos = 1, pan = 0 |
+    var amp = vol.dbamp;
     if( monoOrStereo == 'stereo',
       {
         samplerDict[name] = Synth(\prm_Sampler_Stereo_ADSR,
@@ -234,7 +235,8 @@ Sampler : IM_Module {
             \outBus, mixer.chanStereo(0), \buffer, bufferArray[sampleNum], \rate, rate, \startPos, startPos, \endPos, endPos,
             \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
             \tremWaveform, tremoloWaveform,
-            \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime
+            \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime,
+            \amp, amp, \pan, pan
           ],
           group, \addToHead);
       },
@@ -244,7 +246,8 @@ Sampler : IM_Module {
             \outBus, mixer.chanStereo(0), \buffer, bufferArray[sampleNum], \rate, rate, \startPos, startPos, \endPos, endPos,
             \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
             \tremWaveform, tremoloWaveform,
-            \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime
+            \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime,
+            \amp, amp, \pan, pan
           ],
           group, \addToHead);
     });
@@ -255,7 +258,8 @@ Sampler : IM_Module {
     samplerDict[name].set(\gate, 0);
   }
 
-  playSampleOneShot { | sampleNum, rate = 1, startPos = 0, endPos = 1 |
+  playSampleOneShot { | sampleNum, vol = 0, rate = 1, startPos = 0, endPos = 1, pan = 0 |
+    var amp = vol.dbamp;
     if( bufferArray.size > sampleNum, {
       sustainTime = (((bufferArray[sampleNum].numFrames * (endPos-startPos))* (1/rate)) / server.sampleRate) - (attackTime + releaseTime);
       if( monoOrStereo == 'stereo',
@@ -266,7 +270,8 @@ Sampler : IM_Module {
               \rate, rate, \loop, 0, \startPos, startPos, \endPos, endPos,
               \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
               \tremWaveform, tremoloWaveform,
-              \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime
+              \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime,
+              \amp, amp, \pan, pan
             ],
             group, \addToHead);
         },
@@ -277,7 +282,8 @@ Sampler : IM_Module {
               \rate, rate, \loop, 0, \startPos, startPos, \endPos, endPos,
               \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
               \tremWaveform, tremoloWaveform,
-              \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime
+              \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime,
+              \amp, amp, \pan, pan
             ],
             group, \addToHead);
 

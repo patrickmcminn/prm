@@ -9,11 +9,13 @@ Sampler : IM_Module {
 
   var <isLoaded;
   var server;
-  var samplerDict, bufferArray;
+  var samplerDict, <bufferArray;
   var <attackTime, <decayTime, <sustainLevel, <releaseTime, sustainTime;
   var <filterCutoff;
   var <tremoloRate, <tremoloDepth, <tremoloWaveform;
   var monoOrStereo;
+  var sequencerDict, <sequencerClock;
+  var <tempo;
 
   *newMono {
     |
@@ -59,6 +61,8 @@ Sampler : IM_Module {
       //sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+      sequencerDict = IdentityDictionary.new;
+      sequencerClock = TempoClock.new;
       server.sync;
 
       isLoaded = true;
@@ -332,5 +336,62 @@ Sampler : IM_Module {
   }
 
   bufferArraySize { ^bufferArray.size; }
+
+  //////// Pattern Sequencer:
+
+  makeSequence { | name, type = 'sustaining' |
+    fork {
+      sequencerDict[name] = IM_PatternSeq.new(name, group, \addToHead);
+      sequencerDict[name].stop;
+      server.sync;
+      //sequencerDict[name].addKey(\instrument, \prm_Sampler_Stereo_OneShot);
+      if( type == 'sustaining',
+        {
+          if( monoOrStereo == 'stereo',
+            { sequencerDict[name].addKey(\instrument, \prm_Sampler_Stereo_ADSR) },
+            { sequencerDict[name].addKey(\instrument, \prm_Sampler_Mono_ADSR) });
+        },
+        {
+          if( monoOrStereo == 'stereo',
+            { sequencerDict[name].addKey(\instrument, \prm_Sampler_Stereo_OneShot); },
+            { sequencerDict[name].addKey(\instrument, \prm_Sampler_Mono_OneShot); }
+          );
+      });
+      sequencerDict[name].addKey(\outBus, if( monoOrStereo == 'stereo', { mixer.chanStereo(0) }, { mixer.chanMono(0) }));
+      sequencerDict[name].addKey(\attackTime, attackTime);
+      sequencerDict[name].addKey(\decayTime, decayTime);
+      sequencerDict[name].addKey(\sustainLevel, sustainLevel);
+      sequencerDict[name].addKey(\releaseTime, releaseTime);
+      sequencerDict[name].addKey(\filterCutoff, filterCutoff);
+      sequencerDict[name].addKey(\tremFreq, tremoloRate);
+      sequencerDict[name].addKey(\tremDepth, tremoloDepth);
+      sequencerDict[name].addKey(\tremWaveform, tremoloWaveform);
+      sequencerDict[name].addKey(\amp, 1);
+      sequencerDict[name].addKey(\freq, 1);
+    };
+  }
+
+  addKey {  | name, key, action |
+    sequencerDict[name].addKey(key, action);
+  }
+
+  playSequence { | name, clock = 'internal', quant = 'nil' |
+    var playClock;
+    if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
+    sequencerDict[name].play(playClock);
+  }
+
+  resetSequence { | name | sequencerDict[name].reset; }
+  stopSequence { | name | sequencerDict[name].stop; }
+  pauseSequence { | name | sequencerDict[name].pause }
+  resumeSequence { | name | sequencerDict[name].resume; }
+  isSequencePlaying { | name | ^sequencerDict[name].isPlaying }
+  setSequenceQuant { | name, quant = 0 | sequencerDict[name].setQuant(quant) }
+
+  setSequencerClockTempo { | bpm = 60 |
+    var bps = bpm/60;
+    tempo = bps;
+    sequencerClock.tempo = tempo;
+  }
 
 }

@@ -1,7 +1,7 @@
 /*
 Wednesday, June 3rd 2015
 Wash.sc
-Salzburg, AT
+Salzburg, Austria
 Based on the SA.Wash Max for Live Effect
 */
 
@@ -27,7 +27,7 @@ Wash : IM_Processor {
     server.waitForBoot {
       isLoaded = false;
       this.prAddSynthDefs;
-      this.prIntializeParameters;
+      this.prInitializeParameters;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait });
       server.sync;
       synth = Synth(\prm_Wash_Stereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \amp, 1, \mix, mix,
@@ -46,7 +46,7 @@ Wash : IM_Processor {
     server.waitForBoot {
       isLoaded = false;
       this.prAddSynthDefs;
-      this.prIntializeParameters;
+      this.prInitializeParameters;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait });
       server.sync;
       synth = Synth(\prm_Wash_Mono, [\inBus, inBus, \outBus, mixer.chanStereo(0), \amp, 1, \mix, mix,
@@ -93,7 +93,7 @@ Wash : IM_Processor {
       modulator = SinOsc.kr(modulatorFrequency) * modulatorDepth * 0.0001;
       jitter = LPF.ar(WhiteNoise.ar, jitterRange) * jitterDepth;
       modulation = modulator + jitter;
-      modulation.poll;
+      //modulation.poll;
 
       comb1 = CombL.ar(preHighPass, 1, (0.0562 * delayCoefficient) + modulation,
         feedbackCoefficient * baseDecayTime);
@@ -141,10 +141,10 @@ Wash : IM_Processor {
       preLowPass = LPF.ar(initHighPass, lowPassCutoff);
       preHighPass = HPF.ar(preLowPass, highPassCutoff);
 
-      modulator = SinOsc.kr(modulatorFrequency) * modulatorDepth * 0.0001;
+      modulator = SinOsc.kr(modulatorFrequency) * modulatorDepth * 0.05;
       jitter = LPF.ar(WhiteNoise.ar, jitterRange) * jitterDepth;
       modulation = modulator + jitter;
-      modulation.poll;
+      //modulation.poll;
 
       comb1 = CombL.ar(preHighPass, 1, (0.0562 * delayCoefficient) + modulation,
         feedbackCoefficient * baseDecayTime);
@@ -181,12 +181,6 @@ Wash : IM_Processor {
     synth = nil;
     this.freeProcessor;
   }
-
-  /*
-  var <mix, <highPassCutoff, <lowPassCutoff;
-  var <delayCoefficient, <feedbackCoefficient;
-  var <modulatorFrequency, <modulatorDepth, <jitterRange, <jitterDepth;
-  */
 
   setMix { | m = 0 |
     mix = m;

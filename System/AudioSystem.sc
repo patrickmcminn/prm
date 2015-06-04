@@ -57,10 +57,15 @@ AudioSystem {
       granulator.granulator.setCrossfade(1);
       granulator.delay.setMix(0);
 
+      reverb = Wash.newStereo(systemMixer.inBus(0), relGroup: systemGroup, addAction: \addToHead);
+      server.sync;
+      while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
+      /*
       reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.4Cathedral'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
+      */
 
       submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
         procGroup, \addToHead);

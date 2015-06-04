@@ -85,6 +85,9 @@ AudioSystem {
     server.options.blockSize = blockSize;
     server.options.memSize = memSize;
     server.options.numAudioBusChannels = numAudioBusChannels;
+    server.options.hardwareBufferSize = 256;
+    // comment out for verbosity:
+    server.options.verbosity = -1;
     // server.options.device = (devName);
   }
 

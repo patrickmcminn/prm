@@ -1,8 +1,8 @@
 x = AudioSystem.new(2);
 y = Subtractive.new(x.submixA, x.reverb.inBus, x.granulator.inBus);
 
-y.mixer.setSendVol(0, -20);
-y.mixer.setSendVol(1, -70);
+y.mixer.setSendVol(0, -9);
+y.mixer.setSendVol(1, -12);
 
 ~phraselet1 = Pseq([[0, 4], -5, -3, [-7, 5]], 3);
 ~phraselet2 = Pseq([[7, 5], -5, -3, [-7, 5]], 1);
@@ -17,12 +17,11 @@ y.addKey(\sad, \dur, Pseq([1, 1, 1, 1], inf));
 y.addKey(\sad, \legato, 1);
 y.addKey(\sad, \attackTime, Pwhite(0.2, 0.45));
 y.addKey(\sad, \filterCutoff, Pbrown(900, 1200, 50));
-y.addKey(\sad, \filterRes, Pwhite(0, 0.5));
+y.addKey(\sad, \filterRes, Pwhite(0.4, 0.9));
 
 
 y.playSequence(\sad);
 
-y.setFilterCutoff(3000);
 y.setOsc1Waveform(1.3);
 y.setOsc2Octave(4);
 y.setOsc2Waveform('tri');

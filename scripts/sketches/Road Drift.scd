@@ -1,5 +1,4 @@
 x = AudioSystem.new(2);
-
 y = Subtractive.new(x.submixA, x.reverb.inBus, x.granulator.inBus);
 
 y.mixer.setSendVol(0, -18);
@@ -32,7 +31,7 @@ y.addKey(\grift, \dur, Pseq([Pseq([0.25], 16), Pseq([0.1875], 24), Pseq([0.25], 
 y.addKey(\grift, \root, 1);
 y.addKey(\grift, \note, Pseq([Pseq([~chord1], 16), Pseq([~chord2], 24), Pseq([~chord3], 16), Pseq([[9, 12, 14, 19]], 16)], inf));
 y.addKey(\grift, \legato, 0.9);
-y.addKey(\grift, \amp, 2);
+y.addKey(\grift, \amp, 0.5);
 
 
 
@@ -47,3 +46,14 @@ y.stopSequence(\grift);
 // final section: ~chord 4 added
 s.meter;
 
+z = MidBells.new(x.submixB,x.reverb.inBus, x.granulator.inBus);
+z.setAttackTime(0.4);
+z.playNote(61.midicps, 6);
+
+z.mixer.setSendVol(1, 0);
+
+x.systemMixer.setVol(0, 12);
+s.meter;
+
+x.granulator.granulator.setGrainEnvelope('hanning');
+x.granulator.granulator.setTrigRate(66);

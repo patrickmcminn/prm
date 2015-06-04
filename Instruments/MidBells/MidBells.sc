@@ -15,7 +15,7 @@ MidBells : IM_Module {
   *new {
     |
     outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
-    relGroup = nil, addAction = 'addToTail'
+    relGroup = nil, addAction = 'addToHead'
     |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
   }
@@ -28,7 +28,7 @@ MidBells : IM_Module {
       sequencerDict = IdentityDictionary.new;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
       server.sync;
-      path = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/MidBells/";
+      path = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/MidBells/samples/";
       sampleArray = (path ++ "*").pathMatch;
       sampler = Sampler.newStereo(mixer.chanStereo(0), sampleArray, relGroup: group, addAction: \addToHead);
       server.sync;

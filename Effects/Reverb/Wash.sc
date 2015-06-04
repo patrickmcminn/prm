@@ -30,7 +30,26 @@ Wash : IM_Processor {
       this.prIntializeParameters;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait });
       server.sync;
-      Synth(\prm_Wash_Stereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \amp, 1, \mix, mix,
+      synth = Synth(\prm_Wash_Stereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \amp, 1, \mix, mix,
+        \highPassCutoff, highPassCutoff, \lowPassCutoff, lowPassCutoff,
+        \delayCoefficient, delayCoefficient, \feedbackCoefficient, feedbackCoefficient,
+        \modulatorFrequency, modulatorFrequency, \modulatorDepth, modulatorDepth,
+        \jitterRange, jitterRange, \jitterDepth, jitterDepth],
+        group, \addToHead);
+      server.sync;
+      isLoaded = true;
+    };
+  }
+
+  prInitMono {
+    server = Server.default;
+    server.waitForBoot {
+      isLoaded = false;
+      this.prAddSynthDefs;
+      this.prIntializeParameters;
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait });
+      server.sync;
+      synth = Synth(\prm_Wash_Mono, [\inBus, inBus, \outBus, mixer.chanStereo(0), \amp, 1, \mix, mix,
         \highPassCutoff, highPassCutoff, \lowPassCutoff, lowPassCutoff,
         \delayCoefficient, delayCoefficient, \feedbackCoefficient, feedbackCoefficient,
         \modulatorFrequency, modulatorFrequency, \modulatorDepth, modulatorDepth,
@@ -153,5 +172,56 @@ Wash : IM_Processor {
       Out.ar(outBus, sig);
 
     }).add;
+  }
+
+  ///////// Public Methods:
+
+  free {
+    synth.free;
+    synth = nil;
+    this.freeProcessor;
+  }
+
+  /*
+  var <mix, <highPassCutoff, <lowPassCutoff;
+  var <delayCoefficient, <feedbackCoefficient;
+  var <modulatorFrequency, <modulatorDepth, <jitterRange, <jitterDepth;
+  */
+
+  setMix { | m = 0 |
+    mix = m;
+    synth.set(\mix, mix);
+  }
+  setHighPassCutoff { | cutoff = 20 |
+    highPassCutoff = cutoff;
+    synth.set(\highPassCutoff, highPassCutoff);
+  }
+  setLowPassCutoff { | cutoff = 4375 |
+    lowPassCutoff = cutoff;
+    synth.set(\lowPassCutoff, lowPassCutoff);
+  }
+  setDelayCoefficient { | coeff = 0.3 |
+    delayCoefficient = coeff;
+    synth.set(\delayCoefficient, delayCoefficient);
+  }
+  setFeedbackCoefficient { | coeff = 0.7 |
+    feedbackCoefficient = coeff;
+    synth.set(\feedbackCoefficient, feedbackCoefficient);
+  }
+  setModulatorFrequency { | freq = 0.5 |
+    modulatorFrequency = freq;
+    synth.set(\modulatorFrequency, modulatorFrequency);
+  }
+  setModulatorDepth { | depth = 0.02 |
+    modulatorDepth = depth;
+    synth.set(\modulatorDepth, modulatorDepth);
+  }
+  setJitterRange { | range = 0.5 |
+    jitterRange = range;
+    synth.set(\jitterRange, jitterRange);
+  }
+  setJitterDepth { | depth = 0.01 |
+    jitterDepth = depth;
+    synth.set(\jitterDepth, jitterDepth);
   }
 }

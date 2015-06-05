@@ -2,10 +2,7 @@ x = AudioSystem.new(2);
 y = Subtractive.new(x.submixA, x.reverb.inBus, x.granulator.inBus);
 
 
-x.reverb.setLowPassCutoff(4500);
-x.reverb.setHighPassCutoff(150);
-
-y.mixer.setSendVol(0, -16);
+y.mixer.setSendVol(0, -12);
 y.mixer.setSendVol(1, -70);
 
 y.setFilterCutoff(950);

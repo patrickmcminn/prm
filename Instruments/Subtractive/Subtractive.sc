@@ -60,7 +60,7 @@ Subtractive : IM_Module {
   var <sequencerDict, <sequencerClock, <tempo, <beats;
 
   *new { | outBus, send1Bus = nil, send2Bus = nil, send3Bus = nil, send4Bus = nil, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, 1, outBus, send1Bus, send2Bus, send3Bus, send4Bus, false, relGroup, addAction).prInit(relGroup);
+    ^super.new(1, outBus, send1Bus, send2Bus, send3Bus, send4Bus, false, relGroup, addAction).prInit(relGroup);
   }
 
   prInit { | relGroup = nil |
@@ -84,6 +84,7 @@ Subtractive : IM_Module {
       synthGroup = Group.new(lfo, \addAfter);
       server.sync;
       isLoaded = true;
+
     }
   }
 

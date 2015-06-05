@@ -57,9 +57,12 @@ AudioSystem {
       granulator.granulator.setCrossfade(1);
       granulator.delay.setMix(0);
 
-      reverb = Wash.newStereo(systemMixer.inBus(0), relGroup: systemGroup, addAction: \addToHead);
+      //reverb = Wash.newStereo(systemMixer.inBus(0), relGroup: systemGroup, addAction: \addToHead);
+      reverb = IM_Reverb.newConvolution(systemMixer.inBus, bufName: "3.4Cathedral", relGroup: systemGroup,
+        addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
+      //reverb.setMix(1);
       /*
       reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.4Cathedral'],
         relGroup: systemGroup, addAction: \addToHead);

@@ -84,6 +84,7 @@ Subtractive : IM_Module {
       synthGroup = Group.new(lfo, \addAfter);
       server.sync;
       isLoaded = true;
+
     }
   }
 

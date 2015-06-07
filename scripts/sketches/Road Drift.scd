@@ -1,11 +1,9 @@
 x = AudioSystem.new(2);
 y = Subtractive.new(x.submixA, x.reverb.inBus, x.granulator.inBus);
 
-x.reverb.setLowPassCutoff(4500);
-x.reverb.setHighPassCutoff(150);
-
 y.mixer.setSendVol(0, -16);
 y.mixer.setSendVol(1, -70);
+
 
 y.setFilterCutoff(950);
 y.setLFO2Freq(0.3);
@@ -58,5 +56,6 @@ z.mixer.setSendVol(1, 0);
 x.systemMixer.setVol(0, 12);
 s.meter;
 
-x.granulator.granulator.setGrainEnvelope('hanning');
+x.granulator.granulator.setTrigRate(1);
 x.granulator.granulator.setTrigRate(66);
+x.granulator.setGrainDur(5, 7);

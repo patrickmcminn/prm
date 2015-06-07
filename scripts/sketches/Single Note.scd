@@ -1,4 +1,5 @@
-x = TrumpetNebula.new(0);
+
+2x = TrumpetNebula.new(0);
 y = Subtractive.new(x.inBus);
 
 y.setOsc1SubVol(-6);

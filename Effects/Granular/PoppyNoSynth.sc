@@ -28,7 +28,7 @@ PoppyNoSynth : IM_Processor {
 
       this.prInitParameters;
       this.prAddSynthDefs;
-      buffer = Buffer.alloc(server, server.sampleRate * 20, 2);
+      buffer = Buffer.alloc(server, server.sampleRate * 3, 2);
       segmentGroup = Group.new(group, \addToHead);
       server.sync;
       recorder = Synth(\prm_poppy_recorder, [\inBus, inBus, \buffer, buffer], group, \addToHead);

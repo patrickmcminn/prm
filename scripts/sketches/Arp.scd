@@ -1,8 +1,13 @@
 x = AudioSystem.new(2);
 y = Subtractive.new(x.submixA, x.reverb.inBus, x.granulator.inBus);
 
-y.mixer.setSendVol(0, -9);
-y.mixer.setSendVol(1, -12);
+x.reverb.setHighPassCutoff(200);
+x.reverb.setLowPassCutoff(5000);
+x.reverb.setFeedbackCoefficient(0.5);
+x.reverb.setDelayCoefficient(0.5);
+
+y.mixer.setSendVol(0, -24);
+y.mixer.setSendVol(1, -30);
 
 ~phraselet1 = Pseq([[0, 4], -5, -3, [-7, 5]], 3);
 ~phraselet2 = Pseq([[7, 5], -5, -3, [-7, 5]], 1);
@@ -34,3 +39,15 @@ y.setFilterEnvAttackRatio(0);
 y.setFilterEnvAttackTime(0.35);
 y.setFilterEnvSustainRatio(0.8);
 y.setFilterEnvDecayTime(0.2);
+
+
+
+y.makeSequence(\bass);
+y.addKey(\bass, \root, -1);
+y.addKey(\bass, \note, Pseq([0, \r, 2, \r, -5], inf));
+y.addKey(\bass, \dur, 8);
+y.addKey(\bass, \octave, 3);
+y.addKey(\bass, \amp, 1);
+
+y.playSequence(\bass);
+y.stopSequence(\bass);

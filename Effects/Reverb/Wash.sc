@@ -62,7 +62,7 @@ Wash : IM_Processor {
 
   prInitializeParameters {
     mix = 0;
-    highPassCutoff = 20;
+    highPassCutoff = 150;
     lowPassCutoff = 4375;
     delayCoefficient = 0.3;
     feedbackCoefficient = 0.7;
@@ -73,8 +73,9 @@ Wash : IM_Processor {
   prAddSynthDefs {
     SynthDef(\prm_Wash_Stereo, {
       |
+      delayCoefficient = 0.3,
       inBus = 0, outBus = 0, amp = 1, mix = 0, highPassCutoff = 20, lowPassCutoff = 4375,
-      delayCoefficient = 0.3, feedbackCoefficient = 0.7, baseDecayTime = 20
+      feedbackCoefficient = 0.7, baseDecayTime = 20
       modulatorFrequency = 0.5, modulatorDepth = 0.02,
       jitterRange = 0.5, jitterDepth = 0.01
       |
@@ -120,12 +121,13 @@ Wash : IM_Processor {
 
       Out.ar(outBus, sig);
 
-    }).add;
+    }, [0.1]).add;
 
     SynthDef(\prm_Wash_Mono, {
       |
+      delayCoefficient = 0.3,
       inBus = 0, outBus = 0, amp = 1, mix = 0, highPassCutoff = 20, lowPassCutoff = 4375,
-      delayCoefficient = 0.3, feedbackCoefficient = 0.7, baseDecayTime = 20
+       feedbackCoefficient = 0.7, baseDecayTime = 20
       modulatorFrequency = 0.5, modulatorDepth = 0.02,
       jitterRange = 0.5, jitterDepth = 0.01
       |
@@ -171,7 +173,7 @@ Wash : IM_Processor {
 
       Out.ar(outBus, sig);
 
-    }).add;
+    }, [0.1]).add;
   }
 
   ///////// Public Methods:

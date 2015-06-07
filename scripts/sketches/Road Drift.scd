@@ -1,10 +1,13 @@
 x = AudioSystem.new(2);
 y = Subtractive.new(x.submixA, x.reverb.inBus, x.granulator.inBus);
 
-y.mixer.setSendVol(0, -18);
+x.reverb.setLowPassCutoff(4500);
+x.reverb.setHighPassCutoff(150);
+
+y.mixer.setSendVol(0, -16);
 y.mixer.setSendVol(1, -70);
 
-y.setFilterCutoff(750);
+y.setFilterCutoff(950);
 y.setLFO2Freq(0.3);
 y.setLFO2Waveform('tri');
 y.setFilterCutoffLFO2BottomRatio(0.8);

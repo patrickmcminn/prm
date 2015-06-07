@@ -3,7 +3,7 @@ y = Subtractive.new(x.submixA, x.reverb.inBus, x.granulator.inBus);
 
 
 y.mixer.setSendVol(0, -12);
-y.mixer.setSendVol(1, -70);
+y.mixer.setSendVol(1, 3);
 
 y.setFilterCutoff(950);
 y.setLFO2Freq(0.3);
@@ -56,5 +56,6 @@ z.mixer.setSendVol(1, 0);
 x.systemMixer.setVol(0, 12);
 s.meter;
 
-x.granulator.granulator.setGrainEnvelope('hanning');
+x.granulator.granulator.setTrigRate(1);
 x.granulator.granulator.setTrigRate(66);
+x.granulator.setGrainDur(5, 7);

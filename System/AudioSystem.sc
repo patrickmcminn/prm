@@ -80,6 +80,10 @@ AudioSystem {
         procGroup, \addToHead);
       while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
 
+      submixerA.mixer.setPreVol(12);
+      submixerB.mixer.setPreVol(12);
+      submixerC.mixer.setPreVol(12);
+
       songBook = IdentityDictionary.new;
 
       isLoaded = true;

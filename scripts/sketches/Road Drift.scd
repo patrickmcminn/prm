@@ -18,6 +18,12 @@ y.setOsc1SubVol(-70);
 y.setOsc2PulseWidthLFO2Bottom(-1);
 y.setOsc2PulseWidthLFO2Top(1);
 
+
+y.printAllParameters;
+
+y.savePreset('drift', [ 1, 1, 0, 1, 0.5, 0, 0.05, 0.05, 0.3, 0.5, 0, 0.5, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0.5, 0.5, 0.00031622776601684, 0.5, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, -1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 3, 0.9, 0.25118864315096, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0, 0.05, false, 1, 1, 0.8, 1.2, 0, 0, 0, 0, 1, 950, 0, 0, 1, 1, 1, 1, 0.05, 0.05, 1, 0.05, 0, 0, 0, 0, 0 ]);
+y.loadPreset('drift');
+
 ~chord1 = [0, 4, 7];
 ~chord2 = [4, 9, 11];
 ~chord3 = [5, 9, 12, 16];
@@ -32,7 +38,7 @@ y.addKey(\grift, \dur, Pseq([Pseq([0.25], 16), Pseq([0.1875], 24), Pseq([0.25], 
 y.addKey(\grift, \root, 1);
 y.addKey(\grift, \note, Pseq([Pseq([~chord1], 16), Pseq([~chord2], 24), Pseq([~chord3], 16), Pseq([[9, 12, 14, 19]], 16)], inf));
 y.addKey(\grift, \legato, 0.9);
-y.addKey(\grift, \amp, 0.5);
+y.addKey(\grift, \amp, 1);
 
 
 

@@ -944,7 +944,7 @@
   }
 
   loadPreset { | name = 'myPreset' |
-    this.loadAllParameters(presetDict[name]);
+    this.setAllParameters(presetDict[name]);
   }
 
 }

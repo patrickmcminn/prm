@@ -97,6 +97,8 @@ Sampler : IM_Module {
       //sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+      sequencerDict = IdentityDictionary.new;
+      sequencerClock = TempoClock.new;
       server.sync;
 
       isLoaded = true;
@@ -358,14 +360,14 @@ Sampler : IM_Module {
           );
       });
       sequencerDict[name].addKey(\outBus, if( monoOrStereo == 'stereo', { mixer.chanStereo(0) }, { mixer.chanMono(0) }));
-      sequencerDict[name].addKey(\attackTime, attackTime);
-      sequencerDict[name].addKey(\decayTime, decayTime);
-      sequencerDict[name].addKey(\sustainLevel, sustainLevel);
-      sequencerDict[name].addKey(\releaseTime, releaseTime);
-      sequencerDict[name].addKey(\filterCutoff, filterCutoff);
-      sequencerDict[name].addKey(\tremFreq, tremoloRate);
-      sequencerDict[name].addKey(\tremDepth, tremoloDepth);
-      sequencerDict[name].addKey(\tremWaveform, tremoloWaveform);
+      sequencerDict[name].addKey(\attackTime, Pfunc({ attackTime }));
+      sequencerDict[name].addKey(\decayTime, Pfunc({ decayTime }));
+      sequencerDict[name].addKey(\sustainLevel, Pfunc({ sustainLevel }));
+      sequencerDict[name].addKey(\releaseTime, Pfunc({ releaseTime }));
+      sequencerDict[name].addKey(\filterCutoff, Pfunc({ filterCutoff }));
+      sequencerDict[name].addKey(\tremFreq, Pfunc({ tremoloRate }));
+      sequencerDict[name].addKey(\tremDepth, Pfunc ({ tremoloDepth }));
+      sequencerDict[name].addKey(\tremWaveform, Pfunc({ tremoloWaveform }));
       sequencerDict[name].addKey(\amp, 1);
       sequencerDict[name].addKey(\freq, 1);
     };

@@ -12,7 +12,7 @@ AudioSystem {
   var hardwareOut, <systemMixer;
   var <irLibrary;
 
-  var <reverb, <granulator;
+  var <reverb, <granulator, <modular;
 
   var <submixerA, <submixerB, <submixerC;
 
@@ -49,6 +49,9 @@ AudioSystem {
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
+      modular = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
+      while({ try { modular.isLoaded } != true }, { 0.001.wait; });
+
       //granulator = IM_Granulator(systemMixer.inBus(0),
         //relGroup: systemGroup, addAction: \addToHead);
       granulator = GranularDelay.new(systemMixer.inBus, relGroup: systemGroup, addAction: \addToHead);
@@ -70,13 +73,13 @@ AudioSystem {
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
       */
 
-      submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
+      submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modular.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerA.isLoaded } != true }, { 0.001.wait; });
-      submixerB = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
+      submixerB = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modular.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerB.isLoaded } != true }, { 0.001.wait; });
-      submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
+      submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modular.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
 

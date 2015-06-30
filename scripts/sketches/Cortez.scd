@@ -79,10 +79,10 @@ s.makeWindow;
 
 b = Subtractive.new(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus);
 b.makeSequence(\cortezHi);
-b.mixer.setSendVol(0, -3);
+b.mixer.setSendVol(0, -18);
 b.mixer.setSendVol(1, -99);
 b.mixer.setSendPre;
-b.mixer.setVol(-12);
+b.mixer.setVol(-6);
 
 ~prm.granulator.setGrainEnvelope('rexpodec');
 ~prm.granulator.setGrainDur(0.05, 0.08);
@@ -256,7 +256,7 @@ c.stopSequence(\cortezPhase5);
 )
 
 // perhaps vary the reverb sends
-c.mixer.setSendVol(0, -9);
+c.mixer.setSendVol(0, -18);
 c.mixer.setSendVol(1, -16);
 
 

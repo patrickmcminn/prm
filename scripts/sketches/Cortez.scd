@@ -5,7 +5,8 @@
 
 //x = AudioSystem.new(2);
 y = Subtractive.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus);
-
+b = Subtractive.new(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus);
+c = Subtractive.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus);
 
 
 z = TempoClock.new;
@@ -77,7 +78,6 @@ s.makeWindow;
 
 
 
-b = Subtractive.new(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus);
 b.makeSequence(\cortezHi);
 b.mixer.setSendVol(0, -18);
 b.mixer.setSendVol(1, -99);
@@ -167,7 +167,6 @@ y.addKey(\cortezDrone, \filterDrive, 3);
 y.playSequence(\cortezDrone);
 y.stopSequence(\cortezDrone);
 
-c = Subtractive.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus);
 
 
 c.setDecayTime(0.01);

@@ -89,12 +89,12 @@
     );
   }
 
-  turnTouchButtonColor { | button = 0, led = 'middle', color = 'off', bank = 'active', page = 'active' |
-    if( button > 7, { "Out of Range".postln; },
+  turnTouchButtonColor { | button = 1, led = 'middle', color = 'off', bank = 'active', page = 'active' |
+    if( button > 8, { "Out of Range".postln; },
       {
-        var num = button + switch(led, { 'middle' }, { 10 }, { 'top' }, { 68 });
+        var num = (button-1) + switch(led, { 'middle' }, { 10 }, { 'top' }, { 68 });
         if( page == 'active', { page = activePageKey });
-        pageDict[page].turnTouchButtonColor(button, led, color, bank);
+        pageDict[page].turnTouchButtonColor((button-1), led, color, bank);
         if( page == activePageKey, { this.turnButtonColor(num, activePage.getButtonColor(num)); });
       }
     );

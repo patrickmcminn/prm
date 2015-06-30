@@ -29,14 +29,14 @@ y.setOsc2Waveform('tri');
 y.setOsc2SubVol(-12);
 y.setOsc2Octave(3);
 y.setOsc1Vol(-6);
-y.setFilterCutoff(750);
+y.setFilterCutoff(850);
 
 y.setAttackTime(0.05);
 y.setDecayTime(0.5);
-y.setSustainLevel(0.5);
+y.setSustainLevel(0.7);
 y.setReleaseTime(0.1);
-y.setFilterEnvAttackRatio(0.2);
-y.setFilterEnvAttackTime(0.5);
+y.setFilterEnvAttackRatio(1);
+y.setFilterEnvAttackTime(0.25);
 y.setFilterEnvDecayTime(0.5);
 y.setFilterEnvSustainRatio(0.7);
 
@@ -318,8 +318,6 @@ d.mixer.setSendVol(0, 6);
 d.free;
 
 
-
-
 c.mixer.setVol(12);
 b.mixer.setVol(6);
 c.mixer.setSendVol(0, -18);
@@ -328,5 +326,9 @@ c.mixer.setSendVol(0, -18);
 z.tempo = 1
 
 y.stopSequence(\cortez);
+y.playSequence(\cortez);
+
+y.mixer.setVol(-6);
+
 
 

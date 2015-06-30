@@ -21,7 +21,7 @@
     this.turnButtonColor(num + 18, controlButtonsBankArray[activeControlButtonsBank][2][num]);
   }
 
-  turnTouchButtonColor { | button = 0, led = 'middle', color = 'off', bank = 'active' |
+  turnTouchButtonColor { | button = 1, led = 'middle', color = 'off', bank = 'active' |
     var num = button + switch(led, { 'middle' }, { 0 }, { 'top' }, { 8 });
     var midi = button + switch(led, { 'middle' }, { 10 }, { 'top' }, { 68 });
     if( bank == 'active', { bank = activeTouchButtonsBank });

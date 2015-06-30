@@ -410,6 +410,8 @@ if( c.mixer.isMuted,
 }, bank: cBank, page: page);
 
 //////// Grid:
+
+// fader pre/post:
 ~base.turnGridMagenta(0, 3, bank: cBank, page: page);
 ~base.setGridFunc(0, 3, r {
   loop {
@@ -420,6 +422,68 @@ if( c.mixer.isMuted,
     ~base.turnGridMagenta(0, 3).yield;
   };
 }, bank: cBank, page: page);
+
+// sequences:
+5.do({ | i | ~base.turnGridYellow(i, 0, bank: cBank, page: page); });
+
+//1
+~base.setGridFunc(0, 0, r {
+  loop {
+    c.playSequence(\cortezPhase, z);
+    ~base.turnGridGreen(0, 0).yield;
+
+    c.stopSequence(\cortezPhase, z);
+    ~base.turnGridRed(0, 0).yield;
+  };
+}, bank: cBank, page: page);
+
+//2
+~base.setGridFunc(1, 0, r {
+  loop {
+    c.playSequence(\cortezPhase2, z);
+    ~base.turnGridGreen(1, 0).yield;
+
+    c.stopSequence(\cortezPhase2, z);
+    ~base.turnGridRed(1, 0).yield;
+  };
+}, bank: cBank, page: page);
+
+//3
+~base.setGridFunc(2, 0, r {
+  loop {
+    c.playSequence(\cortezPhase3, z);
+    ~base.turnGridGreen(2, 0).yield;
+
+    c.stopSequence(\cortezPhase3, z);
+    ~base.turnGridRed(2, 0).yield;
+  };
+}, bank: cBank, page: page);
+
+//4
+~base.setGridFunc(3, 0, r {
+  loop {
+    c.playSequence(\cortezPhase4, z);
+    ~base.turnGridGreen(3, 0).yield;
+
+    c.stopSequence(\cortezPhase4, z);
+    ~base.turnGridRed(3, 0).yield;
+  };
+}, bank: cBank, page: page);
+
+//5
+~base.setGridFunc(4, 0, r {
+  loop {
+    c.playSequence(\cortezPhase5, z);
+    ~base.turnGridGreen(4, 0).yield;
+
+    c.stopSequence(\cortezPhase5, z);
+    ~base.turnGridRed(4, 0).yield;
+  };
+}, bank: cBank, page: page);
+
+
+
+
 
 
 

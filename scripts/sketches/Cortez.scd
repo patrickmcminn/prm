@@ -4,14 +4,20 @@
 // borrowed the initial idea from Cortez the Killer by Neil Young
 
 //x = AudioSystem.new(2);
+(
 y = Subtractive.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus);
 b = Subtractive.new(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus);
 c = Subtractive.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus);
 
-
 z = TempoClock.new;
-y.makeSequence('cortez');
 z.tempo = 60/60;
+
+y.makeSequence('cortez');
+
+);
+
+
+
 
 y.addKey(\cortez, \root, 6);
 y.addKey(\cortez, \note, Pseq([[0, 7], [0, 3], [-2, 5], [-2, 2], [5, 0], [-7, 0], [-5, 2]], inf));
@@ -155,19 +161,7 @@ y.playSequence(\cortez);
 y.stopSequence(\cortez);
 
 
-y.makeSequence(\cortezDrone);
-y.addKey(\cortezDrone, \root, 6);
-y.addKey(\cortezDrone, \octave, 4);
-y.addKey(\cortezDrone, \note, Pseq([[0, 7]], inf));
-y.addKey(\cortezDrone, \dur, 3/15);
-y.addKey(\cortezDrone, \amp, 0.7);
-y.addKey(\cortezDrone, \legato, 1);
-y.addKey(\cortezDrone, \lfo1Freq, 15/3);
-y.addKey(\cortezDrone, \filterDrive, 3);
 
-
-y.playSequence(\cortezDrone);
-y.stopSequence(\cortezDrone);
 
 
 
@@ -195,47 +189,6 @@ c.makeSequence(\cortezPhase3);
 c.makeSequence(\cortezPhase4);
 c.makeSequence(\cortezPhase5);
 )
-
-// this sounds a little too fast in context:
-
-c.addKey(\cortezPhase, \root, 6);
-c.addKey(\cortezPhase, \note, Pseq([0], inf));
-c.addKey(\cortezPhase, \dur, 3/20);
-c.addKey(\cortezPhase, \legato, Pbrown(0.1, 0.4, 0.125, inf));
-c.addKey(\cortezPhase, \amp, 0.3);
-c.addKey(\cortezPhase, \pan, Pbrown(0, 1, 0.125, inf));
-
-
-c.addKey(\cortezPhase2, \root, 6);
-c.addKey(\cortezPhase2, \note, Pseq([2], inf));
-c.addKey(\cortezPhase2, \dur, 3/31);
-c.addKey(\cortezPhase2, \legato, Pbrown(0.1, 0.4, 0.125, inf));
-c.addKey(\cortezPhase2, \amp, 0.3);
-c.addKey(\cortezPhase2, \pan, Pbrown(-1, 0, 0.125, inf));
-
-
-c.addKey(\cortezPhase3, \root, 6);
-c.addKey(\cortezPhase3, \note, Pseq([3], inf));
-c.addKey(\cortezPhase3, \dur, 3/32);
-c.addKey(\cortezPhase3, \legato, Pbrown(0.1, 0.4, 0.125, inf));
-c.addKey(\cortezPhase3, \amp, 0.3);
-c.addKey(\cortezPhase3, \pan, Pbrown(-0.2, 0.2, 0.025, inf));
-
-
-c.addKey(\cortezPhase4, \root, 6);
-c.addKey(\cortezPhase4, \note, Pseq([5], inf));
-c.addKey(\cortezPhase4, \dur, 3/33);
-c.addKey(\cortezPhase4, \legato, Pbrown(0.1, 0.4, 0.125, inf));
-c.addKey(\cortezPhase4, \amp, 0.3);
-c.addKey(\cortezPhase4, \pan, Pbrown(-0.3, 1, 0.125, inf));
-
-
-c.addKey(\cortezPhase5, \root, 6);
-c.addKey(\cortezPhase5, \note, Pseq([7], inf));
-c.addKey(\cortezPhase5, \dur, 3/34);
-c.addKey(\cortezPhase5, \legato, Pbrown(0.1, 0.4, 0.125, inf));
-c.addKey(\cortezPhase5, \amp, 0.3);
-c.addKey(\cortezPhase5, \pan, Pbrown(-1, 0.3, 0.125, inf));
 
 (
 c.playSequence(\cortezPhase, z);
@@ -304,32 +257,3 @@ c.addKey(\cortezPhase5, \dur, 3/20.4);
 c.addKey(\cortezPhase5, \legato, Pbrown(0.1, 0.4, 0.125, inf));
 c.addKey(\cortezPhase5, \amp, 0.3);
 c.addKey(\cortezPhase5, \pan, Pbrown(-1, 0.3, 0.125, inf));
-
-
-
-
-// bells? Sounds a bit too much like Music for Sleep
-d = MidBells.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus);
-
-d.playNote(68.midicps, -6, 0);
-d.playNote(66.midicps, -6, 0);
-d.playNote(73.midicps, -6, 0);
-d.mixer.setSendVol(0, 6);
-
-d.free;
-
-
-c.mixer.setVol(12);
-b.mixer.setVol(6);
-c.mixer.setSendVol(0, -18);
-
-
-z.tempo = 1
-
-y.stopSequence(\cortez);
-y.playSequence(\cortez);
-
-y.mixer.setVol(-6);
-
-
-

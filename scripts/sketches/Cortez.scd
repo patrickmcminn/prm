@@ -79,7 +79,9 @@ s.makeWindow;
 
 
 b.makeSequence(\cortezHi);
-b.mixer.setSendVol(0, -18);
+
+
+b.mixer.setSendVol(0, -9);
 b.mixer.setSendVol(1, -99);
 b.mixer.setSendPre;
 b.mixer.setVol(-6);

@@ -105,7 +105,7 @@
       {
         if( page == 'active', { page = activePageKey });
         pageDict[page].setFaderValue(fader, value, bank);
-        if( page == activePageKey, { this.prSetFaderValue(fader, value); });
+        if( page == activePageKey, { this.prSetFaderValue(fader, activePage.faderValueArray[fader-1]); });
       }
     );
   }
@@ -115,7 +115,7 @@
       {
         if( page == 'active', { page = activePageKey });
         pageDict[page].setFaderMode(fader, mode, bank);
-        if( page == activePageKey, { this.prSetFaderMode(fader + 9, mode); });
+        if( page == activePageKey, { this.prSetFaderMode(fader + 9, activePage.faderModeArray[fader-1]); });
       }
     );
   }

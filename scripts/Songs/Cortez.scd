@@ -103,6 +103,7 @@ controlButtonResetFunc.value;
 ~base.setFaderFunc(1, { | val |
   y.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(1, val);
+  ~base.setFaderValue(1, val, bank: yBank);
 }, bank: mainBank, page: page);
 
 // Sub y Mute:
@@ -117,6 +118,7 @@ controlButtonResetFunc.value;
 ~base.setFaderFunc(2, { | val |
   b.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(2, val);
+  ~base.setFaderValue(1, val, bank: bBank);
 }, bank: mainBank, page: page);
 
 // Sub b Mute:
@@ -131,6 +133,7 @@ controlButtonResetFunc.value;
 ~base.setFaderFunc(3, { | val |
   c.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(3, val);
+  ~base.setFaderValue(1, val, bank: cBank);
 }, bank: mainBank, page: page);
 
 // Sub c Mute:
@@ -257,6 +260,7 @@ modVolControlFunc = { | val |
 ~base.setFaderFunc(1, { | val |
   y.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(1, val);
+  ~base.setFaderValue(1, val, bank: mainBank);
 }, bank: yBank, page: page);
 // Mute:
 if( y.mixer.isMuted,
@@ -316,6 +320,7 @@ if( y.mixer.isMuted,
 ~base.setFaderFunc(1, { | val |
   b.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(1, val);
+  ~base.setFaderValue(2, val, bank: mainBank);
 }, bank: bBank, page: page);
 // Mute:
 if( b.mixer.isMuted,
@@ -375,6 +380,7 @@ if( b.mixer.isMuted,
 ~base.setFaderFunc(1, { | val |
   c.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(1, val);
+  ~base.setFaderValue(3, val, bank: mainBank);
 }, bank: cBank, page: page);
 // Mute:
 if( c.mixer.isMuted,

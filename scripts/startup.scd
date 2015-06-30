@@ -13,7 +13,7 @@ s.waitForBoot {
   try { ~ohm = OhmRGB.new; };
   try { ~base = Base.new; };
 
-  "/Global Functions/Load Global Functions.scd".loadRelative;
-  "/System Scripts/Load System Scripts.scd".loadRelative;
+  //"/Global Functions/Load Global Functions.scd".loadRelative;
+  //"/System Scripts/Load System Scripts.scd".loadRelative;
 };
 

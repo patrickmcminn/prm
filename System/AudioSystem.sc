@@ -12,9 +12,11 @@ AudioSystem {
   var hardwareOut, <systemMixer;
   var <irLibrary;
 
-  var <reverb, <granulator;
+  var <reverb, <granulator, <modularSend;
 
   var <submixerA, <submixerB, <submixerC;
+
+  var <modular, modularIn;
 
   var <songBook;
 
@@ -49,6 +51,9 @@ AudioSystem {
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
+      modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
+      while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
+
       //granulator = IM_Granulator(systemMixer.inBus(0),
         //relGroup: systemGroup, addAction: \addToHead);
       granulator = GranularDelay.new(systemMixer.inBus, relGroup: systemGroup, addAction: \addToHead);
@@ -70,19 +75,25 @@ AudioSystem {
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
       */
 
-      submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
+      submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerA.isLoaded } != true }, { 0.001.wait; });
-      submixerB = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
+      submixerB = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerB.isLoaded } != true }, { 0.001.wait; });
-      submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, nil, nil,
+      submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
 
       submixerA.mixer.setPreVol(12);
       submixerB.mixer.setPreVol(12);
       submixerC.mixer.setPreVol(12);
+
+      modular = IM_Mixer_1Ch.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus, nil, false, procGroup, \addToHead);
+      while( { try { modular.isLoaded } != true }, { 0.001.wait; });
+      modularIn = IM_HardwareIn.new(2, modular.inBus, procGroup, \addToHead);
+      while({ try { modularIn.isLoaded } != true }, { 0.001.wait; });
+
 
       songBook = IdentityDictionary.new;
 
@@ -115,6 +126,7 @@ AudioSystem {
       hardwareOut.free;
       reverb.free;
       granulator.free;
+      modularSend.free;
       systemMixer.free;
 
       while( { systemMixer.group != nil }, { 0.001.wait } );
@@ -131,6 +143,8 @@ AudioSystem {
 
       reverb = nil;
       granulator = nil;
+      modularSend = nil;
+
       systemMixer = nil;
 
       systemGroup = nil;

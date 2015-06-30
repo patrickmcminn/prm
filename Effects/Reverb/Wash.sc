@@ -30,6 +30,7 @@ Wash : IM_Processor {
       this.prInitializeParameters;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait });
       server.sync;
+      mixer.setPreVol(3);
       synth = Synth(\prm_Wash_Stereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \amp, 1, \mix, mix,
         \highPassCutoff, highPassCutoff, \lowPassCutoff, lowPassCutoff,
         \delayCoefficient, delayCoefficient, \feedbackCoefficient, feedbackCoefficient,

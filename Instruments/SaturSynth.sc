@@ -3,6 +3,8 @@ Sunday, June 14th 2015
 SaturSynth.sc
 prm
 on the road between Luxembourg and Brussels
+
+6/17/2015 - adding tremolo
 */
 
 
@@ -11,7 +13,7 @@ SaturSynth : IM_Module {
   var <isLoaded, server;
   //var noteIsPlaying;
   var synth;
-  var attackTime, decayTime, sustainLevel, releaseTime;
+  var frequency, filterCutoff, attackTime, decayTime, sustainLevel, releaseTime;
   var <sequencerDict, <sequencerClock;
 
   *new {
@@ -38,6 +40,7 @@ SaturSynth : IM_Module {
   }
 
   prInitializeParameters {
+    filterCutoff = 200;
     attackTime = 0.05;
     decayTime = 0;
     sustainLevel = 1;
@@ -55,12 +58,13 @@ SaturSynth : IM_Module {
       notchFrequency = 100, notchGain = 8.8, notchRQ = 1.43,
       attackTime = 0.05, decayTime = 0, sustainLevel = 1, releaseTime = 0.05,
       gate = 1,
+      tremoloFreq = 1, tremoloDepth = 0,
       pan = 0
       |
 
       var sineOscillator, sawOscillator, oscillatorMix, filterLFO, oscillatorFilter;
       var distortion;
-      var notchFilter, lowpassFilter, env;
+      var notchFilter, lowpassFilter, env, tremolo;
       var sig;
 
       sineOscillator = SinOsc.ar(freq);
@@ -81,9 +85,11 @@ SaturSynth : IM_Module {
 
       //env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime), gate, doneAction: 2);
       env = EnvGen.kr(Env.new([0, 0, 1, sustainLevel, 0], [0, attackTime, decayTime, releaseTime],
-        curve: -4, releaseNode: 3), gate).lag(0.01);
+        curve: -4, releaseNode: 3), gate);
+      env = lowpassFilter * env;
+      tremolo = LFTri.ar(tremoloFreq).range((1-tremoloDepth), 1);
 
-      sig = lowpassFilter * env;
+      sig = tremolo * env;
       //sig = Limiter.ar(sig, 1, 0.01);
       sig = Pan2.ar(sig, pan);
       sig = sig * amp;
@@ -100,12 +106,13 @@ SaturSynth : IM_Module {
       notchFrequency = 100, notchGain = 8.8, notchRQ = 1.43,
       attackTime = 0.05, decayTime = 0, sustainLevel = 1, releaseTime = 0.05,
       gate = 1,
+      tremoloFreq = 1, tremoloDepth = 0,
       pan = 0
       |
 
       var sineOscillator, sawOscillator, oscillatorMix, filterLFO, oscillatorFilter;
       var distortion;
-      var notchFilter, lowpassFilter, env;
+      var notchFilter, lowpassFilter, env, tremolo;
       var sig;
 
       sineOscillator = SinOsc.ar(freq);
@@ -127,8 +134,10 @@ SaturSynth : IM_Module {
       //env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime), gate, doneAction: 2);
       env = EnvGen.kr(Env.new([0, 0, 1, sustainLevel, 0], [0, attackTime, decayTime, releaseTime],
         curve: -4, releaseNode: 3), gate, doneAction: 2);
+      env = lowpassFilter * env;
+      tremolo = LFTri.ar(tremoloFreq).range((1-tremoloDepth), 1);
 
-      sig = lowpassFilter * env;
+      sig = tremolo * env;
       //sig = Limiter.ar(sig, 1, 0.01);
       sig = Pan2.ar(sig, pan);
       sig = sig * amp;
@@ -144,9 +153,14 @@ SaturSynth : IM_Module {
     isLoaded = false;
   }
 
-  playNote { | freq, vol = -6 | synth.set(\gate, 1, \freq, freq, \amp, vol.dbamp); }
+  playNote { | freq, vol = -6 |
+    frequency = freq;
+    synth.set(\gate, 1, \freq, frequency, \amp, vol.dbamp);
+  }
 
-  releaseNote { synth.set(\gate, 0); }
+  releaseNote { | freq |
+    if( freq == frequency, { synth.set(\gate, 0); });
+  }
 
   setAttackTime { | attack = 0.05 |
     attackTime = attack;
@@ -164,6 +178,15 @@ SaturSynth : IM_Module {
     releaseTime = release;
     synth.set(\releaseTime, releaseTime);
   }
+  setFilterCutoff { | cutoff = 200 |
+    filterCutoff = cutoff;
+    synth.set(\filterCutoff, filterCutoff); }
+  setTremoloRate { | freq = 1 |
+    synth.set(\tremoloFreq, freq);
+  }
+  setTremoloDepth { | depth = 0 |
+    synth.set(\tremoloDepth, depth);
+  }
 
   ///////// Pattern Sequencer:
   makeSequence { | name |
@@ -173,8 +196,9 @@ SaturSynth : IM_Module {
       sequencerDict[name].stop;
       sequencerDict[name].addKey(\instrument, \prm_SaturSynth_Seq);
       sequencerDict[name].addKey(\outBus, mixer.chanStereo(0));
+      sequencerDict[name].addKey(\filterCutoff, Pfunc( { filterCutoff }));
       sequencerDict[name].addKey(\attackTime, Pfunc( { attackTime}));
-    sequencerDict[name].addKey(\decayTime, Pfunc( { decayTime}));
+      sequencerDict[name].addKey(\decayTime, Pfunc( { decayTime}));
       sequencerDict[name].addKey(\sustainLevel, Pfunc( { sustainLevel }));
       sequencerDict[name].addKey(\releaseTime, Pfunc({ releaseTime }));
       sequencerDict[name].addKey(\octave, 4);

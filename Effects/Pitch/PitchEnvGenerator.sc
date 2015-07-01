@@ -151,6 +151,7 @@ PitchEnvGenerator : IM_Processor {
   }
 
   makeSynthSustaining { | name = 'synth', pitchShift = 0, vol = 0, cutoff = 16000 |
+    try { synthDict[name].free; };
     if( monoOrStereo == 'stereo',
       {
         synthDict[name] = Synth(\prm_PitchEnvGenerator_Sustaining_Stereo,

@@ -174,21 +174,21 @@ controlButtonResetFunc.value;
 // reverb:
 ~base.setFaderMode(5, 'magentaFill', bank: mainBank, page: page);
 ~base.setFaderFunc(5, { | val |
-  ~prm.modular.mixer.setSendVol(0, val.ccdbfs(-70, 0));
+  ~prm.modular.setSendVol(0, val.ccdbfs(-70, 0));
   ~base.setFaderValue(5, val);
 }, bank: mainBank, page: page);
 
 // granular delay:
 ~base.setFaderMode(6, 'magnetaFill', bank: mainBank, page: page);
 ~base.setFaderFunc(6, { | val |
-  ~prm.modular.mixer.setSendVol(1, val.ccdbfs(-70, 0));
+  ~prm.modular.setSendVol(1, val.ccdbfs(-70, 0));
   ~base.setFaderValue(6, val);
 }, bank: mainBank, page: page);
 
 // modular (CAREFUL!):
 ~base.setFaderMode(7, 'magentaFill', bank: mainBank, page: page);
 ~base.setFaderFunc(7, { | val |
-  ~prm.modular.mixer.setSendVol(2, val.ccdbfs(-70, 0));
+  ~prm.modular.setSendVol(2, val.ccdbfs(-70, 0));
   ~base.setFaderValue(7, val);
 }, bank: mainBank, page: page);
 
@@ -767,19 +767,19 @@ if( c.mixer.isMuted,
 // Reverb Send:
 ~base.setFaderFunc(2, { | val |
   ~trumpetShift.mixer.setSendVol(0, val.ccdbfs(-70, 0));
-  ~base.setFaderVal(2, val);
+  ~base.setFaderValue(2, val);
 }, bank: performanceBank, page: page);
 
 // Granulator Send:
 ~base.setFaderFunc(3, { | val |
   ~trumpetShift.mixer.setSendVol(1, val.ccdbfs(-70, 0));
-  ~base.setFaderVal(3, val);
+  ~base.setFaderValue(3, val);
 }, bank: performanceBank, page: page);
 
 // Modular Send:
 ~base.setFaderFunc(4, { | val |
   ~trumpetShift.mixer.setSendVol(2, val.ccdbfs(-70, 0));
-  ~base.setFaderVal(4, val);
+  ~base.setFaderValue(4, val);
 }, bank: performanceBank, page: page);
 
 //////// Modular Shift:
@@ -791,19 +791,19 @@ if( c.mixer.isMuted,
 // Reverb Send:
 ~base.setFaderFunc(6, { | val |
   ~shift.mixer.setSendVol(0, val.ccdbfs(-70, 0));
-  ~base.setFaderVal(6, val);
+  ~base.setFaderValue(6, val);
 }, bank: performanceBank, page: page);
 
 // Granulator Send:
 ~base.setFaderFunc(7, { | val |
   ~shift.mixer.setSendVol(1, val.ccdbfs(-70, 0));
-  ~base.setFaderVal(7, val);
+  ~base.setFaderValue(7, val);
 }, bank: performanceBank, page: page);
 
 // Modular Send:
 ~base.setFaderFunc(8, { | val |
   ~shift.mixer.setSendVol(2, val.ccdbfs(-70, 0));
-  ~base.setFaderVal(8, val);
+  ~base.setFaderValue(8, val);
 }, bank: performanceBank, page: page);
 
 ////////////////////////

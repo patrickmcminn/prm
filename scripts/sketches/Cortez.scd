@@ -25,7 +25,7 @@ r {
   ~trumpetShift = FreezeEnvGenerator.newMono(~prm.submixA,
     ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
   while({ try { ~trumpetShift.isLoaded } != true }, { 0.001.wait; });
-  e = IM_HardwareIn.new(0, ~trumpetShift.inBus, nil, \addToHead);
+  e = IM_HardwareIn.new(0, ~trumpetShift.inBus);
   while({ try { e.isLoaded } != true }, { 0.001.wait; });
 
   // clock:

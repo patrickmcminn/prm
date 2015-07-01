@@ -28,6 +28,8 @@ FreezeEnvGenerator : IM_Module {
       while({ try { freeze.isLoaded } != true }, { 0.001.wait; });
 
       inBus = freeze.inBus;
+      server.sync;
+      isLoaded = true;
     };
   }
 
@@ -62,4 +64,5 @@ FreezeEnvGenerator : IM_Module {
     envGenerator.makeSynthOneShot(name, pitchShift, vol, cutoff);
   }
 
+  setSynthVol { | name = 'synth',  vol = 0 | envGenerator.setSynthVol(name, vol); }
 }

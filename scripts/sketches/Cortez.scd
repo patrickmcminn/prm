@@ -5,20 +5,27 @@
 
 //x = AudioSystem.new(2);
 (
+r {
 
-// song parameters:
-~prm.granulator.setGrainEnvelope('rexpodec');
-~prm.granulator.setGrainDur(0.05, 0.08);
-~prm.granulator.setTrigRate(60);
+  // song parameters:
+  ~prm.granulator.setGrainEnvelope('rexpodec');
+  ~prm.granulator.setGrainDur(0.05, 0.08);
+  ~prm.granulator.setTrigRate(60);
 
-// synths:
-y = Subtractive.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
-b = Subtractive.new(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
-c = Subtractive.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
+  // synths:
+  y = Subtractive.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
+  b = Subtractive.new(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
+  c = Subtractive.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
 
-// clock:
-z = TempoClock.new;
-z.tempo = 60/60;
+  ~shift = PitchEnvGenerator.newMono(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
+  while({ try { ~shift.isLoaded } != true }, { 0.001.wait; });
+  d = IM_HardwareIn.new(2, ~shift.inBus, nil, \addToHead);
+  while({ try { d.isLoaded } != true }, { 0.001.wait; });
+
+  // clock:
+  z = TempoClock.new;
+  z.tempo = 60/60;
+}.play;
 );
 
 (

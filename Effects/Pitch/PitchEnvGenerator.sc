@@ -85,7 +85,8 @@ PitchEnvGenerator : IM_Processor {
       interval = pitchShift.midiratio;
       shift = PitchShift.ar(input, 0.05, interval, 0.01, 0.04);
       filter = LPF.ar(shift, cutoff);
-      envelope = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate, doneAction: 2);
+      envelope = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4),
+        gate + Impulse.kr(0), doneAction: 2);
       sig = filter * envelope;
       sig = sig * amp;
       Out.ar(outBus, sig);
@@ -102,7 +103,8 @@ PitchEnvGenerator : IM_Processor {
       interval = pitchShift.midiratio;
       shift = PitchShift.ar(input, 0.05, interval, 0.01, 0.04);
       filter = LPF.ar(shift, cutoff);
-      envelope = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate, doneAction: 2);
+      envelope = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4),
+        gate + Impulse.kr(0), doneAction: 2);
       sig = filter * envelope;
       sig = sig * amp;
       Out.ar(outBus, sig);

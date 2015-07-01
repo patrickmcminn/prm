@@ -22,6 +22,12 @@ r {
   d = IM_HardwareIn.new(2, ~shift.inBus, nil, \addToHead);
   while({ try { d.isLoaded } != true }, { 0.001.wait; });
 
+  ~trumpetShift = FreezeEnvGenerator.newMono(~prm.submixA,
+    ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
+  while({ try { ~trumpetShift.isLoaded } != true }, { 0.001.wait; });
+  e = IM_HardwareIn.new(0, ~trumpetShift.inBus, nil, \addToHead);
+  while({ try { e.isLoaded } != true }, { 0.001.wait; });
+
   // clock:
   z = TempoClock.new;
   z.tempo = 60/60;

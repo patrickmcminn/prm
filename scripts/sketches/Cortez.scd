@@ -92,7 +92,7 @@ r {
   c.addKey(\cortezPhase, \note, Pseq([0], inf));
   c.addKey(\cortezPhase, \dur, 3/20);
   c.addKey(\cortezPhase, \legato, Pbrown(0.1, 0.4, 0.125, inf));
-  c.addKey(\cortezPhase, \octave, 6);
+  c.addKey(\cortezPhase, \octave, 5);
   c.addKey(\cortezPhase, \amp, 0.3);
   c.addKey(\cortezPhase, \pan, Pbrown(0, 1, 0.125, inf));
 
@@ -243,6 +243,7 @@ c.playSequence(\cortezPhase3);
 c.playSequence(\cortezPhase4);
 c.playSequence(\cortezPhase5);
 
+c.stopSequence(\cortezPhase);
 c.stopSequence(\cortezPhase2);
 c.stopSequence(\cortezPhase3);
 c.stopSequence(\cortezPhase4);

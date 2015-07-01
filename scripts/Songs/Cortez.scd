@@ -159,6 +159,29 @@ controlButtonResetFunc.value;
   if( ~prm.modular.isMuted, { ~base.turnTouchButtonRed(4) }, { ~base.turnTouchButtonGreen(4) });
 }, bank: mainBank, page: page);
 
+//////// Modular Sends:
+
+// reverb:
+~base.setFaderMode(5, 'magentaFill', bank: mainBank, page: page);
+~base.setFaderFunc(5, { | val |
+  ~prm.modular.mixer.setSendVol(0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(5, val);
+}, bank: mainBank, page: page);
+
+// granular delay:
+~base.setFaderMode(6, 'magnetaFill', bank: mainBank, page: page);
+~base.setFaderFunc(6, { | val |
+  ~prm.modular.mixer.setSendVol(1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(6, val);
+}, bank: mainBank, page: page);
+
+// modular (CAREFUL!):
+~base.setFaderMode(7, 'magentaFill', bank: mainBank, page: page);
+~base.setFaderFunc(7, { | val |
+  ~prm.modular.mixer.setSendVol(2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(7, val);
+}, bank: mainBank, page: page);
+
 ////////////////////
 ///// GRID //////////
 ////////////////////

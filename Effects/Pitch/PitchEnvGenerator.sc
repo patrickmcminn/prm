@@ -134,7 +134,7 @@ PitchEnvGenerator : IM_Processor {
       var input, interval, shift, filter, envelope, sig;
       input = In.ar(inBus, 2);
       interval = pitchShift.midiratio;
-      shift = PitchShift.ar(input, 0.05, interval, 0.01, 0.04);
+      shift = PitchShift.ar(input, 0.05, interval, 0.001, 0.04);
       filter = LPF.ar(shift, cutoff);
       envelope = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, 1, -4), 1, doneAction: 2);
       sig = filter * envelope;

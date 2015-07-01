@@ -75,6 +75,15 @@ controlButtonResetFunc.value;
   ~base.turnControlButtonGreen(4, 'left', page: page);
 }, page: page);
 
+// performanceBank:
+~base.setControlButtonFunc(5, {
+  ~base.setActiveGridBank(performanceBank, page);
+  ~base.setActiveTouchButtonsBank(performanceBank, page);
+  ~base.setActiveFadersBank(performanceBank, page);
+  controlButtonResetFunc.value;
+  ~base.turnControlButtonGreen(5, 'left', page: page);
+}, page: page);
+
 // master bank:
 ~base.setControlButtonFunc(8, {
   ~base.setActiveGridBank(masterBank, page);

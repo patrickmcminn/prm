@@ -93,7 +93,7 @@ AudioSystem {
 
       modular = IM_Mixer_1Ch.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus, nil, false, procGroup, \addToHead);
       while( { try { modular.isLoaded } != true }, { 0.001.wait; });
-      modularIn = IM_HardwareIn.new(2, modular.inBus, procGroup, \addToHead);
+      modularIn = IM_HardwareIn.new(2, modular.chanMono, procGroup, \addToHead);
       while({ try { modularIn.isLoaded } != true }, { 0.001.wait; });
 
 

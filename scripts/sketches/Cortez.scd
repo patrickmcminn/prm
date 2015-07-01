@@ -5,17 +5,15 @@
 
 //x = AudioSystem.new(2);
 (
-y = Subtractive.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus);
-b = Subtractive.new(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus);
-c = Subtractive.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus);
+y = Subtractive.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
+b = Subtractive.new(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
+c = Subtractive.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus);
 
 z = TempoClock.new;
 z.tempo = 60/60;
-
-y.makeSequence('cortez');
-
 );
 
+y.makeSequence('cortez');
 
 
 

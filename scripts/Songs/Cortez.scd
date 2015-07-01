@@ -161,7 +161,7 @@ controlButtonResetFunc.value;
 
 //////// Modular Sends:
 
-// reverb:
+// reverb: blaaaa
 ~base.setFaderMode(5, 'magentaFill', bank: mainBank, page: page);
 ~base.setFaderFunc(5, { | val |
   ~prm.modular.mixer.setSendVol(0, val.ccdbfs(-70, 0));

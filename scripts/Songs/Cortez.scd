@@ -14,7 +14,7 @@ var bBank = 2;
 var cBank = 3;
 var performanceBank = 4;
 var masterBank = 7;
-
+var seqVisRoutine;
 
 var modVolControlFunc;
 
@@ -766,6 +766,44 @@ if( c.mixer.isMuted,
 ////////////////////////
 
 //////// Trumpet Grain:
+
+//// SequenceRoutine:
+
+// On/Off
+~base.turnTouchButtonCyan(2, 'middle', bank: performanceBank, page: page);
+~base.turnTouchButtonCyan(2, 'top', bank: performanceBank, page: page);
+~base.setTouchButtonFunc(2, r {
+  loop {
+    seqVisRoutine.play;
+    ~tptSeq.playSequence;
+    ~base.turnTouchButtonGreen(2, 'middle').yield;
+
+    seqVisRoutine.stop;
+    seqVisRoutine.reset;
+    ~tptSeq.stopSequence;
+    ~base.turnTouchButtonRed(2, 'middle').yield;
+  };
+});
+
+
+// Visualiser:
+seqVisRoutine = r {
+  var columnArray = [1, 2, 3, 3, 2, 1, 2, 3, 3, 2, 1, 2, 3, 3, 2, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3];
+  var rowArray = [3, 3, 3, 2, 2, 3, 3, 3, 2, 2, 3, 3, 3, 2, 2, 3, 3, 3, 2, 2, 2, 3, 3, 3, 2, 2, 2];
+  var resetFunc = {
+    3.do({ | i | ~base.turnGridCyan(i + 1, 3, bank: performanceBank, page: page); });
+    3.do({ | i | ~base.turnGridCyan(i + 1, 2, bank: performanceBank, page: page); });
+  };
+  loop {
+    resetFunc.value;
+    ~base.turnGridWhite(columnArray[~tptSeq.activeStep], rowArray[~tptSeq.activeStep],
+      bank: performanceBank, page: page);
+    0.05.wait;
+  };
+};
+
+
+
 
 // Colors:
 4.do({ | i | ~base.turnGridCyan(i, 0, bank: performanceBank, page: page); });

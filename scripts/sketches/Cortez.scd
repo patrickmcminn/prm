@@ -7,6 +7,10 @@
 (
 r {
 
+  // clock:
+  z = TempoClock.new;
+  z.tempo = 60/60;
+
   // song parameters:
   ~prm.granulator.setGrainEnvelope('rexpodec');
   ~prm.granulator.setGrainDur(0.05, 0.08);
@@ -28,9 +32,44 @@ r {
   e = IM_HardwareIn.new(0, ~trumpetShift.inBus);
   while({ try { e.isLoaded } != true }, { 0.001.wait; });
 
-  // clock:
-  z = TempoClock.new;
-  z.tempo = 60/60;
+  ~trumpetShift.setSustainTime(0.25);
+
+  ~tptSeq = FunctionSequencer.new(27, z);
+  while({ try { ~tptSeq.isLoaded } !=true }, { 0.001.wait; });
+
+  ~tptSeq.addFunction(0, { ~trumpetShift.makeSynthOneShot('seq0', -12) });
+  ~tptSeq.addFunction(1, { ~trumpetShift.makeSynthOneShot('seq1', -7) });
+  ~tptSeq.addFunction(2, { ~trumpetShift.makeSynthOneShot('seq2', -5) });
+  ~tptSeq.addFunction(3, { ~trumpetShift.makeSynthOneShot('seq3', 2) });
+  ~tptSeq.addFunction(4, { ~trumpetShift.makeSynthOneShot('seq4', 0) });
+
+  ~tptSeq.addFunction(5, { ~trumpetShift.makeSynthOneShot('seq0', -12) });
+  ~tptSeq.addFunction(6, { ~trumpetShift.makeSynthOneShot('seq1', -7) });
+  ~tptSeq.addFunction(7, { ~trumpetShift.makeSynthOneShot('seq2', -5) });
+  ~tptSeq.addFunction(8, { ~trumpetShift.makeSynthOneShot('seq3', 2) });
+  ~tptSeq.addFunction(9, { ~trumpetShift.makeSynthOneShot('seq4', 0) });
+
+  ~tptSeq.addFunction(10, { ~trumpetShift.makeSynthOneShot('seq0', -12) });
+  ~tptSeq.addFunction(11, { ~trumpetShift.makeSynthOneShot('seq1', -7) });
+  ~tptSeq.addFunction(12, { ~trumpetShift.makeSynthOneShot('seq2', -5) });
+  ~tptSeq.addFunction(13, { ~trumpetShift.makeSynthOneShot('seq3', 2) });
+  ~tptSeq.addFunction(14, { ~trumpetShift.makeSynthOneShot('seq4', 0) });
+
+  ~tptSeq.addFunction(15, { ~trumpetShift.makeSynthOneShot('seq5', -12) });
+  ~tptSeq.addFunction(16, { ~trumpetShift.makeSynthOneShot('seq6', -7) });
+  ~tptSeq.addFunction(17, { ~trumpetShift.makeSynthOneShot('seq7', -5) });
+  ~tptSeq.addFunction(18, { ~trumpetShift.makeSynthOneShot('seq8', -2) });
+  ~tptSeq.addFunction(19, { ~trumpetShift.makeSynthOneShot('seq9', 0) });
+  ~tptSeq.addFunction(20, { ~trumpetShift.makeSynthOneShot('seq10', 2) });
+
+  ~tptSeq.addFunction(21, { ~trumpetShift.makeSynthOneShot('seq5', -12) });
+  ~tptSeq.addFunction(22, { ~trumpetShift.makeSynthOneShot('seq6', -7) });
+  ~tptSeq.addFunction(23, { ~trumpetShift.makeSynthOneShot('seq7', -5) });
+  ~tptSeq.addFunction(24, { ~trumpetShift.makeSynthOneShot('seq8', -2) });
+  ~tptSeq.addFunction(25, { ~trumpetShift.makeSynthOneShot('seq9', 0) });
+  ~tptSeq.addFunction(26, { ~trumpetShift.makeSynthOneShot('seq10', 2) });
+
+
 }.play;
 );
 

@@ -7,7 +7,7 @@ London, England
 
 FunctionSequencer {
 
-  var isLoaded;
+  var <isLoaded;
   var <functionArray, <activeArray;
   var <clock;
   var sequenceRoutine;
@@ -25,6 +25,7 @@ FunctionSequencer {
     activeArray = Array.fill(initSize, { true; });
     numberSteps = initSize;
     if( tempoClock == 'internal', { clock = TempoClock.new(1); });
+    isLoaded = true;
   }
 
   //////// Public Functions:

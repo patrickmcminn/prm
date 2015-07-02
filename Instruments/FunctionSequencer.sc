@@ -68,6 +68,7 @@ FunctionSequencer {
         beatDivision.wait;
       };
     };
+    // not working yet!
     backAndForthRoutine = r { | beatDiv = 0.25 |
       loop {
         activeStep = count % numberSteps;

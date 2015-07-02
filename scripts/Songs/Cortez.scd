@@ -774,16 +774,16 @@ if( c.mixer.isMuted,
 ~base.turnTouchButtonCyan(2, 'top', bank: performanceBank, page: page);
 ~base.setTouchButtonFunc(2, r {
   loop {
+    ~tptSeq.playSequence(0.17);
+    seqVisRoutine.reset;
     seqVisRoutine.play;
-    ~tptSeq.playSequence;
     ~base.turnTouchButtonGreen(2, 'middle').yield;
 
-    seqVisRoutine.stop;
-    seqVisRoutine.reset;
     ~tptSeq.stopSequence;
+    seqVisRoutine.stop;
     ~base.turnTouchButtonRed(2, 'middle').yield;
   };
-});
+}, bank: performanceBank, page: page);
 
 
 // Visualiser:

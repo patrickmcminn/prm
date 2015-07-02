@@ -32,7 +32,8 @@ r {
   e = IM_HardwareIn.new(0, ~trumpetShift.inBus);
   while({ try { e.isLoaded } != true }, { 0.001.wait; });
 
-  ~trumpetShift.setSustainTime(0.25);
+  ~trumpetShift.envGenerator.setSustainTime(0.1);
+  ~trumpetShift.envGenerator.setReleaseTime(0.09);
 
   ~tptSeq = FunctionSequencer.new(27, z);
   while({ try { ~tptSeq.isLoaded } !=true }, { 0.001.wait; });

@@ -12,6 +12,8 @@ MidBells : IM_Module {
   var sampler;
   var sequencerDict;
 
+  var attackTime, decayTime, sustainLevel, releaseTime;
+
   *new {
     |
     outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
@@ -26,6 +28,14 @@ MidBells : IM_Module {
     server.waitForBoot {
       isLoaded = false;
       sequencerDict = IdentityDictionary.new;
+
+      this.prAddSynthDef;
+
+      attackTime = 0.05;
+      decayTime = 0;
+      sustainLevel = 1;
+      releaseTime = 0.05;
+
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
       server.sync;
       path = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/MidBells/samples/";
@@ -34,6 +44,12 @@ MidBells : IM_Module {
       server.sync;
       isLoaded = true;
     };
+  }
+
+  prAddSynthDef {
+    SynthDef(\prm_MidBells_LFO, {
+      | outBus = 0, freq = 1, waveForm = 1 |
+    }).add
   }
 
   //////// public functions:
@@ -84,5 +100,46 @@ MidBells : IM_Module {
     { note > 72 && note <= 73 } { sampler.playSampleOneShot(13, vol, (note - 73).midiratio, startPos, endPos, pan); }
     { note > 73 } { sampler.playSampleOneShot(14, vol, (note - 74).midiratio, startPos, endPos); }
   }
+
+  playLoopingNote { | freq = 440, vol = 0, startPos = 0, endPos = 1, pan = 0 |
+    var note = freq.cpsmidi;
+    sampler.setAttackTime(attackTime);
+    case
+    { note <= 60 } { sampler.playSampleSustaining(freq.asSymbol, 0, vol, (note - 60).midiratio, startPos, endPos); }
+    { note > 60 && note <= 61 } { sampler.playSampleSustaining(freq.asSymbol,1, vol, (note - 61).midiratio,
+      startPos, endPos, pan); }
+    { note > 61 && note <= 62 } { sampler.playSampleSustaining(freq.asSymbol,2, vol, (note - 62).midiratio,
+      startPos, endPos, pan); }
+    { note > 62 && note <= 63 } { sampler.playSampleSustaining(freq.asSymbol,3, vol, (note - 63).midiratio,
+      startPos, endPos, pan); }
+    { note > 63 && note <= 64 } { sampler.playSampleSustaining(freq.asSymbol,4, vol, (note - 64).midiratio,
+      startPos, endPos, pan); }
+    { note > 64 && note <= 65 } { sampler.playSampleSustaining(freq.asSymbol,5, vol, (note - 65).midiratio,
+      startPos, endPos, pan); }
+    { note > 65 && note <= 66 } { sampler.playSampleSustaining(freq.asSymbol,6, vol, (note - 66).midiratio,
+      startPos, endPos, pan); }
+    { note > 66 && note <= 67 } { sampler.playSampleSustaining(freq.asSymbol,7, vol, (note - 67).midiratio,
+      startPos, endPos, pan); }
+    { note > 67 && note <= 68 } { sampler.playSampleSustaining(freq.asSymbol,8, vol, (note - 68).midiratio,
+      startPos, endPos, pan); }
+    { note > 68 && note <= 69 } { sampler.playSampleSustaining(freq.asSymbol,9, vol, (note - 69).midiratio,
+      startPos, endPos, pan); }
+    { note > 69 && note <= 70 } { sampler.playSampleSustaining(freq.asSymbol,10, vol, (note - 70).midiratio,
+      startPos, endPos, pan); }
+    { note > 70 && note <= 71 } { sampler.playSampleSustaining(freq.asSymbol,11, vol, (note - 71).midiratio,
+      startPos, endPos, pan); }
+    { note > 71 && note <= 72 } { sampler.playSampleSustaining(freq.asSymbol,12, vol, (note - 72).midiratio,
+      startPos, endPos, pan); }
+    { note > 72 && note <= 73 } { sampler.playSampleSustaining(freq.asSymbol,13, vol, (note - 73).midiratio,
+      startPos, endPos, pan); }
+    { note > 73 } { sampler.playSampleSustaining(freq.asSymbol,14, vol, (note - 74).midiratio, startPos, endPos); }
+  }
+
+  releaseLoopingNote { | freq | sampler.releaseSampleSustaining(freq.asSymbol); }
+
+  setAttackTime { | attack = 0.05 | sampler.setAttackTime(attack); }
+  setDecayTime { | decay = 0 | sampler.setDecayTime(decay); }
+  setSustainLevel { | sustain = 0 | sampler.setSustainLevel(sustain); }
+  setReleaseTime { | release = 0.05 | sampler.setReleaseTime(release); }
 
 }

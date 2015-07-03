@@ -127,7 +127,8 @@ Sampler : IM_Module {
         BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(2, buffer, playHead, loop);
       filter = LPF.ar(player, filterCutoff);
-      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate, doneAction: 2);
+      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate + Impulse.kr(0),
+        doneAction: 2);
       sig = tremolo * env;
       sig = sig * filter;
       sig = sig * amp;
@@ -185,7 +186,8 @@ Sampler : IM_Module {
         BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(1, buffer, playHead, loop);
       filter = LPF.ar(player, filterCutoff);
-      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate, doneAction: 2);
+      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate + Impulse.kr(0),
+        doneAction: 2);
       sig = tremolo * env;
       sig = sig * filter;
       sig = sig * amp;

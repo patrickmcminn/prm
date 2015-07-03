@@ -8,7 +8,7 @@ SamplePlayer : IM_Module {
 
   var <isLoaded;
   var server;
-  var buffer;
+  var <buffer;
   var samplerDict;
   var <attackTime, <decayTime, <sustainLevel, <releaseTime, sustainTime;
   var <filterCutoff;
@@ -232,7 +232,7 @@ SamplePlayer : IM_Module {
             \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
             \tremWaveform, tremoloWaveform,
             \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime,
-            \amp, amp, \pan, pan
+            \amp, amp, \pan, pan, \buffer, buffer
           ],
           group, \addToHead);
       },
@@ -243,7 +243,7 @@ SamplePlayer : IM_Module {
             \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
             \tremWaveform, tremoloWaveform,
             \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime,
-            \amp, amp, \pan, pan
+            \amp, amp, \pan, pan, \buffer, buffer
           ],
           group, \addToHead);
     });
@@ -265,7 +265,7 @@ SamplePlayer : IM_Module {
             \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
             \tremWaveform, tremoloWaveform,
             \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime,
-            \amp, amp, \pan, pan
+            \amp, amp, \pan, pan, \buffer, buffer
           ],
           group, \addToHead);
       },
@@ -276,7 +276,7 @@ SamplePlayer : IM_Module {
             \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
             \tremWaveform, tremoloWaveform,
             \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime,
-            \amp, amp, \pan, pan
+            \amp, amp, \pan, pan, \buffer, buffer
           ],
           group, \addToHead);
 

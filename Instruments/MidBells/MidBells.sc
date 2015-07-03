@@ -41,6 +41,7 @@ MidBells : IM_Module {
       path = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/MidBells/samples/";
       sampleArray = (path ++ "*").pathMatch;
       sampler = Sampler.newStereo(mixer.chanStereo(0), sampleArray, relGroup: group, addAction: \addToHead);
+      while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
       server.sync;
       isLoaded = true;
     };

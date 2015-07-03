@@ -87,6 +87,15 @@ controlButtonResetFunc.value;
   ~base.turnControlButtonGreen(5, 'left', page: page);
 }, page: page);
 
+// Bells and Bass:
+~base.setControlButtonFunc(6, {
+  ~base.setActiveGridBank(bellsAndBass, page);
+  ~base.setActiveTouchButtonsBank(bellsAndBass, page);
+  ~base.setActiveFadersBank(bellsAndBass, page);
+  controlButtonResetFunc.value;
+  ~base.turnControlButtonGreen(6, 'left', page: page);
+}, page: page);
+
 // master bank:
 ~base.setControlButtonFunc(8, {
   ~base.setActiveGridBank(masterBank, page);
@@ -1296,8 +1305,8 @@ seqVisRoutine = r {
 //////// Bells:
 
 // Colors:
-8.do({ | i | ~base.turnGridMagenta(i, 2, bank: bellsAndBase, page: page); });
-8.do({ | i | ~base.turnGridMagenta(i, 3, bank: bellsAndBase, page: page); });
+8.do({ | i | ~base.turnGridMagenta(i, 2, bank: bellsAndBass, page: page); });
+8.do({ | i | ~base.turnGridMagenta(i, 3, bank: bellsAndBass, page: page); });
 
 // Play Functions:
 bellsNoteArray.do({ | note, i |

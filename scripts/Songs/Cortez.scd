@@ -1286,7 +1286,7 @@ seqVisRoutine = r {
 }, bank: bellsAndBass, page: page);
 
 ~base.setFaderFunc(3, { | val |
-  ~bells.mixer.setSendVol(1, val.ccbfs(-70, 0));
+  ~bells.mixer.setSendVol(1, val.ccdbfs(-70, 0));
   ~base.setFaderValue(3, val);
 }, bank: bellsAndBass, page: page);
 
@@ -1313,11 +1313,11 @@ bellsNoteArray.do({ | note, i |
   ~base.setGridFunc(i, 2, { | val |
     var lowRange = rrand(0, 0.05);
     var highRange = lowRange + rrand(0.01, 0.07);
-    ~bells.playNote(note.midicps, val.ccdbfs(-12, 0), lowRange, highRange);
+    ~bells.playLoopingNote(note.midicps, val.ccdbfs(-12, 0), lowRange, highRange);
     ~base.turnGridGreen(i, 2);
   }, 'noteOn', bank: bellsAndBass, page: page);
   ~base.setGridFunc(i, 2, {
-    ~bells.releaseNote(note.midicps);
+    ~bells.releaseLoopingNote(note.midicps);
     ~base.turnGridMagenta(i, 2);
   }, 'noteOff', bank: bellsAndBass, page: page);
 });
@@ -1326,12 +1326,12 @@ bellsNoteArray.do({ | note, i |
   ~base.setGridFunc(i, 3, { | val |
     var lowRange = rrand(0, 0.05);
     var highRange = lowRange + rrand(0.01, 0.07);
-    ~bells.playNote((note + 12).midicps, val.ccdbfs(-12, 0), lowRange, highRange);
-    ~base.turnGridGreen(i, 2);
+    ~bells.playLoopingNote((note + 12).midicps, val.ccdbfs(-12, 0), lowRange, highRange);
+    ~base.turnGridGreen(i, 3);
   }, 'noteOn', bank: bellsAndBass, page: page);
   ~base.setGridFunc(i, 3, {
-    ~bells.releaseNote((note + 12).midicps);
-    ~base.turnGridMagenta(i, 2);
+    ~bells.releaseLoopingNote((note + 12).midicps);
+    ~base.turnGridMagenta(i, 3);
   }, 'noteOff', bank: bellsAndBass, page: page);
 });
 

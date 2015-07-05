@@ -18,7 +18,7 @@ SamplePlayer : IM_Module {
   *newMono {
     |
     outBus = 0, path = nil, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
-    relGroup = nil, addAction = 'addToTail'
+    relGroup = nil, addAction = 'addToHead'
     |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono(path);
   }
@@ -26,7 +26,7 @@ SamplePlayer : IM_Module {
   *newStereo {
     |
     outBus = 0, path = nil, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
-    relGroup = nil, addAction = 'addToTail'
+    relGroup = nil, addAction = 'addToHead'
     |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitStereo(path);
   }

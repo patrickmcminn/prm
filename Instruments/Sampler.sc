@@ -133,6 +133,7 @@ Sampler : IM_Module {
       sig = sig * filter;
       sig = sig * amp;
       sig = Balance2.ar(sig[0], sig[1], pan);
+      sig = sig * 3.dbamp;
       Out.ar(outBus, sig);
     }).add;
 
@@ -162,6 +163,7 @@ Sampler : IM_Module {
       sig = sig * filter;
       sig = sig * amp;
       sig = Balance2.ar(sig[0], sig[1], pan);
+      sig = sig * 3.dbamp;
       Out.ar(outBus, sig);
     }).add;
 
@@ -192,6 +194,7 @@ Sampler : IM_Module {
       sig = sig * filter;
       sig = sig * amp;
       sig = Pan2.ar(sig, pan);
+      sig = sig * 3.dbamp;
       Out.ar(outBus, sig);
     }).add;
 
@@ -221,6 +224,85 @@ Sampler : IM_Module {
       sig = sig * filter;
       sig = sig * amp;
       sig = Pan2.ar(sig, pan);
+      sig = sig * 3.dbamp;
+      Out.ar(outBus, sig);
+    }).add;
+
+    SynthDef(\prm_Sampler_Stereo_Drift, {
+      |
+      outBus = 0, amp = 1, buffer, rate = 1, loop = 1,
+      startPosLow = 0, startPosHigh = 1, posShiftFreq = 1,
+      endPosLow = 0.01, endPosHigh = 0.3,
+      tremFreq = 7, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
+      attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
+      filterCutoff = 20000, pan = 0
+      |
+      var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
+      var posOsc, startPos, endPos;
+      var tremolo, position, playHead, player, filter, env, sig;
+
+      tremSine = SinOsc.ar(tremFreq).range((1-tremDepth), 1);
+      tremSaw = LFSaw.ar(tremFreq, 1).range((1-tremDepth), 1);
+      tremRevSaw = LFSaw.ar(tremFreq, 1).range(-1, (1-tremDepth).neg) * -1;
+      tremRect = LFPulse.ar(tremFreq, 0, tremPulseWidth).range((1-tremDepth), 1);
+      tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
+      tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
+      tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
+
+      posOsc = LFDNoise3.ar(posShiftFreq);
+      startPos = posOsc.range(startPosLow, startPosHigh);
+      endPos =  startPos + posOsc.range(endPosLow, endPosHigh);
+
+      playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
+        BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
+      player = BufRd.ar(2, buffer, playHead, loop);
+      filter = LPF.ar(player, filterCutoff);
+      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate + Impulse.kr(0),
+        doneAction: 2);
+      sig = tremolo * env;
+      sig = sig * filter;
+      sig = sig * amp;
+      sig = Balance2.ar(sig[0], sig[1], pan);
+      sig = sig * 3.dbamp;
+      Out.ar(outBus, sig);
+    }).add;
+
+    SynthDef(\prm_Sampler_Mono_Drift, {
+      |
+      outBus = 0, amp = 1, buffer, rate = 1, loop = 1,
+      startPosLow = 0, startPosHigh = 1, posShiftFreq = 1,
+      endPosLow = 0.01, endPosHigh = 0.3,
+      tremFreq = 7, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
+      attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
+      filterCutoff = 20000, pan = 0
+      |
+      var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
+      var posOsc, startPos, endPos;
+      var tremolo, position, playHead, player, filter, env, sig;
+
+      tremSine = SinOsc.ar(tremFreq).range((1-tremDepth), 1);
+      tremSaw = LFSaw.ar(tremFreq, 1).range((1-tremDepth), 1);
+      tremRevSaw = LFSaw.ar(tremFreq, 1).range(-1, (1-tremDepth).neg) * -1;
+      tremRect = LFPulse.ar(tremFreq, 0, tremPulseWidth).range((1-tremDepth), 1);
+      tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
+      tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
+      tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
+
+      posOsc = LFDNoise3.ar(posShiftFreq);
+      startPos = posOsc.range(startPosLow, startPosHigh);
+      endPos =  startPos + posOsc.range(endPosLow, endPosHigh);
+
+      playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
+        BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
+      player = BufRd.ar(1, buffer, playHead, loop);
+      filter = LPF.ar(player, filterCutoff);
+      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, 1, -4), gate + Impulse.kr(0),
+        doneAction: 2);
+      sig = tremolo * env;
+      sig = sig * filter;
+      sig = sig * amp;
+      sig = Pan2.ar(sig, pan);
+      sig = sig * 3.dbamp;
       Out.ar(outBus, sig);
     }).add;
   }
@@ -251,7 +333,7 @@ Sampler : IM_Module {
       {
         samplerDict[name] = Synth(\prm_Sampler_Mono_ADSR,
           [
-            \outBus, mixer.chanStereo(0), \buffer, bufferArray[sampleNum], \rate, rate, \startPos, startPos, \endPos, endPos,
+            \outBus, mixer.chanMono(0), \buffer, bufferArray[sampleNum], \rate, rate, \startPos, startPos, \endPos, endPos,
             \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
             \tremWaveform, tremoloWaveform,
             \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime,
@@ -286,7 +368,7 @@ Sampler : IM_Module {
         {
           Synth(\prm_Sampler_Mono_OneShot,
             [
-              \outBus, mixer.chanStereo(0), \buffer, bufferArray[sampleNum],
+              \outBus, mixer.chanMono(0), \buffer, bufferArray[sampleNum],
               \rate, rate, \loop, 0, \startPos, startPos, \endPos, endPos,
               \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
               \tremWaveform, tremoloWaveform,
@@ -301,6 +383,43 @@ Sampler : IM_Module {
       { "outside of range".postln; });
 
   }
+
+  playSampleDrifting { | name, sampleNum, vol = 0, rate = 1, posShiftFreq = 1, startPosLow = 0,
+    startPosHigh = 0.5, endPosLow = 0.01, endPosHigh = 0.5, pan = 0 |
+    var amp = vol.dbamp;
+    if( monoOrStereo == 'stereo',
+      {
+        samplerDict[name] = Synth(\prm_Sampler_Stereo_Drift, [
+          \outBus, mixer.chanStereo(0), \buffer, bufferArray[sampleNum],
+          \rate, rate, \loop, 1, \posShiftFreq, posShiftFreq, \startPosLow, startPosLow,
+          \startPosHigh, startPosHigh, \endPosLow, endPosLow,
+          \endPosHigh, endPosHigh, \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
+          \tremWaveform, tremoloWaveform,
+          \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime,
+          \amp, amp, \pan, pan
+          ],
+          group, \addToHead);
+      },
+      {
+        samplerDict[name] = Synth(\prm_Sampler_Mono_Drift, [
+          \outBus, mixer.chanMono(0), \buffer, bufferArray[sampleNum],
+          \rate, rate, \loop, 1, \posShiftFreq, posShiftFreq, \startPosLow, startPosLow,
+          \startPosHigh, startPosHigh, \endPosLow, endPosLow,
+          \endPosHigh, endPosHigh, \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
+          \tremWaveform, tremoloWaveform,
+          \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime,
+          \amp, amp, \pan, pan
+          ],
+          group, \addToHead);
+      }
+    );
+  }
+
+  releaseSampleDrifting { | name = 'synth' |
+    samplerDict[name].set(\releaseTime, releaseTime);
+    samplerDict[name].set(\gate, 0);
+  }
+
 
 
   // envelope:

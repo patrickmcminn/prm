@@ -12,7 +12,7 @@ MidBells : IM_Module {
   var sampler;
   var sequencerDict;
 
-  var attackTime, decayTime, sustainLevel, releaseTime;
+  var <attackTime, <decayTime, <sustainLevel, <releaseTime;
 
   *new {
     |
@@ -138,9 +138,60 @@ MidBells : IM_Module {
 
   releaseLoopingNote { | freq | sampler.releaseSampleSustaining(freq.asSymbol); }
 
-  setAttackTime { | attack = 0.05 | sampler.setAttackTime(attack); }
-  setDecayTime { | decay = 0 | sampler.setDecayTime(decay); }
-  setSustainLevel { | sustain = 0 | sampler.setSustainLevel(sustain); }
-  setReleaseTime { | release = 0.05 | sampler.setReleaseTime(release); }
+  playDriftingNote {
+    |freq = 440, vol = 0, posFreq = 3, startPosLow = 0, startPosHigh = 0.2, endPosLow = 0.03, endPosHigh = 0.09, pan = 0|
+    var note = freq.cpsmidi;
+    sampler.setAttackTime(attackTime);
+    case
+    { note <= 60 } { sampler.playSampleDrifting(freq.asSymbol, 0, vol, (note - 60).midiratio, posFreq, startPosLow,
+      startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 60 && note <= 61 } { sampler.playSampleDrifting(freq.asSymbol,1, vol, (note - 61).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 61 && note <= 62 } { sampler.playSampleDrifting(freq.asSymbol,2, vol, (note - 62).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 62 && note <= 63 } { sampler.playSampleDrifting(freq.asSymbol,3, vol, (note - 63).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 63 && note <= 64 } { sampler.playSampleDrifting(freq.asSymbol,4, vol, (note - 64).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 64 && note <= 65 } { sampler.playSampleDrifting(freq.asSymbol,5, vol, (note - 65).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 65 && note <= 66 } { sampler.playSampleDrifting(freq.asSymbol,6, vol, (note - 66).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 66 && note <= 67 } { sampler.playSampleDrifting(freq.asSymbol,7, vol, (note - 67).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 67 && note <= 68 } { sampler.playSampleDrifting(freq.asSymbol,8, vol, (note - 68).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 68 && note <= 69 } { sampler.playSampleDrifting(freq.asSymbol,9, vol, (note - 69).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 69 && note <= 70 } { sampler.playSampleDrifting(freq.asSymbol,10, vol, (note - 70).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 70 && note <= 71 } { sampler.playSampleDrifting(freq.asSymbol,11, vol, (note - 71).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 71 && note <= 72 } { sampler.playSampleDrifting(freq.asSymbol,12, vol, (note - 72).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 72 && note <= 73 } { sampler.playSampleDrifting(freq.asSymbol,13, vol, (note - 73).midiratio,
+      posFreq, startPosLow, startPosHigh, endPosLow, endPosHigh, pan); }
+    { note > 73 } { sampler.playSampleDrifting(freq.asSymbol,14, vol, (note - 74).midiratio, posFreq, startPosLow,
+      startPosHigh, endPosLow, endPosHigh, pan); }
+  }
+
+  releaseDriftingNote { | freq | sampler.releaseSampleDrifting(freq.asSymbol); }
+
+  setAttackTime { | attack = 0.05 |
+    attackTime = attack;
+    sampler.setAttackTime(attackTime);
+  }
+  setDecayTime { | decay = 0 |
+    decayTime = decay;
+    sampler.setDecayTime(decayTime);
+  }
+  setSustainLevel { | sustain = 0 |
+    sustainLevel = sustain;
+    sampler.setSustainLevel(sustainLevel);
+  }
+  setReleaseTime { | release = 0.05 |
+    releaseTime = release;
+    sampler.setReleaseTime(releaseTime);
+  }
 
 }

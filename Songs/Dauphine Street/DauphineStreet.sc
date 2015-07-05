@@ -10,6 +10,7 @@ DauphineStreet : Song {
   var <isLoaded, server;
   var <trumpet, <synths, <accomp, <bass;
   var trumpetInput;
+  var <tempoClock;
 
   *new { | mixAOutBus, mixBOutBus, mixCOutBus, send0Bus, send1Bus, send2Bus, send3Bus,
     relGroup = nil, addAction = 'addToHead' |
@@ -23,6 +24,10 @@ DauphineStreet : Song {
     server.waitForBoot {
       isLoaded = false;
       while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
+
+      tempoClock = TempoClock.new;
+      server.sync;
+      tempoClock.tempo = 2;
 
       trumpet = Dauphine_Wash.new(mixerA.chanStereo(0), group, \addToHead);
       while({ try { trumpet.isLoaded } != true }, { 0.001.wait; });
@@ -39,11 +44,15 @@ DauphineStreet : Song {
       bass = Dauphine_Bass.new(mixerC.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { bass.isLoaded } != true }, { 0.001.wait; });
 
+
       mixerA.setVol(0, -18);
 
+      mixerB.setVol(0, -70);
       mixerB.setSendVol(0, 0, -12);
-      mixerB.setSendVol(1, 0, -16);
+
       mixerB.setVol(1, -70);
+      mixerB.setSendVol(1, 0, -16);
+
 
       mixerC.setSendVol(0, 0, -24);
 

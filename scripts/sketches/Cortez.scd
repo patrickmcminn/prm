@@ -74,10 +74,15 @@ r {
     addAction: \addToHead);
 
   while({ try { ~bells.isLoaded } != true }, { 0.001.wait; });
+  s.sync;
   ~bells.setReleaseTime(7);
 
   ~bass = SaturSynth.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
     addAction: \addToHead);
+  while({ try { ~bass.isLoaded } != true }, { 0.001.wait; });
+  s.sync;
+  ~bass.setAttackTime(0.1);
+  ~bass.setReleaseTime(3);
 
 }.play;
 );

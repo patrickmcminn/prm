@@ -45,7 +45,7 @@ Pbindef(\saws).stop;
 ~prm.submixerA.stopLoop;
 ~prm.submixerA.clearLoop(30);
 ~prm.submixerA.setLoopDivison(15);
-~prm.submixerA.setLoopPositizon(0.1);
+~prm.submixerA.setLoopPosition(0.1);
 ~prm.submixerA.setLoopRate(1);
 
 ~prm.submixerA.setMix(-0.25);
@@ -60,8 +60,8 @@ Pbindef(\saws).stop;
 s.meter;
 s.makeWindow;
 
-~prm.submixerA.mixer.setVol(16);
-~prm.submixerA.mixer.setSendVol(1, 0);
+~prm.submixerA.mixer.setVol(0);
+~prm.submixerA.mixer.setSendVol(1, -inf);
 ~prm.submixerA.mixer.tglMute;
 ~prm.granulator.setGrainDur(0.4, 1);
 ~prm.granulator.setTrigRate(16);

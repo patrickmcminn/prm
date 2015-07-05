@@ -18,6 +18,7 @@ var masterBank = 7;
 var seqVisRoutine;
 
 var bellsNoteArray = [54, 56, 57, 59, 61, 62, 64, 66.01];
+var bassNoteArray = [30, 32, 33, 35, 37, 38, 40, 42.01];
 
 var modVolControlFunc;
 
@@ -1311,33 +1312,51 @@ seqVisRoutine = r {
 // Play Functions:
 bellsNoteArray.do({ | note, i |
   ~base.setGridFunc(i, 2, { | val |
-    var lowRange = rrand(0, 0.05);
-    var highRange = lowRange + rrand(0.01, 0.07);
-    ~bells.playLoopingNote(note.midicps, val.ccdbfs(-12, 0), lowRange, highRange);
+    ~bells.playDriftingNote(note.midicps, val.ccdbfs(-12, 0), rrand(1, 5), 0, 0.2, 0.003, 0.1, rrand(-1, 1));
     ~base.turnGridGreen(i, 2);
   }, 'noteOn', bank: bellsAndBass, page: page);
   ~base.setGridFunc(i, 2, {
-    ~bells.releaseLoopingNote(note.midicps);
+    ~bells.releaseDriftingNote(note.midicps);
     ~base.turnGridMagenta(i, 2);
   }, 'noteOff', bank: bellsAndBass, page: page);
 });
 
 bellsNoteArray.do({ | note, i |
   ~base.setGridFunc(i, 3, { | val |
-    var lowRange = rrand(0, 0.05);
-    var highRange = lowRange + rrand(0.01, 0.07);
-    ~bells.playLoopingNote((note + 12).midicps, val.ccdbfs(-12, 0), lowRange, highRange);
-    ~base.turnGridGreen(i, 3);
+    ~bells.playDriftingNote((note + 12).midicps, val.ccdbfs(-12, 0), rrand(1, 5), 0, 0.2, 0.003, 0.1, rrand(-1, 1));
   }, 'noteOn', bank: bellsAndBass, page: page);
   ~base.setGridFunc(i, 3, {
-    ~bells.releaseLoopingNote((note + 12).midicps);
+    ~bells.releaseDriftingNote((note + 12).midicps);
     ~base.turnGridMagenta(i, 3);
   }, 'noteOff', bank: bellsAndBass, page: page);
 });
 
 
+//////// Bass Synth:
 
+8.do({ | i | ~base.turnGridWhite(i, 0, bank: bellsAndBass, page: page); });
+8.do({ | i | ~base.turnGridWhite(i, 1, bank: bellsAndBass, page: page); });
 
+bassNoteArray.do({ | note, i |
+  ~base.setGridFunc(i, 0, { | val |
+    ~bass.playNote(note.midicps, val.ccdbfs(-24, 0));
+    ~base.turnGridGreen(i, 0);
+  }, 'noteOn', bank: bellsAndBass, page: page);
+  ~base.setGridFunc(i, 0, { | val |
+    ~bass.releaseNote(note.midicps);
+    ~base.turnGridWhite(i, 0);
+  }, 'noteOff', bank: bellsAndBass, page: page);
+});
+bassNoteArray.do({ | note, i |
+  ~base.setGridFunc(i, 1, { | val |
+    ~bass.playNote((note + 12).midicps, val.ccdbfs(-24, 0));
+    ~base.turnGridGreen(i, 1);
+  }, 'noteOn', bank: bellsAndBass, page: page);
+  ~base.setGridFunc(i, 1, { | val |
+    ~bass.releaseNote((note + 12).midicps);
+    ~base.turnGridWhite(i, 1);
+  }, 'noteOff', bank: bellsAndBass, page: page);
+});
 
 
 

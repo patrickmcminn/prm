@@ -70,11 +70,14 @@ r {
   ~tptSeq.addFunction(25, { ~trumpetShift.makeSynthOneShot('seq9', 0) });
   ~tptSeq.addFunction(26, { ~trumpetShift.makeSynthOneShot('seq10', 2) });
 
-  ~bells = MidBells.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+  ~bells = MidBells.new(~prm.submixB, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
     addAction: \addToHead);
 
   while({ try { ~bells.isLoaded } != true }, { 0.001.wait; });
   ~bells.setReleaseTime(7);
+
+  ~bass = SaturSynth.new(~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+    addAction: \addToHead);
 
 }.play;
 );

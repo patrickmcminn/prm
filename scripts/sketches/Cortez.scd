@@ -82,7 +82,7 @@ r {
   while({ try { ~bass.isLoaded } != true }, { 0.001.wait; });
   s.sync;
   ~bass.setAttackTime(0.1);
-  ~bass.setReleaseTime(3);
+  ~bass.setReleaseTime(7);
 
 }.play;
 );

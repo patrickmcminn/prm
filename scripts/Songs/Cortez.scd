@@ -1275,7 +1275,6 @@ seqVisRoutine = r {
 3.do({ | i | ~base.setFaderMode(i + 2, 'greenFill', bank: bellsAndBass, page: page); });
 ~base.setFaderValue(1, 127, bank: bellsAndBass, page: page);
 
-
 ~base.setFaderFunc(1, { | val |
   ~bells.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(1, val);
@@ -1297,6 +1296,33 @@ seqVisRoutine = r {
 }, bank: bellsAndBass, page: page);
 
 /////// Bass:
+~base.setFaderMode(5, 'whiteFill', bank: bellsAndBass, page: page);
+3.do({ | i | ~base.setFaderMode(i+ 5, 'greenFill', bank: bellsAndBass, page: page); });
+
+// vol:
+~base.setFaderFunc(5, { | val |
+  ~bass.mixer.setVol(val.ccdbfs(-70, 0));
+  ~base.setFaderValue(5, val);
+}, bank: bellsAndBass, page: page);
+
+// send 0:
+~base.setFaderFunc(6, { | val |
+  ~bass.mixer.setSendVol(0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(6, val);
+}, bank: bellsAndBass, page: page);
+
+// send 1:
+~base.setFaderFunc(7, { | val |
+  ~bass.mixer.setSendVol(1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(7, val);
+}, bank: bellsAndBass, page: page);
+
+// send 2:
+~base.setFaderFunc(8, { | val |
+  ~bass.mixer.setSendVol(2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(8, val);
+}, bank: bellsAndBass, page: page);
+
 
 /////////////////////////
 //////// Grid: ////////

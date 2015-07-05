@@ -6,7 +6,7 @@ prm
 
 Song {
 
-  var server;
+  var server, <isLoaded;
   var group;
   var <mixerA, <mixerB, <mixerC;
 
@@ -28,6 +28,7 @@ Song {
     |
     server = Server.default;
     server.waitForBoot {
+      isLoaded = false;
       group = Group.new(relGroup, addAction);
       server.sync;
 
@@ -43,12 +44,17 @@ Song {
         feedback, group, 'addToHead');
       while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
 
+      isLoaded = true;
     }
   }
 
   //////// public functions:
 
   freeSong {
+
+    mixerA.masterChan.mute;
+    mixerB.masterChan.mute;
+    mixerC.masterChan.mute;
 
     mixerA.free;
     mixerB.free;

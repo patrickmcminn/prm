@@ -5,7 +5,7 @@ prm
 Sydney, Australia
 */
 
-s.waitForBoot {
+{
   ~prm = AudioSystem.new(2);
 
   while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
@@ -15,5 +15,5 @@ s.waitForBoot {
 
   //"/Global Functions/Load Global Functions.scd".loadRelative;
   //"/System Scripts/Load System Scripts.scd".loadRelative;
-};
+}.value;
 

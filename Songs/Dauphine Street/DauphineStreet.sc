@@ -35,11 +35,14 @@ DauphineStreet : Song {
       trumpetInput = IM_HardwareIn.new(0, trumpet.inBus, group, 'addToHead');
       while({ try { trumpetInput.isLoaded } != true }, { 0.001.wait; });
 
+
       synths = Dauphine_Synths.new(mixerB.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { synths.isLoaded } !=true }, { 0.001.wait; });
 
+
       accomp = Dauphine_SequenceSynth.new(mixerB.chanStereo(1), relGroup: group, addAction: \addToHead);
       while({ try { accomp.isLoaded } != true }, { 0.001.wait; });
+
 
       bass = Dauphine_Bass.new(mixerC.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { bass.isLoaded } != true }, { 0.001.wait; });

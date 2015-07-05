@@ -32,6 +32,8 @@ Dauphine_Wash : IM_Module {
       while({ try { inputMixer.isLoaded } !=true }, { 0.001.wait; });
 
       inBus = inputMixer.chanMono(0);
+      server.sync;
+
       wash.setDelayCoefficient(0.8);
       wash.setFeedbackCoefficient(0.3);
       wash.setMix(1);

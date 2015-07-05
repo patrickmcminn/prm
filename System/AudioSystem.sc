@@ -27,7 +27,7 @@ AudioSystem {
   prInit { |numOutputs|
     var server = Server.default;
 
-    this.prSetServerOptions(server, 64, 131702, 512, nil);
+    this.prSetServerOptions(server, 64, 131072, 512, nil);
 
     server.waitForBoot {
       var masterOutArray;
@@ -50,6 +50,7 @@ AudioSystem {
       irLibrary = IM_IRLibrary.new("~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses");
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
+
 
       modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
       while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
@@ -74,6 +75,7 @@ AudioSystem {
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
       */
+
 
       submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
@@ -103,6 +105,7 @@ AudioSystem {
 
       songBook = IdentityDictionary.new;
 
+
       isLoaded = true;
 
     };
@@ -116,7 +119,7 @@ AudioSystem {
     server.options.numAudioBusChannels = numAudioBusChannels;
     server.options.hardwareBufferSize = 256;
     // comment out for verbosity:
-    server.options.verbosity = -1;
+    //server.options.verbosity = -1;
     // server.options.device = (devName);
   }
 

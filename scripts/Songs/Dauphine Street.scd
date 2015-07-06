@@ -78,7 +78,7 @@ controlButtonResetFunc.value;
 // trumpet:
 ~base.setFaderMode(1, 'whiteFill', bank: mainBank, page: page);
 ~base.setFaderFunc(1, { | val |
-  ~dauphine.mixerA.setVol(0, val.ccdbfs(-90, -6));
+  ~dauphine.mixerA.setVol(0, val.ccdbfs(-70, 0));
   ~base.setFaderValue(1, val);
 }, bank: mainBank, page: page);
 

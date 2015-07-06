@@ -27,7 +27,7 @@ DauphineStreet : Song {
 
       tempoClock = TempoClock.new;
       server.sync;
-      tempoClock.tempo = 2;
+      tempoClock.tempo = 1;
 
       trumpet = Dauphine_Wash.new(mixerA.chanStereo(0), group, \addToHead);
       while({ try { trumpet.isLoaded } != true }, { 0.001.wait; });

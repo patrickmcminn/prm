@@ -1,4 +1,4 @@
-/*
+ /*
 Sunday, July 5th 2015
 Dauphine Street.scd
 prm
@@ -54,10 +54,11 @@ var mainBank = 0;
 
 
 //////// Bassline Granulator Mix:
-~base.setFaderMode('cyanFill', bank: mainBank, page: page);
+~base.setFaderMode(5, 'cyanFill', bank: mainBank, page: page);
 ~base.setFaderValue(5, 127, bank: mainBank, page: page);
 ~base.setFaderFunc(5, { | val |
-  ~dauphine.bass.granulator.setGranulatorCrossfade(val.linlin(0, 127, 0, 1));
+  ~dauphine.bass.granulator.setGranulatorCrossfade(val.linlin(0, 127, -1, 1));
+  ~dauphine.bass.granulator.setDelayMix(val.linlin(0, 127, 0, 0.5));
   ~base.setFaderValue(5, val);
 }, bank: mainBank, page: page);
 

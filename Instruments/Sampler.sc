@@ -154,8 +154,10 @@ Sampler : IM_Module {
       tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
       tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
       tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
-      playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
-        BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
+      playHead = Line.ar(BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos,
+        (BufSamples.ir(buffer)/SampleRate.ir)/rate);
+      //playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
+        //BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(2, buffer, playHead, loop);
       filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, 1, -4), 1, doneAction: 2);
@@ -215,8 +217,10 @@ Sampler : IM_Module {
       tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
       tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
       tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
-      playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
-        BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
+      playHead = Line.ar(BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos,
+        (BufSamples.ir(buffer)/SampleRate.ir)/rate);
+      //playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
+        //BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(1, buffer, playHead, loop);
       filter = LPF.ar(player, filterCutoff);
       env = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, 1, -4), 1, doneAction: 2);
@@ -314,6 +318,10 @@ Sampler : IM_Module {
     samplerDict.do({ | synth | synth.free; });
     samplerDict = nil;
     this.freeModule;
+  }
+
+  setBufferArray { | array |
+    bufferArray = array;
   }
 
   playSampleSustaining { | name, sampleNum, vol = 0, rate = 1, startPos = 0, endPos = 1, pan = 0 |

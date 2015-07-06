@@ -127,6 +127,13 @@ controlButtonResetFunc.value;
   ~base.setFaderValue(7, val);
 }, bank: mainBank, page: page);
 
+//////// Modular Volume:
+~base.setFaderMode(8, 'redFill', bank: mainBank, page: page);
+~base.setFaderFunc(8, { | val |
+  ~prm.modular.setVol(val.ccdbfs(-70, 0));
+  ~base.setFaderValue(8, val);
+}, bank: mainBank, page: page);
+
 
 
 //////////////////////////////

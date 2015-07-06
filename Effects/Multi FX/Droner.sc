@@ -128,4 +128,9 @@ Droner : IM_Module {
   setErosionRangeLow { | rangeLow = 0.002 | erosion.set(\rangeLow, rangeLow); }
   setErosionRangeHigh { | rangeHigh = 0.009 | erosion.set(\rangeHigh, rangeHigh); }
 
+  setGrainRates { | array |
+    demand.set(\d1, array[0], \d2, array[1], \d3, array[2], \d4, array[3],
+      \d5, array[4], \d6, array[5], \d7, array[6]);
+  }
+
 }

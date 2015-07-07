@@ -36,7 +36,7 @@ Connections_TrumpetGran : IM_Module {
 
       inBus = input.chanMono(0);
 
-      input.mute;
+      //input.mute;
       eq.setHighFreq(2500);
       eq.setHighGain(-6);
       granulator.setGrainDur(0.04, 0.06);

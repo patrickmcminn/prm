@@ -121,6 +121,8 @@ Droner : IM_Module {
     eq = nil;
     demandBus = nil;
     erosionBus = nil;
+
+    isLoaded = false;
   }
 
   setErosionMix { | mix = 0.02 | erosion.set(\mix, mix); }

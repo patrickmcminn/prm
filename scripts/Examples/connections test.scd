@@ -39,7 +39,28 @@ Server.killAll;
 
 z.granulator.setGranulatorCrossfade(-1);
 
-
+z.reverb.isLoaded;
+z.splitter.isLoaded;
+z.cascade.isLoaded;
+z.attackRandomizer.isLoaded
 x = { SoundIn.ar(0) }.play;
 
 Server.killAll;
+
+
+
+b = Droner.newMono(~prm.submixA, send0Bus: ~prm.reverb.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
+b.isLoaded;
+
+
+t = IM_HardwareIn.new(0, c.inBus)
+c = Connections_AirSputters.new(~prm.submixA, a, ~prm.procGroup, \addToHead);
+c.isLoaded;
+
+c.granulator.setGranulatorCrossfade(1);
+
+c.mixer.setPreVol(28);
+
+s.meter;
+
+~prm.isLoaded

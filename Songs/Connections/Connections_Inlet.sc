@@ -27,13 +27,13 @@ Connections_Inlet : IM_Module {
       reverb = IM_Reverb.newConvolution(granulator.inBus, nil, nil, nil, nil, false, 1, ir, 2, group, \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
-      //splitter = Splitter.newStereo(2, [mixer.chanStereo(0), reverb.inBus], false, group, \addToHead);
-      //while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
+      splitter = Splitter.newStereo(2, [mixer.chanStereo(0), reverb.inBus], false, group, \addToHead);
+      while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
-      cascade = Connections_Cascade.new(mixer.chanStereo(0), noteBufferArray, cascadeBufferArray, group, \addToHead);
+      cascade = Connections_Cascade.new(splitter.inBus, noteBufferArray, cascadeBufferArray, group, \addToHead);
       while({ try { cascade.isLoaded } != true }, { 0.001.wait; });
 
-      attackRandomizer = Connections_AttackRandomizer.new(mixer.chanStereo(0), noteBufferArray, group, \addToHead);
+      attackRandomizer = Connections_AttackRandomizer.new(splitter.inBus, noteBufferArray, group, \addToHead);
       while({ try { attackRandomizer.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;

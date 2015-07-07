@@ -73,3 +73,7 @@ s.meter;
 ~prm.isLoaded
 
 
+~prm = AudioSystem.new(2);
+
+x = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.irLibrary('3.4Cathedral'),
+  ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);

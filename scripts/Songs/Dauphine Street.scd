@@ -16,8 +16,8 @@ var controlButtonResetFunc;
 
 
 ~base.makePage(page);
-~base.addFadersBanks(5);
-~base.addTouchButtonsBanks(5);
+~base.addFadersBanks(5, page);
+~base.addTouchButtonsBanks(5, page);
 
 
 //////////////////////////////
@@ -296,7 +296,7 @@ controlButtonResetFunc.value;
 ///////////////////////////
 /////////////////////////
 
-~base.setFaderMode(1, 'greenFill' bank: mixerBBank, page: page);
+~base.setFaderMode(1, 'greenFill', bank: mixerBBank, page: page);
 ~base.setFaderMode(5, 'greenFill', bank: mixerBBank, page: page);
 
 3.do({ | i | ~base.setFaderMode(i + 1, 'magentaFill', bank: mixerBBank, page: page); });

@@ -7,7 +7,8 @@ x.resetCascadeRecordRoutine;
 x.basslineRecordRoutine.next;
 x.cascadeRecordRoutine.next;
 
-x.noteBufferArray[0].play;
+x.noteBufferArray[5].play;
+x.cascadeBufferArray[2].play;
 
 z = Connections_AttackRandomizer.new(0, x.noteBufferArray);
 z.isLoaded;
@@ -27,9 +28,10 @@ Sampler
 ~prm = AudioSystem.new(2);
 ~prm.irLibrary.irDict['3.4Cathedral'];
 
-z = Connections_Inlet.new(~prm.submixB, x.noteBufferArray, x.cascadeBufferArray, ~prm.irLibrary.irDict['3.4Cathedral'],
-  ~prm.procGroup, \addToHead);
+~irLibrary = IM_IRLibrary.new("~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses")
+~irLibrary.irDict;
 
+z = Connections_Inlet.new(0, x.noteBufferArray, x.cascadeBufferArray, ~irLibrary.irDict['3.4Cathedral']);
 z.isLoaded;
 z.attackRandomizer.isLoaded;
 z.cascade.playSequences(a);
@@ -43,10 +45,15 @@ z.reverb.isLoaded;
 z.splitter.isLoaded;
 z.cascade.isLoaded;
 z.attackRandomizer.isLoaded
+
+z.attackRandomizer.stopSequences;
+z.cascade.stopSequences;
 x = { SoundIn.ar(0) }.play;
 
 Server.killAll;
 
+z.mixer.setVol(-12);
+s.meter;
 
 
 b = Droner.newMono(~prm.submixA, send0Bus: ~prm.reverb.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);

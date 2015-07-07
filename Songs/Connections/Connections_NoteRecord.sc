@@ -7,7 +7,7 @@ prm
 Connections_NoteRecord {
 
   var <isLoaded, server;
-  var <noteBufferArray, <cascadeBufferArray, <chordBufferArray, <chordSumBufferArray;
+  var <noteBufferArray, <cascadeBufferArray, <chordBufferArray;
   var <input, <inBus, <group;
   var <basslineRecordRoutine, <cascadeRecordRoutine, <chordRecordRoutine, <chordSumRecordRoutine;
   var <basslineRecordNum, <cascadeRecordNum, <chordRecordNum, <chordSumRecordNum;
@@ -36,7 +36,7 @@ Connections_NoteRecord {
       noteBufferArray = Buffer.allocConsecutive(5, server, server.sampleRate * 3.2, 1);
       cascadeBufferArray = Buffer.allocConsecutive(3, server, server.sampleRate * 0.5, 1);
       chordBufferArray = Buffer.allocConsecutive(6, server, server.sampleRate, 1);
-      chordSumBufferArray = Buffer.allocConsecutive(4, server, server.sampleRate, 1);
+
 
       server.sync;
 
@@ -61,7 +61,7 @@ Connections_NoteRecord {
     noteBufferArray.do({ | buf | buf.free; });
     cascadeBufferArray.do({ | buf | buf.free; });
     chordBufferArray.do({ | buf | buf.free; });
-    chordSumBufferArray.do({ | buf | buf.free; });
+    //chordSumBufferArray.do({ | buf | buf.free; });
     isLoaded = false;
   }
 
@@ -123,12 +123,12 @@ Connections_NoteRecord {
   resetNoteBuffers { noteBufferArray.do({ | buf | buf.zero; }); }
   resetCascadeBuffers { cascadeBufferArray.do({ | buf | buf.zero; }); }
   resetChordBuffers { chordBufferArray.do({ | buf | buf.zero; }); }
-  resetChordSumBuffers { chordSumBufferArray.do({ | buf | buf.zero; }); }
+  //resetChordSumBuffers { chordSumBufferArray.do({ | buf | buf.zero; }); }
   resetBuffers {
     this.resetNoteBuffers;
     this.resetCascadeBuffers;
     this.resetChordBuffers;
-    this.resetChordSumBuffers;
+    //this.resetChordSumBuffers;
   }
 
   resetBasslineRecordRoutine {
@@ -143,15 +143,17 @@ Connections_NoteRecord {
     chordRecordRoutine.reset;
     chordRecordNum = 0;
   }
+  /*
   resetChordSumRecordRoutine {
     chordSumRecordRoutine.reest;
     chordSumRecordNum = 0;
   }
+  */
   resetRoutines {
     this.resetBasslineRecordRoutine;
     this.resetCascadeRecordRoutine;
     this.resetChordRecordRoutine;
-    this.resetChordSumRecordRoutine;
+    //this.resetChordSumRecordRoutine;
   }
 
   recordNoteBuffer { | bufNum = 0 |
@@ -166,9 +168,11 @@ Connections_NoteRecord {
     Synth(\prm_NoteRecord_RecordBuf, [\inBus, inBus, \buffer, chordBufferArray[bufNum]],
       group, \addToTail);
   }
+  /*
   recordChordSumBuffer { | bufNum = 0 |
     Synth(\prm_NoteRecord_RecordBuf, [\inBus, inBus, \buffer, chordSumBufferArray[bufNum]],
       group, \addToTail);
   }
+  */
 
 }

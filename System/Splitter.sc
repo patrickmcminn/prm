@@ -87,7 +87,7 @@ Splitter {
 
           outputSynthArray = Array.newClear(outBusArray.size);
           outBusArray.size.do({ | i |
-            outputSynthArray[i] = Synth(\prm_Splitter, [\inBus, splitBus,
+            outputSynthArray[i] = Synth(\prm_Splitter_Stereo, [\inBus, splitBus,
               \outBus, outBusArray[i]], group, \addToTail);
           });
 
@@ -108,7 +108,7 @@ Splitter {
 
     SynthDef(\prm_Splitter_Stereo, {
       | inBus, outBus |
-      var sig = In.ar(inBus);
+      var sig = In.ar(inBus, 2);
       Out.ar(outBus, sig);
     }).add;
   }

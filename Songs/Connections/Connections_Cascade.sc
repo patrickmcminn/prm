@@ -9,6 +9,7 @@ Connections_Cascade :IM_Module {
   var server, <isLoaded;
   var <eq, <sampler;
   var bufferArray;
+  var <isPlaying;
 
   *new { | outBus = 0, noteBufferArray, cascadeBufferArray, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(noteBufferArray, cascadeBufferArray);
@@ -18,6 +19,7 @@ Connections_Cascade :IM_Module {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+      isPlaying = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
       eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
@@ -33,11 +35,11 @@ Connections_Cascade :IM_Module {
       sampler.setBufferArray(bufferArray);
       server.sync;
 
-      this.prMakePatternParameters;
-
       eq.setHighFreq(2500);
       eq.setHighGain(-7);
 
+      server.sync;
+      this.prMakePatternParameters;
       isLoaded = true;
     }
   }
@@ -132,6 +134,8 @@ Connections_Cascade :IM_Module {
     eq.free;
     bufferArray.do({ | buf | buf.free; });
     this.freeModule;
+    isPlaying = false;
+    isLoaded = false;
   }
 
   playSequences { | clock |
@@ -143,6 +147,7 @@ Connections_Cascade :IM_Module {
     clock.schedAbs(clock.nextTimeOnGrid + 20, { sampler.playSequence(\a, clock) });
     clock.schedAbs(clock.nextTimeOnGrid + 24, { sampler.playSequence(\lowCSharp, clock)});
     clock.schedAbs(clock.nextTimeOnGrid + 28, { sampler.playSequence(\highFSharp, clock)} );
+    isPlaying = true;
   }
 
   stopSequences {
@@ -154,6 +159,11 @@ Connections_Cascade :IM_Module {
     sampler.stopSequence(\a);
     sampler.stopSequence(\lowCSharp);
     sampler.stopSequence(\highFSharp);
+    isPlaying = false;
+  }
+
+  togglePlaySequences { | clock |
+    if( isPlaying == false, { this.playSequences(clock); }, { this.stopSequences(clock); });
   }
 
 }

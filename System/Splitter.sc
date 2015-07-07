@@ -73,6 +73,7 @@ Splitter {
     server.waitForBoot {
       if( outBusArray.isArray,
         {
+          isLoaded = false;
           this.prAddSynthDef;
           group = Group.new(relGroup, addAction);
           server.sync;
@@ -82,13 +83,16 @@ Splitter {
           nilBus = Bus.audio(server, 2);
           server.sync;
 
-          inputSynth = Synth(\prm_Splitter, [\inBus, inBus, \outBus, splitBus], group, \addToHead);
+          inputSynth = Synth(\prm_Splitter_Stereo, [\inBus, inBus, \outBus, splitBus], group, \addToHead);
 
           outputSynthArray = Array.newClear(outBusArray.size);
           outBusArray.size.do({ | i |
             outputSynthArray[i] = Synth(\prm_Splitter, [\inBus, splitBus,
               \outBus, outBusArray[i]], group, \addToTail);
           });
+
+          while({ outputSynthArray[outputSynthArray.size - 1] == nil }, { 0.001.wait; });
+          isLoaded = true;
         },
         { "outBusArray should be an Array of outBusses".postln; });
     };
@@ -97,6 +101,12 @@ Splitter {
 
   prAddSynthDef {
     SynthDef(\prm_Splitter, {
+      | inBus, outBus |
+      var sig = In.ar(inBus);
+      Out.ar(outBus, sig);
+    }).add;
+
+    SynthDef(\prm_Splitter_Stereo, {
       | inBus, outBus |
       var sig = In.ar(inBus);
       Out.ar(outBus, sig);

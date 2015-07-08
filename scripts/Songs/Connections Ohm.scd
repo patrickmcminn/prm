@@ -471,7 +471,7 @@ loadInletFuncs = {
   ////// attack randomizer:
   // slider:
   ~ohm.setLeftSliderFunc(0, { | val |
-    ~connections.inlet.attackRandomizer.mixer.setVol(val.ccdfbfs(-70, 0));
+    ~connections.inlet.attackRandomizer.mixer.setVol(val.ccdbfs(-70, 0));
   }, auxBank, page);
 
   // button:

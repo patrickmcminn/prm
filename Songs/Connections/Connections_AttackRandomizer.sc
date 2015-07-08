@@ -19,6 +19,7 @@ Connections_AttackRandomizer :IM_Module {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+      isPlaying = false;
       myBufferArray = bufferArray;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 

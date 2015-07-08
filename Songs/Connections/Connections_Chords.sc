@@ -56,6 +56,8 @@ Connections_Chords :IM_Module {
 
       server.sync;
       this.prMakePatternParameters;
+
+      mixer.setPreVol(6);
       isLoaded = true;
     };
   }

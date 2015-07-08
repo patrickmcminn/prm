@@ -16,15 +16,14 @@ Connections : Song {
   var noteRecordInput, <trumpetGranInput;
 
   var <clock;
-  var <myIR;
 
   *new {
-    | mixAOutBus, mixBOutBus, mixCOutBus, ir, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
+    | mixAOutBus, mixBOutBus, mixCOutBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
     ^super.new(mixAOutBus, 3, mixBOutBus, 2, mixCOutBus, 2, send0Bus, send1Bus, send2Bus, send3Bus, false,
-      relGroup, addAction).prInit(ir);
+      relGroup, addAction).prInit;
   }
 
-  prInit { | ir |
+  prInit {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -33,9 +32,6 @@ Connections : Song {
       clock = TempoClock.new;
       server.sync;
       clock.tempo = 75/60;
-
-      myIR = ir;
-
 
       noteRecord = Connections_NoteRecord.new(group, \addToHead);
       while({ try { noteRecord.isLoaded } != true }, { 0.001.wait; });
@@ -119,7 +115,7 @@ Connections : Song {
       {
         r {
           inlet = Connections_Inlet.new(mixerB.chanStereo(1), noteRecord.noteBufferArray,
-            noteRecord.cascadeBufferArray, myIR, group, \addToHead);
+            noteRecord.cascadeBufferArray,  group, \addToHead);
           while({ try { inlet.isLoaded } != true }, { 0.001.wait; });
           "Inlet Finally Loaded".postln;
         }.play;

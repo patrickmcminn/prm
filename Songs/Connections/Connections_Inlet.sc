@@ -10,11 +10,11 @@ Connections_Inlet : IM_Module {
   var <cascade, <attackRandomizer;
   var <reverb, <granulator;
 
-  *new { | outBus, noteBufferArray, cascadeBufferArray, ir, relGroup = nil, addAction = 'addToTail' |
-    ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(noteBufferArray, cascadeBufferArray, ir);
+  *new { | outBus, noteBufferArray, cascadeBufferArray, relGroup = nil, addAction = 'addToTail' |
+    ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(noteBufferArray, cascadeBufferArray);
   }
 
-  prInit { | noteBufferArray, cascadeBufferArray, ir |
+  prInit { | noteBufferArray, cascadeBufferArray |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -41,6 +41,8 @@ Connections_Inlet : IM_Module {
       granulator.setDelayMix(0);
       granulator.setTrigRate(40);
       granulator.setGrainDur(0.1, 0.3);
+
+      mixer.setPreVol(6);
 
       isLoaded = true;
     }

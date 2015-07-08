@@ -45,7 +45,7 @@ var cortezIsLoaded = false;
 ~ohm.setGridFunc(0, 1,  {
   if( connectionsIsLoaded == false, {
     r {
-      ~connections = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.irLibrary.irDict['3.4Cathedral'],
+      ~connections = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
       while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
       ~ohm.setGridFunc(1, 1, { ~ohm.setPage('connections'); }, page: page);

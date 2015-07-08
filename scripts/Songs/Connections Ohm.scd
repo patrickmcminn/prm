@@ -40,6 +40,8 @@ chordsLoaded = false;
   ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 }, page);
 
+// bring base on over:
+~ohm.setControlButtonFunc(2, 0, { ~base.setPage(page); }, bank: mainBank, page: page);
 
 
 // bank change:

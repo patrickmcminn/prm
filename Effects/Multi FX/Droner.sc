@@ -41,7 +41,7 @@ Droner : IM_Module {
         \rangeHigh, 0.009, \mix, 0.02], group, \addToHead);
       server.sync;
 
-      delay = SimpleDelay.newStereo(erosionBus, 1.305, 0.9, 3, relGroup: group, addAction: \addToHead);
+      delay = SimpleDelay.newStereo(erosionBus, 1.305, 0.97, 3, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       input = IM_Mixer_1Ch.new(delay.inBus, relGroup: group, addAction: \addToHead);

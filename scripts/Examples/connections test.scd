@@ -71,9 +71,35 @@ c.mixer.setPreVol(28);
 s.meter;
 
 ~prm.isLoaded
-
+Server.killAll;
 
 ~prm = AudioSystem.new(2);
-
-x = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.irLibrary('3.4Cathedral'),
+(
+x = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.irLibrary.irDict['3.4Cathedral'],
   ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
+)
+
+
+x.isLoaded;
+x.toggleLoadAirSputters;
+x.toggleLoadDroner;
+x.droner.isLoaded;
+x.droner.input.tglMute;
+
+
+x.toggleLoadBass;
+x.bass.isLoaded;
+
+x.toggleLoadTrumpetGran;
+x.trumpetGran.isLoaded;
+
+x.toggleLoadInlet;
+x.inlet;
+
+~prm.irLibrary.irDict['3.4Cathedral']
+
+x.toggleLoadChords;
+
+x.chords.isLoaded;
+
+x.free;

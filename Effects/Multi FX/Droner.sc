@@ -110,8 +110,8 @@ Droner : IM_Module {
     eq.free;
     demandBus.free;
     erosionBus.free;
-
     this.freeModule;
+
     demand = nil;
     input = nil;
     delay = nil;

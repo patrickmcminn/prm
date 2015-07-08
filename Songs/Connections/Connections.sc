@@ -12,8 +12,8 @@ Connections : Song {
   var <airSputters, <droner, <bass;
   var <trumpetGran, <chords;
 
-  var inletInput, airSputtersInput, dronerInput;
-  var noteRecordInput, <trumpetGranInput, chordsInput;
+  var airSputtersInput, dronerInput;
+  var noteRecordInput, <trumpetGranInput;
 
   var <clock;
   var <myIR;
@@ -33,6 +33,8 @@ Connections : Song {
       clock = TempoClock.new;
       server.sync;
       clock.tempo = 75/60;
+
+      myIR = ir;
 
 
       noteRecord = Connections_NoteRecord.new(group, \addToHead);
@@ -112,4 +114,27 @@ Connections : Song {
     );
   }
 
+  toggleLoadInlet {
+    if( try { inlet.isLoaded } != true,
+      {
+        r {
+          inlet = Connections_Inlet.new(mixerB.chanStereo(1), noteRecord.noteBufferArray,
+            noteRecord.cascadeBufferArray, myIR, group, \addToHead);
+          while({ try { inlet.isLoaded } != true }, { 0.001.wait; });
+          "Inlet Finally Loaded".postln;
+        }.play;
+      },
+      { inlet.free; }
+    );
+  }
+
+  toggleLoadChords {
+    if( try { chords.isLoaded } != true,
+      {
+        chords = Connections_Chords.new(mixerC.chanStereo(0), noteRecord.chordBufferArray,
+        group, \addToHead);
+      },
+      { chords.free;}
+    );
+  }
 }

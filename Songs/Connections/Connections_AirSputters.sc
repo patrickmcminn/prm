@@ -281,7 +281,7 @@ Connections_AirSputters : IM_Processor {
     );
   }
 
-  startAllPatterns {
+  playAllPatterns {
     this.playPattern1;
     this.playPattern2;
     this.playPattern3;

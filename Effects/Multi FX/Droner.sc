@@ -31,7 +31,7 @@ Droner : IM_Module {
       eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
-      reverb = IM_Reverb.new(eq.inBus, mix: 0.75, roomSize: 1, damp: 0.9, relGroup: group, addAction: \addToHead);
+      reverb = IM_Reverb.new(eq.inBus, mix: 0.75, roomSize: 1, damp: 0.85, relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       granulator = GranularDelay.new(reverb.inBus, group, \addToHead);
@@ -41,7 +41,7 @@ Droner : IM_Module {
         \rangeHigh, 0.009, \mix, 0.02], group, \addToHead);
       server.sync;
 
-      delay = SimpleDelay.newStereo(erosionBus, 1.305, 0.97, 3, relGroup: group, addAction: \addToHead);
+      delay = SimpleDelay.newStereo(erosionBus, 1.305, 0.99, 3, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       input = IM_Mixer_1Ch.new(delay.inBus, relGroup: group, addAction: \addToHead);

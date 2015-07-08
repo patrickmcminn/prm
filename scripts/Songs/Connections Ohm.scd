@@ -20,6 +20,8 @@ var airSputtersMonitorRoutine;
 var noteRecordLoaded, airSputtersLoaded, dronerLoaded, basslinesLoaded, trumpetGranLoaded;
 var inletLoaded, chordsLoaded;
 
+var noteRecordColorArray, cascadeRecordColorArray, chordRecordColorArray;
+
 noteRecordLoaded = true;
 airSputtersLoaded = false;
 dronerLoaded = false;
@@ -239,7 +241,121 @@ freeDronerFuncs =  {
   ~ohm.setLeftKnobFunc(2, 0, { });
 };
 
+
+//////// Note Record:
+noteRecordColorArray = ['blue', 'cyan', 'purple', 'white', 'green', 'yellow'];
+cascadeRecordColorArray = ['yellow', 'blue', 'cyan', 'purple', 'white'];
+chordRecordColorArray = ['purple', 'green', 'cyan', 'purple', 'white', 'green', 'yellow'];
+
+//// bassline record:
+~ohm.setGridFunc(0, 3, {
+  ~connections.noteRecord.basslineRecordRoutine.next;
+  ~ohm.turnGridColor(0, 3, noteRecordColorArray[~connections.noteRecord.basslineRecordNum]);
+}, bank: mainBank, page: page);
+// resets:
+~ohm.turnGridRed(0, 4, bank: mainBank, page: page);
+~ohm.setGridFunc(0, 4, {
+  ~connections.noteRecord.resetBasslineRecordRoutine;
+  ~ohm.turnGridColor(0, 3, noteRecordColorArray[0]);
+}, bank: mainBank, page: page);
+
+//// cascade record:
+~ohm.setGridFunc(1, 3, {
+  ~connections.noteRecord.cascadeRecordRoutine.next;
+  ~ohm.turnGridColor(1, 3, cascadeRecordColorArray[~connections.noteRecord.cascadeRecordNum]);
+}, bank: mainBank, page: page);
+// reset:
+~ohm.turnGridRed(1, 4, bank: mainBank, page: page);
+~ohm.setGridFunc(1, 4, {
+  ~connections.noteRecord.resetCascadeRecordRoutine;
+  ~ohm.turnGridColor(1, 3, cascadeRecordColorArray[0]);
+}, bank: mainBank, page: page);
+
+
+// chord record:
+~ohm.setGridFunc(2, 3, {
+  ~connections.noteRecord.chordRecordRoutine.next;
+  ~ohm.turnGridColor(2, 3, chordRecordColorArray[~connections.noteRecord.chordRecordNum]);
+}, bank: mainBank, page: page);
+// reset:
+~ohm.turnGridRed(2, 4, bank: mainBank, page: page);
+~ohm.setGridFunc(2, 4, {
+  ~connections.noteRecord.resetChordRecordRoutine;
+  ~ohm.turnGridColor(2, 3, chordRecordColorArray[0]);
+}, bank: mainBank, page: page);
+
+
+
 //////// Bassline:
+
+// On/Off:
+~ohm.turnGridBlue(0, 5, bank: mainBank, page: page);
+~ohm.setGridFunc(0, 5, {
+  if( basslinesLoaded == false,
+    {
+      r{
+        ~connections.toggleLoadBass;
+        while({ try { ~connections.bass } != true }, { 0.001.wait; });
+        loadBasslineFuncs.value;
+        ~ohm.turnGridGreen(0, 5);
+        basslinesLoaded = true;
+      }.play;
+    },
+    {
+      ~connections.toggleLoadBass;
+      freeBasslineFuncs.value;
+      ~ohm.turnGridRed(0, 5);
+      basslinesLoaded = false;
+  });
+}, bank: mainBank, page: page);
+
+
+loadBasslineFuncs = {
+  // Fader:
+  ~ohm.setLeftSliderFunc(2, { | val |
+    ~connections.mixerB.setVol(0, val.ccdbfs);
+  }, bank: mainBank, page: page);
+
+  //// knobs:
+
+  //granular mix:
+  ~ohm.setLeftKnobFunc(0, 1, { | val |
+    var crossfade = val.linlin(0, 127, -1.0, 1.0);
+    ~connections.bass.granulator.setGranulatorCrossfade(crossfade);
+  }, bank: mainBank, page: page);
+
+
+  //// buttons:
+
+  // bassline 1:
+  ~ohm.turnGridCyan(1, 5);
+  ~ohm.setGridFunc(1, 5, {
+    if( ~connections.bass.bassline1IsPlaying == false,
+      { ~connections.bass.playBassline1; ~ohm.turnGridGreen(1, 5); },
+      { ~connections.bass.stopBassline1; ~ohm.turnGridRed(1, 5); }
+    );
+  }, bank: mainBank, page: page);
+
+  // bassline 2:
+  ~ohm.turnGridPurple(2, 5);
+  ~ohm.setGridFunc(2, 5, {
+    if( ~connections.bass.bassline2IsPlaying == false,
+      { ~connections.bass.playBassline2; ~ohm.turnGridGreen(2, 6); },
+      { ~connections.bass.stopBassline2; ~ohm.turnGridRed(2, 6); }
+    );
+  }, bank: mainBank, page: page);
+
+
+};
+
+freeBasslineFuncs {
+  ~ohm.setLeftSliderFunc(2, { }, bank: mainBank, page: page);
+  ~ohm.setLeftKnobFunc(0, 1, { }, bank: mainBank, page: page);
+  ~ohm.setGridFunc(1, 5, { }, bank: mainBank, page: page);
+  ~ohm.setGridFunc(2, 5, { }, bank: mainBank, page: page);
+  ~ohm.turnGridOff(1, 5);
+  ~ohm.turnGridOff(2, 5);
+};
 
 //////// Trumpet Gran:
 

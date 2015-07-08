@@ -34,7 +34,8 @@ var page = 'main';
 }, page: page);
 
 // Connections:
-~ohm.turnGridBlue(0, 1, r {
+~ohm.turnGridBlue(0,1, page: page);
+~ohm.setGridFunc(0, 1, r {
   loop {
     ~connections = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.irLibrary.irDict['3.4Cathedral'],
   ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
@@ -50,7 +51,8 @@ var page = 'main';
 
 
 // Dauphine Street:
-~ohm.turnGridPurple(0, 2, r {
+~ohm.turnGridPurple(0, 2, page: page);
+~ohm.setGridFunc(0, 2, r {
   loop {
     ~dauphine = DauphineStreet.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus,
       ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);

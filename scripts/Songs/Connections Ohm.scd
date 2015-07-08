@@ -91,7 +91,7 @@ loadAirSputtersFuncs = {
 
 // Function Offload:
 
-freeAirSputtersFuncs {
+freeAirSputtersFuncs = {
   airSputtersMonitorRoutine.stop;
   ~ohm.setLeftSliderFunc(0, { }, bank: mainBank, page: page);
   ~ohm.setGridFunc(2, 0, { }, bank: mainBank, page: page);
@@ -134,7 +134,7 @@ airSputtersMonitorRoutine = r {
   });
 }, bank: mainBank, page: page);
 
-loadDronerFuncs {
+loadDronerFuncs =  {
 
   var grainRateResetFunc;
 
@@ -217,7 +217,7 @@ loadDronerFuncs {
   }, bank: mainBank, page: page);
 };
 
-freeDronerFuncs {
+freeDronerFuncs =  {
   // slider:
   ~ohm.setLeftSliderFunc(1, { }, bank: mainBank, page: page);
 

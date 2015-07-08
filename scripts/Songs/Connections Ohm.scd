@@ -41,6 +41,7 @@ chordsLoaded = false;
 }, page);
 
 // bring base on over:
+~ohm.turnControlButtonPurple(2, 0, bank: mainBank, page: page);
 ~ohm.setControlButtonFunc(2, 0, { ~base.setPage(page); }, bank: mainBank, page: page);
 
 

@@ -265,6 +265,7 @@ cascadeRecordColorArray = ['yellow', 'blue', 'cyan', 'purple', 'white'];
 chordRecordColorArray = ['purple', 'green', 'cyan', 'purple', 'white', 'green', 'yellow'];
 
 //// bassline record:
+~ohm.turnGridBlue(0, 3, bank: mainBank, page: page);
 ~ohm.setGridFunc(0, 3, {
   ~connections.noteRecord.basslineRecordRoutine.next;
   ~ohm.turnGridColor(0, 3, noteRecordColorArray[~connections.noteRecord.basslineRecordNum]);
@@ -277,6 +278,7 @@ chordRecordColorArray = ['purple', 'green', 'cyan', 'purple', 'white', 'green', 
 }, bank: mainBank, page: page);
 
 //// cascade record:
+~ohm.turnGridYellow(1, 3, bank: mainBank, page: page);
 ~ohm.setGridFunc(1, 3, {
   ~connections.noteRecord.cascadeRecordRoutine.next;
   ~ohm.turnGridColor(1, 3, cascadeRecordColorArray[~connections.noteRecord.cascadeRecordNum]);
@@ -290,6 +292,7 @@ chordRecordColorArray = ['purple', 'green', 'cyan', 'purple', 'white', 'green', 
 
 
 // chord record:
+~ohm.turnGridPurple(2, 3, bank: mainBank, page: page);
 ~ohm.setGridFunc(2, 3, {
   ~connections.noteRecord.chordRecordRoutine.next;
   ~ohm.turnGridColor(2, 3, chordRecordColorArray[~connections.noteRecord.chordRecordNum]);
@@ -312,7 +315,7 @@ chordRecordColorArray = ['purple', 'green', 'cyan', 'purple', 'white', 'green', 
     {
       r{
         ~connections.toggleLoadBass;
-        while({ try { ~connections.bass } != true }, { 0.001.wait; });
+        while({ try { ~connections.bass.isLoaded } != true }, { 0.001.wait; });
         loadBasslineFuncs.value;
         ~ohm.turnGridGreen(0, 5);
         basslinesLoaded = true;
@@ -551,7 +554,7 @@ loadChordFuncs = {
   ~ohm.setGridFunc(6, 2, {
     if( ~connections.chords.randomChordsIsPlaying,
       { ~connections.chords.stopRandomChords; ~ohm.turnGridRed(6, 2); },
-      { ~connections.chords.playRandomChords; ~ohm.turnGridGreen(6, 2); });
+      { ~connections.chords.playRandomChords(~connections.clock); ~ohm.turnGridGreen(6, 2); });
   }, bank: mainBank, page: page);
 
   // chord progression:
@@ -559,7 +562,7 @@ loadChordFuncs = {
   ~ohm.setGridFunc(7, 2, {
     if( ~connections.chords.chordProgressionIsPlaying,
       { ~connections.chords.stopChordProgression; ~ohm.turnGridRed(7, 2); },
-      { ~connections.chords.playChordProgression; ~ohm.turnGridGreen(7, 2); });
+      { ~connections.chords.playChordProgression(~connections.clock); ~ohm.turnGridGreen(7, 2); });
   }, bank: mainBank, page: page);
 
 };

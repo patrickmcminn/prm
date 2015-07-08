@@ -9,7 +9,6 @@ Connections_Inlet : IM_Module {
   var server, <isLoaded;
   var <cascade, <attackRandomizer;
   var <reverb, <granulator;
-  var <splitter;
 
   *new { | outBus, noteBufferArray, cascadeBufferArray, ir, relGroup = nil, addAction = 'addToTail' |
     ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(noteBufferArray, cascadeBufferArray, ir);
@@ -24,16 +23,15 @@ Connections_Inlet : IM_Module {
       granulator = GranularDelay.new(mixer.chanStereo(0), group, \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
-      reverb = IM_Reverb.newConvolution(granulator.inBus, nil, nil, nil, nil, false, 1, ir, 2, group, \addToHead);
+      reverb = IM_Reverb.new(granulator.inBus, amp: 1, mix: 0.6, roomSize: 0.8, damp: 0.85,
+        relGroup: group, addAction: \addToHead);
+      //reverb = IM_Reverb.newConvolution(granulator.inBus, nil, nil, nil, nil, false, 1, ir, 2, group, \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
-      splitter = Splitter.newStereo(2, [mixer.chanStereo(0), reverb.inBus], false, group, \addToHead);
-      while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
-
-      cascade = Connections_Cascade.new(splitter.inBus, noteBufferArray, cascadeBufferArray, group, \addToHead);
+      cascade = Connections_Cascade.new(reverb.inBus, noteBufferArray, cascadeBufferArray, group, \addToHead);
       while({ try { cascade.isLoaded } != true }, { 0.001.wait; });
 
-      attackRandomizer = Connections_AttackRandomizer.new(splitter.inBus, noteBufferArray, group, \addToHead);
+      attackRandomizer = Connections_AttackRandomizer.new(reverb.inBus, noteBufferArray, group, \addToHead);
       while({ try { attackRandomizer.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
@@ -53,7 +51,6 @@ Connections_Inlet : IM_Module {
   free {
     cascade.free;
     attackRandomizer.free;
-    splitter.free;
     reverb.free;
     granulator.free;
     this.freeModule;
@@ -61,7 +58,6 @@ Connections_Inlet : IM_Module {
 
     cascade = nil;
     attackRandomizer = nil;
-    splitter = nil;
     reverb = nil;
     granulator = nil;
   }

@@ -8,6 +8,7 @@ var page = 'connections';
 
 // banks:
 var mainBank = 0;
+var auxBank = 1;
 
 var loadAirSputtersFuncs, loadDronerFuncs, loadNoteRecordFuncs, loadBasslineFuncs, loadTrumpetGranFuncs;
 var loadInletFuncs, loadChordFuncs, loadMicFuncs;
@@ -31,6 +32,8 @@ inletLoaded = false;
 chordsLoaded = false;
 
 ~ohm.makePage(page);
+
+~ohm.addLeftSlidersBanks(1, page: page);
 
 // page load function:
 ~ohm.setPageLoadFunction({
@@ -225,15 +228,15 @@ freeDronerFuncs =  {
 
   //// buttons:
   ~ohm.turnGridOff(1, 1, bank: mainBank, page: page);
-  ~ohm.turnGridOff(0, 2);
-  ~ohm.turnGridOff(1, 2);
-  ~ohm.turnGridOff(2, 2);
-  ~ohm.turnGridOff(3, 2);
-  ~ohm.setGridFunc(1, 1, { });
-  ~ohm.setGridFunc(0, 2, { });
-  ~ohm.setGridFunc(1, 2, { });
-  ~ohm.setGridFunc(2, 2, { });
-  ~ohm.setGridFunc(3, 2, { });
+  ~ohm.turnGridOff(0, 2, bank: mainBank);
+  ~ohm.turnGridOff(1, 2, bank: mainBank);
+  ~ohm.turnGridOff(2, 2, bank: mainBank);
+  ~ohm.turnGridOff(3, 2, bank: mainBank);
+  ~ohm.setGridFunc(1, 1, { }, bank: mainBank);
+  ~ohm.setGridFunc(0, 2, { }, bank: mainBank);
+  ~ohm.setGridFunc(1, 2, { }, bank: mainBank);
+  ~ohm.setGridFunc(2, 2, { }, bank: mainBank);
+  ~ohm.setGridFunc(3, 2, { }, bank: mainBank);
 
   //// knobs:
   ~ohm.setLeftKnobFunc(0, 0, { });
@@ -331,7 +334,7 @@ loadBasslineFuncs = {
   ~ohm.turnGridCyan(1, 5);
   ~ohm.setGridFunc(1, 5, {
     if( ~connections.bass.bassline1IsPlaying == false,
-      { ~connections.bass.playBassline1; ~ohm.turnGridGreen(1, 5); },
+      { ~connections.bass.playBassline1(~connections.clock); ~ohm.turnGridGreen(1, 5); },
       { ~connections.bass.stopBassline1; ~ohm.turnGridRed(1, 5); }
     );
   }, bank: mainBank, page: page);
@@ -340,7 +343,7 @@ loadBasslineFuncs = {
   ~ohm.turnGridPurple(2, 5);
   ~ohm.setGridFunc(2, 5, {
     if( ~connections.bass.bassline2IsPlaying == false,
-      { ~connections.bass.playBassline2; ~ohm.turnGridGreen(2, 6); },
+      { ~connections.bass.playBassline2(~connections.clock); ~ohm.turnGridGreen(2, 6); },
       { ~connections.bass.stopBassline2; ~ohm.turnGridRed(2, 6); }
     );
   }, bank: mainBank, page: page);
@@ -348,22 +351,229 @@ loadBasslineFuncs = {
 
 };
 
-freeBasslineFuncs {
+freeBasslineFuncs =  {
   ~ohm.setLeftSliderFunc(2, { }, bank: mainBank, page: page);
   ~ohm.setLeftKnobFunc(0, 1, { }, bank: mainBank, page: page);
   ~ohm.setGridFunc(1, 5, { }, bank: mainBank, page: page);
   ~ohm.setGridFunc(2, 5, { }, bank: mainBank, page: page);
-  ~ohm.turnGridOff(1, 5);
-  ~ohm.turnGridOff(2, 5);
+  ~ohm.turnGridOff(1, 5, bank: mainBank);
+  ~ohm.turnGridOff(2, 5, bank: mainBank);
 };
 
 //////// Trumpet Gran:
 
+// On/Off:
+~ohm.turnGridYellow(0, 6, bank: mainBank, page: page);
+~ohm.setGridFunc(0, 6, {
+  if( trumpetGranLoaded == false,
+    { r {
+      ~connections.toggleLoadTrumpetGran;
+      while({ try { ~connections.trumpetGran.isLoaded } != true }, { 0.001.wait; });
+      loadTrumpetGranFuncs.value;
+      ~ohm.turnGreen(0, 6);
+      trumpetGranLoaded = true;
+    }.play; },
+    {
+      freeTrumpetGranFuncs.value;
+      ~ohm.turnGridRed(0, 6);
+      trumpetGranLoaded = false;
+  });
+}, bank: mainBank, page: page);
+
+
+loadTrumpetGranFuncs = {
+  //// knobs:
+  // vol:
+  ~ohm.setLeftKnobFunc(0, 2, { | val |
+    ~connections.mixerA.setVol(2, val.ccdbfs(-70, 0));
+  }, bank: mainBank, page: page);
+  // feedback:
+  ~ohm.setLeftKnobFunc(1, 2, { | val |
+    var feedback = val.linlin(0, 127, 0, 1);
+    ~connections.trumpetGran.granulator.setFeedback(feedback);
+  }, bank: mainBank, page: page);
+  // high gain:
+  ~ohm.setLeftKnobFunc(2, 2, { | val |
+    var gain = val.linlin(0, 127, -6, 6);
+    ~connections.trumpetGran.eq.setHighGain(gain);
+  }, bank: mainBank, page: page);
+
+  // button:
+  ~ohm.turnGridGreen(1, 6, bank: mainBank, page: page);
+  ~ohm.setGridFunc(1, 6, {
+    ~connections.trumpetGran.input.tglMute;
+    if( ~connections.trumpetGran.input.isMuted,
+      { ~ohm.turnGridRed(1, 6); },
+      { ~ohm.turnGridGreen(1, 6); });
+  }, bank: mainBank, page: page);
+
+};
+
+freeTrumpetGranFuncs = {
+  ~ohm.setLeftKnobFunc(0, 2, { }, bank: mainBank);
+  ~ohm.setLeftKnobFunc(1, 2, { }, bank: mainBank);
+  ~ohm.setLeftKnobFunc(2, 2, {}, bank: mainBank);
+  ~ohm.setGridFunc(1, 6, {}, bank: mainBank);
+  ~ohm.turnGridOff(1, 6, bank: mainBank);
+};
+
 //////// Inlet:
+// On/Off:
+~ohm.turnGridWhite(5, 0, bank: mainBank, page: page);
+~ohm.setGridFunc(5, 0, {
+  if( inletLoaded == false,
+    { r{
+      ~connections.toggleLoadInlet;
+      while({ try { ~connections.inlet.isLoaded } != true }, { 0.001.wait; });
+      loadInletFuncs.value;
+      ~ohm.turnGridGreen(5, 0);
+      inletLoaded = true;
+    }.play; },
+    {
+      ~connections.toggleLoadInlet;
+      freeInletFuncs.value;
+      ~ohm.turnGridRed(5, 0);
+      inletLoaded = false;
+  });
+}, bank: mainBank, page: page);
+
+
+// load:
+loadInletFuncs = {
+
+  ////// inlet:
+  //granulator:
+  ~ohm.setLeftKnobFunc(3, 1, { | val |
+    var crossfade = val.linlin(0, 127, -1, 1);
+    ~connections.inlet.granulator.setGranulatorCrossfade(crossfade);
+  }, bank: mainBank, page: page);
+
+  ////// attack randomizer:
+  // slider:
+  ~ohm.setLeftSliderFunc(0, { | val |
+    ~connections.inlet.attackRandomizer.mixer.setVol(val.ccdfbfs(-70, 0));
+  }, auxBank, page);
+
+  // button:
+  ~ohm.turnGridBlue(0, 7, bank: mainBank, page: page);
+  ~ohm.setGridFunc(0, 7, {
+    if( ~connections.inlet.attackRandomizer.isPlaying,
+      { ~connections.inlet.attackRandomizer.stopSequences; ~ohm.turnGridRed(0, 7); },
+      { ~connections.inlet.attackRandomizer.playSequences(~connections.clock); ~ohm.turnGridGreen(0, 7); });
+  }, bank: mainBank, page: page);
+
+  ////// cascade:
+  // slider:
+  ~ohm.setLeftSliderFunc(1, { | val |
+    ~connections.inlet.cascade.mixer.setVol(val.ccdbfs(-70, 0));
+  }, auxBank, page);
+
+  // button:
+  ~ohm.turnGridPurple(1, 7, bank: mainBank, page: page);
+  ~ohm.setGridFunc(1, 7, {
+    if( ~connections.inlet.cascade.isPlaying,
+      { ~connections.inlet.cascade.stopSequences; ~ohm.turnGridRed(1, 7); },
+      { ~connections.inlet.cascade.playSequences(~connections.clock); ~ohm.turnGridGreen(1, 7); });
+  }, bank: mainBank, page: page);
+
+};
+
+// free:
+
+freeInletFuncs = {
+  ~ohm.setLeftKnobFunc(3, 1, {});
+  ~ohm.setLeftSliderFunc(0, { }, bank: auxBank, page: page);
+  ~ohm.setLeftSliderFunc(1, { }, bank: auxBank, page: page);
+  ~ohm.setGridFunc(0, 7, { }, bank: mainBank);
+  ~ohm.setGridFunc(1, 7, { }, bank: mainBank);
+  ~ohm.turnGridOff(0, 7, bank: mainBank);
+  ~ohm.turnGridOff(1, 7, bank: mainBank);
+};
+
 
 //////// Chords:
 
+// On/Off:
+~ohm.turnGridCyan(5, 1, bank: mainBank, page: page);
+~ohm.setGridFunc(5, 1, {
+  if( chordsLoaded == false,
+    { r{
+      ~connections.toggleLoadChords;
+      while({ try { ~connections.chords.isLoaded } != true }, { 0.001.wait; });
+      loadChordFuncs.value;
+      ~ohm.turnGridGreen(5, 1);
+      chordsLoaded = true;
+    }.play; },
+    {
+      ~connections.toggleLoadChords;
+      freeChordFuncs.value;
+      ~ohm.turnGridRed(5, 1);
+      chordsLoaded = false;
+  });
+}, bank: mainBank, page: page);
+
+
+//// funcs:
+
+// load:
+
+loadChordFuncs = {
+  //// slider:
+  ~ohm.setLeftSliderFunc(2, { | val |
+    ~connections.mixerC.setVol(0, val.ccdbfs);
+  }, bank: auxBank, page: page);
+
+  //// buttons:
+
+  // chord sum:
+  ~ohm.turnGridPurple(5, 2, bank: mainBank, page: page);
+  ~ohm.setGridFunc(5, 2, {
+    ~connections.chords.recordChords;
+    ~ohm.turnGridGreen(5, 2);
+  }, bank: mainBank, page: page);
+
+  // random chords:
+  ~ohm.turnGridYellow(6, 2, bank: mainBank, page: page);
+  ~ohm.setGridFunc(6, 2, {
+    if( ~connections.chords.randomChordsIsPlaying,
+      { ~connections.chords.stopRandomChords; ~ohm.turnGridRed(6, 2); },
+      { ~connections.chords.playRandomChords; ~ohm.turnGridGreen(6, 2); });
+  }, bank: mainBank, page: page);
+
+  // chord progression:
+  ~ohm.turnGridBlue(7, 2, bank: mainBank, page: page);
+  ~ohm.setGridFunc(7, 2, {
+    if( ~connections.chords.chordProgressionIsPlaying,
+      { ~connections.chords.stopChordProgression; ~ohm.turnGridRed(7, 2); },
+      { ~connections.chords.playChordProgression; ~ohm.turnGridGreen(7, 2); });
+  }, bank: mainBank, page: page);
+
+};
+
+// free:
+
+freeChordFuncs = {
+  ~ohm.setLeftSliderFunc(2, { }, bank: auxBank);
+  ~ohm.setGridFunc(5, 2, { }, bank: mainBank);
+  ~ohm.setGridFunc(6, 2, { }, bank: mainBank);
+  ~ohm.setGridFunc(7, 2, { }, bank: mainBank);
+  ~ohm.turnGridOff(5, 2, bank: mainBank);
+  ~ohm.turnGridOff(6, 2, bank: mainBank);
+  ~ohm.turnGridOff(7, 2, bank: mainBank);
+};
+
 //////// Microphone:
+
+// volume:
+~ohm.setLeftSliderFunc(3, { | val |
+  ~prm.microphone.setVol(val.ccdbfs(-70, 0));
+}, bank: mainBank, page: page);
+
+// reverb send:
+~ohm.setLeftKnobFunc(3, 2, { | val |
+  ~prm.microphone.setSendVol(0, val.ccdbfs);
+}, bank: mainBank, page: page);
+
 
 
 

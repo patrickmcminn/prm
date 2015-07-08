@@ -42,6 +42,20 @@ chordsLoaded = false;
 
 
 
+// bank change:
+~ohm.turnCrossfaderButtonWhite(0, bank: mainBank, page: page);
+~ohm.setCrossfaderButtonFunc(0, r {
+  loop {
+    ~ohm.setActiveLeftSlidersBank(auxBank, page: page);
+    ~ohm.turnCrossfaderButtonPurple(0).yield;
+
+    ~ohm.setActiveLeftSlidersBank(mainBank, page: page);
+    ~ohm.turnCrossfaderButtonWhite(0).yield;
+  };
+}, bank: mainBank, page: page);
+
+
+
 // Air Sputters:
 
 // On/Off:

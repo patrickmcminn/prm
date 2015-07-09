@@ -55,8 +55,8 @@ Droner : IM_Module {
 
       granulator.mapGranulatorParameter(\rateLow, demandBus);
       granulator.mapGranulatorParameter(\rateHigh, demandBus);
-      granulator.setGrainDur(0.03, 0.23);
-      granulator.setTrigRate(15);
+      granulator.setGrainDur(0.1, 0.33);
+      granulator.setTrigRate(17);
       granulator.setPan(-0.03, 0.03);
       granulator.setGranulatorCrossfade(1);
       granulator.setDelayMix(0);

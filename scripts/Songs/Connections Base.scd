@@ -130,11 +130,7 @@ controlButtonResetFunc.value;
 }, bank: mainBank, page: page);
 // granulator feedback:
 ~base.setFaderFunc(3, { | val |
-<<<<<<< HEAD
-  var fb = val.linlin(0, 127, 0.0, 1.0);
-=======
   var fb = val.linlin(0, 127, 0.0, 1.3);
->>>>>>> origin/Connections
   ~connections.droner.delay.setFeedback(fb);
   ~base.setFaderValue(3, val);
 }, bank: mainBank, page: page);
@@ -333,49 +329,49 @@ controlButtonResetFunc.value;
 //// attack Randomizer:
 // vol:
 ~base.setFaderFunc(1, { | val |
-  ~connections.inlet.attackRandomizer.setVol(val.ccdbfs(-70, 0));
+  ~connections.inlet.attackRandomizer.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(1, val);
 }, bank: inletBank, page: page);
 // reverb send:
 ~base.setFaderFunc(2, { | val |
-  ~connections.inlet.attackRandomizer.setSendVol(0, val.ccdbfs(-70, 0));
+  ~connections.inlet.attackRandomizer.mixer.setSendVol(0, val.ccdbfs(-70, 0));
   ~base.setFaderValue(2, val);
 }, bank: inletBank, page: page);
 // granulator send:
 ~base.setFaderFunc(3, { | val |
-  ~connections.inlet.attackRandomizer.setSendVol(1, val.ccdbfs(-70, 0));
+  ~connections.inlet.attackRandomizer.mixer.setSendVol(1, val.ccdbfs(-70, 0));
   ~base.setFaderValue(3, val);
 }, bank: inletBank, page: page);
 // modular send:
 ~base.setFaderFunc(4, { | val |
-  ~connections.inlet.attackRandomizer.setSendVol(2, val.ccdbfs(-70, 0));
+  ~connections.inlet.attackRandomizer.mixer.setSendVol(2, val.ccdbfs(-70, 0));
   ~base.setFaderValue(4, val);
 }, bank: inletBank, page: page);
 //// Cascade:
 // vol:
 ~base.setFaderFunc(5, { | val |
-  ~connections.inlet.cascade.setVol(val.ccdbfs(-70, 0));
+  ~connections.inlet.cascade.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(5, val);
 }, bank: inletBank, page: page);
 // reverb send:
 ~base.setFaderFunc(6, { | val |
-  ~connections.cascade.setSendVol(0, val.ccdbfs(-70, 0));
+  ~connections.inlet.cascade.mixer.setSendVol(0, val.ccdbfs(-70, 0));
   ~base.setFaderValue(6, val);
 }, bank: inletBank, page: page);
 // granulator send:
 ~base.setFaderFunc(7, { | val |
-  ~connections.cascade.setSendVol(1, val.ccdbfs(-70, 0));
+  ~connections.inlet.cascade.mixer.setSendVol(1, val.ccdbfs(-70, 0));
   ~base.setFaderValue(7, val);
 }, bank: inletBank, page: page);
 // modular send:
 ~base.setFaderFunc(8, { | val |
-  ~connections.cascade.setSendVol(2, val.ccdbfs(-70, 0));
+  ~connections.inlet.cascade.mixer.setSendVol(2, val.ccdbfs(-70, 0));
   ~base.setFaderValue(8, val);
 }, bank: inletBank, page: page);
 
 
 //////// Grid:
-~base.turnAllGridYellow(trumpetGranBank, page: page);
+~base.turnAllGridYellow(inletBank, page: page);
 
 
 ////////////////////////////

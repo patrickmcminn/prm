@@ -157,6 +157,13 @@ controlButtonResetFunc {
   ~base.setFaderValue(val);
 }, bank: mainBank, page: page);
 
+// modular volume:
+~base.setFaderMode(8, 'redFill', bank: mainBank, page: page);
+~base.setFaderFunc(8, { | val |
+  ~prm.modular.setVol(val.ccdbfs(-70, 0));
+  ~base.setFaderValue(val);
+}, bank: mainBank, page: page);
+
 
 //////// grid:
 ~base.turnAllGridMagenta(bank: mainBank, page: page);
@@ -181,10 +188,219 @@ controlButtonResetFunc {
 3.do({ | i | ~base.setFaderMode(i + 2, 'magentaFill', bank: airSputtersBank, page: page); });
 
 // vol:
-//~base.setFaderFunc()
-
+~base.setFaderFunc(1, { | val |
+  ~connections.mixerA.setVol(0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(1, val);
+}, bank: airSputtersBank, page: page);
+// reverb send:
+~base.setFaderFunc(2, { | val |
+  ~connections.mixerA.setSendVol(0, 0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(2, val);
+}, bank: airSputtersBank, page: page);
+// granulator send:
+~base.setFaderFunc(3, { | val |
+  ~connections.mixerA.setSendVol(0, 1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(3, val);
+}, bank: airSputtersBank, page: page);
+// modular send:
+~base.setFaderFunc(4, { | val |
+  ~connections.mixerA.setSendVol(0, 2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(4, val);
+}, bank: airSputtersBank, page: page);
 
 
 /////// Grid:
 ~base.turnAllGridWhite(bank: airSputtersBank, page: page);
+
+
+
+////////////////////////////
+///// Droner Bank: ////
+////////////////////////////
+
+//////// Faders:
+~base.setFaderMode(1, 'cyanFill', bank: dronerBank, page: page);
+3.do({ | i | ~base.setFaderMode(i + 2, 'magentaFill', bank: dronerBank, page: page); });
+
+// vol:
+~base.setFaderFunc(1, { | val |
+  ~connections.mixerA.setVol(1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(1, val);
+}, bank: dronerBank, page: page);
+// reverb send:
+~base.setFaderFunc(2, { | val |
+  ~connections.mixerA.setSendVol(1, 0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(2, val);
+}, bank: dronerBank, page: page);
+// granulator send:
+~base.setFaderFunc(3, { | val |
+  ~connections.mixerA.setSendVol(1, 1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(3, val);
+}, bank: dronerBank, page: page);
+// modular send:
+~base.setFaderFunc(4, { | val |
+  ~connections.mixerA.setSendVol(1, 2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(4, val);
+}, bank: dronerBank, page: page);
+
+//////// Grid:
+~base.turnAllGridCyan(dronerBank, page: page);
+
+
+
+////////////////////////////
+///// Bassline Bank: ////
+////////////////////////////
+
+//////// Faders:
+~base.setFaderMode(1, 'blueFill', bank: basslineBank, page: page);
+3.do({ | i | ~base.setFaderMode(i + 2, 'magentaFill', bank: basslineBank, page: page); });
+
+// vol:
+~base.setFaderFunc(1, { | val |
+  ~connections.mixerB.setVol(0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(1, val);
+}, bank: basslineBank, page: page);
+// reverb send:
+~base.setFaderFunc(2, { | val |
+  ~connections.mixerB.setSendVol(0, 0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(2, val);
+}, bank: basslineBank, page: page);
+// granulator send:
+~base.setFaderFunc(3, { | val |
+  ~connections.mixerB.setSendVol(0, 1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(3, val);
+}, bank: basslineBank, page: page);
+// modular send:
+~base.setFaderFunc(4, { | val |
+  ~connections.mixerB.setSendVol(0, 2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(4, val);
+}, bank: basslineBank, page: page);
+
+//////// Grid:
+~base.turnAllGridBlue(basslineBank, page: page);
+
+
+////////////////////////////
+///// Trumpet Gran Bank: ////
+////////////////////////////
+
+//////// Faders:
+~base.setFaderMode(1, 'yellowFill', bank: trumpetGranBank, page: page);
+3.do({ | i | ~base.setFaderMode(i + 2, 'magentaFill', bank: trumpetGranBank, page: page); });
+
+// vol:
+~base.setFaderFunc(1, { | val |
+  ~connections.mixerA.setVol(2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(1, val);
+}, bank: trumpetGranBank, page: page);
+// reverb send:
+~base.setFaderFunc(2, { | val |
+  ~connections.mixerA.setSendVol(2, 0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(2, val);
+}, bank: trumpetGranBank, page: page);
+// granulator send:
+~base.setFaderFunc(3, { | val |
+  ~connections.mixerA.setSendVol(2, 1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(3, val);
+}, bank: trumpetGranBank, page: page);
+// modular send:
+~base.setFaderFunc(4, { | val |
+  ~connections.mixerA.setSendVol(2, 2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(4, val);
+}, bank: trumpetGranBank, page: page);
+
+//////// Grid:
+~base.turnAllGridYellow(trumpetGranBank, page: page);
+
+////////////////////////////
+///// Inlet Bank: ////
+////////////////////////////
+
+//////// Faders:
+~base.setFaderMode(1, 'whiteFill', bank: inletBank, page: page);
+3.do({ | i | ~base.setFaderMode(i + 2, 'magentaFill', bank: inletBank, page: page); });
+~base.setFaderMode(5, 'greenFill', bank: inletBank, page: page);
+3.do({ | i | ~base.setFaderMode(i + 6, 'magentaFill', bank: inletBank, page: page); });
+
+//// attack Randomizer:
+// vol:
+~base.setFaderFunc(1, { | val |
+  ~connections.inlet.attackRandomizer.setVol(val.ccdbfs(-70, 0));
+  ~base.setFaderValue(1, val);
+}, bank: inletBank, page: page);
+// reverb send:
+~base.setFaderFunc(2, { | val |
+  ~connections.inlet.attackRandomizer.setSendVol(0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(2, val);
+}, bank: inletBank, page: page);
+// granulator send:
+~base.setFaderFunc(3, { | val |
+  ~connections.inlet.attackRandomizer.setSendVol(1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(3, val);
+}, bank: inletBank, page: page);
+// modular send:
+~base.setFaderFunc(4, { | val |
+  ~connections.inlet.attackRandomizer.setSendVol(2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(4, val);
+}, bank: inletBank, page: page);
+//// Cascade:
+// vol:
+~base.setFaderFunc(5, { | val |
+  ~connections.inlet.cascade.setVol(val.ccdbfs(-70, 0));
+  ~base.setFaderValue(5, val);
+}, bank: inletBank, page: page);
+// reverb send:
+~base.setFaderFunc(6, { | val |
+  ~connections.cascade.setSendVol(0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(6, val);
+}, bank: inletBank, page: page);
+// granulator send:
+~base.setFaderFunc(7, { | val |
+  ~connections.cascade.setSendVol(1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(7, val);
+}, bank: inletBank, page: page);
+// modular send:
+~base.setFaderFunc(8, { | val |
+  ~connections.cascade.setSendVol(2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(8, val);
+}, bank: inletBank, page: page);
+
+
+//////// Grid:
+~base.turnAllGridYellow(trumpetGranBank, page: page);
+
+
+////////////////////////////
+///// Chord Bank: ////
+////////////////////////////
+
+//////// Faders:
+~base.setFaderMode(1, 'cyan', bank: chordsBank, page: page);
+3.do({ | i | ~base.setFaderMode(i + 2, 'magentaFill', bank: chordsBank, page: page); });
+
+// vol:
+~base.setFaderFunc(1, { | val |
+  ~connections.mixerC.setVol(0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(1, val);
+}, bank: chordsBank, page: page);
+// reverb send:
+~base.setFaderFunc(2, { | val |
+  ~connections.mixerC.setSendVol(0, 0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(2, val);
+}, bank: chordsBank, page: page);
+// granulator send:
+~base.setFaderFunc(3, { | val |
+  ~connections.mixerC.setSendVol(0, 1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(3, val);
+}, bank: chordsBank, page: page);
+// modular send:
+~base.setFaderFunc(4, { | val |
+  ~connections.mixerC.setSendVol(0, 2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(4, val);
+}, bank: chordsBank, page: page);
+
+//////// Grid:
+~base.turnAllGridCyan(chordsBank, page: page);
+
 

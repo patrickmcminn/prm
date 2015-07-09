@@ -130,7 +130,7 @@ controlButtonResetFunc.value;
 }, bank: mainBank, page: page);
 // granulator feedback:
 ~base.setFaderFunc(3, { | val |
-  var fb = val.linlin(0, 127, 0.0, 1.3);
+  var fb = val.linlin(0, 127, 0.7, 1.2);
   ~connections.droner.delay.setFeedback(fb);
   ~base.setFaderValue(3, val);
 }, bank: mainBank, page: page);
@@ -334,17 +334,17 @@ controlButtonResetFunc.value;
 }, bank: inletBank, page: page);
 // reverb send:
 ~base.setFaderFunc(2, { | val |
-  ~connections.inlet.attackRandomizer.mixer.setSendVol(0, val.ccdbfs(-70, 0));
+  ~connections.mixerB.setSendVol(1, 0, val.ccdbfs(-70, 0));
   ~base.setFaderValue(2, val);
 }, bank: inletBank, page: page);
 // granulator send:
 ~base.setFaderFunc(3, { | val |
-  ~connections.inlet.attackRandomizer.mixer.setSendVol(1, val.ccdbfs(-70, 0));
+  ~connections.mixerB.setSendVol(1, 1, val.ccdbfs(-70, 0));
   ~base.setFaderValue(3, val);
 }, bank: inletBank, page: page);
 // modular send:
 ~base.setFaderFunc(4, { | val |
-  ~connections.inlet.attackRandomizer.mixer.setSendVol(2, val.ccdbfs(-70, 0));
+  ~connections.mixerB.setSendVol(1, 2, val.ccdbfs(-70, 0));
   ~base.setFaderValue(4, val);
 }, bank: inletBank, page: page);
 //// Cascade:
@@ -353,22 +353,6 @@ controlButtonResetFunc.value;
   ~connections.inlet.cascade.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(5, val);
 }, bank: inletBank, page: page);
-// reverb send:
-~base.setFaderFunc(6, { | val |
-  ~connections.inlet.cascade.mixer.setSendVol(0, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(6, val);
-}, bank: inletBank, page: page);
-// granulator send:
-~base.setFaderFunc(7, { | val |
-  ~connections.inlet.cascade.mixer.setSendVol(1, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(7, val);
-}, bank: inletBank, page: page);
-// modular send:
-~base.setFaderFunc(8, { | val |
-  ~connections.inlet.cascade.mixer.setSendVol(2, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(8, val);
-}, bank: inletBank, page: page);
-
 
 //////// Grid:
 ~base.turnAllGridYellow(inletBank, page: page);

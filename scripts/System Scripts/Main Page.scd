@@ -61,22 +61,22 @@ var cortezIsLoaded = false;
 
 // Dauphine Street:
 ~ohm.turnGridPurple(0, 2, page: page);
-// not working as of yet:
-/*
-~ohm.setGridFunc(0, 2, r {
-  loop {
-    ~dauphine = DauphineStreet.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus,
-      ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
-    while({ try { ~dauphine.isLoaded } != true }, { 0.001.wait; });
-    ~ohm.setGridFunc(1, 2, { ~ohm.setPage('dauphine'); }, page: page);
-    ~ohm.turnGridGreen(1, 2).yield;
-
-    ~dauphine.free;
-    ~ohm.setGridFunc(1, 2, { });
-    ~ohm.turnGridOff(1, 2).yield;
-  };
+~ohm.setGridFunc(0, 2, {
+  if( dauphineStreetIsLoaded == false, {
+    r {
+      ~dauphine = DauphineStreet.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus,
+        ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
+      while({ try { ~dauphine.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 2, { ~base.setPage('dauphine'); }, page: page);
+      ~ohm.turnGridGreen(1, 2);
+    }.play;
+    },
+    {
+      ~dauphine.free;
+      ~ohm.setGridFunc(1, 2, { });
+      ~ohm.turnGridOff(1, 2);
+  });
 }, page: page);
-*/
 
 // Cortez:
 

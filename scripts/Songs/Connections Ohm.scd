@@ -414,7 +414,7 @@ loadTrumpetGranFuncs = {
   }, bank: mainBank, page: page);
   // high gain:
   ~ohm.setLeftKnobFunc(2, 2, { | val |
-    var gain = val.linlin(0, 127, -6, 6);
+    var gain = val.linlin(0, 127, -6, 9);
     ~connections.trumpetGran.eq.setHighGain(gain);
   }, bank: mainBank, page: page);
 

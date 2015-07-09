@@ -50,12 +50,14 @@ var cortezIsLoaded = false;
       while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
       ~ohm.setGridFunc(1, 1, { ~ohm.setPage('connections'); }, page: page);
       ~ohm.turnGridGreen(1, 1);
+      connectionsIsLoaded = true;
     }.play;
     },
     {
       ~connections.free;
       ~ohm.setGridFunc(1, 1, { });
       ~ohm.turnGridOff(1, 1);
+      connectionsIsLoaded = false;
   });
 }, page: page);
 
@@ -69,12 +71,14 @@ var cortezIsLoaded = false;
       while({ try { ~dauphine.isLoaded } != true }, { 0.001.wait; });
       ~ohm.setGridFunc(1, 2, { ~base.setPage('dauphine'); }, page: page);
       ~ohm.turnGridGreen(1, 2);
+      dauphineStreetIsLoaded = true;
     }.play;
     },
     {
       ~dauphine.free;
       ~ohm.setGridFunc(1, 2, { });
       ~ohm.turnGridOff(1, 2);
+      dauphineStreetIsLoaded = false;
   });
 }, page: page);
 

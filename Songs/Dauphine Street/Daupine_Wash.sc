@@ -53,14 +53,15 @@ Dauphine_Wash : IM_Module {
     //////// Public Functions:
 
     free {
-      inputMixer.free;
-      granulator.free;
-      wash.free;
-      this.freeModule;
+    inputMixer.free;
+    granulator.free;
+    wash.free;
+    this.freeModule;
 
-      inputMixer = nil;
-      granulator = nil;
-      wash = nil;
+    inputMixer = nil;
+    granulator = nil;
+    wash = nil;
+    isLoaded = false;
     }
 }
 

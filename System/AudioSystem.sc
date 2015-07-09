@@ -16,7 +16,7 @@ AudioSystem {
 
   var <submixerA, <submixerB, <submixerC;
 
-  var <modular, modularIn;
+  var <modular, modularIn, <microphone, micIn;
 
   var <songBook;
 
@@ -98,9 +98,15 @@ AudioSystem {
       modularIn = IM_HardwareIn.new(2, modular.chanMono, procGroup, \addToHead);
       while({ try { modularIn.isLoaded } != true }, { 0.001.wait; });
 
+      microphone = IM_Mixer_1Ch.new(this.submixC, reverb.inBus, granulator.inBus, modularSend.inBus, nil, false,
+        procGroup, \addToHead);
+      while({ try { microphone.isLoaded } != true }, { 0.001.wait; });
+      micIn = IM_HardwareIn.new(1, microphone.chanMono(0), procGroup, \addToHead);
+      while({ try { micIn.isLoaded } != true }, { 0.001.wait; });
 
-      // modular comes in muted
+      // modular + mic come in muted
       modular.setVol(-70);
+      microphone.setVol(-70);
 
 
       songBook = IdentityDictionary.new;

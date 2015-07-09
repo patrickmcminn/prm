@@ -6,3 +6,4 @@ Load System Scripts.scd
 "Main Page.scd".loadRelative;
 "Submixer EQ Page.scd".loadRelative;
 "Submixer Looper Page.scd".loadRelative;
+

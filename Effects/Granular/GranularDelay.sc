@@ -8,6 +8,7 @@ GranularDelay : IM_Module {
 
   var <isLoaded = false;
   var <granulator, <delay;
+  var rateChangeRoutine;
 
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit;
@@ -70,6 +71,10 @@ GranularDelay : IM_Module {
   setGranulatorFilterCutoff { | cutoff = 20000 | granulator.setFilterCutoff(cutoff); }
   setGranulatorCrossfade { | crossfade = 1 | granulator.setCrossfade(crossfade); }
 
+  mapGranulatorParameter { | param, bus |
+    granulator.synth.set(param, bus.asMap);
+  }
+
   //////// delay:
   setDelayTime { | delayTime = 0.2 | delay.setDelayTime(delayTime); }
   setFeedback { | feedback = 0.2 | delay.setFeedback(feedback); }
@@ -77,4 +82,6 @@ GranularDelay : IM_Module {
   setDelayFilterCutoff { | cutoff = 20000 | delay.setFilterCutoff(cutoff); }
   setDelayFilterRQ { | rq = 1 | delay.setFilterRQ(rq); }
   setDelayFilterType { | type = 'none' | delay.setFilterType(type); }
+
+
 }

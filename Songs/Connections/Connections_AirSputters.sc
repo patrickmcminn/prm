@@ -41,7 +41,7 @@ Connections_AirSputters : IM_Processor {
       server.sync;
       this.prMakeRecordRoutine(clock);
 
-      onsetDetector = Synth(\prm_AirSputters_OnsetDetectorTrig, [\inBus, inBus, \thresh, 0.1, \fastMul, 0.65],
+      onsetDetector = Synth(\prm_AirSputters_OnsetDetectorTrig, [\inBus, inBus, \thresh, 0.05, \fastMul, 0.65, \inputAmp, 2.5],
         group, \addToHead);
       server.sync;
 
@@ -54,6 +54,9 @@ Connections_AirSputters : IM_Processor {
       granulator.setGrainEnvelope('rexpodec');
       granulator.granulator.setPan(-0.7, 0.7);
       granulator.setDelayMix(0);
+      granulator.setGranulatorCrossfade(1);
+
+      mixer.setPreVol(18);
       isLoaded = true;
     };
   }
@@ -61,10 +64,11 @@ Connections_AirSputters : IM_Processor {
   prAddSynthDefs {
 
     SynthDef(\prm_AirSputters_OnsetDetectorTrig, {
-      |inBus = 0, id = 0,
-      trackFall = 0.2, slowLag = 0.2, fastLag = 0.01, fastMul = 0.5, thresh = 0.05, minDur = 0.1 |
+      |inBus = 0, id = 0, inputAmp = 1
+      trackFall = 0.2, slowLag = 0.2, fastLag = 0.01, fastMul = 0.5, thresh = 0.005, minDur = 0.1 |
       var input, detect, trigger, sig;
       input = In.ar(inBus);
+      input = input  * inputAmp;
       detect = Coyote.kr(input, trackFall, slowLag, fastLag, fastMul, thresh, minDur);
       sig = SendTrig.kr(detect, id, 1);
     }).add;
@@ -89,8 +93,8 @@ Connections_AirSputters : IM_Processor {
 
     // sputter 1:
     sampler.addKey(\sputterOne, \buffer, bufferArray[0]);
-    sampler.addKey(\sputterOne, \amp, 0.6);
-    sampler.addKey(\sputterOne, \amp, Pseq([0.6, 0.6, 0.6, 0, 0, 0.6, 0.6, 0.6, 0, 0, 0.6, 0.6, 0.6, 0, 0, 0], inf));
+    //sampler.addKey(\sputterOne, \amp, 0.6);
+    sampler.addKey(\sputterOne, \amp, Pseq([1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0], inf));
     sampler.addKey(\sputterOne, \dur, 0.125);
     sampler.addKey(\sputterOne, \sustainTime, 0.125);
     sampler.addKey(\sputterOne, \rate, 1);
@@ -104,7 +108,7 @@ Connections_AirSputters : IM_Processor {
     // sputter 2:
     sampler.addKey(\sputterTwo, \buffer, bufferArray[1]);
     //sampler.addKey(\sputterTwo, \amp, 0.6);
-    sampler.addKey(\sputterTwo, \amp, Pseq([0.6, 0.6, 0, 0, 0, 0, 0, 0.6, 0.6, 0, 0, 0, 0, 0, 0.6, 0.6], inf));
+    sampler.addKey(\sputterTwo, \amp, Pseq([1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1], inf));
     sampler.addKey(\sputterTwo, \dur, 0.125);
     sampler.addKey(\sputterTwo, \sustainTime, 0.125);
     //sampler.addKey(\sputterTwo, \note, Pseq([1, 1, \r, \r, \r, \r, \r, 1, 1, \r, \r, \r, \r, \r, 1, 1], inf));
@@ -117,7 +121,7 @@ Connections_AirSputters : IM_Processor {
     // sputter 3:
     sampler.addKey(\sputterThree, \buffer, bufferArray[2]);
     //sampler.addKey(\sputterThree, \amp, 0.6);
-    sampler.addKey(\sputterThree, \amp, Pseq([0.6, 0, 0, 0], inf));
+    sampler.addKey(\sputterThree, \amp, Pseq([1, 0, 0, 0], inf));
     sampler.addKey(\sputterThree, \dur, 0.125);
     sampler.addKey(\sputterThree, \sustainTime, 0.125);
     //sampler.addKey(\sputterThree, \note, Pseq([1, \r, \r, \r], inf));
@@ -130,7 +134,7 @@ Connections_AirSputters : IM_Processor {
     // sputter 4:
     sampler.addKey(\sputterFour, \buffer, bufferArray[3]);
     //sampler.addKey(\sputterFour, \amp, 0.6);
-    sampler.addKey(\sputterFour, \amp, Pseq([0.6, 0, 0, 0.6, 0, 0, 0.6, 0, 0, 0.6, 0, 0, 0], inf));
+    sampler.addKey(\sputterFour, \amp, Pseq([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0], inf));
     sampler.addKey(\sputterFour, \dur, 0.125);
     sampler.addKey(\sputterFour, \sustainTime, 0.12);
     //sampler.addKey(\sputterFour, \note, Pseq([1, \r, \r, 1, \r, \r, 1, \r, \r, 1, \r, \r, \r], inf));
@@ -277,7 +281,7 @@ Connections_AirSputters : IM_Processor {
     );
   }
 
-  startAllPatterns {
+  playAllPatterns {
     this.playPattern1;
     this.playPattern2;
     this.playPattern3;

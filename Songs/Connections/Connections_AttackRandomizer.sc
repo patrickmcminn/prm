@@ -35,6 +35,7 @@ Connections_AttackRandomizer :IM_Module {
       sampler.setBufferArray(myBufferArray);
       eq.setHighFreq(2500);
       eq.setHighGain(-7);
+      mixer.setPreVol(12);
 
       server.sync;
 

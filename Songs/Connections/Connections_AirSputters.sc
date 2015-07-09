@@ -41,7 +41,7 @@ Connections_AirSputters : IM_Processor {
       server.sync;
       this.prMakeRecordRoutine(clock);
 
-      onsetDetector = Synth(\prm_AirSputters_OnsetDetectorTrig, [\inBus, inBus, \thresh, 0.05, \fastMul, 0.65, \inputAmp, 2],
+      onsetDetector = Synth(\prm_AirSputters_OnsetDetectorTrig, [\inBus, inBus, \thresh, 0.05, \fastMul, 0.65, \inputAmp, 2.5],
         group, \addToHead);
       server.sync;
 
@@ -56,7 +56,7 @@ Connections_AirSputters : IM_Processor {
       granulator.setDelayMix(0);
       granulator.setGranulatorCrossfade(1);
 
-      mixer.setPreVol(24);
+      mixer.setPreVol(18);
       isLoaded = true;
     };
   }

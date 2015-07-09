@@ -28,10 +28,13 @@ var controlButtonResetFunc, controlButtonColorArray;
 ////////////////////////////
 
 controlButtonColorArray = ['magenta', 'white', 'cyan', 'blue', 'yellow', 'white', 'cyan', 'magenta'];
-controlButtonResetFunc {
+controlButtonResetFunc =  {
   controlButtonColorArray.do({ | color, i | ~base.turnControlButtonColor(i, 'right', color, page: page); });
-  8.do({ | i | ~base.turnControlButtonOff(i, 'left', page: page); });
+  8.do({ | i | ~base.turnControlButtonOff(i+1, 'left', page: page); });
 };
+
+controlButtonResetFunc.value;
+~base.turnControlButtonGreen(1, 'left', page: page);
 
 // main bank:
 ~base.setControlButtonFunc(1, {
@@ -114,7 +117,7 @@ controlButtonResetFunc {
 
 //// droner:
 
-3.do({ | i | ~base.setFaderMode(i, 'cyanFill', bank: mainBank, page: page); });
+3.do({ | i | ~base.setFaderMode(i+1, 'cyanFill', bank: mainBank, page: page); });
 // reverb send:
 ~base.setFaderFunc(1, { | val |
   ~connections.mixerA.setSendVol(1, 0, val.ccdbfs(-70, 0));
@@ -128,7 +131,7 @@ controlButtonResetFunc {
 // granulator feedback:
 ~base.setFaderFunc(3, { | val |
   var fb = val.linlin(0, 127, 0.0, 1.0);
-  ~connections.droner.granulator.setFeedback(fb);
+  ~connections.droner.delay.setFeedback(fb);
   ~base.setFaderValue(3, val);
 }, bank: mainBank, page: page);
 
@@ -142,26 +145,26 @@ controlButtonResetFunc {
 // verb send:
 ~base.setFaderFunc(5, { | val |
   ~prm.microphone.setSendVol(0, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(val);
+  ~base.setFaderValue(5, val);
 }, bank: mainBank, page: page);
 
 // gran send:
 ~base.setFaderFunc(6, { | val |
   ~prm.microphone.setSendVol(1, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(val);
+  ~base.setFaderValue(6, val);
 }, bank: mainBank, page: page);
 
 // modular send:
 ~base.setFaderFunc(7, { | val |
   ~prm.microphone.setSendVol(2, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(val);
+  ~base.setFaderValue(7, val);
 }, bank: mainBank, page: page);
 
 // modular volume:
 ~base.setFaderMode(8, 'redFill', bank: mainBank, page: page);
 ~base.setFaderFunc(8, { | val |
   ~prm.modular.setVol(val.ccdbfs(-70, 0));
-  ~base.setFaderValue(val);
+  ~base.setFaderValue(8, val);
 }, bank: mainBank, page: page);
 
 

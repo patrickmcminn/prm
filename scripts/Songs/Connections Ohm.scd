@@ -364,7 +364,7 @@ loadBasslineFuncs = {
   ~ohm.setGridFunc(2, 5, {
     if( ~connections.bass.bassline2IsPlaying == false,
       { ~connections.bass.playBassline2(~connections.clock); ~ohm.turnGridGreen(2, 6); },
-      { ~connections.bass.stopBassline2; ~ohm.turnGridRed(2, 6); }
+      { ~connections.bass.stopBassline2; ~ohm.turnGridRed(2, 5); }
     );
   }, bank: mainBank, page: page);
 

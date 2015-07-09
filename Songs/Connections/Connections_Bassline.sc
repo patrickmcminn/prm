@@ -47,7 +47,7 @@ Connections_Bassline : IM_Module {
       granulator.setGranulatorCrossfade(-1);
       granulator.setDelayMix(0);
       granulator.setGrainDur(0.2, 0.4);
-      granulator.setTrigRate(40);
+      granulator.setTrigRate(30);
 
       mixer.setPreVol(9);
 
@@ -94,7 +94,7 @@ Connections_Bassline : IM_Module {
 			noteCount,
       Pseq([0.05, 1/30, 0.025, 1/30, 0.025], inf)));
     sampler.addKey(\bassline2, \startPos, 0.1);
-    sampler.addKey(\bassline2, \legato, 0.8);
+    sampler.addKey(\bassline2, \legato, 0.95);
   }
 
   playBassline1 { | clock |

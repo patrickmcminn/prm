@@ -39,10 +39,11 @@ Connections_TrumpetGran : IM_Module {
       //input.mute;
       eq.setHighFreq(2500);
       eq.setHighGain(-6);
-      granulator.setGrainDur(0.04, 0.06);
+      granulator.setGrainDur(0.04, 0.13);
       granulator.setTrigRate(40);
-      granulator.mixer.setPreVol(3);
+      granulator.mixer.setPreVol(6);
       granulator.setDelayTime(0.8);
+      granulator.setDelayMix(0.5);
       granulator.setGranulatorCrossfade(1);
       granulator.setFeedback(0.3);
 

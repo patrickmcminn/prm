@@ -117,6 +117,7 @@ Connections : Song {
           inlet = Connections_Inlet.new(mixerB.chanStereo(1), noteRecord.noteBufferArray,
             noteRecord.cascadeBufferArray,  group, \addToHead);
           while({ try { inlet.isLoaded } != true }, { 0.001.wait; });
+          mixerB.setSendVol(1, 0, -6);
           "Inlet Finally Loaded".postln;
         }.play;
       },

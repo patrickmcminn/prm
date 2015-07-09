@@ -48,7 +48,6 @@ DauphineStreet : Song {
       while({ try { bass.isLoaded } != true }, { 0.001.wait; });
 
 
-
       mixerA.setVol(0, -15);
 
       mixerC.setPreVol(0, 6);

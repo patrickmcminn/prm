@@ -108,6 +108,8 @@ Connections_Chords :IM_Module {
   //////// public methods:
 
   free {
+    this.stopRandomChords;
+    this.stopChordProgression;
     granulator.free;
     reverb.free;
     eq.free;

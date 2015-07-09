@@ -49,7 +49,7 @@ Connections_Bassline : IM_Module {
       granulator.setGrainDur(0.2, 0.4);
       granulator.setTrigRate(30);
 
-      mixer.setPreVol(12);
+      mixer.setPreVol(18);
 
       server.sync;
 

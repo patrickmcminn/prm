@@ -39,17 +39,17 @@ Connections_Bassline : IM_Module {
 
       sampler.setBufferArray(bufferArray);
 
-      eq.setLowFreq(300);
+      eq.setLowFreq(250);
       eq.setLowGain(15);
       eq.setHighFreq(1770);
-      eq.setHighGain(-10);
+      eq.setHighGain(-6);
 
       granulator.setGranulatorCrossfade(-1);
       granulator.setDelayMix(0);
       granulator.setGrainDur(0.2, 0.4);
       granulator.setTrigRate(30);
 
-      mixer.setPreVol(9);
+      mixer.setPreVol(12);
 
       server.sync;
 

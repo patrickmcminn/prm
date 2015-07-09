@@ -83,8 +83,26 @@ var cortezIsLoaded = false;
 }, page: page);
 
 // Cortez:
-
-// coming soon
+~ohm.turnGridCyan(0, 3, page: page);
+~ohm.setGridFunc(0, 3, {
+  if( cortezIsLoaded == false, {
+    r {
+      ~cortez = x = Cortez.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.reverb.inBus,
+        ~prm.granulator.inBus, ~prm.modularSend.inBus,
+        relGroup: ~prm.procGroup, addAction: \addToHead);
+      while({ try { ~cortez.isLoaded } != true }, { 0.00`.wait; });
+      ~ohm.setGridFunc(1, 3, { ~ohm.setPage('cortez'); }, page: page);
+      ~ohm.turnGridGreen(1, 3);
+      cortezIsLoaded = true;
+    }.play;
+    },
+    {
+      ~cortez.free;
+      ~ohm.setGridFunc(1, 3, { });
+      ~ohm.turnGridOff(1, 3);
+      cortezIsLoaded = false;
+  });
+}, page: page);
 
 
 

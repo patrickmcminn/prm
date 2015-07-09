@@ -130,7 +130,11 @@ controlButtonResetFunc.value;
 }, bank: mainBank, page: page);
 // granulator feedback:
 ~base.setFaderFunc(3, { | val |
+<<<<<<< HEAD
   var fb = val.linlin(0, 127, 0.0, 1.0);
+=======
+  var fb = val.linlin(0, 127, 0.0, 1.3);
+>>>>>>> origin/Connections
   ~connections.droner.delay.setFeedback(fb);
   ~base.setFaderValue(3, val);
 }, bank: mainBank, page: page);

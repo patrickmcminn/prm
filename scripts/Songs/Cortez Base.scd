@@ -486,9 +486,11 @@ modVolControlFunc = { | val |
   ~base.setFaderValue(1, val, bank: mainBank);
 }, bank: yBank, page: page);
 // Mute:
+/*
 if( ~cortez.chordsSynth.mixer.isMuted,
   { ~base.turnTouchButtonRed(1, bank: yBank, page: page); },
   { ~base.turnTouchButtonGreen(1, bank: yBank, page: page); });
+*/
 ~base.setTouchButtonFunc(1, {
   ~cortez.chordsSynth.mixer.tglMute;
   if( ~cortez.chordsSynth.mixer.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1) });
@@ -546,9 +548,11 @@ if( ~cortez.chordsSynth.mixer.isMuted,
   ~base.setFaderValue(2, val, bank: mainBank);
 }, bank: bBank, page: page);
 // Mute:
+/*
 if( ~cortez.washSynth.mixer.isMuted,
   { ~base.turnTouchButtonRed(1, bank: bBank, page: page); },
   { ~base.turnTouchButtonGreen(1, bank: bBank, page: page); });
+*/
 ~base.setTouchButtonFunc(1, {
   ~cortez.washSynth.mixer.tglMute;
   if( ~cortez.washSynth.mixer.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1) });
@@ -606,9 +610,11 @@ if( ~cortez.washSynth.mixer.isMuted,
   ~base.setFaderValue(3, val, bank: mainBank);
 }, bank: cBank, page: page);
 // Mute:
+/*
 if( ~cortez.phaseSynth.mixer.isMuted,
   { ~base.turnTouchButtonRed(1, bank: cBank, page: page); },
   { ~base.turnTouchButtonGreen(1, bank: cBank, page: page); });
+*/
 ~base.setTouchButtonFunc(1, {
   ~cortez.phaseSynth.mixer.tglMute;
   if( ~cortez.phaseSynth.mixer.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1) });

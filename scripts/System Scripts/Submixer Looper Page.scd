@@ -192,6 +192,10 @@ rateResetFunc = { | bank |
 ~ohm.setLeftKnobFunc(0, 1, { | val |
   ~prm.submixerA.mixer.setSendVol(1, val.ccdbfs(-70, 6));
 }, page: page);
+// Modular:
+~ohm.setLeftKnobFunc(0, 0, { | val |
+  ~prm.submixerA.mixer.setSendVol(2, val.ccdbfs(-70, 0));
+}, page: page);
 
 //// Submixer B Sends:
 // Reverb:
@@ -202,6 +206,10 @@ rateResetFunc = { | bank |
 ~ohm.setLeftKnobFunc(1, 1, { | val |
   ~prm.submixerB.mixer.setSendVol(1, val.ccdbfs(-70, 6));
 }, page: page);
+// Modular:
+~ohm.setLeftKnobFunc(1, 0, { | val |
+  ~prm.submixerB.mixer.setSendVol(2, val.ccdbfs(-70, 0));
+}, page: page);
 
 //// Submixer C Sends:
 // Reverb:
@@ -211,6 +219,9 @@ rateResetFunc = { | bank |
 // Granulator:
 ~ohm.setLeftKnobFunc(2, 1, { | val |
   ~prm.submixerC.mixer.setSendVol(1, val.ccdbfs(-70, 6));
+}, page: page);
+~ohm.setLeftKnobFunc(2, 0, { | val |
+  ~prm.submixerC.mixer.setSendVol(2, val.ccdbfs(-70, 0));
 }, page: page);
 
 //////// Left Buttons:

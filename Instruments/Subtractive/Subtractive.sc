@@ -523,6 +523,7 @@ Subtractive : IM_Module {
   //////// public functions:
 
   free {
+    sequencerDict.do({ | sequence | sequence.stop; });
     sequencerDict.do({ | sequence | sequence.free; });
     sequencerClock.clear;
     sequencerDict.stop;

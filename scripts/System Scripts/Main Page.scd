@@ -83,11 +83,59 @@ var cortezIsLoaded = false;
 }, page: page);
 
 // Cortez:
+~ohm.turnGridCyan(0, 3, page: page);
+~ohm.setGridFunc(0, 3, {
+  if( cortezIsLoaded == false, {
+    r {
+      ~cortez = x = Cortez.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.reverb.inBus,
+        ~prm.granulator.inBus, ~prm.modularSend.inBus,
+        relGroup: ~prm.procGroup, addAction: \addToHead);
+      while({ try { ~cortez.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 3, { ~ohm.setPage('cortez'); }, page: page);
+      ~ohm.turnGridGreen(1, 3);
+      cortezIsLoaded = true;
+    }.play;
+    },
+    {
+      ~cortez.free;
+      ~ohm.setGridFunc(1, 3, { });
+      ~ohm.turnGridOff(1, 3);
+      cortezIsLoaded = false;
+  });
+}, page: page);
 
-// coming soon
+// whhaaaa
 
 
+// mic:
+~ohm.setLeftSliderFunc(3, { | val |
+  ~prm.microphone.setVol(val.ccdbfs(-70, 0));
+}, page: page);
 
+~ohm.setLeftKnobFunc(3, 2, { | val |
+  ~prm.microphone.setSendVol(0, val.ccdbfs(-70, 0));
+}, page: page);
+~ohm.setLeftKnobFunc(3, 1, { | val |
+  ~prm.microphone.setSendVol(1, val.ccdbfs(-70, 0));
+}, page: page);
+~ohm.setLeftKnobFunc(3, 0, { | val |
+  ~prm.microphone.setSendVol(2, val.ccdbfs(-70, 0));
+}, page: page);
+
+// modular:
+~ohm.setLeftSliderFunc(2, { | val |
+  ~prm.modular.setVol(val.ccdbfs(-70, 0));
+}, page: page);
+
+~ohm.setLeftKnobFunc(2, 2, { | val |
+  ~prm.modular.setSendVol(0, val.ccdbfs(-70, 0));
+}, page: page);
+~ohm.setLeftKnobFunc(2, 1, { | val |
+  ~prm.modular.setSendVol(1, val.ccdbfs(-70, 0));
+}, page: page);
+~ohm.setLeftKnobFunc(2, 0, { | val |
+  ~prm.modular.setSendVol(2, val.ccdbfs(-70, 0));
+}, page: page);
 
 // Returns Page:
 ~ohm.turnGridBlue(5, 7, page: page);

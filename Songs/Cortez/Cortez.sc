@@ -185,37 +185,37 @@ Cortez {
   }
 
   prMakeTrumpetSequence {
-    trumpetSeq.addFunction(0, { ~trumpetShift.makeSynthOneShot('seq0', -12) });
-    trumpetSeq.addFunction(1, { ~trumpetShift.makeSynthOneShot('seq1', -7) });
-    trumpetSeq.addFunction(2, { ~trumpetShift.makeSynthOneShot('seq2', -5) });
-    trumpetSeq.addFunction(3, { ~trumpetShift.makeSynthOneShot('seq3', 2) });
-    trumpetSeq.addFunction(4, { ~trumpetShift.makeSynthOneShot('seq4', 0) });
+    trumpetSeq.addFunction(0, { trumpetShift.makeSynthOneShot('seq0', -12) });
+    trumpetSeq.addFunction(1, { trumpetShift.makeSynthOneShot('seq1', -7) });
+    trumpetSeq.addFunction(2, { trumpetShift.makeSynthOneShot('seq2', -5) });
+    trumpetSeq.addFunction(3, { trumpetShift.makeSynthOneShot('seq3', 2) });
+    trumpetSeq.addFunction(4, { trumpetShift.makeSynthOneShot('seq4', 0) });
 
-    trumpetSeq.addFunction(5, { ~trumpetShift.makeSynthOneShot('seq0', -12) });
-    trumpetSeq.addFunction(6, { ~trumpetShift.makeSynthOneShot('seq1', -7) });
-    trumpetSeq.addFunction(7, { ~trumpetShift.makeSynthOneShot('seq2', -5) });
-    trumpetSeq.addFunction(8, { ~trumpetShift.makeSynthOneShot('seq3', 2) });
-    trumpetSeq.addFunction(9, { ~trumpetShift.makeSynthOneShot('seq4', 0) });
+    trumpetSeq.addFunction(5, { trumpetShift.makeSynthOneShot('seq0', -12) });
+    trumpetSeq.addFunction(6, { trumpetShift.makeSynthOneShot('seq1', -7) });
+    trumpetSeq.addFunction(7, { trumpetShift.makeSynthOneShot('seq2', -5) });
+    trumpetSeq.addFunction(8, { trumpetShift.makeSynthOneShot('seq3', 2) });
+    trumpetSeq.addFunction(9, { trumpetShift.makeSynthOneShot('seq4', 0) });
 
-    trumpetSeq.addFunction(10, { ~trumpetShift.makeSynthOneShot('seq0', -12) });
-    trumpetSeq.addFunction(11, { ~trumpetShift.makeSynthOneShot('seq1', -7) });
-    trumpetSeq.addFunction(12, { ~trumpetShift.makeSynthOneShot('seq2', -5) });
-    trumpetSeq.addFunction(13, { ~trumpetShift.makeSynthOneShot('seq3', 2) });
-    trumpetSeq.addFunction(14, { ~trumpetShift.makeSynthOneShot('seq4', 0) });
+    trumpetSeq.addFunction(10, { trumpetShift.makeSynthOneShot('seq0', -12) });
+    trumpetSeq.addFunction(11, { trumpetShift.makeSynthOneShot('seq1', -7) });
+    trumpetSeq.addFunction(12, { trumpetShift.makeSynthOneShot('seq2', -5) });
+    trumpetSeq.addFunction(13, { trumpetShift.makeSynthOneShot('seq3', 2) });
+    trumpetSeq.addFunction(14, { trumpetShift.makeSynthOneShot('seq4', 0) });
 
-    trumpetSeq.addFunction(15, { ~trumpetShift.makeSynthOneShot('seq5', -12) });
-    trumpetSeq.addFunction(16, { ~trumpetShift.makeSynthOneShot('seq6', -7) });
-    trumpetSeq.addFunction(17, { ~trumpetShift.makeSynthOneShot('seq7', -5) });
-    trumpetSeq.addFunction(18, { ~trumpetShift.makeSynthOneShot('seq8', -2) });
-    trumpetSeq.addFunction(19, { ~trumpetShift.makeSynthOneShot('seq9', 0) });
-    trumpetSeq.addFunction(20, { ~trumpetShift.makeSynthOneShot('seq10', 2) });
+    trumpetSeq.addFunction(15, { trumpetShift.makeSynthOneShot('seq5', -12) });
+    trumpetSeq.addFunction(16, { trumpetShift.makeSynthOneShot('seq6', -7) });
+    trumpetSeq.addFunction(17, { trumpetShift.makeSynthOneShot('seq7', -5) });
+    trumpetSeq.addFunction(18, { trumpetShift.makeSynthOneShot('seq8', -2) });
+    trumpetSeq.addFunction(19, { trumpetShift.makeSynthOneShot('seq9', 0) });
+    trumpetSeq.addFunction(20, { trumpetShift.makeSynthOneShot('seq10', 2) });
 
-    trumpetSeq.addFunction(21, { ~trumpetShift.makeSynthOneShot('seq5', -12) });
-    trumpetSeq.addFunction(22, { ~trumpetShift.makeSynthOneShot('seq6', -7) });
-    trumpetSeq.addFunction(23, { ~trumpetShift.makeSynthOneShot('seq7', -5) });
-    trumpetSeq.addFunction(24, { ~trumpetShift.makeSynthOneShot('seq8', -2) });
-    trumpetSeq.addFunction(25, { ~trumpetShift.makeSynthOneShot('seq9', 0) });
-    trumpetSeq.addFunction(26, { ~trumpetShift.makeSynthOneShot('seq10', 2) });
+    trumpetSeq.addFunction(21, { trumpetShift.makeSynthOneShot('seq5', -12) });
+    trumpetSeq.addFunction(22, { trumpetShift.makeSynthOneShot('seq6', -7) });
+    trumpetSeq.addFunction(23, { trumpetShift.makeSynthOneShot('seq7', -5) });
+    trumpetSeq.addFunction(24, { trumpetShift.makeSynthOneShot('seq8', -2) });
+    trumpetSeq.addFunction(25, { trumpetShift.makeSynthOneShot('seq9', 0) });
+    trumpetSeq.addFunction(26, { trumpetShift.makeSynthOneShot('seq10', 2) });
   }
 
   free {

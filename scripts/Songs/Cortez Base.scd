@@ -128,7 +128,8 @@ controlButtonResetFunc.value;
   ~base.setFaderValue(1, val, bank: yBank);
 }, bank: mainBank, page: page);
 
-// Sub ~cortez.chordsSynth Mute:
+
+// Sub ~cortez.chordsSynth s:
 ~base.setTouchButtonFunc(1, {
   ~cortez.chordsSynth.mixer.tglMute;
   if( ~cortez.chordsSynth.mixer.isMuted, { ~base.turnTouchButtonRed(1) }, { ~base.turnTouchButtonGreen(1) });

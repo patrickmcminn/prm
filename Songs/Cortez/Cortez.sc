@@ -59,7 +59,8 @@ Cortez {
       trumpetInput = IM_HardwareIn.new(0, trumpetShift.inBus, group, \addToHead);
       while({ try { trumpetInput.isLoaded } != true }, { 0.001.wait; });
       trumpetShift.envGenerator.setSustainTime(0.1);
-      trumpetShift.envGenerator.setReleaseTime(0.09);
+      trumpetShift.envGenerator.setReleaseTime(0.3);
+      trumpetShift.mixer.setPreVol(28);
 
       // trumpet sequencer:
       trumpetSeq = FunctionSequencer.new(27, clock);

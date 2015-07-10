@@ -17,14 +17,14 @@ var page = 'cortez';
 // chord 1:
 ~ohm.setGridFunc(0, 0, {
   ~cortez.chordsSynth.releaseNote(52.midicps);
-  ~cortez.chordsSynth.releaseNote(52.midicps);
+  ~cortez.chordsSynth.releaseNote(59.midicps);
   ~cortez.chordsSynth.playNote(52.midicps, -6);
   ~cortez.chordsSynth.playNote(59.midicps, -6);
   ~ohm.turnGridGreen(0, 0);
 }, page: page);
 ~ohm.setGridFunc(0, 0, {
   ~cortez.chordsSynth.releaseNote(52.midicps);
-  ~cortez.chordsSynth.releaseNote(52.midicps);
+  ~cortez.chordsSynth.releaseNote(59.midicps);
   ~ohm.turnGridPurple(0, 0);
 }, 'noteOff', page: page);
 

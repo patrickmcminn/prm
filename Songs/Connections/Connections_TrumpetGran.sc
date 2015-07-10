@@ -47,7 +47,7 @@ Connections_TrumpetGran : IM_Module {
       granulator.setGranulatorCrossfade(0);
       granulator.setFeedback(0.3);
 
-      mixer.setPreVol(22);
+      mixer.setPreVol(12);
 
       server.sync;
 

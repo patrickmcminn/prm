@@ -17,8 +17,7 @@ r {
   "/System Scripts/Load System Scripts.scd".loadRelative;
   "/Songs/Load Songs.scd".loadRelative;
 
-  "loaded".postn;
+  "loaded".postln;
 }.play;
 
 s.meter;
-

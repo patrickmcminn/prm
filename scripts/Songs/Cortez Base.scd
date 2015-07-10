@@ -297,7 +297,7 @@ modVolControlFunc = { | val |
 
 //  Octave Down:
 ~base.setGridFunc(4, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downOctave', -12, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('downOctave', -12, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(4, 3);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(4, 3, { | val |
@@ -309,7 +309,7 @@ modVolControlFunc = { | val |
 
 //  Seventh Down:
 ~base.setGridFunc(5, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downSeventh', -10, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('downSeventh', -10, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(5, 3);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(5, 3, { | val |
@@ -320,7 +320,7 @@ modVolControlFunc = { | val |
 
 // fifth Down:
 ~base.setGridFunc(6, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downFifth', -7, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('downFifth', -7, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(6, 3);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(6, 3, { | val |
@@ -331,7 +331,7 @@ modVolControlFunc = { | val |
 
 // fourth down:
 ~base.setGridFunc(7, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downFourth', -5, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('downFourth', -5, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(7, 3);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(7, 3, { | val |
@@ -341,7 +341,7 @@ modVolControlFunc = { | val |
 
 // third down:
 ~base.setGridFunc(4, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downThird', -4, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('downThird', -4, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(4, 2);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(4, 2, { | val |
@@ -352,7 +352,7 @@ modVolControlFunc = { | val |
 
 // second down:
 ~base.setGridFunc(5, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downSecond', -2, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('downSecond', -2, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(5, 2);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(5, 2, { | val |
@@ -363,7 +363,7 @@ modVolControlFunc = { | val |
 
 // root:
 ~base.setGridFunc(6, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('root', 0, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('root', 0, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(6, 2);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(6, 2, { | val |
@@ -373,7 +373,7 @@ modVolControlFunc = { | val |
 
 // second:
 ~base.setGridFunc(7, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('second', 2, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('second', 2, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(7, 2);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(7, 2, { | val |
@@ -383,7 +383,7 @@ modVolControlFunc = { | val |
 
 // third:
 ~base.setGridFunc(4, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('third', 3, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('third', 3, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(4, 1);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(4, 1, { | val |
@@ -393,7 +393,7 @@ modVolControlFunc = { | val |
 
 // fourth:
 ~base.setGridFunc(5, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('fourth', 5, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('fourth', 5, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(5, 1);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(5, 1, { | val |
@@ -404,7 +404,7 @@ modVolControlFunc = { | val |
 
 // fifth:
 ~base.setGridFunc(6, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('fifth', 7, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('fifth', 7, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(6, 1);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(6, 1, { | val |
@@ -414,7 +414,7 @@ modVolControlFunc = { | val |
 
 // sixth:
 ~base.setGridFunc(7, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('sixth', 8, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('sixth', 8, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(7, 1);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(7, 1, { | val |
@@ -424,7 +424,7 @@ modVolControlFunc = { | val |
 
 // seventh:
 ~base.setGridFunc(4, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('seventh', 10, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('seventh', 10, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(4, 0);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(4, 0, { | val |
@@ -434,7 +434,7 @@ modVolControlFunc = { | val |
 
 // octave:
 ~base.setGridFunc(5, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('oct', 12, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('oct', 12, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(5, 0);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(5, 0, { | val |
@@ -444,7 +444,7 @@ modVolControlFunc = { | val |
 
 // 9th:
 ~base.setGridFunc(6, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('ninth', 14, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('ninth', 14, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(6, 0);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(6, 0, { | val |
@@ -455,7 +455,7 @@ modVolControlFunc = { | val |
 
 // 10th:
 ~base.setGridFunc(7, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('tenth', 15, val.ccdbfs(-70, 0), 16000);
+  ~cortez.shiftInput.makeSynthSustaining('tenth', 15, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(7, 0);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(7, 0, { | val |

@@ -298,11 +298,11 @@ modVolControlFunc = { | val |
 
 //  Octave Down:
 ~base.setGridFunc(4, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downOctave', -12, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downOctave', -12, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(4, 3);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(4, 3, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downOctave');
+  ~cortez.modularShift.releaseSynthSustaining('downOctave');
   ~base.turnGridMagenta(4, 3);
 }, 'noteOff', bank: mainBank, page: page);
 
@@ -310,157 +310,157 @@ modVolControlFunc = { | val |
 
 //  Seventh Down:
 ~base.setGridFunc(5, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downSeventh', -10, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downSeventh', -10, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(5, 3);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(5, 3, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downSeventh');
+  ~cortez.modularShift.releaseSynthSustaining('downSeventh');
   ~base.turnGridMagenta(5, 3);
 }, 'noteOff', bank: mainBank, page: page);
 
 
 // fifth Down:
 ~base.setGridFunc(6, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downFifth', -7, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downFifth', -7, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(6, 3);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(6, 3, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downFifth');
+  ~cortez.modularShift.releaseSynthSustaining('downFifth');
   ~base.turnGridMagenta(6, 3);
 }, 'noteOff', bank: mainBank, page: page);
 
 
 // fourth down:
 ~base.setGridFunc(7, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downFourth', -5, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downFourth', -5, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(7, 3);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(7, 3, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downFourth');
+  ~cortez.modularShift.releaseSynthSustaining('downFourth');
   ~base.turnGridMagenta(7, 3);
 }, 'noteOff', bank: mainBank, page: page);
 
 // third down:
 ~base.setGridFunc(4, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downThird', -4, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downThird', -4, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(4, 2);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(4, 2, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downThird');
+  ~cortez.modularShift.releaseSynthSustaining('downThird');
   ~base.turnGridMagenta(4, 2);
 }, 'noteOff', bank: mainBank, page: page);
 
 
 // second down:
 ~base.setGridFunc(5, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downSecond', -2, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downSecond', -2, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(5, 2);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(5, 2, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downSecond');
+  ~cortez.modularShift.releaseSynthSustaining('downSecond');
   ~base.turnGridMagenta(5, 2);
 }, 'noteOff', bank: mainBank, page: page);
 
 
 // root:
 ~base.setGridFunc(6, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('root', 0, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('root', 0, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(6, 2);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(6, 2, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('root');
+  ~cortez.modularShift.releaseSynthSustaining('root');
   ~base.turnGridMagenta(6, 2);
 }, 'noteOff', bank: mainBank, page: page);
 
 // second:
 ~base.setGridFunc(7, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('second', 2, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('second', 2, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(7, 2);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(7, 2, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('second');
+  ~cortez.modularShift.releaseSynthSustaining('second');
   ~base.turnGridMagenta(7, 2);
 }, 'noteOff', bank: mainBank, page: page);
 
 // third:
 ~base.setGridFunc(4, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('third', 3, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('third', 3, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(4, 1);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(4, 1, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('third');
+  ~cortez.modularShift.releaseSynthSustaining('third');
   ~base.turnGridMagenta(4, 1);
 }, 'noteOff', bank: mainBank, page: page);
 
 // fourth:
 ~base.setGridFunc(5, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('fourth', 5, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('fourth', 5, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(5, 1);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(5, 1, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('fourth');
+  ~cortez.modularShift.releaseSynthSustaining('fourth');
   ~base.turnGridMagenta(5, 1);
 }, 'noteOff', bank: mainBank, page: page);
 
 
 // fifth:
 ~base.setGridFunc(6, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('fifth', 7, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('fifth', 7, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(6, 1);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(6, 1, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('fifth');
+  ~cortez.modularShift.releaseSynthSustaining('fifth');
   ~base.turnGridMagenta(6, 1);
 }, 'noteOff', bank: mainBank, page: page);
 
 // sixth:
 ~base.setGridFunc(7, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('sixth', 8, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('sixth', 8, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(7, 1);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(7, 1, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('sixth');
+  ~cortez.modularShift.releaseSynthSustaining('sixth');
   ~base.turnGridMagenta(7, 1);
 }, 'noteOff', bank: mainBank, page: page);
 
 // seventh:
 ~base.setGridFunc(4, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('seventh', 10, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('seventh', 10, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(4, 0);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(4, 0, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('seventh');
+  ~cortez.modularShift.releaseSynthSustaining('seventh');
   ~base.turnGridMagenta(4, 0);
 }, 'noteOff', bank: mainBank, page: page);
 
 // octave:
 ~base.setGridFunc(5, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('oct', 12, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('oct', 12, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(5, 0);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(5, 0, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('oct');
+  ~cortez.modularShift.releaseSynthSustaining('oct');
   ~base.turnGridMagenta(5, 0);
 }, 'noteOff', bank: mainBank, page: page);
 
 // 9th:
 ~base.setGridFunc(6, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('ninth', 14, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('ninth', 14, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(6, 0);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(6, 0, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('ninth');
+  ~cortez.modularShift.releaseSynthSustaining('ninth');
   ~base.turnGridMagenta(6, 0);
 }, 'noteOff', bank: mainBank, page: page);
 
 
 // 10th:
 ~base.setGridFunc(7, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('tenth', 15, val.ccdbfs(-12, 3), 16000);
+  ~cortez.modularShift.makeSynthSustaining('tenth', 15, val.ccdbfs(-12, 3), 16000);
   ~base.turnGridGreen(7, 0);
 }, 'noteOn', bank: mainBank, page: page);
 ~base.setGridFunc(7, 0, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('tenth');
+  ~cortez.modularShift.releaseSynthSustaining('tenth');
   ~base.turnGridMagenta(7, 0);
 }, 'noteOff', bank: mainBank, page: page);
 
@@ -758,25 +758,25 @@ if( ~cortez.phaseSynth.mixer.isMuted,
 
 //////// Modular Shift:
 ~base.setFaderFunc(5, { | val |
-  ~cortez.shiftInput.mixer.setVol(val.ccdbfs(-70, 0));
+  ~cortez.modularShift.mixer.setVol(val.ccdbfs(-70, 0));
   ~base.setFaderValue(5, val);
 }, bank: performanceBank, page: page);
 
 // Reverb Send:
 ~base.setFaderFunc(6, { | val |
-  ~cortez.shiftInput.mixer.setSendVol(0, val.ccdbfs(-70, 0));
+  ~cortez.modularShift.mixer.setSendVol(0, val.ccdbfs(-70, 0));
   ~base.setFaderValue(6, val);
 }, bank: performanceBank, page: page);
 
 // Granulator Send:
 ~base.setFaderFunc(7, { | val |
-  ~cortez.shiftInput.mixer.setSendVol(1, val.ccdbfs(-70, 0));
+  ~cortez.modularShift.mixer.setSendVol(1, val.ccdbfs(-70, 0));
   ~base.setFaderValue(7, val);
 }, bank: performanceBank, page: page);
 
 // Modular Send:
 ~base.setFaderFunc(8, { | val |
-  ~cortez.shiftInput.mixer.setSendVol(2, val.ccdbfs(-70, 0));
+  ~cortez.modularShift.mixer.setSendVol(2, val.ccdbfs(-70, 0));
   ~base.setFaderValue(8, val);
 }, bank: performanceBank, page: page);
 
@@ -1054,215 +1054,215 @@ seqVisRoutine = r {
 
 //  Octave Down:
 ~base.setGridFunc(4, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downOctave', -12, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downOctave', -12, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(4, 3);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(4, 3, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downOctave');
+  ~cortez.modularShift.releaseSynthSustaining('downOctave');
   ~base.turnGridMagenta(4, 3);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(4, 3, { | val |
-  ~cortez.shiftInput.setSynthVol('downOctave', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('downOctave', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 
 //  Seventh Down:
 ~base.setGridFunc(5, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downSeventh', -10, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downSeventh', -10, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(5, 3);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(5, 3, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downSeventh');
+  ~cortez.modularShift.releaseSynthSustaining('downSeventh');
   ~base.turnGridMagenta(5, 3);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(5, 3, { | val |
-  ~cortez.shiftInput.setSynthVol('downSeventh', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('downSeventh', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // fifth Down:
 ~base.setGridFunc(6, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downFifth', -7, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downFifth', -7, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(6, 3);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(6, 3, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downFifth');
+  ~cortez.modularShift.releaseSynthSustaining('downFifth');
   ~base.turnGridMagenta(6, 3);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(6, 3, { | val |
-  ~cortez.shiftInput.setSynthVol('downFifth', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('downFifth', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 
 
 // fourth down:
 ~base.setGridFunc(7, 3, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downFourth', -5, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downFourth', -5, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(7, 3);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(7, 3, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downFourth');
+  ~cortez.modularShift.releaseSynthSustaining('downFourth');
   ~base.turnGridMagenta(7, 3);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(7, 3, { | val |
-  ~cortez.shiftInput.setSynthVol('downFourth', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('downFourth', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // third down:
 ~base.setGridFunc(4, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downThird', -4, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downThird', -4, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(4, 2);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(4, 2, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downThird');
+  ~cortez.modularShift.releaseSynthSustaining('downThird');
   ~base.turnGridMagenta(4, 2);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(4, 2, { | val |
-  ~cortez.shiftInput.setSynthVol('downThird', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('downThird', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // second down:
 ~base.setGridFunc(5, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('downSecond', -2, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('downSecond', -2, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(5, 2);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(5, 2, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('downSecond');
+  ~cortez.modularShift.releaseSynthSustaining('downSecond');
   ~base.turnGridMagenta(5, 2);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(5, 2, { | val |
-  ~cortez.shiftInput.setSynthVol('downSecond', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('downSecond', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 
 // root:
 ~base.setGridFunc(6, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('root', 0, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('root', 0, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(6, 2);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(6, 2, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('root');
+  ~cortez.modularShift.releaseSynthSustaining('root');
   ~base.turnGridMagenta(6, 2);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(6, 2, { | val |
-  ~cortez.shiftInput.setSynthVol('root', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('root', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // second:
 ~base.setGridFunc(7, 2, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('second', 2, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('second', 2, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(7, 2);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(7, 2, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('second');
+  ~cortez.modularShift.releaseSynthSustaining('second');
   ~base.turnGridMagenta(7, 2);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(7, 2, { | val |
-  ~cortez.shiftInput.setSynthVol('second', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('second', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // third:
 ~base.setGridFunc(4, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('third', 3, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('third', 3, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(4, 1);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(4, 1, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('third');
+  ~cortez.modularShift.releaseSynthSustaining('third');
   ~base.turnGridMagenta(4, 1);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(4, 1, { | val |
-  ~cortez.shiftInput.setSynthVol('third', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('third', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // fourth:
 ~base.setGridFunc(5, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('fourth', 5, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('fourth', 5, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(5, 1);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(5, 1, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('fourth');
+  ~cortez.modularShift.releaseSynthSustaining('fourth');
   ~base.turnGridMagenta(5, 1);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(5, 1, { | val |
-  ~cortez.shiftInput.setSynthVol('fourth', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('fourth', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // fifth:
 ~base.setGridFunc(6, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('fifth', 7, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('fifth', 7, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(6, 1);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(6, 1, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('fifth');
+  ~cortez.modularShift.releaseSynthSustaining('fifth');
   ~base.turnGridMagenta(6, 1);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(6, 1, { | val |
-  ~cortez.shiftInput.setSynthVol('fifth', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('fifth', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // sixth:
 ~base.setGridFunc(7, 1, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('sixth', 8, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('sixth', 8, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(7, 1);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(7, 1, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('sixth');
+  ~cortez.modularShift.releaseSynthSustaining('sixth');
   ~base.turnGridMagenta(7, 1);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(7, 1, { | val |
-  ~cortez.shiftInput.setSynthVol('sixth', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('sixth', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // seventh:
 ~base.setGridFunc(4, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('seventh', 10, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('seventh', 10, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(4, 0);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(4, 0, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('seventh');
+  ~cortez.modularShift.releaseSynthSustaining('seventh');
   ~base.turnGridMagenta(4, 0);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(4, 0, { | val |
-  ~cortez.shiftInput.setSynthVol('seventh', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('seventh', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // octave:
 ~base.setGridFunc(5, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('oct', 12, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('oct', 12, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(5, 0);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(5, 0, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('oct');
+  ~cortez.modularShift.releaseSynthSustaining('oct');
   ~base.turnGridMagenta(5, 0);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(5, 0, { | val |
-  ~cortez.shiftInput.setSynthVol('oct', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('oct', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 // 9th:
 ~base.setGridFunc(6, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('ninth', 14, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('ninth', 14, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(6, 0);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(6, 0, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('ninth');
+  ~cortez.modularShift.releaseSynthSustaining('ninth');
   ~base.turnGridMagenta(6, 0);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(6, 0, { | val |
-  ~cortez.shiftInput.setSynthVol('ninth', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('ninth', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 
 // 10th:
 ~base.setGridFunc(7, 0, { | val |
-  ~cortez.shiftInput.makeSynthSustaining('tenth', 15, val.ccdbfs(-70, 0), 16000);
+  ~cortez.modularShift.makeSynthSustaining('tenth', 15, val.ccdbfs(-70, 0), 16000);
   ~base.turnGridGreen(7, 0);
 }, 'noteOn', bank: performanceBank, page: page);
 ~base.setGridFunc(7, 0, { | val |
-  ~cortez.shiftInput.releaseSynthSustaining('tenth');
+  ~cortez.modularShift.releaseSynthSustaining('tenth');
   ~base.turnGridMagenta(7, 0);
 }, 'noteOff', bank: performanceBank, page: page);
 ~base.setGridFunc(7, 0, { | val |
-  ~cortez.shiftInput.setSynthVol('tenth', val.ccdbfs(-36, 6));
+  ~cortez.modularShift.setSynthVol('tenth', val.ccdbfs(-36, 6));
 }, 'pressure', bank: performanceBank, page: page);
 
 

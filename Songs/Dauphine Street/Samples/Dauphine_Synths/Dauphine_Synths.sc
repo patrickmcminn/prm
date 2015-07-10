@@ -24,6 +24,8 @@ Dauphine_Synths : IM_Module {
       samplePlayer = SamplePlayer.newStereo(mixer.chanStereo(0), path, relGroup: group, addAction: \addToHead);
       while({ try{ samplePlayer.isLoaded } != true }, { 0.001.wait; });
 
+      mixer.setPreVol(6);
+
       isLoaded = true;
     };
   }

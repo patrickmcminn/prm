@@ -4,6 +4,11 @@ Cortez.sc
 prm
 */
 
+// implied chords:
+// F# m - EM - Bm7 (add 9 or 11?) - C#m
+// but VERY open voicings right now -- could be other chords too
+// borrowed the initial idea from Cortez the Killer by Neil Young
+
 Cortez {
 
   var <isLoaded, server, group;
@@ -111,7 +116,11 @@ Cortez {
     phaseSynth.mixer.setSendVol(0, -18);
     phaseSynth.mixer.setSendVol(1, -16);
     phaseSynth.setAllParameters([ 1, 1, 0, 1, 0.5, 0, 0.05, 0.05, 0.2, 0.5, 5, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0.5, 0.5, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, -0.8, 0.15, 1, 1, 1, 1, 0, 0, 0, 0, 3, 0.8, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0, 0.05, false, 1, 1, 1.3, 0.6, 0, 0, -0.7, 0.5, 1, 1500, 0.1, 0, 1, 1, 1, 1, 0.05, 0.01, 0, 0.05, 0, 0, 0, 0, 0 ]);
+    server.sync;
+    phaseSynth.setAttackTime(0.07);
+    phaseSynth.setReleaseTime(0.06);
   }
+
 
   prMakePatternParameters {
     // add sequences parameters:
@@ -146,7 +155,7 @@ Cortez {
     phaseSynth.addKey(\cortezPhase, \root, 6);
     phaseSynth.addKey(\cortezPhase, \note, Pseq([0], inf));
     phaseSynth.addKey(\cortezPhase, \dur, 3/20);
-    phaseSynth.addKey(\cortezPhase, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+    phaseSynth.addKey(\cortezPhase, \legato, Pbrown(0.1, 0.3, 0.125, inf));
     phaseSynth.addKey(\cortezPhase, \octave, 5);
     phaseSynth.addKey(\cortezPhase, \amp, 0.3);
     phaseSynth.addKey(\cortezPhase, \pan, Pbrown(0, 1, 0.125, inf));
@@ -155,7 +164,7 @@ Cortez {
     phaseSynth.addKey(\cortezPhase2, \root, 6);
     phaseSynth.addKey(\cortezPhase2, \note, Pseq([2], inf));
     phaseSynth.addKey(\cortezPhase2, \dur, 3/20.1);
-    phaseSynth.addKey(\cortezPhase2, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+    phaseSynth.addKey(\cortezPhase2, \legato, Pbrown(0.1, 0.3, 0.125, inf));
     phaseSynth.addKey(\cortezPhase2, \amp, 0.3);
     phaseSynth.addKey(\cortezPhase2, \pan, Pbrown(-1, 0, 0.125, inf));
 
@@ -163,7 +172,7 @@ Cortez {
     phaseSynth.addKey(\cortezPhase3, \root, 6);
     phaseSynth.addKey(\cortezPhase3, \note, Pseq([3], inf));
     phaseSynth.addKey(\cortezPhase3, \dur, 3/20.2);
-    phaseSynth.addKey(\cortezPhase3, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+    phaseSynth.addKey(\cortezPhase3, \legato, Pbrown(0.1, 0.3, 0.125, inf));
     phaseSynth.addKey(\cortezPhase3, \amp, 0.3);
     phaseSynth.addKey(\cortezPhase3, \pan, Pbrown(-0.2, 0.2, 0.025, inf));
 
@@ -171,7 +180,7 @@ Cortez {
     phaseSynth.addKey(\cortezPhase4, \root, 6);
     phaseSynth.addKey(\cortezPhase4, \note, Pseq([5], inf));
     phaseSynth.addKey(\cortezPhase4, \dur, 3/20.3);
-    phaseSynth.addKey(\cortezPhase4, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+    phaseSynth.addKey(\cortezPhase4, \legato, Pbrown(0.1, 0.3, 0.125, inf));
     phaseSynth.addKey(\cortezPhase4, \amp, 0.3);
     phaseSynth.addKey(\cortezPhase4, \pan, Pbrown(-0.3, 1, 0.125, inf));
 
@@ -179,7 +188,7 @@ Cortez {
     phaseSynth.addKey(\cortezPhase5, \root, 6);
     phaseSynth.addKey(\cortezPhase5, \note, Pseq([7], inf));
     phaseSynth.addKey(\cortezPhase5, \dur, 3/20.4);
-    phaseSynth.addKey(\cortezPhase5, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+    phaseSynth.addKey(\cortezPhase5, \legato, Pbrown(0.1, 0.3, 0.125, inf));
     phaseSynth.addKey(\cortezPhase5, \amp, 0.3);
     phaseSynth.addKey(\cortezPhase5, \pan, Pbrown(-1, 0.3, 0.125, inf));
 

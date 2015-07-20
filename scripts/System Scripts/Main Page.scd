@@ -104,10 +104,28 @@ var cortezIsLoaded = false;
   });
 }, page: page);
 
-// whhaaaa
 
+
+
+// mic pre/post:
+~ohm.turnGridPurple(0, 7, page: page);
+~ohm.setGridFunc(0, 7, r {
+  loop {
+    ~prm.microphone.setSendPre;
+    ~ohm.turnGridBlue(0, 7).yield;
+
+    ~prm.microphone.setSendPost;
+    ~ohm.turnGridPurple(0, 7).yield;
+  }
+}, page: page);
 
 // mic:
+~ohm.turnLeftButtonGreen(3, page: page);
+~ohm.setLeftButtonFunc(3, {
+  ~prm.microphone.tglMute;
+  if( ~prm.microphone.isMuted, { ~ohm.turnLeftButtonRed(3); }, { ~ohm.turnLeftButtonGreen(3); });
+}, page: page);
+
 ~ohm.setLeftSliderFunc(3, { | val |
   ~prm.microphone.setVol(val.ccdbfs(-70, 0));
 }, page: page);
@@ -123,6 +141,12 @@ var cortezIsLoaded = false;
 }, page: page);
 
 // modular:
+~ohm.turnLeftButtonGreen(2, page: page);
+~ohm.setLeftButtonFunc(2, {
+  ~prm.microphone.tglMute;
+  if( ~prm.microphone.isMuted, { ~ohm.turnLeftButtonRed(2) }, { ~ohm.turnLeftButtonGreen(2); });
+}, page: page);
+
 ~ohm.setLeftSliderFunc(2, { | val |
   ~prm.modular.setVol(val.ccdbfs(-70, 0));
 }, page: page);

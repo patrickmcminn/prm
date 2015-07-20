@@ -174,7 +174,7 @@ controlButtonResetFunc.value;
 // droner erosion:
 ~base.turnGridYellow(0, 3, bank: mainBank, page: page);
 ~base.setGridFunc(0, 3, { | val |
-  var mix = val.linlin(0, 127, 0.02, 1);
+  var mix = val.linlin(0, 127, 0.02, 0.3);
   ~connections.droner.setErosionMix(mix);
 }, 'pressure', bank: mainBank, page: page);
 

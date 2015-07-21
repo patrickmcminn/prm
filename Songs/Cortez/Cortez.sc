@@ -29,7 +29,7 @@ Cortez {
     server.waitForBoot {
       isLoaded = false;
       clock = TempoClock.new;
-      clock.tempo = 60/60;
+      clock.tempo = 100/60;
       group = Group.new(relGroup, addAction);
       server.sync;
 
@@ -114,7 +114,7 @@ Cortez {
     //phaseSynth:
     // perhaps vary the reverb sends
     phaseSynth.mixer.setSendVol(0, -18);
-    phaseSynth.mixer.setSendVol(1, -16);
+    //phaseSynth.mixer.setSendVol(1, -16);
     phaseSynth.setAllParameters([ 1, 1, 0, 1, 0.5, 0, 0.05, 0.05, 0.2, 0.5, 5, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0.5, 0.5, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, -0.8, 0.15, 1, 1, 1, 1, 0, 0, 0, 0, 3, 0.8, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0, 0.05, false, 1, 1, 1.3, 0.6, 0, 0, -0.7, 0.5, 1, 1500, 0.1, 0, 1, 1, 1, 1, 0.05, 0.01, 0, 0.05, 0, 0, 0, 0, 0 ]);
     server.sync;
     phaseSynth.setAttackTime(0.07);

@@ -4,6 +4,8 @@ x = Cortez.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.reverb.inBus, ~prm
   ~prm.procGroup, \addToHead);
 
 
+// interesting that base phase is q = 100
+
 x.phaseSynth.mixer.setSendVol(0, -24);
 
 x.phaseSynth.playSequence(\cortezPhase);

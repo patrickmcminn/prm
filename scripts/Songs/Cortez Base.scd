@@ -793,7 +793,7 @@ if( ~cortez.phaseSynth.mixer.isMuted,
 ~base.turnTouchButtonCyan(2, 'top', bank: performanceBank, page: page);
 ~base.setTouchButtonFunc(2, r {
   loop {
-    ~cortez.trumpetSeq.playSequence(0.17);
+    ~cortez.trumpetSeq.playSequence(0.25);
     seqVisRoutine.reset;
     seqVisRoutine.play;
     ~base.turnTouchButtonGreen(2, 'middle').yield;

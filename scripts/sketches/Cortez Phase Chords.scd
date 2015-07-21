@@ -6,11 +6,14 @@ x = Cortez.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.reverb.inBus, ~prm
 
 // interesting that base phase is q = 100
 
-x.phaseSynth.mixer.setSendVol(0, -24);
+x.phaseSynth.mixer.setSendVol(0, -inf);
+x.phaseSynth.mixer.setPreVol(12);
+x.phaseSynth.stopSequence(\cortezPhase3);
 
-x.phaseSynth.playSequence(\cortezPhase);
-x.phaseSynth.playSequence(\cortezPhase2);
+
 x.phaseSynth.playSequence(\cortezPhase3);
+x.phaseSynth.playSequence(\cortezPhase2);
+x.phaseSynth.playSequence(\cortezPhase);
 x.phaseSynth.playSequence(\cortezPhase4);
 x.phaseSynth.playSequence(\cortezPhase5);
 
@@ -43,6 +46,8 @@ x.phaseSynth.addKey(\cortezPhase, \note, Pseq([0], inf));
 x.phaseSynth.addKey(\cortezPhase4, \note, Pseq([5], inf));
 x.phaseSynth.addKey(\cortezPhase5, \note, Pseq([7], inf));
 
+
+x.phaseSynth.stopSequence(\cortezPhase);
 
 
 

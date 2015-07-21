@@ -29,7 +29,7 @@ Cortez {
     server.waitForBoot {
       isLoaded = false;
       clock = TempoClock.new;
-      clock.tempo = 60/60;
+      clock.tempo = 100/60;
       group = Group.new(relGroup, addAction);
       server.sync;
 

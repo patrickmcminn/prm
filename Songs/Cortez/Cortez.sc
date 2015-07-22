@@ -44,6 +44,10 @@ Cortez {
       chordsSynth.makeSequence('cortez');
       washSynth.makeSequence(\cortezHi);
       washSynth.makeSequence(\cortezHi2);
+      washSynth.makeSequence(\melody1);
+      washSynth.makeSequence(\melody2);
+      washSynth.makeSequence(\melody3);
+      washSynth.makeSequence(\melody4);
       phaseSynth.makeSequence(\cortezPhase);
       phaseSynth.makeSequence(\cortezPhase2);
       phaseSynth.makeSequence(\cortezPhase3);
@@ -139,7 +143,7 @@ Cortez {
     //washSynth:
     washSynth.addKey(\cortezHi, \root, 6);
     washSynth.addKey(\cortezHi, \note, Pseq([Pseq([2, 0, 5, 0, 2], 7), Pseq([2, 0, 5, 0, 2, 3], 7)], inf));
-    washSynth.addKey(\cortezHi, \dur, Pseq([0.15], inf));
+    washSynth.addKey(\cortezHi, \dur, Pseq([0.275], inf));
     washSynth.addKey(\cortezHi, \legato, 1);
     washSynth.addKey(\cortezHi, \amp, 0.3);
     washSynth.addKey(\cortezHi, \pan, -0.3);
@@ -147,9 +151,34 @@ Cortez {
     washSynth.addKey(\cortezHi2, \pan, 0.3);
     washSynth.addKey(\cortezHi2, \root, 6);
     washSynth.addKey(\cortezHi2, \note, Pseq([2, 0, 5, 0, 2, -2], inf));
-    washSynth.addKey(\cortezHi2, \dur, Pseq([0.16], inf));
+    washSynth.addKey(\cortezHi2, \dur, Pseq([0.2933333], inf));
     washSynth.addKey(\cortezHi2, \legato, 1);
     washSynth.addKey(\cortezHi2, \amp, 0.3);
+
+    washSynth.addKey(\melody1, \root, 6);
+    washSynth.addKey(\melody1, \note, Pseq([7, 0, 2, 5, 7, 3], inf));
+    washSynth.addKey(\melody1, \dur, Pseq([0.25], inf));
+    washSynth.addKey(\melody1, \legato, 1);
+    washSynth.addKey(\melody1, \amp, 0.3);
+
+    washSynth.addKey(\melody2, \root, 6);
+    washSynth.addKey(\melody2, \note, Pseq([7, 0, 2, 5, 7, 3, 10], inf));
+    washSynth.addKey(\melody2, \dur, Pseq([0.25], inf));
+    washSynth.addKey(\melody2, \legato, 1);
+    washSynth.addKey(\melody2, \amp, 0.3);
+
+    washSynth.addKey(\melody3, \root, 6);
+    washSynth.addKey(\melody3, \note, Pseq([7, 0, 2, 5, 7, 3, 10, 8], inf));
+    washSynth.addKey(\melody3, \dur, Pseq([0.25], inf));
+    washSynth.addKey(\melody3, \legato, 1);
+    washSynth.addKey(\melody3, \amp, 0.3);
+
+    washSynth.addKey(\melody4, \root, 6);
+    washSynth.addKey(\melody4, \note, Pseq([7, 3, 5, 2, 5, 0, 2], inf));
+    washSynth.addKey(\melody4, \dur, Pseq([0.25], inf));
+    washSynth.addKey(\melody4, \legato, 1);
+    washSynth.addKey(\melody4, \amp, 0.3);
+
 
     // phaseSynth:
     phaseSynth.addKey(\cortezPhase, \root, 6);

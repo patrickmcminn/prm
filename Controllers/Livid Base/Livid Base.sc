@@ -10,12 +10,12 @@ Base {
   var <pageDict, <activePage, activePageKey, <storageDict;
   var colorArray;
 
-  *new { | localControl = 'allOff' |
-    ^super.new.prInit(localControl);
+  *new { | deviceName = "Base", portName = "Controls", localControl = 'allOff' |
+    ^super.new.prInit(deviceName, portName, localControl);
   }
 
-  prInit { | localControl = 'allOff' |
-    this.prInitMIDI;
+  prInit { | deviceName = "Base", portName = "Controls", localControl = 'allOff' |
+    this.prInitMIDI(deviceName, portName);
     this.setLocalControl(localControl);
     this.prMakeResponders;
     this.prMakeColorArray;
@@ -23,10 +23,10 @@ Base {
     storageDict = IdentityDictionary.new(know: true);
   }
 
-  prInitMIDI {
+  prInitMIDI { | deviceName = "Base", portName = "Controls" |
     MIDIIn.connectAll;
-    midiInPort = MIDIIn.findPort("Base", "Controls");
-    midiOutPort = MIDIOut.newByName("Base", "Controls");
+    midiInPort = MIDIIn.findPort(deviceName, portName);
+    midiOutPort = MIDIOut.newByName(deviceName, portName);
     midiOutPort.latency = 0;
   }
 

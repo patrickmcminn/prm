@@ -24,7 +24,7 @@ FunctionSequencer {
     functionArray = Array.newClear(initSize);
     activeArray = Array.fill(initSize, { true; });
     numberSteps = initSize;
-    if( tempoClock == 'internal', { clock = TempoClock.new(1); });
+    if( tempoClock == 'internal', { clock = TempoClock.new(1); }, { clock = tempoClock });
     isLoaded = true;
   }
 

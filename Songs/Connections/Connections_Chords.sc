@@ -33,7 +33,7 @@ Connections_Chords :IM_Module {
       granulator = GranularDelay.new(mixer.chanStereo(0), group, \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
-      reverb = IM_Reverb.new(granulator.inBus, amp: 1, mix: 1, roomSize: 0.7, damp: 0.7,
+      reverb = IM_Reverb.new(granulator.inBus, amp: 1, mix: 1, roomSize: 0.7, damp: 0.95,
         relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
@@ -46,8 +46,8 @@ Connections_Chords :IM_Module {
       server.sync;
       this.prMakePatterns;
 
-      eq.setHighFreq(2500);
-      eq.setHighGain(-6);
+      eq.setHighFreq(900);
+      eq.setHighGain(-16);
       granulator.setDelayMix(0);
       granulator.setGranulatorCrossfade(-0.25);
       granulator.setGrainDur(0.1, 0.2);
@@ -57,7 +57,7 @@ Connections_Chords :IM_Module {
       server.sync;
       this.prMakePatternParameters;
 
-      mixer.setPreVol(28);
+      mixer.setPreVol(12);
       isLoaded = true;
     };
   }

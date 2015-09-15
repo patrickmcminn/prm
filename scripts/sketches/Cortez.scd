@@ -108,6 +108,9 @@ r {
   c.mixer.setSendVol(0, -18);
   c.mixer.setSendVol(1, -16);
   c.setAllParameters([ 1, 1, 0, 1, 0.5, 0, 0.05, 0.05, 0.2, 0.5, 5, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0.5, 0.5, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, -0.8, 0.15, 1, 1, 1, 1, 0, 0, 0, 0, 3, 0.8, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0, 0.05, false, 1, 1, 1.3, 0.6, 0, 0, -0.7, 0.5, 1, 1500, 0.1, 0, 1, 1, 1, 1, 0.05, 0.01, 0, 0.05, 0, 0, 0, 0, 0 ]);
+  s.sync;
+  c.setAttackTime(0.07);
+  c.setReleaseTime(0.06);
 
 
   // make sequences:
@@ -157,7 +160,7 @@ r {
   c.addKey(\cortezPhase, \root, 6);
   c.addKey(\cortezPhase, \note, Pseq([0], inf));
   c.addKey(\cortezPhase, \dur, 3/20);
-  c.addKey(\cortezPhase, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+  c.addKey(\cortezPhase, \legato, Pbrown(0.1, 0.3, 0.125, inf));
   c.addKey(\cortezPhase, \octave, 5);
   c.addKey(\cortezPhase, \amp, 0.3);
   c.addKey(\cortezPhase, \pan, Pbrown(0, 1, 0.125, inf));
@@ -166,7 +169,7 @@ r {
   c.addKey(\cortezPhase2, \root, 6);
   c.addKey(\cortezPhase2, \note, Pseq([2], inf));
   c.addKey(\cortezPhase2, \dur, 3/20.1);
-  c.addKey(\cortezPhase2, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+  c.addKey(\cortezPhase2, \legato, Pbrown(0.1, 0.3, 0.125, inf));
   c.addKey(\cortezPhase2, \amp, 0.3);
   c.addKey(\cortezPhase2, \pan, Pbrown(-1, 0, 0.125, inf));
 
@@ -174,7 +177,7 @@ r {
   c.addKey(\cortezPhase3, \root, 6);
   c.addKey(\cortezPhase3, \note, Pseq([3], inf));
   c.addKey(\cortezPhase3, \dur, 3/20.2);
-  c.addKey(\cortezPhase3, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+  c.addKey(\cortezPhase3, \legato, Pbrown(0.1, 0.3, 0.125, inf));
   c.addKey(\cortezPhase3, \amp, 0.3);
   c.addKey(\cortezPhase3, \pan, Pbrown(-0.2, 0.2, 0.025, inf));
 
@@ -182,7 +185,7 @@ r {
   c.addKey(\cortezPhase4, \root, 6);
   c.addKey(\cortezPhase4, \note, Pseq([5], inf));
   c.addKey(\cortezPhase4, \dur, 3/20.3);
-  c.addKey(\cortezPhase4, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+  c.addKey(\cortezPhase4, \legato, Pbrown(0.1, 0.3, 0.125, inf));
   c.addKey(\cortezPhase4, \amp, 0.3);
   c.addKey(\cortezPhase4, \pan, Pbrown(-0.3, 1, 0.125, inf));
 
@@ -190,7 +193,7 @@ r {
   c.addKey(\cortezPhase5, \root, 6);
   c.addKey(\cortezPhase5, \note, Pseq([7], inf));
   c.addKey(\cortezPhase5, \dur, 3/20.4);
-  c.addKey(\cortezPhase5, \legato, Pbrown(0.1, 0.4, 0.125, inf));
+  c.addKey(\cortezPhase5, \legato, Pbrown(0.1, 0.3, 0.125, inf));
   c.addKey(\cortezPhase5, \amp, 0.3);
   c.addKey(\cortezPhase5, \pan, Pbrown(-1, 0.3, 0.125, inf));
 

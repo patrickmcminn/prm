@@ -3,7 +3,6 @@ Tuesday, January 28th 2014
 prm
 */
 
-
 OhmRGB {
 
   var midiInPort, midiOutPort;
@@ -11,22 +10,22 @@ OhmRGB {
   var <pageDict, <activePage, activePageKey, <storageDict;
   var colorArray;
 
-  *new {
-    ^super.new.prInit;
+  *new { | deviceName = "OhmRGB", portName = "Controls" |
+    ^super.new.prInit(deviceName, portName);
   }
 
-  prInit {
-    this.prInitMIDI;
+  prInit { | deviceName = "OhmRGB", portName = "Controls" |
+    this.prInitMIDI(deviceName, portName);
     this.prMakeResponders;
     this.prMakeColorArray;
     this.prMakePageDictionary;
     storageDict = IdentityDictionary.new(know: true);
   }
 
-  prInitMIDI {
+  prInitMIDI { | deviceName = "OhmRGB", portName = "Controls" |
     MIDIIn.connectAll;
-    midiInPort = MIDIIn.findPort("OhmRGB", "Controls");
-    midiOutPort = MIDIOut.newByName("OhmRGB", "Controls");
+    midiInPort = MIDIIn.findPort(deviceName, portName);
+    midiOutPort = MIDIOut.newByName(deviceName, portName);
     midiOutPort.latency = 0;
   }
 

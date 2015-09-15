@@ -1,3 +1,4 @@
+/*
 x = { | amp = 0, dur = 1, ad = 1  | HPF.ar(LPF.ar(Gendy3.ar(amp, dur, ad, 1, [220, 110, 55], 0.5, 0.5), 3500), 20) ! 2 }.play
 
 x.set(\amp, 6);
@@ -27,3 +28,4 @@ SynthDef(\gendSynth, {
   var sig;
 
 }).add;
+*/

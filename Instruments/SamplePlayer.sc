@@ -322,4 +322,5 @@ SamplePlayer : IM_Module {
     samplerDict.do({ | synth | synth.set(\tremWaveform, tremoloWaveform);});
   }
 
+
 }

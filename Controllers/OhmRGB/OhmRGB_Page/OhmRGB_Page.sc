@@ -3,17 +3,18 @@ Sunday, January 19th 2014
 prm
 */
 
-OhmRGB_Page {
+OhmRGB_Page : OhmRGB {
 
   //var midiInPort, midiOutPort;
-  var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray;
+  var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray, animationArray;
 
   var leftSlidersBankArray, rightSlidersBankArray, leftKnobsBankArray, rightKnobsBankArray, crossfaderBankArray;
   var <activeLeftSlidersBank, <activeRightSlidersBank, <activeLeftKnobsBank, <activeRightKnobsBank, <activeCrossfaderBank;
 
-  var gridBankArray, leftButtonsBankArray, rightButtonsBankArray, crossfaderButtonsBankArray, controlButtonsBankArray;
+  var <gridBankArray, <leftButtonsBankArray, <rightButtonsBankArray, <crossfaderButtonsBankArray, <controlButtonsBankArray;
   var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeCrossfaderButtonsBank, <activeControlButtonsBank;
 
+  var <loadFunction, <offLoadFunction;
 
   *new {
     ^super.new.prInit;
@@ -21,8 +22,11 @@ OhmRGB_Page {
 
   prInit {
     //this.prInitMIDI;
+    loadFunction = { };
+    offLoadFunction = { };
     this.prMakeResponders;
     this.prMakeColorArray;
+    this.prMakeAnimationArray;
     this.prMakeNoteBanks;
     this.prMakeControlBanks;
   }
@@ -65,6 +69,10 @@ OhmRGB_Page {
 
   prMakeColorArray {
     colorArray = Array.fill(81, { 'off' });
+  }
+
+  prMakeAnimationArray {
+    animationArray = Array.fill(81, { TaskProxy.new; });
   }
 
   setFunc { | num = 0, type = \noteOn, func = nil |
@@ -120,6 +128,14 @@ OhmRGB_Page {
   getNoteOffFunc { | num = 0 | ^this.getFunc(num, 'noteOff'); }
 
   getCCFunc { | num = 0 | ^this.getFunc(num, 'control'); }
+
+  setLoadFunction { | func |
+    loadFunction = func;
+  }
+
+  setOffLoadFunction { | func |
+    offLoadFunction = func;
+  }
 
   //////// Convenience Methods:
 
@@ -244,9 +260,6 @@ OhmRGB_Page {
       {
         if( bank == activeLeftSlidersBank, { bank = 'active'});
         if( bank == 'active', { bankSet = activeLeftSlidersBank }, { bankSet = bank });
-        bank.postln;
-        bankSet.postln;
-        activeLeftSlidersBank.postln;
         leftSlidersBankArray[bankSet][num] = func;
         if( bank == 'active', { this.setCCFunc(sliderArray[num], func); });
       },

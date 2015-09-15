@@ -14,7 +14,7 @@
     this.setFunc(num, type, activePage.getFunc(num, type));
   }
 
-  setLeftButtonFunc { | num = 0, func, type = 'noteOn', bank = 'active', page = 'active ' |
+  setLeftButtonFunc { | num = 0, func, type = 'noteOn', bank = 'active', page = 'active' |
     var buttonArray = [65, 73, 66, 74];
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank; });

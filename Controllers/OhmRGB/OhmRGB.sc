@@ -8,7 +8,7 @@ OhmRGB {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
-  var <pageDict, <activePage, activePageKey;
+  var <pageDict, <activePage, activePageKey, <storageDict;
   var colorArray;
 
   *new {
@@ -20,6 +20,7 @@ OhmRGB {
     this.prMakeResponders;
     this.prMakeColorArray;
     this.prMakePageDictionary;
+    storageDict = IdentityDictionary.new(know: true);
   }
 
   prInitMIDI {
@@ -81,6 +82,7 @@ OhmRGB {
   prMakePageDictionary {
     pageDict = IdentityDictionary.new;
     this.makePage('main');
+    activePage = pageDict['main'];
     this.setPage('main');
   }
 
@@ -136,12 +138,24 @@ OhmRGB {
   }
 
   setPage { | name = 'page' |
+    activePage.offLoadFunction.value;
     activePageKey = name;
     activePage = pageDict[activePageKey];
     81.do({ | num | this.setNoteOnFunc(num, activePage.getNoteOnFunc(num)); });
     81.do({ | num | this.setNoteOffFunc(num, activePage.getNoteOffFunc(num)); });
     25.do({ | num | this.setCCFunc(num, activePage.getCCFunc(num)); });
     81.do({ | num | this.turnColor(num, activePage.getColor(num)); });
+    activePage.loadFunction.value;
+  }
+
+  setPageLoadFunction { | func, page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    pageDict[page].setLoadFunction(func);
+  }
+
+  setPageOffLoadFunction { | func, page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    pageDict[page].setOffLoadFunction(func);
   }
 
 }

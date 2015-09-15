@@ -8,7 +8,7 @@
   Array Slot 0: Note On Function
   Array Slot 1: Note Off Function
   Array Slot 2: Color
-  Array Slot 3: Animation Function (not implemented yet)
+  Array Slot 3: Animation Function
   */
 
   prMakeNoteBanks { | numBanks = 1 |
@@ -126,7 +126,7 @@
         item[0] = { };
         item[1] = { };
         item[2] = \off;
-        item[3] = nil;
+        item[3] = TaskProxy.new;
       });
     });
   }
@@ -138,7 +138,7 @@
         item[0] = { };
         item[1] = { };
         item[2] = \off;
-        item[3] = nil;
+        item[3] = TaskProxy.new;
       });
     });
   }
@@ -150,7 +150,7 @@
         item[0] = { };
         item[1] = { };
         item[2] = \off;
-        item[3] = nil;
+        item[3] = TaskProxy.new;
       });
     });
   }
@@ -162,7 +162,7 @@
         item[0] = { };
         item[1] = { };
         item[2] = \off;
-        item[3] = nil;
+        item[3] = TaskProxy.new;
       });
     });
   }
@@ -174,7 +174,7 @@
         item[0] = { };
         item[1] = { };
         item[2] = \off;
-        item[3] = nil;
+        item[3] = TaskProxy.new;
       });
     });
   }

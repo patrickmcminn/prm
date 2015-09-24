@@ -10,16 +10,11 @@ r {
 
   while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
-  try { ~ohm = OhmRGB.new; };
-  try { ~base = Base.new; };
+  try { ~ohm = OhmRGB.new("iConnectAudio4+", "HST1"); };
+  try { ~base = Base.new("iConnectAudio4+", "HST3"); };
 
   "/Global Functions/Load Global Functions.scd".loadRelative;
   "/System Scripts/Load System Scripts.scd".loadRelative;
   "/Songs/Load Songs.scd".loadRelative;
+}.play
 
-  "loaded".postln;
-}.play;
-
-s.meter;
-
-s.makeWindow;

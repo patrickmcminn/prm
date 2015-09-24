@@ -23,7 +23,7 @@ Connections_Inlet : IM_Module {
       granulator = GranularDelay.new(mixer.chanStereo(0), group, \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
-      reverb = IM_Reverb.new(granulator.inBus, amp: 1, mix: 0.6, roomSize: 0.8, damp: 0.85,
+      reverb = IM_Reverb.new(granulator.inBus, amp: 1, mix: 0.6, roomSize: 0.8, damp: 0.9,
         relGroup: group, addAction: \addToHead);
       //reverb = IM_Reverb.newConvolution(granulator.inBus, nil, nil, nil, nil, false, 1, ir, 2, group, \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
@@ -42,7 +42,7 @@ Connections_Inlet : IM_Module {
       granulator.setTrigRate(40);
       granulator.setGrainDur(0.1, 0.3);
 
-      mixer.setPreVol(6);
+      mixer.setPreVol(0);
 
       isLoaded = true;
     }

@@ -391,3 +391,35 @@ controlButtonResetFunc.value;
 ~base.turnAllGridCyan(chordsBank, page: page);
 
 
+////////////////////////////////////////
+///// Microphone Bank: /////
+////////////////////////////////////////
+
+//////// Faders:
+~base.setFaderMode(1, 'cyan', bank: micBank, page: page);
+3.do({ | i | ~base.setFaderMode(i + 2, 'magentaFill', bank: micBank, page: page); });
+
+// vol:
+~base.setFaderFunc(1, { | val |
+  ~prm.microphone.setVol(val.ccdbfs(-70, 0));
+  ~base.setFaderValue(1, val);
+}, bank: micBank, page: page);
+// reverb send:
+~base.setFaderFunc(2, { | val |
+  ~prm.microphone.setSendVol(0, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(2, val);
+}, bank: micBank, page: page);
+// granulator send:
+~base.setFaderFunc(3, { | val |
+  ~prm.microphone.setSendVol(1, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(3, val);
+}, bank: micBank, page: page);
+// modular send:
+~base.setFaderFunc(4, { | val |
+ ~prm.microphone.setSendVol(2, val.ccdbfs(-70, 0));
+  ~base.setFaderValue(4, val);
+}, bank: micBank, page: page);
+
+//////// Grid:
+~base.turnAllGridWhite(micBank, page: page);
+

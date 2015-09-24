@@ -16,10 +16,5 @@ r {
   "/Global Functions/Load Global Functions.scd".loadRelative;
   "/System Scripts/Load System Scripts.scd".loadRelative;
   "/Songs/Load Songs.scd".loadRelative;
+}.play
 
-  "loaded".postln;
-}.play;
-
-s.meter;
-
-s.makeWindow;

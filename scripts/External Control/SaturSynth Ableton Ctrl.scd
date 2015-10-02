@@ -2,13 +2,17 @@
 Wednesday, September 30th 2015
 SaturSynth Ableton Ctrl.scd
 script for piping MIDI into the SaturSynth to control it from Ableton
+
+THIS SYNTH RESPONDS ON MIDI CHANNEL 1 (0 IN SC-TALK)
 */
 
 var midiArray, midiInPort;
+var cutoff, attack, decay, sustain, release;
+var tremRate, tremDepth;
 
 // loads synth:
 //~saturSynth = SaturSynth.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend,
- // relGroup: ~prm.procGroup, addAction: \addToHead);
+  //relGroup: ~prm.procGroup, addAction: \addToHead);
 
 ~saturSynth = SaturSynth.new(0);
 
@@ -21,7 +25,6 @@ midiInPort = MIDIIn.findPort("iConnectAudio4+", "USB2");
   MIDIFunc.noteOn({ | vel, note |
     var freq = note.midicps;
     var db = vel.ccdbfs(-27, 0);
-    [vel, note].postln;
     ~saturSynth.playNote(freq, db);
   }, i, 0, midiInPort);
   MIDIFunc.noteOff({ | vel, note |
@@ -29,3 +32,48 @@ midiInPort = MIDIIn.findPort("iConnectAudio4+", "USB2");
     ~saturSynth.releaseNote(freq);
   }, i, 0, midiInPort);
 });
+
+// filterCutoff, attackTime, decayTime, sustainLevel, releaseTime;
+// trem rate, trem depth
+
+// filter cutoff:
+cutoff = MIDIFunc.cc({ | val |
+  var cutoff = val.linlin(0, 127, 80, 1000);
+  ~saturSynth.setFilterCutoff(cutoff);
+}, 127, 0, midiInPort);
+
+// attack time:
+attack = MIDIFunc.cc({ | val |
+  var attack = val.linlin(0, 127, 0.05, 5);
+  ~saturSynth.setAttackTime(attack);
+}, 126, 0, midiInPort);
+
+// decay time:
+decay = MIDIFunc.cc({ | val |
+  var decay = val.linlin(0, 127, 0, 3);
+  ~saturSynth.setDecayTime(decay);
+}, 125, 0, midiInPort);
+
+// sustain level:
+sustain = MIDIFunc.cc({ | val |
+  var sustain = val.linlin(0, 127, 0, 1);
+  ~saturSynth.setSustainLevel(sustain);
+}, 124, 0, midiInPort);
+
+// release time:
+release = MIDIFunc.cc({ | val |
+  var release = val.linlin(0, 127, 0, 10);
+  ~saturSynth.setReleaseTime(release);
+}, 123, 0, midiInPort);
+
+// trem rate:
+tremRate = MIDIFunc.cc({ | val |
+  var rate = val.linlin(0, 127, 0, 18);
+  ~saturSynth.setTremoloRate(rate);
+}, 122, 0, midiInPort);
+
+// trem depth:
+tremDepth = MIDIFunc.cc({ | val |
+  var depth = val.linlin(0, 127, 0, 1);
+  ~saturSynth.setTremoloDepth(depth);
+}, 121, 0, midiInPort);

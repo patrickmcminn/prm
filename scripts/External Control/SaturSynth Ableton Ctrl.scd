@@ -6,14 +6,14 @@ script for piping MIDI into the SaturSynth to control it from Ableton
 
 var midiArray, midiInPort;
 
- loads synth:
+// loads synth:
 //~saturSynth = SaturSynth.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend,
  // relGroup: ~prm.procGroup, addAction: \addToHead);
 
 ~saturSynth = SaturSynth.new(0);
 
 MIDIIn.connectAll;
-midiInPort = MIDIIn.findPort("iConnectAudio4+", "USB1");
+midiInPort = MIDIIn.findPort("iConnectAudio4+", "USB2");
 
 // MIDI Control:
 

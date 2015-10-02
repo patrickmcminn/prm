@@ -4,7 +4,7 @@ SaturSynth Ableton Ctrl.scd
 script for piping MIDI into the SaturSynth to control it from Ableton
 */
 
-var midiArray;
+var midiArray, midiInPort;
 
  loads synth:
 //~saturSynth = SaturSynth.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend,
@@ -13,6 +13,7 @@ var midiArray;
 ~saturSynth = SaturSynth.new(0);
 
 MIDIIn.connectAll;
+midiInPort = MIDIIn.findPort("iConnectAudio4+", "USB1");
 
 // MIDI Control:
 
@@ -22,9 +23,9 @@ MIDIIn.connectAll;
     var db = vel.ccdbfs(-27, 0);
     [vel, note].postln;
     ~saturSynth.playNote(freq, db);
-  }, i, 0, MIDIEndPoint("iConnectAudio4+", "USB1"));
+  }, i, 0, midiInPort);
   MIDIFunc.noteOff({ | vel, note |
     var freq = note.midicps;
     ~saturSynth.releaseNote(freq);
-  }, i, 0, MIDIEndPoint("iConnectAudio4+", "USB1"));
+  }, i, 0, midiInPort);
 });

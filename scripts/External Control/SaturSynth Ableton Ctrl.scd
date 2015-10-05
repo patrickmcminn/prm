@@ -70,9 +70,11 @@ sustain = MIDIFunc.cc({ | val |
 
 // release time (5):
 release = MIDIFunc.cc({ | val |
-  var release = val.linlin(0, 127, 0, 10);
+  var release = val.linlin(0, 127, 0.0, 10.0);
+  release.postln;
+  val.postln;
   ~saturSynth.setReleaseTime(release);
-}, 123, 0, midiInPort);
+}, 119, 0, midiInPort);
 
 // trem rate (6):
 tremRate = MIDIFunc.cc({ | val |

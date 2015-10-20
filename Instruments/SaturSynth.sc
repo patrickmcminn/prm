@@ -50,11 +50,11 @@ SaturSynth : IM_Module {
   prAddSynthDefs {
     SynthDef(\prm_SaturSynth, {
       |
+      filterCutoff = 200,
       outBus = 0, amp = 0.5, freq = 110,
       oscillatorFilterCutoff = 974, oscillatorAmp = 0.36,
       filterLFOFreq = 2.4, filterLFORatioLow = 0.8, filterLFORatioHigh = 1.2,
       distortionAmount = 63.0957,
-      filterCutoff = 200,
       notchFrequency = 100, notchGain = 8.8, notchRQ = 1.43,
       attackTime = 0.05, decayTime = 0, sustainLevel = 1, releaseTime = 0.05,
       gate = 1,
@@ -94,7 +94,7 @@ SaturSynth : IM_Module {
       sig = Pan2.ar(sig, pan);
       sig = sig * amp;
       Out.ar(outBus, sig);
-    }).add;
+    }, [0.1]).add;
 
     SynthDef(\prm_SaturSynth_Seq, {
       |

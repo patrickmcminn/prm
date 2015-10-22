@@ -28,9 +28,12 @@ var waveLossBank = 4;
 
 ~ohm.storageDict[\globalRightKnobsChangeRoutine] = r {
     loop {
+    // removing:
+    /*
     ~ohm.setActiveRightKnobsBank(rateBank);
     ~ohm.storageDict[\globalRightKnobsBank] = rateBank;
     numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonYellow(3, bank: bank); }).yield;
+    */
 
     // removing:
     /*
@@ -328,6 +331,8 @@ var waveLossBank = 4;
     ~prm.submixerC.setMix(mix);
   }, bank: mixBank);
 
+  /*
+  // rate is kind of useless to me
   //////// Rate Knobs:
 
   // Submixer A:
@@ -354,6 +359,7 @@ var waveLossBank = 4;
     ~prm.submixerB.setLoopRate(1);
     ~prm.submixerC.setLoopRate(1);
   }, bank: rateBank);
+  */
 
   //////// Loop Division Knobs:
 

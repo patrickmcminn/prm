@@ -5,7 +5,7 @@ y = Subtractive.new(x.inBus);
 y.playNote(220);
 y.playNote(330);
 
-y.releaseNote(220);
+y.releaseNote(330);
 x.setMix(0);
 
 
@@ -14,6 +14,8 @@ a.postEQ.setLowPassCutoff(1200);
 a.postEQ.setLowGain(-12);
 a.postEQ.setLowFreq(500);
 
+
+y.playSequence('yes');
 
 y.makeSequence('yes');
 y.addKey(\yes, \root, -1);

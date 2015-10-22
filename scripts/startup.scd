@@ -17,6 +17,6 @@ r {
   "/System Scripts/Load System Scripts.scd".loadRelative;
   "/Songs/Load Songs.scd".loadRelative;
 
-  s.meter;
-}.play
+}.play;
 
+  s.meter;

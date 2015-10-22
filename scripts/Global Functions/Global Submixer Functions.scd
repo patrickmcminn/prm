@@ -270,6 +270,8 @@ var waveLossBank = 4;
   //// initial colors:
   if( ~prm.reverb.mixer.isMuted, { ~ohm.turnRightButtonRed(0, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(0, bank: returnsMuteBank); });
   if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(1, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
+  if( ~prm.modular.isMuted, { ~ohm.turnRightButtonRed(1, bank: returnsMuteBank); }, {
+    ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
 
   // reverb:
   ~ohm.setRightButtonFunc(0, {
@@ -286,7 +288,7 @@ var waveLossBank = 4;
   // modular:
   ~ohm.setRightButtonFunc(2, {
     ~prm.modular.tglMute;
-    if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(2); }, { ~ohm.turnRighButtonGreen(2); });
+    if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(2); }, { ~ohm.turnRightButtonGreen(2); });
   }, bank: returnsMuteBank);
 
   //////////// Right Knob Change:

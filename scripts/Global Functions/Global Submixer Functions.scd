@@ -270,7 +270,7 @@ var waveLossBank = 4;
   //// initial colors:
   if( ~prm.reverb.mixer.isMuted, { ~ohm.turnRightButtonRed(0, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(0, bank: returnsMuteBank); });
   if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(1, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
-  if( ~prm.modular.isMuted, { ~ohm.turnRightButtonRed(1, bank: returnsMuteBank); }, {
+  if( ~prm.modular.isMuted, { ~ohm.turnRightButtonRed(2, bank: returnsMuteBank); }, {
     ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
 
   // reverb:

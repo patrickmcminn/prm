@@ -41,7 +41,7 @@ Equalizer : IM_Processor {
       server.sync;
 
       while( { try { mixer.isLoaded } != true }, { 0.001.wait; });
-      synth = Synth(\prm_Equalizer_Stereo, [\inBus, inBus, \outBus, mixer.chanMono(0), \amp, 1], group, \addToHead);
+      synth = Synth(\prm_Equalizer_Stereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \amp, 1], group, \addToHead);
       while({ try { synth } == nil }, { 0.001.wait; });
       isLoaded = true;
     };

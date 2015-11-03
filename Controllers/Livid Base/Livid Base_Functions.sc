@@ -19,8 +19,8 @@
     this.setFunc(num, type, activePage.getFunc(num, type));
   }
 
-  setTouchButtonFunc { | button = 0, func, type = 'noteOn', bank = 'active', page = 'active' |
-    var num = button + 10;
+  setTouchButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active', page = 'active' |
+    var num = button + 9;
     if( page == 'active', { page = activePageKey });
     //if( bank == 'active', { bank = pageDict[page].activeTouchButtonsBank; });
     pageDict[page].setTouchButtonFunc(button, func, type, bank);

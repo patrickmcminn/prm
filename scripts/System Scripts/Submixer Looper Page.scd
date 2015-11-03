@@ -60,11 +60,11 @@ divResetFunc = { | bank |
 // Submixer B:
 16.do({ | i |
   var column = i%8;
-  var div = pow(2, i);
+  //var div = pow(2, i);
   var row;
   if( i < 8, { row = 0 }, { row = 1 });
   ~ohm.setGridFunc(column, row, {
-    ~prm.submixerB.setLoopDivison(div);
+    ~prm.submixerB.setLoopDivison(i + 1);
     divResetFunc.value(submixerBBank);
     ~ohm.turnGridGreen(column, row);
     }, bank: submixerBBank, page: page);
@@ -72,11 +72,11 @@ divResetFunc = { | bank |
 // Submixer C:
 16.do({ | i |
   var column = i%8;
-  var div = pow(2, i);
+  //var div = pow(2, i);
   var row;
   if( i < 8, { row = 0 }, { row = 1 });
   ~ohm.setGridFunc(column, row, {
-    ~prm.submixerC.setLoopDivison(div);
+    ~prm.submixerC.setLoopDivison(i + 1);
     divResetFunc.value(submixerCBank);
     ~ohm.turnGridGreen(column, row);
     }, bank: submixerCBank, page: page);
@@ -192,6 +192,10 @@ rateResetFunc = { | bank |
 ~ohm.setLeftKnobFunc(0, 1, { | val |
   ~prm.submixerA.mixer.setSendVol(1, val.ccdbfs(-70, 6));
 }, page: page);
+// Modular:
+~ohm.setLeftKnobFunc(0, 0, { | val |
+  ~prm.submixerA.mixer.setSendVol(2, val.ccdbfs(-70, 0));
+}, page: page);
 
 //// Submixer B Sends:
 // Reverb:
@@ -202,6 +206,10 @@ rateResetFunc = { | bank |
 ~ohm.setLeftKnobFunc(1, 1, { | val |
   ~prm.submixerB.mixer.setSendVol(1, val.ccdbfs(-70, 6));
 }, page: page);
+// Modular:
+~ohm.setLeftKnobFunc(1, 0, { | val |
+  ~prm.submixerB.mixer.setSendVol(2, val.ccdbfs(-70, 0));
+}, page: page);
 
 //// Submixer C Sends:
 // Reverb:
@@ -211,6 +219,9 @@ rateResetFunc = { | bank |
 // Granulator:
 ~ohm.setLeftKnobFunc(2, 1, { | val |
   ~prm.submixerC.mixer.setSendVol(1, val.ccdbfs(-70, 6));
+}, page: page);
+~ohm.setLeftKnobFunc(2, 0, { | val |
+  ~prm.submixerC.mixer.setSendVol(2, val.ccdbfs(-70, 0));
 }, page: page);
 
 //////// Left Buttons:

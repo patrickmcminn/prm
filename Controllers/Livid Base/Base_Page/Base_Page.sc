@@ -222,24 +222,25 @@ Base_Page {
     });
   }
 
-  setTouchButtonFunc { | button = 0, func, type = 'noteOn', bank = 'active' |
+  setTouchButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
-    var num = button + 10;
+    var num = button -1;
+    var midinum = button + 9;
     if( bank == activeTouchButtonsBank, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeTouchButtonsBank }, { bankSelect = bank });
-    if( button > 7, { "out of range!" }, {
+    if( num > 7, { "out of range!".postln; }, {
       switch(type,
         { \noteOn }, {
-          touchButtonsBankArray[bankSelect][0][button] = func;
-          if( bank == 'active', { this.setNoteOnFunc(num, func); }); },
+          touchButtonsBankArray[bankSelect][0][num] = func;
+          if( bank == 'active', { this.setNoteOnFunc(midinum, func); }); },
         { \noteOff }, {
-          touchButtonsBankArray[bankSelect][1][button] = func;
-          if( bank == 'active', { this.setNoteOffFunc(num, func); }); }
+          touchButtonsBankArray[bankSelect][1][num] = func;
+          if( bank == 'active', { this.setNoteOffFunc(midinum, func); }); }
       );
     });
   }
 
-  setFaderFunc { | fader = 0, func, bank = 'active' |
+  setFaderFunc { | fader = 1, func, bank = 'active' |
     var bankSelect;
     var faderIndex = fader - 1;
     var num = fader;

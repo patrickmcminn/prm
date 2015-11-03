@@ -6,9 +6,15 @@ prm
 
 BufferGranulator : IM_Module {
 
+  // only sequences work right now
+
   var <isLoaded;
   var <synth, grainBufDict;
   var server;
+  var <sequencerDict, <sequencerClock;
+  var <tempo;
+
+  var <attackTime, <decayTime, <sustainLevel, <releaseTime;
 
   *newMono { | outBus = 0, buffer = nil, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono(buffer);
@@ -18,12 +24,23 @@ BufferGranulator : IM_Module {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+
+      sequencerDict = IdentityDictionary.new;
+      sequencerClock = TempoClock.new;
+      tempo = 1;
+
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
+      attackTime = 0.05;
+      decayTime = 0;
+      sustainLevel = 1;
+      releaseTime = 0.05;
+
       this.prAddSynthDef;
       server.sync;
       this.prMakeGrainBuffers;
       server.sync;
-      synth = Synth(\prm_BufferGranulator, [\outBus, mixer.chanStereo, \buffer, buffer], group, \addToHead);
+      //synth = Synth(\prm_BufferGranulator, [\outBus, mixer.chanStereo, \buffer, buffer], group, \addToHead);
       isLoaded = true;
     }
   }
@@ -48,6 +65,30 @@ BufferGranulator : IM_Module {
       granulator = GrainBuf.ar(2, trigger, grainDur, buffer, rate, position, 2, pan, grainEnv, 512);
       filter = RLPF.ar(granulator, cutoff, rq);
       sig = filter * amp;
+      Out.ar(outBus, sig);
+    }).add;
+
+    SynthDef(\prm_BufferGranulator_env, {
+      |
+      outBus = 0, amp = 1, buffer, trigRate = 32, grainDurLow = 0.5, grainDurHigh = 1.5,
+      grainEnv = -1, sync = 0, rateLow = 1, rateHigh = 1, panLow = 0, panHigh = 0,
+      posLow = 0, posHigh = 1, cutoff = 18000, rq = 1,
+      attackTime = 0.05, decayTime = 0, sustainLevel = 1, relaseTime = 0.05, gate = 1
+      |
+      var syncTrigger, randTrigger, trigger, grainDur, rate, pan, position, envelope;
+      var granulator, filter, sig;
+      syncTrigger = Impulse.ar(trigRate);
+      randTrigger = Dust.ar(trigRate);
+      trigger = Select.ar(sync, [randTrigger, syncTrigger]);
+      grainDur = TRand.ar(grainDurLow, grainDurHigh, trigger);
+      rate = TRand.ar(rateLow, rateHigh, trigger);
+      pan = TRand.ar(panLow, panHigh, trigger);
+      position = TRand.ar(posLow, posHigh, trigger);
+      granulator = GrainBuf.ar(2, trigger, grainDur, buffer, rate, position, 2, pan, grainEnv, 512);
+      filter = RLPF.ar(granulator, cutoff, rq);
+      envelope = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, curve: 4), gate, doneAction: 2);
+      sig = filter * envelope;
+      sig = sig * amp;
       Out.ar(outBus, sig);
     }).add;
   }
@@ -86,6 +127,8 @@ BufferGranulator : IM_Module {
       grainBufDict = nil;
       synth.free;
       synth = nil;
+      sequencerDict.do({ | seq | seq.free; });
+      sequencerClock.free;
     }.fork;
     this.freeModule;
   }
@@ -137,6 +180,52 @@ BufferGranulator : IM_Module {
 
   setCrossfade { | crossfade = 1 |
     synth.set(\mix, crossfade);
+  }
+
+
+
+  ////// Sequencing:
+
+  makeSequence { | name, type = 'sustaining' |
+    fork {
+      sequencerDict[name] = IM_PatternSeq.new(name, group, \addToHead);
+      sequencerDict[name].stop;
+      server.sync;
+      sequencerDict[name].addKey(\instrument, \prm_BufferGranulator_env);
+      sequencerDict[name].addKey(\outBus, mixer.chanStereo(0));
+      sequencerDict[name].addKey(\attackTime, Pfunc({ attackTime }));
+      sequencerDict[name].addKey(\decayTime, Pfunc({ decayTime }));
+      sequencerDict[name].addKey(\sustainLevel, Pfunc({ sustainLevel }));
+      sequencerDict[name].addKey(\releaseTime, Pfunc({ releaseTime }));
+      sequencerDict[name].addKey(\amp, 1);
+      sequencerDict[name].addKey(\freq, 1);
+      sequencerDict[name].addKey(\posLow, 0.3);
+      sequencerDict[name].addKey(\posHigh, 0.6);
+      sequencerDict[name].addKey(\trigRate, 30);
+    }
+  }
+
+  addKey {  | name, key, action |
+    sequencerDict[name].addKey(key, action);
+  }
+
+  playSequence { | name, clock = 'internal', quant = 'nil' |
+    var playClock;
+    if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
+    sequencerDict[name].play(playClock);
+  }
+
+  resetSequence { | name | sequencerDict[name].reset; }
+  stopSequence { | name | sequencerDict[name].stop; }
+  pauseSequence { | name | sequencerDict[name].pause }
+  resumeSequence { | name | sequencerDict[name].resume; }
+  isSequencePlaying { | name | ^sequencerDict[name].isPlaying }
+  setSequenceQuant { | name, quant = 0 | sequencerDict[name].setQuant(quant) }
+
+  setSequencerClockTempo { | bpm = 60 |
+    var bps = bpm/60;
+    tempo = bps;
+    sequencerClock.tempo = tempo;
   }
 
 }

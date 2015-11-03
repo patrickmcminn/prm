@@ -7,26 +7,26 @@ Base {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
-  var <pageDict, <activePage, activePageKey, <functionDict;
+  var <pageDict, <activePage, activePageKey, <storageDict;
   var colorArray;
 
-  *new { | localControl = 'allOff' |
-    ^super.new.prInit(localControl);
+  *new { | deviceName = "Base", portName = "Controls", localControl = 'allOff' |
+    ^super.new.prInit(deviceName, portName, localControl);
   }
 
-  prInit { | localControl = 'allOff' |
-    this.prInitMIDI;
+  prInit { | deviceName = "Base", portName = "Controls", localControl = 'allOff' |
+    this.prInitMIDI(deviceName, portName);
     this.setLocalControl(localControl);
     this.prMakeResponders;
     this.prMakeColorArray;
     this.prMakePageDictionary;
-    functionDict = IdentityDictionary.new(know: true);
+    storageDict = IdentityDictionary.new(know: true);
   }
 
-  prInitMIDI {
+  prInitMIDI { | deviceName = "Base", portName = "Controls" |
     MIDIIn.connectAll;
-    midiInPort = MIDIIn.findPort("Base", "Controls");
-    midiOutPort = MIDIOut.newByName("Base", "Controls");
+    midiInPort = MIDIIn.findPort(deviceName, portName);
+    midiOutPort = MIDIOut.newByName(deviceName, portName);
     midiOutPort.latency = 0;
   }
 
@@ -195,9 +195,9 @@ Base {
   }
 
   setPage { | name = 'page' |
-    activePage.offLoadFunction.value;
     activePageKey = name;
     activePage = pageDict[activePageKey];
+    activePage.offLoadFunction.value;
     72.do({ | num |
       this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
@@ -213,7 +213,7 @@ Base {
     activePage.loadFunction.value;
   }
 
-  sePagetLoadFunction { | func, page = 'active' |
+  sePagedLoadFunction { | func, page = 'active' |
     if( page == 'active', { page = activePageKey });
     pageDict[page].setLoadFunction(func);
   }
@@ -223,18 +223,6 @@ Base {
     pageDict[page].setOffLoadFunction(func);
   }
 
-  // function:
 
-  addGlobalFunction { | name = 'func', function |
-    functionDict.put(name, function);
-  }
-
-  removeGlobalFunction { | name |
-    functionDict.remove(name);
-  }
-
-  callGlobalFunction { | name |
-    functionDict.name
-  }
 
 }

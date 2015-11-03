@@ -129,7 +129,7 @@ OhmRGB_Page : OhmRGB {
 
   getCCFunc { | num = 0 | ^this.getFunc(num, 'control'); }
 
-   setLoadFunction { | func |
+  setLoadFunction { | func |
     loadFunction = func;
   }
 

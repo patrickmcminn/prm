@@ -50,6 +50,10 @@ Song {
 
   freeSong {
 
+    mixerA.masterChan.mute;
+    mixerB.masterChan.mute;
+    mixerC.masterChan.mute;
+
     mixerA.free;
     mixerB.free;
     mixerC.free;

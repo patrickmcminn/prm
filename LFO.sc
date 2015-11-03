@@ -4,26 +4,40 @@ LFO.sc
 prm
 */
 
-LFO { // Low Frequency Oscillator naturally outputting in the range of -1 to 1
+// takes direct control over
+
+LFO {
 
   var <isLoaded;
   var synth;
   var group, <outBus;
+  var lfoWaveform;
 
-  *new { | freq = 1, waveform = 'sine', relGroup = nil, addAction = 'addToHead' |
-    ^super.new.prInit(freq, waveform, relGroup, addAction);
+  *new { | freq = 1, waveform = 'sine', rangeLow = -1, rangeHigh = 1, relGroup = nil, addAction = 'addToHead' |
+    ^super.new.prInit(freq, waveform, rangeLow, rangeHigh, relGroup, addAction);
   }
 
-  prInit {  | freq = 1, waveform = 'sine', relGroup = nil, addAction = 'addToHead' |
+  prInit {  | freq = 1, waveform = 'sine', rangeLow = -1, rangeHigh = 1, relGroup = nil, addAction = 'addToHead' |
     var server = Server.default;
+    var wave;
     server.waitForBoot {
       isLoaded = false;
       this.prAddSynthDef;
       server.sync;
       outBus = Bus.control;
       group = Group.new(relGroup, addAction);
+      switch ( waveform,
+        'sine', { lfoWaveform = 0 },
+        'saw', { lfoWaveform = 1 },
+        'revSaw', { lfoWaveform = 2 },
+        'rect', { lfoWaveform = 3 },
+        'sampleAndHold', { lfoWaveform = 4 },
+        'noise', { lfoWaveform = 5 }
+      );
       server.sync;
-      synth = Synth(\prm_LFO, [\outBus, outBus, \freq, freq], group, \addToHead);
+      synth = Synth(\prm_LFO,
+        [\outBus, outBus, \freq, freq, \lfoWaveform, lfoWaveform,
+          \rangeLow, rangeLow, \rangeHigh, rangeHigh], group, \addToHead);
       while({ synth == nil }, { 0.001.wait; });
       this.setWaveform(waveform);
       isLoaded = true;
@@ -32,7 +46,7 @@ LFO { // Low Frequency Oscillator naturally outputting in the range of -1 to 1
 
   prAddSynthDef {
     SynthDef(\prm_LFO, {
-      | outBus = 0, lfoWaveform = 0, freq = 1, lfoPulseWidth = 0.5 |
+      | outBus = 0, lfoWaveform = 0, freq = 1, lfoPulseWidth = 0.5, rangeLow = -1, rangeHigh = 1 |
       var lfo, lfoSine, lfoSaw, lfoRevSaw, lfoRect, lfoNoise0, lfoNoise2;
       lfoSine = SinOsc.kr(freq);
       lfoSaw = LFSaw.kr(freq, 1);
@@ -41,6 +55,7 @@ LFO { // Low Frequency Oscillator naturally outputting in the range of -1 to 1
       lfoNoise0 = LFNoise0.kr(freq);
       lfoNoise2 = LFNoise2.kr(freq);
       lfo = SelectX.kr(lfoWaveform, [lfoSine, lfoSaw, lfoRevSaw, lfoRect, lfoNoise0, lfoNoise2]);
+      lfo = lfo.range(rangeLow, rangeHigh);
       Out.kr(outBus, lfo);
     }).add;
   }

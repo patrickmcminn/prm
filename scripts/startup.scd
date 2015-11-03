@@ -5,6 +5,13 @@ prm
 Sydney, Australia
 */
 
+var device, ohm, base;
+device = "iconnectAudio4+";
+ohm = "Ohm Port 1";
+base = "Base Port 1";
+// ohm = "HST1";
+// base = "HST3";
+
 r {
   ~prm = AudioSystem.new(2);
 

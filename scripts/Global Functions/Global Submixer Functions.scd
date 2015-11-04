@@ -28,18 +28,26 @@ var waveLossBank = 4;
 
 ~ohm.storageDict[\globalRightKnobsChangeRoutine] = r {
     loop {
+    // removing:
+    /*
     ~ohm.setActiveRightKnobsBank(rateBank);
     ~ohm.storageDict[\globalRightKnobsBank] = rateBank;
     numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonYellow(3, bank: bank); }).yield;
+    */
 
+    // removing:
+    /*
     ~ohm.setActiveRightKnobsBank(divBank);
     ~ohm.storageDict[\globalRightKnobsBank] = divBank;
     numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonBlue(3, bank: bank); }).yield;
+    */
 
+    // removing:
+    /*
     ~ohm.setActiveRightKnobsBank(posBank);
     ~ohm.storageDict[\globalRightKnobsBank] = posBank;
     numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
-
+    */
 
     ~ohm.setActiveRightKnobsBank(waveLossBank);
     ~ohm.storageDict[\globalRightKnobsBank] = waveLossBank;
@@ -131,6 +139,9 @@ var waveLossBank = 4;
   }, bank: returnsBank);
 
   // Return 2:
+  ~ohm.setRightSliderFunc(2, { | val |
+    ~prm.modular.setVol(val.ccdbfs(-70, 0));
+  }, bank: returnsBank);
 
   // Return 3:
 
@@ -154,6 +165,7 @@ var waveLossBank = 4;
   ~ohm.setCrossfaderButtonFunc(1, { ~ohm.storageDict[\globalRightChangeRoutine].next });
 
   //////// Mute Bank:
+  // mutes submixes
 
   // initial color:
   if( ~prm.submixerA.mixer.isMuted, { ~ohm.turnRightButtonRed(0, bank: submixerMuteBank); }, { ~ohm.turnRightButtonGreen(0, bank: submixerMuteBank) });
@@ -261,6 +273,8 @@ var waveLossBank = 4;
   //// initial colors:
   if( ~prm.reverb.mixer.isMuted, { ~ohm.turnRightButtonRed(0, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(0, bank: returnsMuteBank); });
   if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(1, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
+  if( ~prm.modular.isMuted, { ~ohm.turnRightButtonRed(2, bank: returnsMuteBank); }, {
+    ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
 
   // reverb:
   ~ohm.setRightButtonFunc(0, {
@@ -272,6 +286,12 @@ var waveLossBank = 4;
   ~ohm.setRightButtonFunc(1, {
     ~prm.granulator.mixer.tglMute;
      if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(1); }, { ~ohm.turnRightButtonGreen(1); });
+  }, bank: returnsMuteBank);
+
+  // modular:
+  ~ohm.setRightButtonFunc(2, {
+    ~prm.modular.tglMute;
+    if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(2); }, { ~ohm.turnRightButtonGreen(2); });
   }, bank: returnsMuteBank);
 
   //////////// Right Knob Change:
@@ -311,6 +331,8 @@ var waveLossBank = 4;
     ~prm.submixerC.setMix(mix);
   }, bank: mixBank);
 
+  /*
+  // rate is kind of useless to me
   //////// Rate Knobs:
 
   // Submixer A:
@@ -337,8 +359,12 @@ var waveLossBank = 4;
     ~prm.submixerB.setLoopRate(1);
     ~prm.submixerC.setLoopRate(1);
   }, bank: rateBank);
+  */
 
   //////// Loop Division Knobs:
+
+  // gonna remove these, I think:
+  /*
 
   // Submixer A:
   ~ohm.setRightKnobFunc(0, { | val |
@@ -357,9 +383,12 @@ var waveLossBank = 4;
     var div = val.linlin(0, 127, 1, 15).asInt;
     ~prm.submixerC.setLoopDivison(div);
   }, bank: divBank);
+  */
 
   //////// Loop Position Knobs:
 
+  // also gonna remove these:
+  /*
   // Submixer A:
   ~ohm.setRightKnobFunc(0, { | val |
     var pos = val.linlin(0, 127, 0, 1);
@@ -377,6 +406,7 @@ var waveLossBank = 4;
     var pos = val.linlin(0, 127, 0, 1);
     ~prm.submixerC.setLoopPosition(pos);
   }, bank: posBank);
+  */
 
   //////// WaveLoss Knobs:
 
@@ -399,6 +429,9 @@ var waveLossBank = 4;
   }, bank: waveLossBank);
 
   //// waveloss mode:
+  // this doesn't work exactly as I'd like it to, but I've gotten used to its functionality
+  // values < 127, mode 1
+  // value = 127, mode 2
   ~ohm.setRightKnobFunc(3, {  | val |
     var mode = val.linlin(0, 127, 1, 2).asInt;
     ~prm.submixerA.setWaveLossMode(mode);

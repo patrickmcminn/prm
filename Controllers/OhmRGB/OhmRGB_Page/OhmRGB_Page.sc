@@ -14,7 +14,7 @@ OhmRGB_Page : OhmRGB {
   var <gridBankArray, <leftButtonsBankArray, <rightButtonsBankArray, <crossfaderButtonsBankArray, <controlButtonsBankArray;
   var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeCrossfaderButtonsBank, <activeControlButtonsBank;
 
-  var <loadFunction, <offLoadFunction;
+  var <loadFunctionDict, <offLoadFunctionDict;
 
   *new {
     ^super.new.prInit;
@@ -22,8 +22,8 @@ OhmRGB_Page : OhmRGB {
 
   prInit {
     //this.prInitMIDI;
-    loadFunction = { };
-    offLoadFunction = { };
+    loadFunctionDict = IdentityDictionary.new;
+    offLoadFunctionDict = IdentityDictionary.new;
     this.prMakeResponders;
     this.prMakeColorArray;
     this.prMakeAnimationArray;
@@ -129,12 +129,12 @@ OhmRGB_Page : OhmRGB {
 
   getCCFunc { | num = 0 | ^this.getFunc(num, 'control'); }
 
-  setLoadFunction { | func |
-    loadFunction = func;
+  addLoadFunction { | name, func |
+    loadFunctionDict[name] = func;
   }
 
-  setOffLoadFunction { | func |
-    offLoadFunction = func;
+  addOffLoadFunction { | name, func |
+    offLoadFunctionDict[name] = func;
   }
 
   //////// Convenience Methods:

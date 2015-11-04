@@ -8,6 +8,9 @@ var page = 'subtractive';
 var noteOnFuncArray, noteOffFuncArray, inPort;
 
 var mainBank = 0;
+var osc1WaveformResetFunc, osc2WaveformResetFunc;
+var osc1OctaveResetFunc, osc2OctaveResetFunc;
+var lfo1WaveformResetFunc, lfo2WaveformResetFunc;
 
 // make sure to load up the subtractive:
 /*
@@ -171,8 +174,26 @@ noteOffFuncArray = 127.do({ | note |
   ~subtractive.setLFO2Waveform(wave);
 }, mainBank, page);
 
+//////// Grid:
 
 
+// Osc 1 Waveform:
+osc1WaveformResetFunc = 4.do({ | i | ~ohm.turnGridCyan(i, 0, bank: mainBank, page: page); });
+
+// Osc 2 Waveform:
+osc2WaveformResetFunc = 4.do({ | i | ~ohm.turnGridBlue(i + 4, 0, bank: mainBank, page: page); });
+
+// Osc 1 Octave:
+osc1OctaveResetFunc = 4.do({ | i | ~ohm.turnGridPurple(i, 1, bank: mainBank, page: page); });
+
+// Osc 2 Octave:
+osc2OctaveResetFunc = 4.do({ | i | ~ohm.turnGridWhite(i + 4, 1, bank: mainBank, page: page); });
+
+// LFO 1 Waveform:
+lfo1WaveformResetFunc = 5.do({ | i | ~ohm.turnGridYellow(i, 2, bank: mainBank, page: page); });
+
+// LFO 2 Waveform:
+lfo2WaveformResetFunc = 5.do({ | i | ~ohm.turnGridWhite(i, 3, bank: mainBank, page: page); });
 
 
 

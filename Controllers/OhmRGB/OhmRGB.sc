@@ -137,24 +137,24 @@ OhmRGB {
   }
 
   setPage { | name = 'page' |
-    activePage.offLoadFunction.value;
+    activePage.offLoadFunctionDict.do({ | func | func.value; });
     activePageKey = name;
     activePage = pageDict[activePageKey];
     81.do({ | num | this.setNoteOnFunc(num, activePage.getNoteOnFunc(num)); });
     81.do({ | num | this.setNoteOffFunc(num, activePage.getNoteOffFunc(num)); });
     25.do({ | num | this.setCCFunc(num, activePage.getCCFunc(num)); });
     81.do({ | num | this.turnColor(num, activePage.getColor(num)); });
-    activePage.loadFunction.value;
+    activePage.loadFunctionDict.do({ | func | func.value; });
   }
 
-  setPageLoadFunction { | func, page = 'active' |
+  addPageLoadFunction { | name, func, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].setLoadFunction(func);
+    pageDict[page].addLoadFunction(name, func);
   }
 
-  setPageOffLoadFunction { | func, page = 'active' |
+  addPageOffLoadFunction { | name func, page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    pageDict[page].setOffLoadFunction(func);
+    pageDict[page].addOffLoadFunction(name, func);
   }
 
 }

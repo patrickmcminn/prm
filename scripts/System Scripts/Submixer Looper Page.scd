@@ -60,11 +60,11 @@ divResetFunc = { | bank |
 // Submixer B:
 16.do({ | i |
   var column = i%8;
-  var div = pow(2, i);
+  //var div = pow(2, i);
   var row;
   if( i < 8, { row = 0 }, { row = 1 });
   ~ohm.setGridFunc(column, row, {
-    ~prm.submixerB.setLoopDivison(div);
+    ~prm.submixerB.setLoopDivison(i + 1);
     divResetFunc.value(submixerBBank);
     ~ohm.turnGridGreen(column, row);
     }, bank: submixerBBank, page: page);
@@ -72,11 +72,11 @@ divResetFunc = { | bank |
 // Submixer C:
 16.do({ | i |
   var column = i%8;
-  var div = pow(2, i);
+  //var div = pow(2, i);
   var row;
   if( i < 8, { row = 0 }, { row = 1 });
   ~ohm.setGridFunc(column, row, {
-    ~prm.submixerC.setLoopDivison(div);
+    ~prm.submixerC.setLoopDivison(i + 1);
     divResetFunc.value(submixerCBank);
     ~ohm.turnGridGreen(column, row);
     }, bank: submixerCBank, page: page);

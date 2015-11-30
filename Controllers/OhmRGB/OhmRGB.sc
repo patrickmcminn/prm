@@ -152,9 +152,19 @@ OhmRGB {
     pageDict[page].addLoadFunction(name, func);
   }
 
-  addPageOffLoadFunction { | name func, page = 'active' |
+  addPageOffLoadFunction { | name, func, page = 'active' |
     if( page == 'active', { page = activePageKey; });
     pageDict[page].addOffLoadFunction(name, func);
+  }
+
+  store { | name, item, page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    pageDict[page].store(name, item);
+  }
+
+  removeFromStorage { | name, page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    pageDict[page].removeFromStorage(name);
   }
 
 }

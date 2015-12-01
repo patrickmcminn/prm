@@ -7,7 +7,7 @@ prm
 GlockSynth : IM_Module {
 
   var server, <isLoaded;
-  var <synth, <reverb, <delay;
+  var synth, <reverb, <delay;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
     ^super.new.prInit;
@@ -63,5 +63,8 @@ GlockSynth : IM_Module {
     delay.free;
     this.freeModule;
   }
+
+  playNote { | freq = 220, vol = -6 | synth.playNote(freq, vol); }
+  releaseNote { | freq = 220 | synth.releaseNote(freq); }
 
 }

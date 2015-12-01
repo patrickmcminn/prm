@@ -10,7 +10,7 @@ GlockSynth : IM_Module {
   var synth, <reverb, <delay;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
-    ^super.new.prInit;
+    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
   }
 
   prInit {

@@ -4,6 +4,7 @@ GlitchySynth : IM_Module {
 
   var synth, buffer;
   var <attackTime, <sustainLevel, <releaseTime;
+  var <glitchLooper;
 
   var procBus;
 
@@ -12,7 +13,7 @@ GlitchySynth : IM_Module {
 
   *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
     relGroup = nil, addAction = 'addToTail' |
-    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
+    ^super.new(2, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
   }
 
   prInit {
@@ -23,10 +24,12 @@ GlitchySynth : IM_Module {
       this.prInitializeParameters;
       this.prAddSynthDefs;
       server.sync;
-      //this.prMakeBuffer;
-      server.sync;
+
+      glitchLooper = GlitchLooper.newStereo(mixer.chanStereo(1), 1, relGroup: group, addAction: \addToHead);
+      while({ try { glitchLooper.isLoaded } != true }, { 0.001.wait; });
+
       procBus = Bus.audio(server, 2);
-      this.prMakeSynth(mixer.chanStereo(0));
+      this.prMakeSynth(mixer.chanStereo(0), glitchLooper.inBus);
 
       sequencerDict = IdentityDictionary.new;
       sequencerClock = TempoClock.new;
@@ -56,7 +59,7 @@ GlitchySynth : IM_Module {
 
     SynthDef(\prm_glitchySynth_proc, {
       |
-      inBus = 0, outBus = 0, amp = 1, pan = 0,
+      inBus = 0, outBus1 = 0, outBus2 = 0, amp = 1, pan = 0,
       attack = 0.05, susLevel = 1, release = 0.05, gate = 0,
       distAmp = 0.1, distGain = 10, bitDepth = 8, noiseAmp = 0,
       loopAmp = 0.2, loopChance = 0.8, delayTime = 0.0664, repeats = 26,
@@ -90,7 +93,8 @@ GlitchySynth : IM_Module {
 
       sig = waveLoss * env;
       sig = sig * amp;
-      Out.ar(outBus, sig);
+      Out.ar(outBus1, sig);
+      Out.ar(outBus2, sig);
     }).add;
 
   }
@@ -102,8 +106,8 @@ GlitchySynth : IM_Module {
     releaseTime = 0.05;
   }
 
-  prMakeSynth { | outBus = 0 |
-    synth = Synth(\prm_glitchySynth_proc, [\inBus, procBus, \outBus, outBus, \amp, 1, \pan, 0],
+  prMakeSynth { | outBus1 = 0, outBus2 = 0 |
+    synth = Synth(\prm_glitchySynth_proc, [\inBus, procBus, \outBus1, outBus1, \outBus2, outBus2, \amp, 1, \pan, 0],
       group, \addToHead);
   }
 

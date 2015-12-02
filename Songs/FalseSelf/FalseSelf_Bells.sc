@@ -6,7 +6,7 @@ prm
 
 FalseSelf_Bells : IM_Module {
 
-  var server, isLoaded;
+  var server, <isLoaded;
   var bells, <reverb, <delay;
   // var granulator; // let's try it with the granualtor as a send effect as first?
 

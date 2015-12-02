@@ -6,7 +6,7 @@ prm
 
 FalseSelf_BellSection : IM_Module {
 
-  var isLoaded, server;
+  var <isLoaded, server;
   var <synth, <bells;
 
   *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,

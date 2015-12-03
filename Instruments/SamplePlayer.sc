@@ -32,13 +32,16 @@ SamplePlayer : IM_Module {
   }
 
   prInitStereo { | path |
+    var pathName;
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+      pathName = PathName.new(path);
+      server.sync;
       monoOrStereo = 'stereo';
       this.prAddSynthDefs;
       samplerDict = IdentityDictionary.new;
-      buffer = Buffer.read(server, path);
+      buffer = Buffer.read(server, pathName.absolutePath);
       server.sync;
       //// parameters:
       // envelope:

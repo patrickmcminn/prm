@@ -189,11 +189,11 @@ FakeGuitar : IM_Module {
     });
   }
 
-  setAttack { | atk = 0.05 |
+  setAttackTime { | atk = 0.05 |
     attack = atk;
     noteDict.do({ | synth | synth.set(\attack, attack); });
   }
-  setRelease { | rel = 0.05 |
+  setReleaseTime { | rel = 0.05 |
     release = rel;
     noteDict.do({ | synth | synth.set(\release, release); });
   }
@@ -241,8 +241,8 @@ FakeGuitar : IM_Module {
   setReverbDamp { | damp = 0.3 | synth.set(\damp, damp); }
   setLowGain { | gain = 6 | synth.set(\lowGain, gain); }
   setHighGain { | gain = 3 | synth.set(\highGain, gain); }
-  setCutoff { | cutoff = 5364 | synth.set(\cutoff, cutoff); }
-  setRQ { | rq = 1 | synth.set(\rq, rq); }
+  setFilterCutoff { | cutoff = 5364 | synth.set(\cutoff, cutoff); }
+  setFilterRQ { | rq = 1 | synth.set(\rq, rq); }
   setFilterType { | type = 0 | synth.set(\filterType, type); }
   setWaveLossAmount { | amount = 0 | synth.set(\waveLossAmount, amount); }
 

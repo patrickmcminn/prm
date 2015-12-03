@@ -68,7 +68,7 @@ GlitchLooper : IM_Processor {
       player = BufRd.ar(2, buffer, playhead, 1, 2);
       sustainTime = (BufFrames.ir(buffer)/SampleRate.ir) * (endPos - startPos);
       sustainTime = sustainTime - (attackTime + releaseTime);
-      sustainTime.poll;
+      //sustainTime.poll;
       envelope = EnvGen.ar(
         Env.linen(attackTime, sustainTime, releaseTime), 1, doneAction: 2);
       sig = player * envelope;
@@ -116,8 +116,8 @@ GlitchLooper : IM_Processor {
   playGlitch {
     startPos = rrand(startPosLow, startPosHigh);
     endPos = startPos + rrand(posOffsetLow, posOffsetHigh);
-    startPos.postln;
-    endPos.postln;
+    //startPos.postln;
+    //endPos.postln;
     //pattern.play(quant:0);
     Pbind(
       \instrument, \prm_GlitchLooper_Player,

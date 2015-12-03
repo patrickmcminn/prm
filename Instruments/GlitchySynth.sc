@@ -9,7 +9,7 @@ GlitchySynth : IM_Module {
   var procBus;
 
   var noteDict, <numVoices;
-  var sequencerDict, <sequencerClock, <tempo;
+  var <sequencerDict, <sequencerClock, <tempo;
 
   *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
     relGroup = nil, addAction = 'addToTail' |
@@ -62,7 +62,6 @@ GlitchySynth : IM_Module {
       inBus = 0, outBus1 = 0, outBus2 = 0, amp = 1, pan = 0,
       attack = 0.05, susLevel = 1, release = 0.05, gate = 0,
       distAmp = 0.1, distGain = 10, bitDepth = 8, noiseAmp = 0,
-      loopAmp = 0.2, loopChance = 0.8, delayTime = 0.0664, repeats = 26,
       cutoff = 3580, rq = 1, waveLossAmount = 0
       |
 
@@ -76,13 +75,6 @@ GlitchySynth : IM_Module {
       dist = dist * distAmp;
       noise = WhiteNoise.ar(noiseAmp);
       distSum = dist + noise;
-
-      buffer = LocalBuf(server.sampleRate, 2);
-      playHead = Phasor.ar(1/delayTime, 1, 0, server.sampleRate).poll;
-      recordHead = Sweep.ar(Dust.ar(1), 1);
-      recorder = BufWr.ar(distSum, buffer, recordHead, 0);
-      looper = BufRd.ar(2, buffer, playHead, 0, 2);
-      //sum = distSum + looper;
       sum = distSum;
 
       filter = RLPF.ar(sum, cutoff, rq);
@@ -194,37 +186,18 @@ GlitchySynth : IM_Module {
   setWaveLossAmount { | amount = 0 | synth.set(\waveLossAmount, amount); }
 
   ///////// Pattern Sequencer:
-  makeSequence { | name, type = 'sustaining' |
+  makeSequence { | name |
     fork {
       sequencerDict[name] = IM_PatternSeq.new(name, group, \addToHead);
       sequencerDict[name].stop;
       server.sync;
-      //sequencerDict[name].addKey(\instrument, \prm_Sampler_Stereo_OneShot);
-      /*
-      if( type == 'sustaining',
-        {
-          if( monoOrStereo == 'stereo',
-            { sequencerDict[name].addKey(\instrument, \prm_Sampler_Stereo_ADSR) },
-            { sequencerDict[name].addKey(\instrument, \prm_Sampler_Mono_ADSR) });
-        },
-        {
-          if( monoOrStereo == 'stereo',
-            { sequencerDict[name].addKey(\instrument, \prm_Sampler_Stereo_OneShot); },
-            { sequencerDict[name].addKey(\instrument, \prm_Sampler_Mono_OneShot); }
-          );
-      });
-      sequencerDict[name].addKey(\outBus, if( monoOrStereo == 'stereo', { mixer.chanStereo(0) }, { mixer.chanMono(0) }));
-      sequencerDict[name].addKey(\attackTime, Pfunc({ attackTime }));
-      sequencerDict[name].addKey(\decayTime, Pfunc({ decayTime }));
-      sequencerDict[name].addKey(\sustainLevel, Pfunc({ sustainLevel }));
-      sequencerDict[name].addKey(\releaseTime, Pfunc({ releaseTime }));
-      sequencerDict[name].addKey(\filterCutoff, Pfunc({ filterCutoff }));
-      sequencerDict[name].addKey(\tremFreq, Pfunc({ tremoloRate }));
-      sequencerDict[name].addKey(\tremDepth, Pfunc ({ tremoloDepth }));
-      sequencerDict[name].addKey(\tremWaveform, Pfunc({ tremoloWaveform }));
+      sequencerDict[name].addKey(\instrument, \prm_glitchySynth_osc);
+      sequencerDict[name].addKey(\outBus, procBus);
+      //sequencerDict[name].addKey(\attack, Pfunc({ attackTime }));
+      //sequencerDict[name].addKey(\sustainLevel, Pfunc({ sustainLevel }));
+      //sequencerDict[name].addKey(\release, Pfunc({ releaseTime }));
       sequencerDict[name].addKey(\amp, 1);
-      sequencerDict[name].addKey(\freq, 1);
-      */
+
     };
   }
 

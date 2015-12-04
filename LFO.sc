@@ -9,7 +9,7 @@ prm
 LFO {
 
   var <isLoaded;
-  var synth;
+  var <synth;
   var group, <outBus;
   var lfoWaveform;
 

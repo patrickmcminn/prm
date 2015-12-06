@@ -131,8 +131,8 @@ Sampler : IM_Module {
         doneAction: 2);
       sig = tremolo * env;
       sig = sig * filter;
-      sig = sig * amp;
       sig = Balance2.ar(sig[0], sig[1], pan);
+      sig = sig * amp;
       sig = sig * 3.dbamp;
       Out.ar(outBus, sig);
     }).add;
@@ -497,7 +497,7 @@ Sampler : IM_Module {
       sequencerDict[name].addKey(\tremFreq, Pfunc({ tremoloRate }));
       sequencerDict[name].addKey(\tremDepth, Pfunc ({ tremoloDepth }));
       sequencerDict[name].addKey(\tremWaveform, Pfunc({ tremoloWaveform }));
-      sequencerDict[name].addKey(\amp, 1);
+      //sequencerDict[name].addKey(\amp, 1);
       sequencerDict[name].addKey(\freq, 1);
     };
   }

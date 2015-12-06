@@ -8,7 +8,7 @@ Kingston, NY
 FalseSelf_FreezeGtr : IM_Module {
 
   var server, <isLoaded;
-  var <sampler, <reverb;
+  var <sampler, <reverb, eq;
   var noteDict, bufferDict;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
@@ -23,7 +23,9 @@ FalseSelf_FreezeGtr : IM_Module {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      reverb = IM_Reverb.new(mixer.chanStereo(0), mix: 0.65, roomSize: 0.92, damp: 0.9,
+      eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
+
+      reverb = IM_Reverb.new(eq.inBus, mix: 0.65, roomSize: 0.92, damp: 0.9,
         relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
@@ -36,7 +38,13 @@ FalseSelf_FreezeGtr : IM_Module {
       this.prMakePatterns;
 
       sampler.setAttackTime(0.5);
-      sampler.setReleaseTime(3);
+      sampler.setReleaseTime(0.5);
+      sampler.setSequencerClockTempo(125);
+
+      // eq parameters:
+      eq.setLowFreq(73.2);
+      eq.setLowGain(-12);
+      eq.setLowPassCutoff(1690);
 
       isLoaded = true;
     };
@@ -92,9 +100,9 @@ FalseSelf_FreezeGtr : IM_Module {
     {
       sampler.makeSequence(\chordProgression, 'sustaining');
       server.sync;
-      sampler.addKey(\legato, 1);
-      sampler.addKey(\dur, Pseq([20, 8, 8, 6, 10, 8, 8, 6, 6, 8, 6, 8], 1));
-      sampler.addKey(\buffer, Pseq([
+      sampler.addKey(\chordProgression, \legato, 1);
+      sampler.addKey(\chordProgression, \dur, Pseq([20, 8, 8, 6, 10, 8, 8, 6, 6, 8, 6, 8], 1));
+      sampler.addKey(\chordProgression, \buffer, Pseq([
         [bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
         [bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
         [bufferDict[\midC], bufferDict[\midG], bufferDict[\highC], bufferDict[\highE]],
@@ -108,6 +116,7 @@ FalseSelf_FreezeGtr : IM_Module {
         [bufferDict[\lowE], bufferDict[\lowB], bufferDict[\midE], bufferDict[\midGSharp]],
         [bufferDict[\lowB], bufferDict[\midB], bufferDict[\highDSharp2], bufferDict[\midFSharp]]
       ], 1));
+      sampler.addKey(\chordProgression, \amp, 0.1);
     }.fork;
   }
 

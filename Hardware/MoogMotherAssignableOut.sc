@@ -33,8 +33,8 @@ MoogMotherAssignableOut {
       midiChannel = (midiChan - 1);
 
       // set controlInBus variable:
-      //if( inBus != nil, { controlInBus = inBus }, { controlInBus = nilBus });
-      controlInBus = nilBus;
+      if( inBus != nil, { controlInBus = nilBus   }, { controlInBus = inBus });
+      //controlInBus = nilBus;
 
       // initialize envelope parameters:
       attackTime = 0.05;
@@ -42,7 +42,7 @@ MoogMotherAssignableOut {
       sustainLevel = 1;
       sustainTime = 1;
       releaseTime = 0.05;
-      peakLevel = 127;
+      peakLevel = 64;
 
       this.prAddSynthDefs;
       this.prInitMIDI(deviceName, portName);

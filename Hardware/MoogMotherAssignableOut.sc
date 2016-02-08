@@ -80,7 +80,7 @@ MoogMotherAssignableOut {
       lfoInput = In.kr(lfoInBus);
       sustainingEnvelope = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime, peakLevel, -4), gate);
       envelope = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, peakLevel), t_gate);
-      sig = input.lag(005) + lfoInput + sustainingEnvelope + envelope;
+      sig = input.lag(0.05) + lfoInput + sustainingEnvelope + envelope;
       SendReply.kr(Impulse.kr(sampleRate), '/motherAssign', sig);
     }).add;
   }

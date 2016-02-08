@@ -87,4 +87,7 @@ LFO {
   }
   setFrequency { | freq = 1 | synth.set(\freq, freq); }
   setPulseWidth { | pw = 0.5 | synth.set(\lfoPulseWidth, pw); }
+
+  setRangeLow { | rangeLo = -1 | synth.set(\rangeLow, rangeLo); }
+  setRangeHigh { | rangeHi = 1 | synth.set(\rangeHigh, rangeHi);}
 }

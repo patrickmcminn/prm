@@ -16,6 +16,7 @@
     var midiType;
     if( page == 'active', { page = activePageKey });
     pageDict[page].setGridMonitorFunc(column, row, func, bank);
+    activePage.gridBankArray[activePage.activeGridBank][num][5].reset.play;
   }
 
   setControlButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active', page = 'active' |
@@ -27,8 +28,10 @@
   }
 
   setControlButtonMonitorFunc { | button = 1, func, bank = 'active', page = 'active' |
+    var num = button - 1;
     if( page == 'active', { page = activePageKey });
     pageDict[page].setControlButtonMonitorFunc(button, func, bank);
+    activePage.controlButtonsBankArray[activePage.activeControlButtonsBank][4][num].reset.play;
   }
 
   setTouchButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active', page = 'active' |
@@ -40,8 +43,10 @@
   }
 
   setTouchButtonMonitorFunc { | button = 1, func, bank = 'active', page = 'active' |
+    var num = button - 1;
     if( page == 'active', { page = activePageKey });
     pageDict[page].setTouchButtonMonitorFunc(button, func, bank);
+    activePage.touchButtonsBankArray[activePage.activeTouchButtonsBank][4][num].reset.play;
   }
 
   setFaderFunc { | fader = 1, func, bank = 'active' page = 'active' |
@@ -53,8 +58,10 @@
   }
 
   setFaderMonitorFunc { | fader = 1, func, bank = 'active', page = 'active' |
+    var faderIndex = fader - 1;
     if( page == 'active', { page = activePageKey });
     pageDict[page].setFaderMonitorFunc(fader, func, bank);
+    activePage.fadersBankArray[activePage.activeFadersBank][faderIndex][4].reset.play;
   }
 
 }

@@ -162,6 +162,20 @@ Base_Page_Banks.sc
     );
   }
 
+  stopActiveBankMonitorRoutines {
+    32.do({ | index | gridBankArray[activeGridBank][index][5].stop; });
+    8.do({ | index | controlButtonsBankArray[activeControlButtonsBank][4][index].stop; });
+    8.do({ | index | touchButtonsBankArray[activeTouchButtonsBank][4][index].stop; });
+    9.do({ | index | fadersBankArray[activeFadersBank][index][4].stop; });
+  }
+
+  startActiveBankMonitorRoutines {
+    32.do({ | index | gridBankArray[activeGridBank][index][5].reset.play; });
+    8.do({ | index | controlButtonsBankArray[activeControlButtonsBank][4][index].reset.play; });
+    8.do({ | index | touchButtonsBankArray[activeTouchButtonsBank][4][index].reset.play; });
+    9.do({ | index | fadersBankArray[activeFadersBank][index][4].reset.play; });
+  }
+
 }
 
 + Base_Page {

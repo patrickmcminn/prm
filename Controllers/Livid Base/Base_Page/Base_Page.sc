@@ -3,7 +3,7 @@ Base_Page {
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
   var buttonColorArray, <faderModeArray, <faderValueArray;
 
-  var <gridBankArray, controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
+  var <gridBankArray, <controlButtonsBankArray, <fadersBankArray, <touchButtonsBankArray;
   var <activeGridBank, <activeControlButtonsBank, <activeFadersBank, <activeTouchButtonsBank;
 
   var <loadFunction, <offLoadFunction;
@@ -217,7 +217,7 @@ Base_Page {
           0.05.wait;
         }
       };
-      if( bank == 'active', { gridBankArray[bankSelect][num][5].reset.play; });
+      //if( bank == 'active', { gridBankArray[bankSelect][num][5].reset.play; });
     });
   }
 
@@ -252,7 +252,7 @@ Base_Page {
           0.05.wait;
         }
       };
-      if( bank == 'active', { controlButtonsBankArray[bankSelect][4][num].reset.play; });
+      //if( bank == 'active', { controlButtonsBankArray[bankSelect][4][num].reset.play; });
     });
   }
 
@@ -288,7 +288,7 @@ Base_Page {
           0.05.wait;
         };
       };
-      if( bank == 'active', { touchButtonsBankArray[bankSelect][4][num].reset.play; });
+      //if( bank == 'active', { touchButtonsBankArray[bankSelect][4][num].reset.play; });
     });
   }
 
@@ -317,7 +317,7 @@ Base_Page {
           0.05.wait;
         };
       };
-      if( bank == 'active', { fadersBankArray[bankSelect][faderIndex][4].reset.play; });
+      //if( bank == 'active', { fadersBankArray[bankSelect][faderIndex][4].reset.play; });
     });
   }
 

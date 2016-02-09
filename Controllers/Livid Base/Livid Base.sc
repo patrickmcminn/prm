@@ -123,6 +123,7 @@ Base {
   prMakePageDictionary {
     pageDict = IdentityDictionary.new;
     this.makePage('main');
+    activePage = pageDict['main'];
     this.setPage('main');
   }
 
@@ -195,9 +196,14 @@ Base {
   }
 
   setPage { | name = 'page' |
+    // stops routines that update control surface values on active page:
+    activePage.stopActiveBankMonitorRoutines;
+    activePage.offLoadFunction.value;
+
     activePageKey = name;
     activePage = pageDict[activePageKey];
-    activePage.offLoadFunction.value;
+
+
     72.do({ | num |
       this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
@@ -210,10 +216,14 @@ Base {
       this.prSetFaderMode(num + 10, activePage.getFaderMode(num));
     });
     76.do({ | num | this.turnButtonColor(num, activePage.getButtonColor(num)); });
+
+    // starts routines that update control surface values on active page:
+    activePage.startActiveBankMonitorRoutines;
+
     activePage.loadFunction.value;
   }
 
-  sePageLoadFunction { | func, page = 'active' |
+  setPageLoadFunction { | func, page = 'active' |
     if( page == 'active', { page = activePageKey });
     pageDict[page].setLoadFunction(func);
   }

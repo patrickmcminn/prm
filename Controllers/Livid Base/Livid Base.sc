@@ -213,7 +213,7 @@ Base {
     activePage.loadFunction.value;
   }
 
-  sePagedLoadFunction { | func, page = 'active' |
+  sePageLoadFunction { | func, page = 'active' |
     if( page == 'active', { page = activePageKey });
     pageDict[page].setLoadFunction(func);
   }

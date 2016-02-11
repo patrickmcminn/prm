@@ -32,6 +32,12 @@ x.stopActiveBankMonitorRoutines;
 
 ~yeahOk = 127;
 
+~yeahOk = 7
+
+~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
+
+~ohm.setLeftKnobFunc(0, 0, { | val | ~yeahOk = val; val.postln });
+
 x.setFaderMonitorFunc(1, { x.setFaderValue(1, ~yeahOk); }, page: 'main');
 
 x.setFaderMonitorFunc(2, { x.setFaderValue(2, 127-~yeahOk); }, page: 'other');
@@ -41,12 +47,22 @@ x.setFaderMode(2, 'greenFill');
 
 x.setControlButtonMonitorFunc(1, { if ( ~test == true, { x.turnControlButtonBlue(1, 'left') }, { x.turnControlButtonRed(1, 'left'); })}, page: 'main');
 
+x.setControlButtonMonitorFunc(1, { });
+
+
+x.turnControlButtonGreen(2, 'both');
 
 
 x.setTouchButtonMonitorFunc(1, {
   if ( ~test == true, { x.turnTouchButtonBlue(1, 'middle'); }, { x.turnTouchButtonRed(1, 'middle'); });
-}, 'main');
+}, page: 'main');
 
 x.turnControlButtonWhite(1, 'right');
 
     x.turnTouchButtonBlue(1);
+
+x.turnButtonColor(18, 'green');
+
+x.turnControlButtonYellow(3, 'right');
+
+x.activePage.touchButtonsBankArray;

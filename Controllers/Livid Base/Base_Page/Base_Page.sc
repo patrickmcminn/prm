@@ -278,8 +278,13 @@ Base_Page {
   setTouchButtonMonitorFunc { | button = 1, func, bank = 'active' |
     var bankSelect;
     var num = button - 1;
+    //button.postln;
+    //func.postln;
+    //bank.postln;
     if( bank == activeTouchButtonsBank, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeTouchButtonsBank }, { bankSelect = bank });
+    //bankSelect.postln;
+    //num.postln;
     if( num > 7, { "out of range!".postln; }, {
       touchButtonsBankArray[bankSelect][4][num].stop;
       touchButtonsBankArray[bankSelect][4][num] = r {

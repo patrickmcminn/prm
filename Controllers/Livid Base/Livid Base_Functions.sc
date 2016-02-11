@@ -44,7 +44,11 @@
 
   setTouchButtonMonitorFunc { | button = 1, func, bank = 'active', page = 'active' |
     var num = button - 1;
+    bank.postln;
+    page.postln;
     if( page == 'active', { page = activePageKey });
+    //bank.postln;
+    //page.postln;
     pageDict[page].setTouchButtonMonitorFunc(button, func, bank);
     activePage.touchButtonsBankArray[activePage.activeTouchButtonsBank][4][num].reset.play;
   }

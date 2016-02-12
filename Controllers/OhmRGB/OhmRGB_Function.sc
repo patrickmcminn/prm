@@ -14,12 +14,28 @@
     this.setFunc(num, type, activePage.getFunc(num, type));
   }
 
+  setGridMonitorFunc { | column = 0, row = 0, func, bank = 'active', page = 'active' |
+    var num = (column * 8) + row;
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeGridBank; });
+    pageDict[page].setGridMonitorFunc(column, row, func, bank);
+    activePage.gridBankArray[activePage.activeGridBank][num][4].reset.play;
+  }
+
   setLeftButtonFunc { | num = 0, func, type = 'noteOn', bank = 'active', page = 'active' |
     var buttonArray = [65, 73, 66, 74];
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank; });
     pageDict[page].setLeftButtonFunc(num, func, type, bank);
     this.setFunc(buttonArray[num], type, activePage.getFunc(buttonArray[num], type));
+  }
+
+  setLeftButtonMonitorFunc { | num = 0, func, bank = 'active', page = 'active' |
+    var buttonArray = [65, 73, 66, 74];
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank; });
+    pageDict[page].setLeftButtonMonitorFunc(num, func, bank);
+    activePage.leftButtonsBankArray[activePage.activeLeftButtonsBank][num][4].reset.play;
   }
 
   setRightButtonFunc { | num = 0, func, type = 'noteOn', bank = 'active', page = 'active' |
@@ -30,12 +46,28 @@
     this.setFunc(buttonArray[num], type, activePage.getFunc(buttonArray[num], type));
   }
 
+  setRightButtonMonitorFunc { | num = 0, func, bank = 'active', page = 'active' |
+    var buttonArray = [67, 75, 68, 76];
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank; });
+    pageDict[page].setRightButtonMonitorFunc(num, func, bank);
+    activePage.rightButtonsBankArray[activePage.activeRightButtonsBank][num][4].reset.play;
+  }
+
   setCrossfaderButtonFunc { | num = 0, func, type = 'noteOn', bank = 'active', page = 'active' |
     var buttonArray = [64, 72];
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank; });
     pageDict[page].setCrossfaderButtonFunc(num, func, type, bank);
     this.setFunc(buttonArray[num], type, activePage.getFunc(buttonArray[num], type));
+  }
+
+  setCrossfaderButtonMonitorFunc { | num = 0, func, bank = 'active', page = 'active' |
+    var buttonArray = [64, 72];
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank; });
+    pageDict[page].setCrossfaderButtonMonitorFunc(num, func, bank);
+    activePage.crossfaderButtonsBankArray[activePage.activeCrossfaderBank][num][4].reset.play;
   }
 
   setControlButtonFunc { | column = 0, row = 0, func, type = 'noteOn', bank = 'active', page = 'active' |
@@ -45,6 +77,15 @@
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank; });
     pageDict[page].setControlButtonFunc(column, row, func, type, bank);
     this.setFunc(buttonArray[num], type, activePage.getFunc(buttonArray[num], type));
+  }
+
+  setControlButtonMonitorFunc { | column = 0, row = 0, func, bank = 'active', page = 'active' |
+    var buttonArray = [69, 77, 70, 78, 71, 79, 80];
+    var num = (column * 2) + row;
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank; });
+    pageDict[page].setControlButtonMonitorFunc(column, row, func, bank);
+    activePage.controlButtonsBankArray[activePage.activeControlButtonsBank][num][4].reset.play;
   }
 
   setLeftSliderFunc { | num = 0, func, bank = 'active', page = 'active' |

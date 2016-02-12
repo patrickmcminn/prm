@@ -3,7 +3,7 @@ Base_Page {
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
   var buttonColorArray, <faderModeArray, <faderValueArray;
 
-  var <gridBankArray, controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
+  var <gridBankArray, <controlButtonsBankArray, <fadersBankArray, <touchButtonsBankArray;
   var <activeGridBank, <activeControlButtonsBank, <activeFadersBank, <activeTouchButtonsBank;
 
   var <loadFunction, <offLoadFunction;
@@ -204,6 +204,23 @@ Base_Page {
     });
   }
 
+  setGridMonitorFunc { | column = 0, row = 0, func, bank = 'active' |
+    var bankSelect;
+    var num = ((row * 8) + column);
+    if( bank == activeGridBank, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeGridBank }, { bankSelect = bank });
+    if( ( row > 3) || (column >7), { "out of range!"}, {
+      gridBankArray[bankSelect][num][5].stop;
+      gridBankArray[bankSelect][num][5] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        }
+      };
+      //if( bank == 'active', { gridBankArray[bankSelect][num][5].reset.play; });
+    });
+  }
+
   setControlButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
     var num = button - 1;
@@ -221,6 +238,24 @@ Base_Page {
       );
     });
   }
+
+  setControlButtonMonitorFunc { | button = 1, func, bank = 'active' |
+    var bankSelect;
+    var num = button -1;
+    if( bank == activeControlButtonsBank, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeControlButtonsBank }, { bankSelect = bank });
+    if( num > 7, { "Out of Range!" }, {
+      controlButtonsBankArray[bankSelect][4][num].stop;
+      controlButtonsBankArray[bankSelect][4][num] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        }
+      };
+      //if( bank == 'active', { controlButtonsBankArray[bankSelect][4][num].reset.play; });
+    });
+  }
+
 
   setTouchButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
@@ -240,6 +275,28 @@ Base_Page {
     });
   }
 
+  setTouchButtonMonitorFunc { | button = 1, func, bank = 'active' |
+    var bankSelect;
+    var num = button - 1;
+    //button.postln;
+    //func.postln;
+    //bank.postln;
+    if( bank == activeTouchButtonsBank, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeTouchButtonsBank }, { bankSelect = bank });
+    //bankSelect.postln;
+    //num.postln;
+    if( num > 7, { "out of range!".postln; }, {
+      touchButtonsBankArray[bankSelect][4][num].stop;
+      touchButtonsBankArray[bankSelect][4][num] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        };
+      };
+      //if( bank == 'active', { touchButtonsBankArray[bankSelect][4][num].reset.play; });
+    });
+  }
+
   setFaderFunc { | fader = 1, func, bank = 'active' |
     var bankSelect;
     var faderIndex = fader - 1;
@@ -249,6 +306,24 @@ Base_Page {
     if( fader > 9, { "out of range!" }, {
       fadersBankArray[bankSelect][faderIndex][0] = func;
       if( bank == 'active', { this.setControlFunc(num, func); }); });
+  }
+
+  setFaderMonitorFunc { | fader = 1, func, bank = 'active' |
+    var bankSelect;
+    var faderIndex = fader - 1;
+    var num = fader;
+    if( bank == activeFadersBank, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeFadersBank }, { bankSelect = bank });
+    if( fader > 9, { "out of range!" }, {
+      fadersBankArray[bankSelect][faderIndex][4].stop;
+      fadersBankArray[bankSelect][faderIndex][4] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        };
+      };
+      //if( bank == 'active', { fadersBankArray[bankSelect][faderIndex][4].reset.play; });
+    });
   }
 
   setMasterFaderFunc { | func, bank = 'active' |

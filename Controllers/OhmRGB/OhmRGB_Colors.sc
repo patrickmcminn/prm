@@ -8,7 +8,7 @@
       { \green }, { midiOutPort.noteOn(16, colorArray[num], 127) },
       { \blue }, { midiOutPort.noteOn(16, colorArray[num], 32) },
       { \yellow }, { midiOutPort.noteOn(16, colorArray[num], 64) },
-      { \purple }, { midiOutPort.noteOn(16, colorArray[num], 8) },
+      { \magenta }, { midiOutPort.noteOn(16, colorArray[num], 8) },
       { \cyan }, { midiOutPort.noteOn(16, colorArray[num], 4) },
       { \white }, { midiOutPort.noteOn(16, colorArray[num], 1) },
     );
@@ -34,8 +34,8 @@
     this.turnColor(num, \yellow);
   }
 
-  turnPurple { | num |
-    this.turnColor(num, \purple);
+  turnMagenta { | num |
+    this.turnColor(num, \magenta);
   }
 
   turnCyan { | num |
@@ -48,7 +48,7 @@
 
   turnRandomColor { | num |
     var color;
-    color = [\red, \green, \blue, \yellow, \purple, \cyan, \white].choose;
+    color = [\red, \green, \blue, \yellow, \magenta, \cyan, \white].choose;
     this.turnColor(num, color);
   }
 
@@ -82,8 +82,8 @@
     this.turnGridColor(column, row, 'yellow', bank, page);
   }
 
-  turnGridPurple { | column = 0, row = 0, bank = 'active', page = 'active' |
-    this.turnGridColor(column, row, 'purple', bank, page);
+  turnGridMagenta { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 'magenta', bank, page);
   }
 
   turnGridCyan { | column = 0, row = 0, bank = 'active', page = 'active' |
@@ -118,8 +118,8 @@
     8.do({ | column | 8.do({ | row | this.turnGridColor(column, row, 'yellow', bank, page); }); });
   }
 
-  turnAllGridPurple { |  bank = 'active', page = 'active' |
-    8.do({ | column | 8.do({ | row | this.turnGridColor(column, row, 'purple', bank, page); }); });
+  turnAllGridMagenta { |  bank = 'active', page = 'active' |
+    8.do({ | column | 8.do({ | row | this.turnGridColor(column, row, 'magenta', bank, page); }); });
   }
 
   turnAllGridCyan { |  bank = 'active', page = 'active' |
@@ -158,8 +158,8 @@
     this.turnLeftButtonColor(num, 'yellow', bank, page);
   }
 
-  turnLeftButtonPurple { | num, bank = 'active', page = 'active' |
-    this.turnLeftButtonColor(num, 'purple', bank, page);
+  turnLeftButtonMagenta { | num, bank = 'active', page = 'active' |
+    this.turnLeftButtonColor(num, 'magenta', bank, page);
   }
 
   turnLeftButtonCyan { | num, bank = 'active', page = 'active' |
@@ -198,8 +198,8 @@
     this.turnRightButtonColor(num, 'yellow', bank, page);
   }
 
-  turnRightButtonPurple { | num, bank = 'active', page = 'active' |
-    this.turnRightButtonColor(num, 'purple', bank, page);
+  turnRightButtonMagenta { | num, bank = 'active', page = 'active' |
+    this.turnRightButtonColor(num, 'magenta', bank, page);
   }
 
   turnRightButtonCyan { | num, bank = 'active', page = 'active' |
@@ -238,8 +238,8 @@
     this.turnCrossfaderButtonColor(num, 'yellow', bank, page);
   }
 
-  turnCrossfaderButtonPurple { | num = 0, bank = 'active', page = 'active' |
-    this.turnCrossfaderButtonColor(num, 'purple', bank, page);
+  turnCrossfaderButtonMagenta { | num = 0, bank = 'active', page = 'active' |
+    this.turnCrossfaderButtonColor(num, 'magenta', bank, page);
   }
 
   turnCrossfaderButtonCyan { | num = 0, bank = 'active', page = 'active' |
@@ -279,8 +279,8 @@
     this.turnControlButtonColor(column, row, 'yellow', bank, page);
   }
 
-  turnControlButtonPurple { | column = 0, row = 0, bank = 'active', page = 'active' |
-    this.turnControlButtonColor(column, row, 'purple', bank, page);
+  turnControlButtonMagenta { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnControlButtonColor(column, row, 'magenta', bank, page);
   }
 
   turnControlButtonCyan { | column = 0, row = 0, bank = 'active', page = 'active' |

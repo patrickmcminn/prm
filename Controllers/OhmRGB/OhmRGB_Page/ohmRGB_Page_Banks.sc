@@ -9,6 +9,7 @@
   Array Slot 1: Note Off Function
   Array Slot 2: Color
   Array Slot 3: Animation Function
+  Array Slot 4: Monitor Routine
   */
 
   prMakeNoteBanks { | numBanks = 1 |
@@ -121,60 +122,65 @@
 
   addGridBanks { | num = 1 |
     num.do({
-      gridBankArray = gridBankArray.add(Array.fill2D(64, 4, nil));
+      gridBankArray = gridBankArray.add(Array.fill2D(64, 5, nil));
       gridBankArray[(gridBankArray.size-1)].do({ | item, index |
         item[0] = { };
         item[1] = { };
         item[2] = \off;
         item[3] = TaskProxy.new;
+        item[4] = r { };
       });
     });
   }
 
   addLeftButtonsBanks { | num = 1 |
     num.do({
-      leftButtonsBankArray = leftButtonsBankArray.add(Array.fill2D(4, 4, nil));
+      leftButtonsBankArray = leftButtonsBankArray.add(Array.fill2D(4, 5, nil));
       leftButtonsBankArray[(leftButtonsBankArray.size-1)].do({ | item, index |
         item[0] = { };
         item[1] = { };
         item[2] = \off;
         item[3] = TaskProxy.new;
+        item[4] = r { };
       });
     });
   }
 
   addRightButtonsBanks { | num = 1 |
     num.do({
-      rightButtonsBankArray = rightButtonsBankArray.add(Array.fill2D(4, 4, nil));
+      rightButtonsBankArray = rightButtonsBankArray.add(Array.fill2D(4, 5, nil));
       rightButtonsBankArray[(rightButtonsBankArray.size-1)].do({ | item, index |
         item[0] = { };
         item[1] = { };
         item[2] = \off;
         item[3] = TaskProxy.new;
+        item[4] = r { };
       });
     });
   }
 
   addCrossfaderButtonsBanks { | num = 1 |
     num.do({
-      crossfaderButtonsBankArray = crossfaderButtonsBankArray.add(Array.fill2D(2, 4, nil));
+      crossfaderButtonsBankArray = crossfaderButtonsBankArray.add(Array.fill2D(2, 5, nil));
       crossfaderButtonsBankArray[(crossfaderButtonsBankArray.size-1)].do({ | item, index |
         item[0] = { };
         item[1] = { };
         item[2] = \off;
         item[3] = TaskProxy.new;
+        item[4] = r { };
       });
     });
   }
 
   addControlButtonsBanks { | num = 1 |
     num.do({
-      controlButtonsBankArray = controlButtonsBankArray.add(Array.fill2D(7, 4, nil));
+      controlButtonsBankArray = controlButtonsBankArray.add(Array.fill2D(7, 5, nil));
       controlButtonsBankArray[(controlButtonsBankArray.size-1)].do({ | item, index |
         item[0] = { };
         item[1] = { };
         item[2] = \off;
         item[3] = TaskProxy.new;
+        item[4] = r { };
       });
     });
   }
@@ -236,6 +242,22 @@
       this.setNoteOffFunc(item, controlButtonsBankArray[activeControlButtonsBank][index][1]);
       this.turnColor(item, controlButtonsBankArray[activeControlButtonsBank][index][2]);
     });
+  }
+
+  stopActiveBankMonitorRoutines {
+    64.do({ | index | gridBankArray[activeGridBank][index][4].stop; });
+    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBank][index][4].stop; });
+    4.do({ | index | rightButtonsBankArray[activeRightButtonsBank][index][4].stop; });
+    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][4].stop; });
+    7.do({ | index | controlButtonsBankArray[activeControlButtonsBank][index][4].stop; });
+  }
+
+  startActiveBankMonitorRoutines {
+    64.do({ | index | gridBankArray[activeGridBank][index][4].reset.play; });
+    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBank][index][4].reset.play; });
+    4.do({ | index | rightButtonsBankArray[activeRightButtonsBank][index][4].reset.play; });
+    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][4].reset.play; });
+    7.do({ | index | controlButtonsBankArray[activeControlButtonsBank][index][4].reset.play; });
   }
 
 

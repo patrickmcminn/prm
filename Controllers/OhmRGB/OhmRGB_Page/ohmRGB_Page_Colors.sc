@@ -62,10 +62,6 @@
     this.turnGridColor(column, row, \magenta, bank);
   }
 
-  turnGridPurple { | column = 0, row = 0, bank = 'active' |
-    this.turnGridColor(column, row, \purple, bank);
-  }
-
   turnGridCyan { | column = 0, row = 0, bank = 'active' |
     this.turnGridColor(column, row, \cyan, bank);
   }
@@ -100,10 +96,6 @@
 
   turnAllGridYellow { | bank = 'active' |
     this.turnAllGrid('yellow', bank);
-  }
-
-  turnAllGridPurple { | bank = 'active' |
-    this.turnAllGrid('purple', bank);
   }
 
   turnAllGridMagenta { | bank = 'active' |
@@ -159,10 +151,6 @@
     this.turnLeftButtonColor(num, \yellow, bank);
   }
 
-  turnLeftButtonPurple { | num, bank = 'active' |
-    this.turnLeftButtonColor(num, \purple, bank);
-  }
-
   turnLeftButtonMagenta { | num, bank = 'active' |
     this.turnLeftButtonColor(num, \magenta, bank);
   }
@@ -197,10 +185,6 @@
 
   turnAllLeftButtonsYellow { | bank = 'active' |
     this.turnAllLeftButtonsColor(\yellow, bank);
-  }
-
-  turnAllLeftButtonsPurple { | bank = 'active' |
-    this.turnAllLeftButtonsColor(\purple, bank);
   }
 
   turnAllLeftButtonsMagenta { | bank = 'active' |
@@ -251,10 +235,6 @@
     this.turnRightButtonColor(num, \yellow, bank);
   }
 
-  turnRightButtonPurple { | num = 0, bank = 'active' |
-    this.turnRightButtonColor(num, \purple, bank);
-  }
-
   turnRightButtonMagenta { | num = 0, bank = 'active' |
     this.turnRightButtonColor(num, \magenta, bank);
   }
@@ -289,10 +269,6 @@
 
   turnAllRightButtonsYellow { | bank = 'active' |
     this.turnAllRightButtonsColor(\yellow, bank);
-  }
-
-  turnAllRightButtonsPurple { | bank = 'active' |
-    this.turnAllRightButtonsColor(\purple, bank);
   }
 
   turnAllRightButtonsMagenta { | bank = 'active' |
@@ -343,10 +319,6 @@
     this.turnCrossfaderButtonColor(num, 'yellow', bank);
   }
 
-  turnCrossfaderButtonPurple { | num, bank = 'active' |
-    this.turnCrossfaderButtonColor(num, 'purple', bank);
-  }
-
   turnCrossfaderButtonMagenta { | num, bank = 'active' |
     this.turnCrossfaderButtonColor(num, 'magenta', bank);
   }
@@ -381,10 +353,6 @@
 
   turnAllCrossfaderButtonsYellow { | bank = 'active' |
     this.turnAllCrossfaderButtonsColor(\yellow, bank);
-  }
-
-  turnAllCrossfaderButtonsPurple { | bank = 'active' |
-    this.turnAllCrossfaderButtonsColor(\purple, bank);
   }
 
   turnAllCrossfaderButtonsMagenta { | bank = 'active' |
@@ -434,10 +402,6 @@
 
   turnControlButtonYellow { | column = 0, row = 0, bank = 'active' |
     this.turnControlButtonColor(row, column, \yellow, bank);
-  }
-
-  turnControlButtonPurple { | column = 0, row = 0, bank = 'active' |
-    this.turnControlButtonColor(row, column, \purple, bank);
   }
 
   turnControlButtonMagenta { | column = 0, row = 0, bank = 'active' |

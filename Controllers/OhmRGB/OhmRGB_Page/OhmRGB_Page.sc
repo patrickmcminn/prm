@@ -150,6 +150,20 @@ OhmRGB_Page : OhmRGB {
     );
   }
 
+  setGridMonitorFunc { | column = 0, row = 0, func, bank = 'active' |
+    var bankSet;
+    var num = (column * 8) + row;
+    if( bank == activeGridBank, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeGridBank }, { bankSet = bank });
+    gridBankArray[bankSet][num][4].stop;
+    gridBankArray[bankSet][num][4] = r {
+      loop {
+        func.value;
+        0.05.wait;
+      }
+    };
+  }
+
   setLeftButtonFunc { | num, func, type = \noteOn, bank = 'active' |
     var bankSet;
     var buttonArray = [65, 73, 66, 74];
@@ -171,6 +185,22 @@ OhmRGB_Page : OhmRGB {
       },
       { ^"not that many left buttons"; }
     );
+  }
+
+  setLeftButtonMonitorFunc {  | num, func, bank = 'active' |
+    var bankSet;
+    var buttonArray = [65, 73, 66, 74];
+    if( bank == activeLeftButtonsBank, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeLeftButtonsBank }, { bankSet = bank });
+    if( num < 5, {
+      leftButtonsBankArray[bankSet][num][4].stop;
+      leftButtonsBankArray[bankSet][num][4] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        }
+      };
+    }, { ^"not that many left buttons"; });
   }
 
   setRightButtonFunc { | num, func, type = \noteOn, bank = 'active' |
@@ -196,6 +226,23 @@ OhmRGB_Page : OhmRGB {
     );
   }
 
+  setRightButtonMonitorFunc { | num, func, bank = 'active' |
+    var bankSet;
+    var buttonArray = [67, 75, 68, 76];
+    if( bank == activeRightButtonsBank, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeRightButtonsBank }, { bankSet = bank });
+    if( num < 5, {
+      rightButtonsBankArray[bankSet][num][4].stop;
+      rightButtonsBankArray[bankSet][num][4] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        };
+      };
+    }, { ^"not that many right buttons"; });
+  }
+
+
   setCrossfaderButtonFunc { | num, func, type = \noteOn, bank = 'active' |
     var bankSet;
     var buttonArray = [64, 72];
@@ -218,6 +265,24 @@ OhmRGB_Page : OhmRGB {
       { ^"not that many crossfader buttons"; }
     );
   }
+
+  setCrossfaderButtonMonitorFunc { | num, func, bank = 'active' |
+    var bankSet;
+    var buttonArray = [64, 72];
+    if( bank == activeCrossfaderButtonsBank, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeCrossfaderButtonsBank }, { bankSet = bank });
+    if ( num < 3,
+      {
+        crossfaderButtonsBankArray[bankSet][num][4].stop;
+        crossfaderButtonsBankArray[bankSet][num][4] = r {
+          loop {
+            func.value;
+            0.05.wait;
+          };
+        };
+    }, { ^"not that many crossfader buttons"; });
+  }
+
 
   setControlButtonFunc { | column = 0, row = 0, func, type = \noteOn, bank = 'active' |
     var bankSet;
@@ -242,6 +307,24 @@ OhmRGB_Page : OhmRGB {
       { ^"not that many control buttons" }
     );
   }
+
+  setControlButtonMonitorFunc { | column = 0, row = 0, func, bank = 'active' |
+    var bankSet;
+    var buttonArray = [69, 77, 70, 78, 71, 79, 80];
+    var num = (column * 2) + row;
+    if( bank == activeControlButtonsBank, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeControlButtonsBank }, { bankSet = bank });
+    if( num < 7, {
+      controlButtonsBankArray[bankSet][num][4].stop;
+      controlButtonsBankArray[bankSet][num][4] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        };
+      };
+    }, { ^"not that many control buttons" });
+  }
+
 
   // don't use?
   setMasterButtonFunc { | func, type = \noteOn |

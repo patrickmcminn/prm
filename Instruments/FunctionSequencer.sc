@@ -11,9 +11,10 @@ FunctionSequencer {
   var <functionArray, <activeArray;
   var <clock;
   var sequenceRoutine;
-  var forwardRoutine, reverseRoutine, backAndForthRoutine, randomRoutine, driftRoutine;
+  var forwardFunc, reverseFunc, backAndForthFunc, randomFunc, driftFunc;
   var count, beatDivision;
   var <activeStep, <numberSteps;
+  var sequenceDirection;
 
   *new { | initSize = 16, clock = 'internal' |
     ^super.new.prInit(initSize, clock);
@@ -40,60 +41,58 @@ FunctionSequencer {
   playSequence { | beatDiv = 0.25, quant = 0, direction = 'forward' |
     count = 0;
     beatDivision = beatDiv;
+    sequenceDirection = direction;
     try { sequenceRoutine.stop; };
     this.prMakeRoutines;
-    switch(direction,
-      'forward', { sequenceRoutine = forwardRoutine; },
-      'reverse', { sequenceRoutine = reverseRoutine; },
-      'backAndForth', { sequenceRoutine = backAndForthRoutine; },
-      'random', { sequenceRoutine = randomRoutine; },
-      'drift', { sequenceRoutine = driftRoutine; }
-    );
     sequenceRoutine.play(clock, quant);
   }
 
   prMakeRoutines {
-    forwardRoutine = r {
+    sequenceRoutine = r {
       loop {
-        activeStep = count % numberSteps;
-        if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
-        count = count + 1;
+        switch(sequenceDirection,
+          'forward', { forwardFunc.value; },
+          'reverse', { reverseFunc.value; },
+          'backAndForth', { backAndForthFunc.value; },
+          'random', { randomFunc.value; },
+          'drift', { driftFunc.value; }
+        );
         beatDivision.wait;
       };
     };
-    reverseRoutine = r { | beatDiv = 0.25 |
-      loop {
+
+    forwardFunc = {
         activeStep = count % numberSteps;
-        if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
+        if( activeArray[activeStep] == true, { functionArray[activeStep].value });
+        count = count + 1;
+        //beatDivision.wait;
+    };
+
+    reverseFunc =  {
+        activeStep = count % numberSteps;
+        if( activeArray[activeStep] == true, { functionArray[activeStep].value });
         count = count - 1;
-        beatDivision.wait;
-      };
+        //beatDivision.wait;
     };
     // not working yet!
-    backAndForthRoutine = r { | beatDiv = 0.25 |
-      loop {
+    backAndForthFunc =  {
         activeStep = count % numberSteps;
-        if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
+        if( activeArray[activeStep] == true, { functionArray[activeStep].value });
         count = count + 1;
         count = count - 1;
-        beatDivision.wait;
-      };
+        //beatDivision.wait;
     };
-    randomRoutine = r { | beatDiv = 0.25 |
-      loop {
-        var step = functionArray.size.rand;
+    randomFunc = {
+        var step = numberSteps.rand;
         activeStep = step;
-        if( activeArray[step] == true, { functionArray.wrapAt(count).value });
-        beatDivision.wait;
-      };
+        if( activeArray[activeStep] == true, { functionArray[activeStep].value });
+        //beatDivision.wait;
     };
-    driftRoutine = r { | beatDiv = 0.25 |
-      loop {
+    driftFunc = {
         activeStep = count % numberSteps;
-        if( activeArray.wrapAt(count) == true, { functionArray.wrapAt(count).value });
+        if( activeArray[activeStep] == true, { functionArray[activeStep].value });
         count = choose([count + 1, count - 1]);
-        beatDivision.wait;
-      };
+        //beatDivision.wait;
     };
   }
 
@@ -101,7 +100,16 @@ FunctionSequencer {
 
 
   setDirection { | direction = 'forward', quant = 0 |
-    sequenceRoutine.stop;
+    sequenceDirection = direction;
+
+
+    /*
+    clock.play({
+      sequenceRoutine.stop.reset;
+      this.playSequence(beatDivision, quant, direction);
+    }, beatDivision);
+    */
+    /*
     switch(direction,
       'forward', { sequenceRoutine = forwardRoutine; },
       'reverse', { sequenceRoutine = reverseRoutine; },
@@ -110,6 +118,7 @@ FunctionSequencer {
       'drift', { sequenceRoutine = driftRoutine; }
     );
     sequenceRoutine.play(clock, quant);
+    */
   }
 
 
@@ -119,8 +128,9 @@ FunctionSequencer {
 
   addFunction { | step = 0, func | functionArray[step] = func; }
   removeFunction { | step = 0 | functionArray[step] = nil; }
+  setNumberSteps { | steps = 16 | numberSteps = steps; }
 
-  setFunctionArraySize { // note: clears array of previously-existing functions!
+  setMaxFunctionArraySize { // note: clears array of previously-existing functions!
     | size = 16 |
     functionArray = nil;
     functionArray = Array.newClear(size);

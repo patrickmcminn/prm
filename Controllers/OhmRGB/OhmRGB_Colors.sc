@@ -130,6 +130,14 @@
     8.do({ | column | 8.do({ | row | this.turnGridColor(column, row, 'white', bank, page); }); });
   }
 
+  turnGridColumnColor { | column = 0, color = 'off', bank = 'active', page = 'active' |
+    8.do({ | row | this.turnGridColor(column, row, color, bank, page); });
+  }
+
+  turnGridRowColor { | row = 0, color = 'off', bank = 'active', page = 'active' |
+    8.do({ | column | this.turnGridColor(column, row, color, bank, page;); });
+  }
+
   turnLeftButtonColor { | num, color = 'off', bank = 'active', page = 'active' |
     var buttonArray = [65, 73, 66, 74];
     if( page == 'active', { page = activePageKey });

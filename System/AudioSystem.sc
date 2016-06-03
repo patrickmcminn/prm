@@ -51,7 +51,7 @@ AudioSystem {
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
-
+      // send out to modular system
       modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
       while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 

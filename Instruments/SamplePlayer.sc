@@ -363,10 +363,16 @@ SamplePlayer : IM_Module {
         {
           if( monoOrStereo == 'stereo',
             { sequencerDict[name].addKey(\instrument, \prm_SamplePlayer_Stereo_OneShot); },
-            { sequencerDict[name].addKey(\instrument, \prm_SamplePlayer_Mono_OneShot); }
+            { sequencerDict[name].addKey(\instrument, \prm_SamplePlayer_Mono_OneShot); },
           );
+          sequencerDict[name].addKey(\sustainTime, Pfunc( {
+            ( buffer.numFrames / server.sampleRate ) - (attackTime + releaseTime) }
+          ));
+
+
       });
-      sequencerDict[name].addKey(\outBus, if( monoOrStereo == 'stereo', { mixer.chanStereo(0) }, { mixer.chanMono(0) }));
+
+      sequencerDict[name].addKey(\outBus, mixer.chanStereo(0));
 
       sequencerDict[name].addKey(\attackTime, Pfunc({ attackTime }));
       sequencerDict[name].addKey(\decayTime, Pfunc({ decayTime }));

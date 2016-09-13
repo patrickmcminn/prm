@@ -22,13 +22,14 @@ x.setOsc1FreqEnvStartRatio(1);
 x.setOsc1FreqEnvEndRatio(1);
 x.setOsc1FreqEnvTime(0.05);
 
-x.mixer.setSendVol(0, -9);
+x.mixer.setSendVol(0, -15);
 
 (
 x.makeSequence('stutter');
 x.makeSequence('stutter2');
 )
 
+(
 x.addKey(\stutter, \dur, Pseq([Pwhite(0.07, 0.15, 15), 0.15], inf));
 x.addKey(\stutter, \note, Pseq([Pseq([13], 15), 11], inf));
 x.addKey(\stutter, \legato, 1);
@@ -40,6 +41,7 @@ x.addKey(\stutter2, \legato, 1);
 x.addKey(\stutter2, \amp, 0.6);
 x.addKey(\stutter2, \decayTime, 0.05);
 x.addKey(\stutter2, \pan, Pwhite(-0.5, 0.5));
+);
 
 (
 x.playSequence('stutter');
@@ -47,9 +49,17 @@ x.playSequence('stutter2');
 )
 
 
-x.stopSequence('stutter2');
+x.addKey(\stutter, \note, Pseq([Pseq([13], 15), Pseq([18], 7), 11], inf));
+x.addKey(\stutter2, \note, Pseq([Pseq([15], Pseq([20], 7), 11), 13, 10], inf));
 
+
+x.stopSequence('stutter2');
+x.mixer.setSendVol(1, -12);
 
 ~prm.submixerA.mixer.tglMute;
 ~prm.reverb.mixer.tglMute;
 x.mixer.tglMute;
+
+
+~prm.granulator.setGrainEnvelope('revPerc');
+~prm.granulator.setRate(0.5, 0.5);

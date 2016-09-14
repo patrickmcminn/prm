@@ -57,9 +57,8 @@
   /////////  note bank set:
 
   setActiveGridBank { | bank = 0, page = 'active' |
-    if( page == 'active', { page = activePageKey; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveGridBank(bank);
-    activeGridBank = pageDict[page].activeGridBank;
     64.do({ | num, index |
       this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
@@ -69,9 +68,8 @@
 
   setActiveLeftButtonsBank { | bank = 0, page = 'active' |
     var buttonArray = [65, 73, 66, 74];
-    if( page == 'active', { page = activePageKey; activeLeftButtonsBank = bank; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveLeftButtonsBank(bank);
-    activeLeftButtonsBank = pageDict[page].activeLeftButtonsBank;
     buttonArray.do({ | num |
       this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
@@ -81,9 +79,8 @@
 
   setActiveRightButtonsBank { | bank = 0, page = 'active' |
     var buttonArray = [67, 75, 68, 76];
-    if( page == 'active', { page = activePageKey; activeRightButtonsBank = bank; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveRightButtonsBank(bank);
-    activeRightButtonsBank = pageDict[page].activeRightButtonsBank;
     buttonArray.do({ | num |
       this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
@@ -93,9 +90,8 @@
 
   setActiveCrossfaderButtonsBank { | bank = 0, page = 'active' |
     var buttonArray = [64, 72];
-    if( page == 'active', { page = activePageKey; activeCrossfaderButtonsBank = bank; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveCrossfaderButtonsBank(bank);
-    activeCrossfaderButtonsBank = pageDict[page].activeCrossfaderButtonsBank;
     buttonArray.do({ | num |
       this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
@@ -105,9 +101,8 @@
 
   setActiveControlButtonsBank { | bank = 0, page = 'active' |
     var buttonArray = [69, 77, 70, 78, 71, 79, 80];
-    if( page == 'active', { page = activePageKey; activeControlButtonsBank = bank; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveControlButtonsBank(bank);
-    activeControlButtonsBank = pageDict[page].activeControlButtonsBank;
     buttonArray.do({ | num |
       this.setNoteOnFunc(num, activePage.getNoteOnFunc(num));
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
@@ -119,40 +114,35 @@
 
   setActiveLeftSlidersBank { | bank = 0, page = 'active' |
     var sliderArray = [23, 22, 15, 14];
-    if( page == 'active', { page = activePageKey; activeLeftSlidersBank = bank; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveLeftSlidersBank(bank);
-    activeLeftSlidersBank = pageDict[page].activeLeftSlidersBank;
     sliderArray.do({ | num, index | this.setCCFunc(num, activePage.getCCFunc(num)) });
   }
 
   setActiveRightSlidersBank { | bank = 0, page = 'active' |
     var sliderArray = [5, 7, 6, 4];
-    if( page == 'active', { page = activePageKey; activeRightSlidersBank = bank; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveRightSlidersBank(bank);
-    activeRightSlidersBank = pageDict[page].activeRightSlidersBank;
     sliderArray.do({ | num, index | this.setCCFunc(num, activePage.getCCFunc(num)) });
   }
 
   setActiveLeftKnobsBank { | bank = 0, page = 'active' |
     var knobArray = [17, 19, 21, 16, 18, 20, 9, 11, 13, 8, 10, 12];
-    if( page == 'active', { page = activePageKey; activeLeftKnobsBank = bank; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveLeftKnobsBank(bank);
-    activeLeftKnobsBank = pageDict[page].activeLeftKnobsBank;
     knobArray.do({ | num, index | this.setCCFunc(num, activePage.getCCFunc(num)) });
   }
 
   setActiveRightKnobsBank { | bank = 0, page = 'active' |
     var knobArray = [3, 1, 0, 2];
-    if( page == 'active', { page = activePageKey; activeRightKnobsBank = bank; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveRightKnobsBank(bank);
-    activeRightKnobsBank = pageDict[page].activeRightKnobsBank;
     knobArray.do({ | num, index | this.setCCFunc(num, activePage.getCCFunc(num)) });
   }
 
   setActiveCrossfaderBank { | bank = 0, page = 'active' |
-    if( page == 'active', { page = activePageKey; activeCrossfaderBank = bank; });
+    if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveCrossfaderBank(bank);
-    activeCrossfaderBank = pageDict[page].activeCrossfaderBank;
     this.setCCFunc(24, activePage.getCCFunc(24));
   }
 

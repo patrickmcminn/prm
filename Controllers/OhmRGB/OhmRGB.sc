@@ -9,6 +9,9 @@ OhmRGB {
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
   var <pageDict, <activePage, activePageKey, <storageDict;
   var colorArray;
+  var <activeGridBank, <activeLeftSlidersBank, <activeRightSlidersBank;
+  var <activeLeftKnobsBank, <activeRightKnobsBank, <activeControlButtonsBank;
+  var <activeLeftButtonsBank, <activeRightButtonsBank, <activeCrossfaderBank, <activeCrossfaderButtonsBank;
 
   *new { | deviceName = "OhmRGB", portName = "Controls" |
     ^super.new.prInit(deviceName, portName);
@@ -83,6 +86,7 @@ OhmRGB {
     this.makePage('main');
     activePage = pageDict['main'];
     this.setPage('main');
+    //this.prSetActiveGridBanks;
   }
 
 
@@ -146,6 +150,8 @@ OhmRGB {
     25.do({ | num | this.setCCFunc(num, activePage.getCCFunc(num)); });
     81.do({ | num | this.turnColor(num, activePage.getColor(num)); });
 
+    //this.prSetActiveGridBanks;
+
     activePage.startActiveBankMonitorRoutines;
     activePage.loadFunctionDict.do({ | func | func.value; });
   }
@@ -159,5 +165,19 @@ OhmRGB {
     if( page == 'active', { page = activePageKey; });
     pageDict[page].addOffLoadFunction(name, func);
   }
+
+  prSetActiveGridBanks {
+    activeGridBank = activePage.activeGridBank;
+    activeLeftSlidersBank = activePage.activeLeftSlidersBank;
+    activeRightSlidersBank = activePage.activeRightSlidersBank;
+    activeLeftKnobsBank = activePage.activeLeftKnobsBank;
+    activeRightKnobsBank = activePage.activeRightKnobsBank;
+    activeLeftButtonsBank = activePage.activeLeftButtonsBank;
+    activeRightButtonsBank = activePage.activeRightButtonsBank;
+    activeControlButtonsBank = activePage.activeControlButtonsBank;
+    activeCrossfaderButtonsBank = activePage.activeCrossfaderButtonsBank;
+    activeCrossfaderBank = activePage.activeCrossfaderBank;
+  }
+
 
 }

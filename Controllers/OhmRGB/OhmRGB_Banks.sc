@@ -157,16 +157,16 @@
   }
 
   prSetCurrentBanks {
-    currentGridBank = pageDict[activePageKey].activeGridBank;
-    currentLeftButtonsBank = pageDict[activePageKey].activeLeftButtonsBank;
-    currentRightButtonsBank = pageDict[activePageKey].activeRightButtonsBank;
-    currentControlButtonsBank = pageDict[activePageKey].activeControlButtonsBank;
-    currentLeftSlidersBank = pageDict[activePageKey].activeLeftSlidersBank;
-    currentRightSlidersBank = pageDict[activePageKey].activeRightSlidersBank;
-    currentLeftKnobsBank = pageDict[activePageKey].activeLeftKnobsBank;
-    currentRightKnobsBank = pageDict[activePageKey].activeRightKnobsBank;
-    currentCrossfaderBank = pageDict[activePageKey].activeCrossfaderBank;
-    currentCrossfaderButtonsBank = pageDict[activePageKey].activeCrossfaderButtonsBank;
+    activeGridBank = pageDict[activePageKey].activeGridBnk;
+    activeLeftButtonsBank = pageDict[activePageKey].activeLeftButtonsBnk;
+    activeRightButtonsBank = pageDict[activePageKey].activeRightButtonsBnk;
+    activeControlButtonsBank = pageDict[activePageKey].activeControlButtonsBnk;
+    activeLeftSlidersBank = pageDict[activePageKey].activeLeftSlidersBnk;
+    activeRightSlidersBank = pageDict[activePageKey].activeRightSlidersBnk;
+    activeLeftKnobsBank = pageDict[activePageKey].activeLeftKnobsBnk;
+    activeRightKnobsBank = pageDict[activePageKey].activeRightKnobsBnk;
+    activeCrossfaderBank = pageDict[activePageKey].activeCrossfaderBnk;
+    activeCrossfaderButtonsBank = pageDict[activePageKey].activeCrossfaderButtonsBnk;
   }
 
 }

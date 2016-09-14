@@ -10,6 +10,7 @@ var page = 'subtractive';
 var mainKnobBank = 0;
 
 var mainGridBank = 0;
+var keyboardGridBank = 0;
 
 var mainSliderBank = 0;
 
@@ -344,11 +345,14 @@ var mainCrossfaderBank = 0;
 //////// Crossfader:
 
 ~ohm.setCrossfaderFunc({ | val | ~prm.subtractive.mixer.setVol(val.ccdbfs(-70, 0)); }, mainCrossfaderBank, page);
-/*~ohm.setCrossfaderButtonMonitorFunc(0, {
-  switch(~ohm.active
+~ohm.setCrossfaderButtonMonitorFunc(0, {
+  switch(~ohm.activeGridBank,
+    { mainGridBank }, { ~ohm.turnCrossfaderButtonMagenta(0, mainCrossfaderBank, page); },
+    { keyboardGridBank }, { ~ohm.turnCrossfaderButtonBlue(0, mainCrossfaderBank, page); }
+  );
 }, mainCrossfaderBank, page);
 
-*/
+
 
 
 

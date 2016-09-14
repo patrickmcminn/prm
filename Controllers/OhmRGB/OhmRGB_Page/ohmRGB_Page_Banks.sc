@@ -19,11 +19,11 @@
     this.prMakeCrossfaderButtonsBanks(numBanks);
     this.prMakeControlButtonsBanks(numBanks);
 
-    activeGridBank = 0;
-    activeLeftButtonsBank = 0;
-    activeRightButtonsBank = 0;
-    activeCrossfaderButtonsBank = 0;
-    activeControlButtonsBank = 0;
+    activeGridBnk = 0;
+    activeLeftButtonsBnk = 0;
+    activeRightButtonsBnk = 0;
+    activeCrossfaderButtonsBnk = 0;
+    activeControlButtonsBnk = 0;
   }
 
   prMakeGridBanks { | numBanks = 1 |
@@ -108,11 +108,11 @@
     this.addRightKnobsBanks(numBanks);
     this.addCrossfaderBanks(numBanks);
 
-    activeLeftSlidersBank = 0;
-    activeRightSlidersBank = 0;
-    activeLeftKnobsBank = 0;
-    activeRightKnobsBank = 0;
-    activeCrossfaderBank = 0;
+    activeLeftSlidersBnk = 0;
+    activeRightSlidersBnk = 0;
+    activeLeftKnobsBnk = 0;
+    activeRightKnobsBnk = 0;
+    activeCrossfaderBnk = 0;
   }
 
   //////// Public Bank Functions:
@@ -196,68 +196,68 @@
   }
 
   setActiveGridBank { | bank = 0 |
-    activeGridBank = bank;
+    activeGridBnk = bank;
     64.do({ | index |
-      this.setNoteOnFunc(index, gridBankArray[activeGridBank][index][0]);
-      this.setNoteOffFunc(index, gridBankArray[activeGridBank][index][1]);
-      this.turnColor(index, gridBankArray[activeGridBank][index][2]);
+      this.setNoteOnFunc(index, gridBankArray[activeGridBnk][index][0]);
+      this.setNoteOffFunc(index, gridBankArray[activeGridBnk][index][1]);
+      this.turnColor(index, gridBankArray[activeGridBnk][index][2]);
     });
   }
 
   setActiveLeftButtonsBank { | bank = 0 |
     var buttonArray = [65, 73, 66, 74];
-    activeLeftButtonsBank = bank;
+    activeLeftButtonsBnk = bank;
     buttonArray.do({ | item, index |
-      this.setNoteOnFunc(item, leftButtonsBankArray[activeLeftButtonsBank][index][0]);
-      this.setNoteOffFunc(item, leftButtonsBankArray[activeLeftButtonsBank][index][1]);
-      this.turnColor(item, leftButtonsBankArray[activeLeftButtonsBank][index][2]);
+      this.setNoteOnFunc(item, leftButtonsBankArray[activeLeftButtonsBnk][index][0]);
+      this.setNoteOffFunc(item, leftButtonsBankArray[activeLeftButtonsBnk][index][1]);
+      this.turnColor(item, leftButtonsBankArray[activeLeftButtonsBnk][index][2]);
     });
   }
 
   setActiveRightButtonsBank { | bank = 0 |
     var buttonArray = [67, 75, 68, 76];
-    activeRightButtonsBank = bank;
+    activeRightButtonsBnk = bank;
     buttonArray.do({ | item, index |
-      this.setNoteOnFunc(item, rightButtonsBankArray[activeRightButtonsBank][index][0]);
-      this.setNoteOffFunc(item, rightButtonsBankArray[activeRightButtonsBank][index][1]);
-      this.turnColor(item, rightButtonsBankArray[activeRightButtonsBank][index][2]);
+      this.setNoteOnFunc(item, rightButtonsBankArray[activeRightButtonsBnk][index][0]);
+      this.setNoteOffFunc(item, rightButtonsBankArray[activeRightButtonsBnk][index][1]);
+      this.turnColor(item, rightButtonsBankArray[activeRightButtonsBnk][index][2]);
     });
   }
 
   setActiveCrossfaderButtonsBank { | bank = 0 |
     var buttonArray = [64, 72];
-    activeCrossfaderButtonsBank = bank;
+    activeCrossfaderButtonsBnk = bank;
     buttonArray.do({ | item, index |
-      this.setNoteOnFunc(item, crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][0]);
-      this.setNoteOffFunc(item, crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][1]);
-      this.turnColor(item, crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][2]);
+      this.setNoteOnFunc(item, crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][0]);
+      this.setNoteOffFunc(item, crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][1]);
+      this.turnColor(item, crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][2]);
     });
   }
 
   setActiveControlButtonsBank { | bank = 0 |
     var buttonArray = [69, 77, 70, 78, 71, 79, 80];
-    activeControlButtonsBank = bank;
+    activeControlButtonsBnk = bank;
     buttonArray.do({ | item, index |
-      this.setNoteOnFunc(item, controlButtonsBankArray[activeControlButtonsBank][index][0]);
-      this.setNoteOffFunc(item, controlButtonsBankArray[activeControlButtonsBank][index][1]);
-      this.turnColor(item, controlButtonsBankArray[activeControlButtonsBank][index][2]);
+      this.setNoteOnFunc(item, controlButtonsBankArray[activeControlButtonsBnk][index][0]);
+      this.setNoteOffFunc(item, controlButtonsBankArray[activeControlButtonsBnk][index][1]);
+      this.turnColor(item, controlButtonsBankArray[activeControlButtonsBnk][index][2]);
     });
   }
 
   stopActiveBankMonitorRoutines {
-    64.do({ | index | gridBankArray[activeGridBank][index][4].stop; });
-    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBank][index][4].stop; });
-    4.do({ | index | rightButtonsBankArray[activeRightButtonsBank][index][4].stop; });
-    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][4].stop; });
-    7.do({ | index | controlButtonsBankArray[activeControlButtonsBank][index][4].stop; });
+    64.do({ | index | gridBankArray[activeGridBnk][index][4].stop; });
+    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].stop; });
+    4.do({ | index | rightButtonsBankArray[activeRightButtonsBnk][index][4].stop; });
+    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][4].stop; });
+    7.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][index][4].stop; });
   }
 
   startActiveBankMonitorRoutines {
-    64.do({ | index | gridBankArray[activeGridBank][index][4].reset.play; });
-    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBank][index][4].reset.play; });
-    4.do({ | index | rightButtonsBankArray[activeRightButtonsBank][index][4].reset.play; });
-    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBank][index][4].reset.play; });
-    7.do({ | index | controlButtonsBankArray[activeControlButtonsBank][index][4].reset.play; });
+    64.do({ | index | gridBankArray[activeGridBnk][index][4].reset.play; });
+    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].reset.play; });
+    4.do({ | index | rightButtonsBankArray[activeRightButtonsBnk][index][4].reset.play; });
+    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][4].reset.play; });
+    7.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][index][4].reset.play; });
   }
 
 
@@ -305,39 +305,39 @@
 
   setActiveLeftSlidersBank { | bank = 0 |
     var sliderArray = [23, 22, 15, 14];
-    activeLeftSlidersBank = bank;
+    activeLeftSlidersBnk = bank;
     sliderArray.do({ | item, index |
-      this.setCCFunc(item, leftSlidersBankArray[activeLeftSlidersBank][index]);
+      this.setCCFunc(item, leftSlidersBankArray[activeLeftSlidersBnk][index]);
     });
   }
 
   setActiveRightSlidersBank { | bank = 0 |
     var sliderArray = [5, 7, 6, 4];
-    activeRightSlidersBank = bank;
+    activeRightSlidersBnk = bank;
     sliderArray.do({ | item, index |
-      this.setCCFunc(item, rightSlidersBankArray[activeRightSlidersBank][index]);
+      this.setCCFunc(item, rightSlidersBankArray[activeRightSlidersBnk][index]);
     });
   }
 
   setActiveLeftKnobsBank { | bank = 0 |
     var knobArray = [17, 19, 21, 16, 18, 20, 9, 11, 13, 8, 10, 12];
-    activeLeftKnobsBank = bank;
+    activeLeftKnobsBnk = bank;
     knobArray.do({ | item, index |
-      this.setCCFunc(item, leftKnobsBankArray[activeLeftKnobsBank][index]);
+      this.setCCFunc(item, leftKnobsBankArray[activeLeftKnobsBnk][index]);
     });
   }
 
   setActiveRightKnobsBank { | bank = 0 |
     var knobArray = [3, 1, 0, 2];
-    activeRightKnobsBank = bank;
+    activeRightKnobsBnk = bank;
     knobArray.do({ | item, index |
-      this.setCCFunc(item, rightKnobsBankArray[activeRightKnobsBank][index]);
+      this.setCCFunc(item, rightKnobsBankArray[activeRightKnobsBnk][index]);
     });
   }
 
   setActiveCrossfaderBank { | bank = 0 |
-    activeCrossfaderBank = bank;
-    this.setCCFunc(24, crossfaderBankArray[activeCrossfaderBank]);
+    activeCrossfaderBnk = bank;
+    this.setCCFunc(24, crossfaderBankArray[activeCrossfaderBnk]);
 
   }
 

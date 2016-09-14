@@ -13,14 +13,8 @@ var mainGridBank = 0;
 
 var mainSliderBank = 0;
 
-var mainCrossfaderBank = 0;
-
 
 ~ohm.makePage(page);
-
-~ohm.addPageLoadFunction({
-  ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
-}, page);
 
 ////////// Main Bank:
 
@@ -140,9 +134,9 @@ var mainCrossfaderBank = 0;
 
 // sine:
 ~ohm.setGridMonitorFunc(0, 0, {
-  /*if( ~prm.subtractive.osc1Waveform == 0,
+  if( ~prm.subtractive.osc1Waveform == 0,
     { ~ohm.turnGridGreen(0, 0, mainGridBank, page); }, { ~ohm.turnGridWhite(0, 0, mainGridBank, page); }
-  );*/
+  );
 }, mainGridBank, page);
 ~ohm.setGridFunc(0, 0, { ~prm.subtractive.setOsc1Waveform('sine'); }, bank: mainGridBank, page: page);
 
@@ -328,15 +322,5 @@ var mainCrossfaderBank = 0;
     { ~ohm.turnGridGreen(6, 5, mainGridBank, page); }, { ~ohm.turnGridCyan(6, 5, mainGridBank, page); });
 }, mainGridBank, page);
 ~ohm.setGridFunc(6, 5, { ~prm.subtractive.setLFO2Waveform('sampleAndHold'); }, bank: mainGridBank, page: page);
-
-
-
-//////// Crossfader:
-
-~ohm.setCrossfaderFunc({ | val | ~prm.subtractive.mixer.setVol(val.ccdbfs(-70, 0)); }, mainCrossfaderBank, page);
-//~ohm.setCrossfaderButtonMonitorFunc(0, { "poopy".postln; }, mainCrossfaderBank, page);
-
-
-
 
 

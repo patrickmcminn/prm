@@ -15,7 +15,7 @@ var submixerCBank = 2;
 
 ~ohm.addGridBanks(2, page: page);
 
-~ohm.addPageLoadFunction({
+~ohm.setPageLoadFunction({
   ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 }, page);
 

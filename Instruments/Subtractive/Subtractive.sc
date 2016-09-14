@@ -97,8 +97,8 @@ Subtractive : IM_Module {
       lfoSaw = LFSaw.kr(lfo2Freq, 1);
       lfoRevSaw = LFSaw.kr(lfo2Freq, 1) * -1;
       lfoRect = LFPulse.kr(lfo2Freq, width: lfo2PulseWidth);
-      lfoNoise0 = LFNoise0.kr(lfo2Freq);
-      lfoNoise2 = LFNoise1.kr(lfo2Freq);
+      lfoNoise0 = LFDNoise0.kr(lfo2Freq);
+      lfoNoise2 = LFDNoise1.kr(lfo2Freq);
       lfo = SelectX.kr(lfo2Waveform, [lfoSine, lfoSaw, lfoRevSaw, lfoRect, lfoNoise0, lfoNoise2]);
       Out.kr(outBus, lfo);
     }).add;
@@ -187,8 +187,8 @@ Subtractive : IM_Module {
       lfo1Saw = LFSaw.kr(thisLFO1Freq, 1);
       lfo1RevSaw = LFSaw.kr(thisLFO1Freq, 1) * -1;
       lfo1Rect = (LFPulse.kr(thisLFO1Freq, width: lfo1PulseWidth) - 0.5) * 2;
-      lfo1Noise0 = LFNoise0.kr(thisLFO1Freq);
-      lfo1Noise2 = LFNoise1.kr(thisLFO1Freq);
+      lfo1Noise0 = LFDNoise0.kr(thisLFO1Freq);
+      lfo1Noise2 = LFDNoise1.kr(thisLFO1Freq);
       lfo1AttackEnv = EnvGen.kr(Env.new([0, 0, 1], [0, lfo1AttackTime], 'cubed', 1), gate);
       lfo1ReleaseEnv = EnvGen.kr(Env.cutoff(lfo1ReleaseTime, 1, 'cubed'), gate);
       lfo1AttackAndReleaseEnv = EnvGen.kr(Env.asr(lfo1AttackTime, 1, lfo1ReleaseTime, curve: 'cubed'), gate);
@@ -385,8 +385,8 @@ Subtractive : IM_Module {
       lfo1Saw = LFSaw.kr(thisLFO1Freq, 1);
       lfo1RevSaw = LFSaw.kr(thisLFO1Freq, 1) * -1;
       lfo1Rect = (LFPulse.kr(thisLFO1Freq, width: lfo1PulseWidth) - 0.5) * 2;
-      lfo1Noise0 = LFNoise0.kr(thisLFO1Freq);
-      lfo1Noise2 = LFNoise1.kr(thisLFO1Freq);
+      lfo1Noise0 = LFDNoise0.kr(thisLFO1Freq);
+      lfo1Noise2 = LFDNoise1.kr(thisLFO1Freq);
       lfo1AttackEnv = EnvGen.kr(Env.new([0, 0, 1], [0, lfo1AttackTime], 'cubed', 1), gate);
       lfo1ReleaseEnv = EnvGen.kr(Env.cutoff(lfo1ReleaseTime, 1, 'cubed'), gate);
       lfo1AttackAndReleaseEnv = EnvGen.kr(Env.asr(lfo1AttackTime, 1, lfo1ReleaseTime), gate);

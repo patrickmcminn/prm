@@ -15,12 +15,7 @@ var mainSliderBank = 0;
 
 var mainCrossfaderBank = 0;
 
-
 ~ohm.makePage(page);
-
-~ohm.addPageLoadFunction({
-  ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
-}, page);
 
 ////////// Main Bank:
 

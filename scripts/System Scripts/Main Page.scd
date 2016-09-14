@@ -12,7 +12,7 @@ var dauphineStreetIsLoaded = false;
 var cortezIsLoaded = false;
 
 ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
-~ohm.setPageLoadFunction({
+~ohm.addPageLoadFunction({
   ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 }, page);
 
@@ -62,7 +62,7 @@ var cortezIsLoaded = false;
 }, page: page);
 
 // Dauphine Street:
-~ohm.turnGridPurple(0, 2, page: page);
+~ohm.turnGridMagenta(0, 2, page: page);
 ~ohm.setGridFunc(0, 2, {
   if( dauphineStreetIsLoaded == false, {
     r {
@@ -108,14 +108,14 @@ var cortezIsLoaded = false;
 
 
 // mic pre/post:
-~ohm.turnGridPurple(0, 7, page: page);
+~ohm.turnGridMagenta(0, 7, page: page);
 ~ohm.setGridFunc(0, 7, r {
   loop {
     ~prm.microphone.setSendPre;
     ~ohm.turnGridBlue(0, 7).yield;
 
     ~prm.microphone.setSendPost;
-    ~ohm.turnGridPurple(0, 7).yield;
+    ~ohm.turnGridMagenta(0, 7).yield;
   }
 }, page: page);
 
@@ -165,7 +165,7 @@ var cortezIsLoaded = false;
 ~ohm.turnGridBlue(5, 7, page: page);
 ~ohm.setGridFunc(5, 7, { ~ohm.setPage('submixer'); }, page: page);
 // Master EQ Page:
-~ohm.turnGridPurple(6, 7, page: page);
+~ohm.turnGridMagenta(6, 7, page: page);
 ~ohm.setGridFunc(6, 7, { ~ohm.setPage('masterEQ'); }, page: page);
 // Submixer Effects Page:
 ~ohm.turnGridCyan(7, 7, page: page);

@@ -22,7 +22,7 @@ var submixerBankResetFunc;
 ~ohm.makePage(page);
 ~ohm.addLeftKnobsBanks(9, page: page);
 
-~ohm.setPageLoadFunction({
+~ohm.addPageLoadFunction({
   ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 }, page);
 
@@ -35,7 +35,7 @@ var submixerBankResetFunc;
 ~ohm.turnGridCyan(0, 0, page: page);
 ~ohm.turnGridBlue(1, 0, page: page);
 ~ohm.turnGridCyan(2, 0, page: page);
-~ohm.turnGridPurple(3, 0, page: page);
+~ohm.turnGridMagenta(3, 0, page: page);
 ~ohm.turnGridYellow(4, 0, page: page);
 ~ohm.turnGridWhite(5, 0, page: page);
 
@@ -43,14 +43,14 @@ var submixerBankResetFunc;
 ~ohm.turnGridCyan(0, 1, page: page);
 ~ohm.turnGridBlue(1, 1, page: page);
 ~ohm.turnGridCyan(2, 1, page: page);
-~ohm.turnGridPurple(3, 1, page: page);
+~ohm.turnGridMagenta(3, 1, page: page);
 ~ohm.turnGridYellow(4, 1, page: page);
 ~ohm.turnGridWhite(5, 1, page: page);
 // submixer C:
 ~ohm.turnGridCyan(0, 2, page: page);
 ~ohm.turnGridBlue(1, 2, page: page);
 ~ohm.turnGridCyan(2, 2, page: page);
-~ohm.turnGridPurple(3, 2, page: page);
+~ohm.turnGridMagenta(3, 2, page: page);
 ~ohm.turnGridYellow(4, 2, page: page);
 ~ohm.turnGridWhite(5, 2, page: page);
 
@@ -227,7 +227,7 @@ var submixerBankResetFunc;
 
 submixerBankResetFunc = { | rowOffset = 4 |
   ~ohm.turnGridCyan(0, rowOffset, page: page);
-  ~ohm.turnGridPurple(1, rowOffset, page: page);
+  ~ohm.turnGridMagenta(1, rowOffset, page: page);
   ~ohm.turnGridYellow(2, rowOffset, page: page);
 };
 

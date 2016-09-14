@@ -57,7 +57,7 @@
   turnGridColor { | column = 0, row = 0, color = 'off', bank = 'active', page = 'active' |
     var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     pageDict[page].turnGridColor(column, row, color, bank);
     if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
   }
@@ -141,7 +141,7 @@
   turnLeftButtonColor { | num, color = 'off', bank = 'active', page = 'active' |
     var buttonArray = [65, 73, 66, 74];
     if( page == 'active', { page = activePageKey });
-    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank; });
+    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBnk; });
     pageDict[page].turnLeftButtonColor(num, color, bank);
     if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
@@ -181,7 +181,7 @@
   turnRightButtonColor { | num, color = 'off', bank = 'active', page = 'active' |
     var buttonArray = [67, 75, 68, 76];
     if( page == 'active', { page = activePageKey });
-    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank; });
+    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBnk; });
     pageDict[page].turnRightButtonColor(num, color, bank);
     if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
@@ -221,7 +221,7 @@
   turnCrossfaderButtonColor { | num, color = 'off', bank = 'active', page = 'active' |
     var buttonArray = [64, 72];
     if( page == 'active', { page = activePageKey });
-    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank; });
+    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBnk; });
     pageDict[page].turnCrossfaderButtonColor(num, color, bank);
     if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
@@ -262,7 +262,7 @@
     var num = (column * 2) + row;
     var buttonArray = [69, 77, 70, 78, 71, 79, 80];
     if( page == 'active', { page = activePageKey });
-    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank; });
+    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBnk; });
     pageDict[page].turnControlButtonColor(column, row, color, bank);
     if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }

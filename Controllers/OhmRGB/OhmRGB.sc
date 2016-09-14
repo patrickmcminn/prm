@@ -7,8 +7,12 @@ OhmRGB {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
-  var <pageDict, <activePage, activePageKey, <storageDict;
+  var <pageDict, <activePage, <activePageKey, <storageDict;
   var colorArray;
+  var <currentGridBank, <currentLeftButtonsBank, <currentRightButtonsBank, <currentControlButtonsBank;
+  var <currentLeftSlidersBank, <currentRightSlidersBank;
+  var <currentLeftKnobsBank, <currentRightKnobsBank;
+  var <currentCrossfaderBank, <currentCrossfaderButtonsBank;
 
   *new { | deviceName = "OhmRGB", portName = "Controls" |
     ^super.new.prInit(deviceName, portName);
@@ -141,6 +145,9 @@ OhmRGB {
     activePage.offLoadFunctionDict.do({ | func | func.value; });
     activePageKey = name;
     activePage = pageDict[activePageKey];
+
+    this.prSetCurrentBanks;
+
     81.do({ | num | this.setNoteOnFunc(num, activePage.getNoteOnFunc(num)); });
     81.do({ | num | this.setNoteOffFunc(num, activePage.getNoteOffFunc(num)); });
     25.do({ | num | this.setCCFunc(num, activePage.getCCFunc(num)); });

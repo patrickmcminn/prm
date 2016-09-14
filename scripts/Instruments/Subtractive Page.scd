@@ -140,9 +140,9 @@ var mainCrossfaderBank = 0;
 
 // sine:
 ~ohm.setGridMonitorFunc(0, 0, {
-  /*if( ~prm.subtractive.osc1Waveform == 0,
+  if( ~prm.subtractive.osc1Waveform == 0,
     { ~ohm.turnGridGreen(0, 0, mainGridBank, page); }, { ~ohm.turnGridWhite(0, 0, mainGridBank, page); }
-  );*/
+  );
 }, mainGridBank, page);
 ~ohm.setGridFunc(0, 0, { ~prm.subtractive.setOsc1Waveform('sine'); }, bank: mainGridBank, page: page);
 

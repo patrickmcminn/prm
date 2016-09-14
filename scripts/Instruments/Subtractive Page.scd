@@ -330,13 +330,30 @@ var mainCrossfaderBank = 0;
 ~ohm.setGridFunc(6, 5, { ~prm.subtractive.setLFO2Waveform('sampleAndHold'); }, bank: mainGridBank, page: page);
 
 
+//// Filter:
+~ohm.setGridMonitorFunc(0, 6, {
+  3.do({ | i | ~ohm.turnGridCyan(i, 6, mainGridBank, page); });
+  switch(~prm.subtractive.filterType,
+    { 0 }, { ~ohm.turnGridGreen(0, 6, mainGridBank, page); },
+    { 1 }, { ~ohm.turnGridGreen(1, 6, mainGridBank, page); },
+    { 2 }, { ~ohm.turnGridGreen(2, 6, mainGridBank, page); }
+  );
+}, mainGridBank, page);
+
+~ohm.setGridFunc(0, 6, { ~prm.subtractive.setFilterType('lowPass') }, bank: mainGridBank, page: page);
+~ohm.setGridFunc(1, 6, { ~prm.subtractive.setFilterType('highPass') }, bank: mainGridBank, page: page);
+~ohm.setGridFunc(2, 6, { ~prm.subtractive.setFilterType('bandPass') }, bank: mainGridBank, page: page);
+
+
 
 //////// Crossfader:
 
 ~ohm.setCrossfaderFunc({ | val | ~prm.subtractive.mixer.setVol(val.ccdbfs(-70, 0)); }, mainCrossfaderBank, page);
-//~ohm.setCrossfaderButtonMonitorFunc(0, { "poopy".postln; }, mainCrossfaderBank, page);
+/*~ohm.setCrossfaderButtonMonitorFunc(0, {
+  switch(~ohm.active
+}, mainCrossfaderBank, page);
 
-
+*/
 
 
 

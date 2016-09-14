@@ -9,10 +9,6 @@ OhmRGB {
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
   var <pageDict, <activePage, activePageKey, <storageDict;
   var colorArray;
-  var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeControlButtonsBank;
-  var <activeLeftSlidersBank, <activeRightSlidersBank;
-  var <activeLeftKnobsBank, <activeRightKnobsBank;
-  var <activeCrossfaderBank, <activeCrossfaderButtonsBank;
 
   *new { | deviceName = "OhmRGB", portName = "Controls" |
     ^super.new.prInit(deviceName, portName);

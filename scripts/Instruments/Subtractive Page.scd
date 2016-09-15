@@ -8,15 +8,66 @@ prm
 var page = 'subtractive';
 
 var mainKnobBank = 0;
+var osc1KnobBank = 1;
 
 var mainGridBank = 0;
-var keyboardGridBank = 0;
+var osc1GridBank = 1;
+var keyboardGridBank = 8;
 
 var mainSliderBank = 0;
+var osc1SliderBank = 1;
 
 var mainCrossfaderBank = 0;
+var osc1CrossfaderBank = 1;
+
+var mainLeftButtonsBank = 0;
 
 ~ohm.makePage(page);
+
+~ohm.addGridBanks(8, page);
+~ohm.addLeftButtonsBanks(7, page);
+~ohm.addLeftKnobsBanks(7, page);
+~ohm.addLeftSlidersBanks(7, page);
+~ohm.addCrossfaderButtonsBanks(7, page);
+~ohm.addCrossfaderBanks(7, page);
+
+//////// Bank Change:
+~ohm.setGridMonitorFunc(0, 7, {
+  8.do({ | i | ~ohm.turnGridYellow(i, 7, mainGridBank, page); });
+  ~ohm.turnGridGreen(~ohm.activeLeftKnobsBank, 7, mainGridBank, page);
+}, mainGridBank, page);
+~ohm.setGridMonitorFunc(0, 7, {
+  8.do({ | i | ~ohm.turnGridYellow(i, 7, mainGridBank, page); });
+  ~ohm.turnGridGreen(~ohm.activeLeftKnobsBank, 7, mainGridBank, page);
+}, osc1GridBank, page);
+
+// main:
+~ohm.setGridFunc(0, 7, {
+  ~ohm.setActiveLeftKnobsBank(mainKnobBank, page);
+  ~ohm.setActiveLeftButtonsBank(mainLeftButtonsBank);
+  ~ohm.setActiveLeftKnobsBank(mainKnobBank);
+  ~ohm.setActiveLeftSlidersBank(mainSliderBank);
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(0, 7, {
+  ~ohm.setActiveLeftKnobsBank(mainKnobBank, page);
+  ~ohm.setActiveLeftButtonsBank(mainLeftButtonsBank);
+  ~ohm.setActiveLeftKnobsBank(mainKnobBank);
+  ~ohm.setActiveLeftSlidersBank(mainSliderBank);
+}, bank: osc1GridBank, page: page);
+
+// osc 1:
+~ohm.setGridFunc(1, 7, {
+  ~ohm.setActiveLeftKnobsBank(osc1KnobBank);
+  ~ohm.setActiveLeftSlidersBank(osc1SliderBank);
+  ~ohm.setActiveGridBank(osc1GridBank);
+  ~ohm.setActiveCrossfaderBank(osc1CrossfaderBank);
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(1, 7, {
+  ~ohm.setActiveLeftKnobsBank(osc1KnobBank);
+  ~ohm.setActiveLeftSlidersBank(osc1SliderBank);
+  ~ohm.setActiveGridBank(osc1GridBank);
+  ~ohm.setActiveCrossfaderBank(osc1CrossfaderBank);
+}, bank: osc1GridBank, page: page);
 
 ////////// Main Bank:
 
@@ -106,7 +157,7 @@ var mainCrossfaderBank = 0;
 
 // 0: Attack Time:
 ~ohm.setLeftSliderFunc(0, { | val |
-  var attack = val.linexp(0, 127, 0, 7);
+  var attack = val.linlin(0, 127, 0, 7);
   ~prm.subtractive.setAttackTime(attack);
 }, mainSliderBank, page);
 
@@ -124,7 +175,7 @@ var mainCrossfaderBank = 0;
 
 // 3: release time:
 ~ohm.setLeftSliderFunc(3, { | val |
-  var release = val.linexp(0, 127, 0.0, 12);
+  var release = val.linlin(0, 127, 0.0, 12);
   ~prm.subtractive.setReleaseTime(release);
 }, mainSliderBank, page);
 
@@ -354,14 +405,160 @@ var mainCrossfaderBank = 0;
 ~ohm.setCrossfaderButtonFunc(0, { ~ohm.setActiveGridBank(keyboardGridBank, page); },
   bank: mainCrossfaderBank, page: page);
 
-//////// Bank Change:
-~ohm.setGridMonitorFunc(0, 7, {
-  8.do({ | i | ~ohm.turnGridYellow(i, 7, mainGridBank, page); });
-  ~ohm.turnGridGreen(~ohm.activeLeftKnobsBank, 7, mainGridBank, page);
-}, mainGridBank, page);
 
-// main:
-~ohm.setGridFunc(0, 7, { ~ohm.setActiveLeftKnobsBank(mainKnobBank, page); }, bank: mainGridBank, page: page);
+//////// Oscillator 1 Bank:
+
+//// Left Sliders:
+// osc 1 vol:
+~ohm.setLeftSliderFunc(0, { | val |  ~prm.subtractive.setOsc1Vol(val.ccdbfs(-70, 6)); }, osc1SliderBank, page);
+// osc 1 subVol:
+~ohm.setLeftSliderFunc(1, { | val | ~prm.subtractive.setOsc1SubVol(val.ccdbfs(-70, 0)); }, osc1SliderBank, page);
+// osc 1 waveform:
+~ohm.setLeftSliderFunc(2, { | val |
+  var waveform = val.linlin(0, 127, 0, 3);
+  ~prm.subtractive.setOsc1Waveform(waveform);
+}, osc1SliderBank, page);
+// Subtractive Vol:
+~ohm.setLeftSliderFunc(3, { | val | ~prm.subtractive.mixer.setVol(val.ccdbfs(-70, 0)); }, osc1SliderBank, page);
+
+//// Left Knobs:
+// pulse width:
+~ohm.setLeftKnobFunc(0, 0, { | val |
+  var width = val.linlin(0, 127, 0, 1);
+  ~prm.subtractive.setOsc1PulseWidth(width);
+}, osc1KnobBank, page);
+
+// Freq Env Start Ratio:
+~ohm.setLeftKnobFunc(1, 0, { | val |
+  var low = val.linexp(0, 63, 0.125, 1);
+  var high = val.linexp(64, 127, 1, 4);
+  if( val <= 63,
+    { ~prm.subtractive.setOsc1FreqEnvStartRatio(low); }, { ~prm.subtractive.setOsc1FreqEnvStartRatio(high); });
+}, osc1KnobBank, page);
+// Freq Env End Ratio:
+~ohm.setLeftKnobFunc(2, 0, { | val |
+  var low = val.linexp(0, 63, 0.125, 1);
+  var high = val.linexp(64, 127, 1, 4);
+  if( val <= 63,
+    { ~prm.subtractive.setOsc1FreqEnvEndRatio(low); }, { ~prm.subtractive.setOsc1FreqEnvEndRatio(high); });
+}, osc1KnobBank, page);
+// Freq Env Time:
+~ohm.setLeftKnobFunc(3, 0, { | val |
+  var time = val.linlin(0, 127, 0, 10);
+  ~prm.subtractive.setOsc1FreqEnvTime(time);
+}, osc1KnobBank, page);
+
+// LFO 1 Osc 1 Freq:
+~ohm.setLeftKnobFunc(0, 1, { | val |
+  var low = val.linexp(0, 127, 1, 0.125);
+  var high = val.linexp(0, 127, 1, 4);
+  ~prm.subtractive.setOsc1FreqLFO1BottomRatio(low);
+  ~prm.subtractive.setOsc1FreqLFO1TopRatio(high);
+}, osc1KnobBank, page);
+// LFO 2 Osc 1 Freq:
+~ohm.setLeftKnobFunc(1, 1, { | val |
+  var low = val.linlin(0, 127, 1, 0.125);
+  var high = val.linlin(0, 127, 1, 4);
+  ~prm.subtractive.setOsc1FreqLFO2BottomRatio(low);
+  ~prm.subtractive.setOsc1FreqLFO2TopRatio(high);
+}, osc1KnobBank, page);
+// LFO 1 Osc 1 Amp:
+~ohm.setLeftKnobFunc(2, 1, { | val |
+  var ratio = val.linlin(0, 127, 1, 0);
+  ~prm.subtractive.setOsc1AmpLFO1Bottom(ratio);
+}, osc1KnobBank, page);
+// LFO 2 Osc 1 Amp:
+~ohm.setLeftKnobFunc(3, 1, { | val |
+  var ratio = val.linlin(0, 127, 1, 0);
+  ~prm.subtractive.setOsc1AmpLFO2Bottom(ratio);
+}, osc1KnobBank, page);
+
+// Oscillator 1 Pulse Width LFO 1:
+~ohm.setLeftKnobFunc(0, 2, { | val |
+  var amountLow = val.linlin(0, 127, 0.0, -1.0);
+  var amountHigh = val.linlin(0, 127, 0.0, 1.0);
+  ~prm.subtractive.setOsc1PulseWidthLFO1Bottom(amountLow);
+  ~prm.subtractive.setOsc1PulseWidthLFO1Top(amountHigh);
+}, osc1KnobBank, page);
+// Oscillator 1 Pulse Width LFO 2:
+~ohm.setLeftKnobFunc(1, 2, { | val |
+  var amountLow = val.linlin(0, 127, 0.0, -1.0);
+  var amountHigh = val.linlin(0, 127, 0.0, 1.0);
+  ~prm.subtractive.setOsc1PulseWidthLFO2Bottom(amountLow);
+  ~prm.subtractive.setOsc1PulseWidthLFO2Top(amountHigh);
+}, osc1KnobBank, page);
+// Osc 1 Waveform LFO 1:
+~ohm.setLeftKnobFunc(2, 2, { | val |
+  var low = val.linlin(0, 127, 0, -3);
+  var high = val.linlin(0, 127, 0, 3);
+  ~prm.subtractive.setOsc1WaveformLFO1Bottom(low);
+  ~prm.subtractive.setOsc1WaveformLFO1Top(high);
+}, osc1KnobBank, page);
+// Osc 1 Waveform LFO 2:
+~ohm.setLeftKnobFunc(3, 2, { | val |
+  var low = val.linlin(0, 127, 0, -3);
+  var high = val.linlin(0, 127, 0, 3);
+  ~prm.subtractive.setOsc1WaveformLFO2Bottom(low);
+  ~prm.subtractive.setOsc1WaveformLFO2Top(high);
+}, osc1KnobBank, page);
+
+//// Osc 1 Grid:
+//// Osc 1 Waveform:
+
+// sine:
+~ohm.setGridMonitorFunc(0, 0, {
+  if( ~prm.subtractive.osc1Waveform == 0,
+    { ~ohm.turnGridGreen(0, 0, osc1GridBank, page); }, { ~ohm.turnGridWhite(0, 0, osc1GridBank, page); }
+  );
+}, osc1GridBank, page);
+~ohm.setGridFunc(0, 0, { ~prm.subtractive.setOsc1Waveform('sine'); }, bank: osc1GridBank, page: page);
+
+// tri:
+~ohm.setGridMonitorFunc(0, 1, {
+  if( (~prm.subtractive.osc1Waveform >= 1 ) && (~prm.subtractive.osc1Waveform < 2 ),
+    { ~ohm.turnGridGreen(0, 1, osc1GridBank, page); }, { ~ohm.turnGridCyan(0, 1, osc1GridBank, page); }
+  );
+}, osc1GridBank, page);
+~ohm.setGridFunc(0, 1, { ~prm.subtractive.setOsc1Waveform('tri'); }, bank: osc1GridBank, page: page);
+
+// saw:
+~ohm.setGridMonitorFunc(0, 2, {
+  if ( (~prm.subtractive.osc1Waveform >= 2) && (~prm.subtractive.osc1Waveform <3 ),
+    { ~ohm.turnGridGreen(0, 2, osc1GridBank, page); }, { ~ohm.turnGridBlue(0, 2, osc1GridBank, page); } );
+}, osc1GridBank, page);
+~ohm.setGridFunc(0, 2, { ~prm.subtractive.setOsc1Waveform('saw'); }, bank: osc1GridBank, page: page);
+
+// rect:
+~ohm.setGridMonitorFunc(0, 3, {
+  if( ( ~prm.subtractive.osc1Waveform >=3),
+    { ~ohm.turnGridGreen(0, 3, osc1GridBank, page); }, { ~ohm.turnGridMagenta(0, 3, osc1GridBank, page); });
+}, osc1GridBank, page);
+~ohm.setGridFunc(0, 3, { ~prm.subtractive.setOsc1Waveform('rect'); }, bank: osc1GridBank, page: page);
+
+//// Osc 1 Octave:
+
+// monitor func:
+~ohm.setGridMonitorFunc(3, 0, {
+  5.do({ | i | ~ohm.turnGridBlue(i+3, 0, osc1GridBank, page); });
+  switch(~prm.subtractive.osc1OctaveMul,
+    { 0.25 }, { ~ohm.turnGridGreen(3, 0, osc1GridBank, page); },
+    { 0.5 }, { ~ohm.turnGridGreen(4, 0, osc1GridBank, page); },
+    { 1 }, { ~ohm.turnGridGreen(5, 0, osc1GridBank, page); },
+    { 2 }, { ~ohm.turnGridGreen(6, 0, osc1GridBank, page); },
+    { 4 }, { ~ohm.turnGridGreen(7, 0, osc1GridBank, page); },
+  );
+}, osc1GridBank, page);
+~ohm.setGridFunc(3, 0, { ~prm.subtractive.setOsc1OctaveMul(0.25); }, bank: osc1GridBank, page: page);
+~ohm.setGridFunc(4, 0, { ~prm.subtractive.setOsc1OctaveMul(0.5); }, bank: osc1GridBank, page: page);
+~ohm.setGridFunc(5, 0, { ~prm.subtractive.setOsc1OctaveMul(1); }, bank: osc1GridBank, page: page);
+~ohm.setGridFunc(6, 0, { ~prm.subtractive.setOsc1OctaveMul(2); }, bank: osc1GridBank, page: page);
+~ohm.setGridFunc(7, 0, { ~prm.subtractive.setOsc1OctaveMul(4); }, bank: osc1GridBank, page: page);
+
+//// Crossfader:
+~ohm.setCrossfaderFunc({ | val |
+  var amt = val.linlin(0, 127, 1, 15);
+  ~prm.subtractive.setFilterDrive(amt);
+}, osc1CrossfaderBank, page);
 
 
 //////// Keyboard Grid:

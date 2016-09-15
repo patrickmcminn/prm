@@ -128,7 +128,7 @@ var mainCrossfaderBank = 0;
   ~prm.subtractive.setReleaseTime(release);
 }, mainSliderBank, page);
 
-////// Grid:
+////// Main Grid:
 
 //~ohm.turnAllGridCyan(mainGridBank, page);
 
@@ -351,8 +351,18 @@ var mainCrossfaderBank = 0;
     { keyboardGridBank }, { ~ohm.turnCrossfaderButtonBlue(0, mainCrossfaderBank, page); }
   );
 }, mainCrossfaderBank, page);
+~ohm.setCrossfaderButtonFunc(0, { ~ohm.setActiveGridBank(keyboardGridBank, page); },
+  bank: mainCrossfaderBank, page: page);
+
+//////// Bank Change:
+~ohm.setGridMonitorFunc(0, 7, {
+  8.do({ | i | ~ohm.turnGridYellow(i, 7, mainGridBank, page); });
+  ~ohm.turnGridGreen(~ohm.activeLeftKnobsBank, 7, mainGridBank, page);
+}, mainGridBank, page);
+
+// main:
+~ohm.setGridFunc(0, 7, { ~ohm.setActiveLeftKnobsBank(mainKnobBank, page); }, bank: mainGridBank, page: page);
 
 
-
-
+//////// Keyboard Grid:
 

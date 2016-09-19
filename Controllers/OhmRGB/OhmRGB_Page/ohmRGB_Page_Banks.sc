@@ -260,6 +260,21 @@
     7.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][index][4].reset.play; });
   }
 
+  startActiveGridBankMonitorRoutines { }
+  stopActiveGridBankMonitorRoutines { }
+
+  startActiveLeftButtonsBankMonitorRoutines { }
+  stopActiveLeftButtonsBankMonitorRoutines { }
+
+  startActiveRightButtonsBankMonitorRoutines { }
+  stopActiveRightButtonsBankMonitorRoutines { }
+
+  startActiveControlButtonsBankMonitorRoutines { }
+  stopActiveControlButtonsBankMonitorRoutines { }
+
+  startActiveCrossfaderButtonsBankMonitorRoutines { }
+  stopActiveCrossfaderButtonsBankMonitorRoutines { }
+
 
   //////// Public Control Bank Functions:
 

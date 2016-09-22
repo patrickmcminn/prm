@@ -244,36 +244,70 @@
     });
   }
 
-  stopActiveBankMonitorRoutines {
-    64.do({ | index | gridBankArray[activeGridBnk][index][4].stop; });
-    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].stop; });
-    4.do({ | index | rightButtonsBankArray[activeRightButtonsBnk][index][4].stop; });
-    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][4].stop; });
-    7.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][index][4].stop; });
-  }
-
   startActiveBankMonitorRoutines {
+    this.startActiveGridBankMonitorRoutines;
+    this.startActiveLeftButtonsBankMonitorRoutines;
+    this.startActiveRightButtonsBankMonitorRoutines;
+    this.startActiveControlButtonsBankMonitorRoutines;
+    this.startActiveCrossfaderButtonsBankMonitorRoutines;
+    /*
     64.do({ | index | gridBankArray[activeGridBnk][index][4].reset.play; });
     4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].reset.play; });
     4.do({ | index | rightButtonsBankArray[activeRightButtonsBnk][index][4].reset.play; });
     2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][4].reset.play; });
     7.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][index][4].reset.play; });
+    */
   }
 
-  startActiveGridBankMonitorRoutines { }
-  stopActiveGridBankMonitorRoutines { }
+  stopActiveBankMonitorRoutines {
+    this.stopActiveGridBankMonitorRoutines;
+    this.stopActiveLeftButtonsBankMonitorRoutines;
+    this.stopActiveRightButtonsBankMonitorRoutines;
+    this.stopActiveControlButtonsBankMonitorRoutines;
+    this.stopActiveCrossfaderButtonsBankMonitorRoutines;
+    /*
+    64.do({ | index | gridBankArray[activeGridBnk][index][4].stop; });
+    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].stop; });
+    4.do({ | index | rightButtonsBankArray[activeRightButtonsBnk][index][4].stop; });
+    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][4].stop; });
+    7.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][index][4].stop; });
+    */
+  }
 
-  startActiveLeftButtonsBankMonitorRoutines { }
-  stopActiveLeftButtonsBankMonitorRoutines { }
+  startActiveGridBankMonitorRoutines {
+    64.do({ | index | gridBankArray[activeGridBnk][index][4].reset.play; });
+  }
+  stopActiveGridBankMonitorRoutines {
+    64.do({ | index | gridBankArray[activeGridBnk][index][4].stop; });
+  }
 
-  startActiveRightButtonsBankMonitorRoutines { }
-  stopActiveRightButtonsBankMonitorRoutines { }
+  startActiveLeftButtonsBankMonitorRoutines {
+    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].stop; });
+  }
+  stopActiveLeftButtonsBankMonitorRoutines {
+    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].stop; });
+  }
 
-  startActiveControlButtonsBankMonitorRoutines { }
-  stopActiveControlButtonsBankMonitorRoutines { }
+  startActiveRightButtonsBankMonitorRoutines {
+    4.do({ | index | rightButtonsBankArray[activeRightButtonsBnk][index][4].reset.play; });
+  }
+  stopActiveRightButtonsBankMonitorRoutines {
+    4.do({ | index | rightButtonsBankArray[activeRightButtonsBnk][index][4].stop; });
+  }
 
-  startActiveCrossfaderButtonsBankMonitorRoutines { }
-  stopActiveCrossfaderButtonsBankMonitorRoutines { }
+  startActiveControlButtonsBankMonitorRoutines {
+    7.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][index][4].reset.play; });
+  }
+  stopActiveControlButtonsBankMonitorRoutines {
+    7.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][index][4].stop; });
+  }
+
+  startActiveCrossfaderButtonsBankMonitorRoutines {
+    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][4].reset.play; });
+  }
+  stopActiveCrossfaderButtonsBankMonitorRoutines {
+    2.do({ | index | crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][index][4].stop; });
+  }
 
 
   //////// Public Control Bank Functions:

@@ -159,15 +159,15 @@ var presetsButtonBank = 7;
 
 // LFO 1 Osc 2 Freq:
 ~ohm.setLeftKnobFunc(0, 1, { | val |
-  var low = val.linexp(0, 127, 1, 0.125);
-  var high = val.linexp(0, 127, 1, 4);
+  var low = val.linexp(0, 127, 1, 0.25);
+  var high = val.linexp(0, 127, 1, 2);
   ~prm.subtractive.setOsc2FreqLFO1BottomRatio(low);
   ~prm.subtractive.setOsc2FreqLFO1TopRatio(high);
 }, osc2KnobBank, page);
 // LFO 2 Osc 2 Freq:
 ~ohm.setLeftKnobFunc(1, 1, { | val |
-  var low = val.linlin(0, 127, 1, 0.125);
-  var high = val.linlin(0, 127, 1, 4);
+  var low = val.linlin(0, 127, 1, 0.25);
+  var high = val.linlin(0, 127, 1, 2);
   ~prm.subtractive.setOsc2FreqLFO2BottomRatio(low);
   ~prm.subtractive.setOsc2FreqLFO2TopRatio(high);
 }, osc2KnobBank, page);

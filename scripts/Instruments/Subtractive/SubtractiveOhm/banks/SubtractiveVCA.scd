@@ -150,7 +150,7 @@ var presetsButtonBank = 7;
 }, vcaKnobBank, page);
 // noise osc cutoff:
 ~ohm.setLeftKnobFunc(1, 0, { | val |
-  var cutoff = val.linexp(0, 127, 50, 20000);
+  var cutoff = val.linexp(0, 127, 100, 20000);
   ~prm.subtractive.setNoiseOscCutoff(cutoff);
 }, vcaKnobBank, page);
 // pan:
@@ -175,20 +175,19 @@ var presetsButtonBank = 7;
 }, vcaKnobBank, page);
 // noise osc filter lfo 1:
 ~ohm.setLeftKnobFunc(2, 1, { | val |
-  var amountLow = val.linlin(0, 127, 1, 0.00125);
-  var amountHigh = val.linlin(0, 127, 1, 32);
+  var amountLow = val.linlin(0, 127, 1, 0.0025);
+  var amountHigh = val.linlin(0, 127, 1, 16);
   ~prm.subtractive.setNoiseOscFilterLFO1BottomRatio(amountLow);
   ~prm.subtractive.setNoiseOscFilterLFO1TopRatio(amountHigh);
 }, vcaKnobBank, page);
 // noise osc filter lfo 2:
 ~ohm.setLeftKnobFunc(3, 1, { | val |
-  var amountLow = val.linlin(0, 127, 1, 0.00125);
-  var amountHigh = val.linlin(0, 127, 1, 32);
+  var amountLow = val.linlin(0, 127, 1, 0.0025);
+  var amountHigh = val.linlin(0, 127, 1, 16);
   ~prm.subtractive.setNoiseOscFilterLFO2BottomRatio(amountLow);
   ~prm.subtractive.setNoiseOscFilterLFO2TopRatio(amountHigh);
 }, vcaKnobBank, page);
 
-// noise osc filter lfo 2:
 
 // amp lfo 1:
 ~ohm.setLeftKnobFunc(0, 2, { | val |

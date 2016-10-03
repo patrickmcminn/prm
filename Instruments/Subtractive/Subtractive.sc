@@ -255,7 +255,7 @@ Subtractive : IM_Module {
       noiseOscFilterLFO1 = lfo1.linlin(-1, 1, noiseOscFilterLFO1BottomRatio, noiseOscFilterLFO1TopRatio);
       noiseOscFilterLFO2 = lfo2.linlin(-1, 1, noiseOscFilterLFO2BottomRatio, noiseOscFilterLFO2TopRatio);
       noise = WhiteNoise.ar(1);
-      noiseOscFilter = LPF.ar(noise, noiseOscCutoff * noiseOscFilterLFO1 * noiseOscFilterLFO2);
+      noiseOscFilter = LPF.ar(noise, (noiseOscCutoff * noiseOscFilterLFO1 * noiseOscFilterLFO2).clip(20, 20000));
       noiseOsc = noiseOscFilter * noiseOscAmp;
       noiseOsc = noiseOsc * noiseOscAmpLFO1 * noiseOscAmpLFO2;
 
@@ -453,7 +453,7 @@ Subtractive : IM_Module {
       noiseOscFilterLFO1 = lfo1.linlin(-1, 1, noiseOscFilterLFO1BottomRatio, noiseOscFilterLFO1TopRatio);
       noiseOscFilterLFO2 = lfo2.linlin(-1, 1, noiseOscFilterLFO2BottomRatio, noiseOscFilterLFO2TopRatio);
       noise = WhiteNoise.ar(1);
-      noiseOscFilter = LPF.ar(noise, noiseOscCutoff * noiseOscFilterLFO1 * noiseOscFilterLFO2);
+      noiseOscFilter = LPF.ar(noise, (noiseOscCutoff * noiseOscFilterLFO1 * noiseOscFilterLFO2).clip(20, 20000));
       noiseOsc = noiseOscFilter * noiseOscAmp;
       noiseOsc = noiseOsc * noiseOscAmpLFO1 * noiseOscAmpLFO2;
 

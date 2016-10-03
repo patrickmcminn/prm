@@ -139,7 +139,7 @@ var presetsButtonBank = 7;
 
 // Subtractive Vol:
 ~ohm.setLeftSliderFunc(3, { | val |
-  ~prm.mixer.setVol(val.ccdbfs(-70, 0));
+  ~prm.subtractive.mixer.setVol(val.ccdbfs(-70, 0));
 }, filterSliderBank, page);
 
 //// Knob Bank:
@@ -245,19 +245,44 @@ var presetsButtonBank = 7;
 
 ////// Grid:
 
+
+///// Left Buttons:
+
 // Filter Loop:
+~ohm.setLeftButtonMonitorFunc(0, {
+  if( ~prm.subtractive.filterEnvLoop == 1,
+    { ~ohm.turnLeftButtonGreen(0); }, { ~ohm.turnLeftButtonRed(0); });
+}, filterButtonBank, page);
+/*
 ~ohm.setGridMonitorFunc(0, 0, {
   if( ~prm.subtractive.filterEnvLoop == 1,
     { ~ohm.turnGridGreen(0, 0, filterGridBank, page); },
     { ~ohm.turnGridRed(0, 0, filterGridBank, page); }
   );
 }, filterGridBank, page);
+*/
+~ohm.setLeftButtonFunc(0, {
+  if( ~prm.subtractive.filterEnvLoop == 0,
+    { ~prm.subtractive.setFilterEnvLoop(true); }, { ~prm.subtractive.setFilterEnvLoop(false); });
+}, filterButtonBank, page);
+
+/*
 ~ohm.setGridFunc(0, 0, {
   if( ~prm.subtractive.filterEnvLoop == 0,
     { ~prm.subtractive.setFilterEnvLoop(true); }, { ~prm.subtractive.setFilterEnvLoop(false); });
 }, filterGridBank, page);
+*/
 
 // Filter Env Ratio Reset:
+~ohm.turnLeftButtonWhite(1, filterButtonBank, page);
+~ohm.setLeftButtonFunc(1, {
+  ~prm.subtractive.setFilterEnvAttackRatio(1);
+  ~prm.subtractive.setFilterEnvPeakRatio(1);
+  ~prm.subtractive.setFilterEnvSustainRatio(1);
+  ~prm.subtractive.setFilterEnvReleaseRatio(1);
+}, filterButtonBank);
+
+/*
 ~ohm.turnGridWhite(0, 1, filterGridBank, page);
 ~ohm.setGridFunc(0, 1, {
   ~prm.subtractive.setFilterEnvAttackRatio(1);
@@ -265,6 +290,7 @@ var presetsButtonBank = 7;
   ~prm.subtractive.setFilterEnvSustainRatio(1);
   ~prm.subtractive.setFilterEnvReleaseRatio(1);
 }, filterGridBank, page);
+*/
 
 
 // Filter Type:
@@ -280,3 +306,197 @@ var presetsButtonBank = 7;
 ~ohm.setGridFunc(0, 6, { ~prm.subtractive.setFilterType('lowPass') }, bank: filterGridBank, page: page);
 ~ohm.setGridFunc(1, 6, { ~prm.subtractive.setFilterType('highPass') }, bank: filterGridBank, page: page);
 ~ohm.setGridFunc(2, 6, { ~prm.subtractive.setFilterType('bandPass') }, bank: filterGridBank, page: page);
+
+//////// because this grid bank is a little anemic looking, might as well duplicate several controls:
+//// Osc 1 Waveform:
+
+// sine:
+~ohm.setGridMonitorFunc(0, 0, {
+  if( ~prm.subtractive.osc1Waveform == 0,
+    { ~ohm.turnGridGreen(0, 0, filterGridBank, page); }, { ~ohm.turnGridWhite(0, 0, filterGridBank, page); }
+  );
+}, filterGridBank, page);
+~ohm.setGridFunc(0, 0, { ~prm.subtractive.setOsc1Waveform('sine'); }, bank: filterGridBank, page: page);
+
+// tri:
+~ohm.setGridMonitorFunc(0, 1, {
+  if( (~prm.subtractive.osc1Waveform >= 1 ) && (~prm.subtractive.osc1Waveform < 2 ),
+    { ~ohm.turnGridGreen(0, 1, filterGridBank, page); }, { ~ohm.turnGridCyan(0, 1, filterGridBank, page); }
+  );
+}, filterGridBank, page);
+~ohm.setGridFunc(0, 1, { ~prm.subtractive.setOsc1Waveform('tri'); }, bank: filterGridBank, page: page);
+
+// saw:
+~ohm.setGridMonitorFunc(0, 2, {
+  if ( (~prm.subtractive.osc1Waveform >= 2) && (~prm.subtractive.osc1Waveform <3 ),
+    { ~ohm.turnGridGreen(0, 2, filterGridBank, page); }, { ~ohm.turnGridBlue(0, 2, filterGridBank, page); } );
+}, filterGridBank, page);
+~ohm.setGridFunc(0, 2, { ~prm.subtractive.setOsc1Waveform('saw'); }, bank: filterGridBank, page: page);
+
+// rect:
+~ohm.setGridMonitorFunc(0, 3, {
+  if( ( ~prm.subtractive.osc1Waveform >=3),
+    { ~ohm.turnGridGreen(0, 3, filterGridBank, page); }, { ~ohm.turnGridMagenta(0, 3, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(0, 3, { ~prm.subtractive.setOsc1Waveform('rect'); }, bank: filterGridBank, page: page);
+
+//// Osc 1 Octave:
+
+// monitor func:
+~ohm.setGridMonitorFunc(3, 0, {
+  5.do({ | i | ~ohm.turnGridBlue(i+3, 0, filterGridBank, page); });
+  switch(~prm.subtractive.osc1OctaveMul,
+    { 0.25 }, { ~ohm.turnGridGreen(3, 0, filterGridBank, page); },
+    { 0.5 }, { ~ohm.turnGridGreen(4, 0, filterGridBank, page); },
+    { 1 }, { ~ohm.turnGridGreen(5, 0, filterGridBank, page); },
+    { 2 }, { ~ohm.turnGridGreen(6, 0, filterGridBank, page); },
+    { 4 }, { ~ohm.turnGridGreen(7, 0, filterGridBank, page); },
+  );
+}, filterGridBank, page);
+~ohm.setGridFunc(3, 0, { ~prm.subtractive.setOsc1OctaveMul(0.25); }, bank: filterGridBank, page: page);
+~ohm.setGridFunc(4, 0, { ~prm.subtractive.setOsc1OctaveMul(0.5); }, bank: filterGridBank, page: page);
+~ohm.setGridFunc(5, 0, { ~prm.subtractive.setOsc1OctaveMul(1); }, bank: filterGridBank, page: page);
+~ohm.setGridFunc(6, 0, { ~prm.subtractive.setOsc1OctaveMul(2); }, bank: filterGridBank, page: page);
+~ohm.setGridFunc(7, 0, { ~prm.subtractive.setOsc1OctaveMul(4); }, bank: filterGridBank, page: page);
+
+
+//// Osc 2 Waveform:
+
+// sine:
+~ohm.setGridMonitorFunc(1, 0, {
+  if( ~prm.subtractive.osc2Waveform == 0,
+    { ~ohm.turnGridGreen(1, 0, filterGridBank, page); }, { ~ohm.turnGridWhite(1, 0, filterGridBank, page); }
+  );
+}, filterGridBank, page);
+~ohm.setGridFunc(1, 0, { ~prm.subtractive.setOsc2Waveform('sine'); }, bank: filterGridBank, page: page);
+
+// tri:
+~ohm.setGridMonitorFunc(1, 1, {
+  if( (~prm.subtractive.osc2Waveform >= 1 ) && (~prm.subtractive.osc2Waveform < 2 ),
+    { ~ohm.turnGridGreen(1, 1, filterGridBank, page); }, { ~ohm.turnGridCyan(1, 1, filterGridBank, page); }
+  );
+}, filterGridBank, page);
+~ohm.setGridFunc(1, 1, { ~prm.subtractive.setOsc2Waveform('tri'); }, bank: filterGridBank, page: page);
+
+// saw:
+~ohm.setGridMonitorFunc(1, 2, {
+  if ( (~prm.subtractive.osc2Waveform >= 2) && (~prm.subtractive.osc2Waveform <3 ),
+    { ~ohm.turnGridGreen(1, 2, filterGridBank, page); }, { ~ohm.turnGridBlue(1, 2, filterGridBank, page); } );
+}, filterGridBank, page);
+~ohm.setGridFunc(1, 2, { ~prm.subtractive.setOsc2Waveform('saw'); }, bank: filterGridBank, page: page);
+
+// rect:
+~ohm.setGridMonitorFunc(1, 3, {
+  if( ( ~prm.subtractive.osc2Waveform >=3),
+    { ~ohm.turnGridGreen(1, 3, filterGridBank, page); }, { ~ohm.turnGridMagenta(1, 3, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(1, 3, { ~prm.subtractive.setOsc2Waveform('rect'); }, bank: filterGridBank, page: page);
+
+
+//// Osc 2 Octave:
+
+// monitor func:
+~ohm.setGridMonitorFunc(3, 1, {
+  5.do({ | i | ~ohm.turnGridBlue(i+3, 1, filterGridBank, page); });
+  switch(~prm.subtractive.osc2OctaveMul,
+    { 0.25 }, { ~ohm.turnGridGreen(3, 1, filterGridBank, page); },
+    { 0.5 }, { ~ohm.turnGridGreen(4, 1, filterGridBank, page); },
+    { 1 }, { ~ohm.turnGridGreen(5, 1, filterGridBank, page); },
+    { 2 }, { ~ohm.turnGridGreen(6, 1, filterGridBank, page); },
+    { 4 }, { ~ohm.turnGridGreen(7, 1, filterGridBank, page); },
+  );
+}, filterGridBank, page);
+~ohm.setGridFunc(3, 1, { ~prm.subtractive.setOsc2OctaveMul(0.25); }, bank: filterGridBank, page: page);
+~ohm.setGridFunc(4, 1, { ~prm.subtractive.setOsc2OctaveMul(0.5); }, bank: filterGridBank, page: page);
+~ohm.setGridFunc(5, 1, { ~prm.subtractive.setOsc2OctaveMul(1); }, bank: filterGridBank, page: page);
+~ohm.setGridFunc(6, 1, { ~prm.subtractive.setOsc2OctaveMul(2); }, bank: filterGridBank, page: page);
+~ohm.setGridFunc(7, 1, { ~prm.subtractive.setOsc2OctaveMul(4); }, bank: filterGridBank, page: page);
+
+// LFO 1 Waveforms:
+
+// sine:
+~ohm.setGridMonitorFunc(2, 4, {
+  if( ~prm.subtractive.lfo1Waveform == 0,
+    { ~ohm.turnGridGreen(2, 4, filterGridBank, page); }, {~ohm.turnGridWhite(2, 4, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(2, 4, { ~prm.subtractive.setLFO1Waveform('sine'); }, bank: filterGridBank, page: page);
+
+// saw:
+~ohm.setGridMonitorFunc(3, 4, {
+  if( (~prm.subtractive.lfo1Waveform >=1) && (~prm.subtractive.lfo1Waveform < 2),
+    { ~ohm.turnGridGreen(3, 4, filterGridBank, page); }, { ~ohm.turnGridBlue(3, 4, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(3, 4, { ~prm.subtractive.setLFO1Waveform('saw'); }, bank: filterGridBank, page: page);
+
+// revSaw:
+~ohm.setGridMonitorFunc(4, 4, {
+  if( (~prm.subtractive.lfo1Waveform >=2) && (~prm.subtractive.lfo1Waveform <3),
+    { ~ohm.turnGridGreen(4, 4, filterGridBank, page); }, { ~ohm.turnGridYellow(4, 4, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(4, 4, { ~prm.subtractive.setLFO1Waveform('revSaw'); }, bank: filterGridBank, page: page);
+
+// rect:
+~ohm.setGridMonitorFunc(5, 4, {
+  if( (~prm.subtractive.lfo1Waveform >=3) && (~prm.subtractive.lfo1Waveform < 4),
+    { ~ohm.turnGridGreen(5, 4, filterGridBank, page); }, { ~ohm.turnGridMagenta(5, 4, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(5, 4, { ~prm.subtractive.setLFO1Waveform('rect'); }, bank: filterGridBank, page: page);
+
+// noise:
+~ohm.setGridMonitorFunc(7, 4, {
+  if (~prm.subtractive.lfo1Waveform >=5,
+    { ~ohm.turnGridGreen(7, 4, filterGridBank, page); }, { ~ohm.turnGridRed(7, 4, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(7, 4, { ~prm.subtractive.setLFO1Waveform('noise'); }, bank: filterGridBank, page: page);
+
+// sample and hold:
+~ohm.setGridMonitorFunc(6, 4, {
+  if( ( ~prm.subtractive.lfo1Waveform >=4) && (~prm.subtractive.lfo1Waveform <5),
+    { ~ohm.turnGridGreen(6, 4, filterGridBank, page); }, { ~ohm.turnGridCyan(6, 4, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(6, 4, { ~prm.subtractive.setLFO1Waveform('sampleAndHold'); }, bank: filterGridBank, page: page);
+
+
+//// LFO 2 Waveforms:
+
+// sine:
+~ohm.setGridMonitorFunc(2, 5, {
+  if( ~prm.subtractive.lfo2Waveform == 0,
+    { ~ohm.turnGridGreen(2, 5, filterGridBank, page); }, {~ohm.turnGridWhite(2, 5, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(2, 5, { ~prm.subtractive.setLFO2Waveform('sine'); }, bank: filterGridBank, page: page);
+
+// saw:
+~ohm.setGridMonitorFunc(3, 5, {
+  if( (~prm.subtractive.lfo2Waveform >=1) && (~prm.subtractive.lfo2Waveform < 2),
+    { ~ohm.turnGridGreen(3, 5, filterGridBank, page); }, { ~ohm.turnGridBlue(3, 5, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(3, 5, { ~prm.subtractive.setLFO2Waveform('saw'); }, bank: filterGridBank, page: page);
+
+// revSaw:
+~ohm.setGridMonitorFunc(4, 5, {
+  if( (~prm.subtractive.lfo2Waveform >=2) && (~prm.subtractive.lfo2Waveform <3),
+    { ~ohm.turnGridGreen(4, 5, filterGridBank, page); }, { ~ohm.turnGridYellow(4, 5, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(4, 5, { ~prm.subtractive.setLFO2Waveform('revSaw'); }, bank: filterGridBank, page: page);
+
+// rect:
+~ohm.setGridMonitorFunc(5, 5, {
+  if( (~prm.subtractive.lfo2Waveform >=3) && (~prm.subtractive.lfo2Waveform < 4),
+    { ~ohm.turnGridGreen(5, 5, filterGridBank, page); }, { ~ohm.turnGridMagenta(5, 5, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(5, 5, { ~prm.subtractive.setLFO2Waveform('rect'); }, bank: filterGridBank, page: page);
+
+// noise:
+~ohm.setGridMonitorFunc(7, 5, {
+  if (~prm.subtractive.lfo2Waveform >=5,
+    { ~ohm.turnGridGreen(7, 5, filterGridBank, page); }, { ~ohm.turnGridRed(7, 5, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(7, 5, { ~prm.subtractive.setLFO2Waveform('noise'); }, bank: filterGridBank, page: page);
+
+// sample and hold:
+~ohm.setGridMonitorFunc(6, 5, {
+  if( ( ~prm.subtractive.lfo2Waveform >=4) && (~prm.subtractive.lfo2Waveform <5),
+    { ~ohm.turnGridGreen(6, 5, filterGridBank, page); }, { ~ohm.turnGridCyan(6, 5, filterGridBank, page); });
+}, filterGridBank, page);
+~ohm.setGridFunc(6, 5, { ~prm.subtractive.setLFO2Waveform('sampleAndHold'); }, bank: filterGridBank, page: page);

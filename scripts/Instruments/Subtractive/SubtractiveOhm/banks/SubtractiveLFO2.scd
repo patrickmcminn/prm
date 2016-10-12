@@ -114,3 +114,150 @@ var presetsButtonBank = 7;
   ~ohm.setActiveLeftSlidersBank(presetsSliderBank);
   ~ohm.setActiveCrossfaderBank(presetsCrossfaderBank);
 }, bank: lfo2GridBank, page: page);
+
+//////// control:
+
+//////// sliders:
+//// amplitude envelope:
+// attack time:
+~ohm.setLeftSliderFunc(0, { | val |
+  var attack = val.linlin(0, 127, 0, 10);
+  ~prm.subtractive.setAttackTime(attack);
+}, lfo2SliderBank, page);
+// decay time:
+~ohm.setLeftSliderFunc(1, { | val |
+  var decay = val.linlin(0, 127, 0, 10);
+  ~prm.subtractive.setDecayTime(decay);
+}, lfo2SliderBank, page);
+// sustain level:
+~ohm.setLeftSliderFunc(2, { | val |
+  var sustain = val.linlin(0, 127, 0.0, 1.0);
+  ~prm.subtractive.setSustainLevel(sustain);
+}, lfo2SliderBank, page);
+// release time:
+~ohm.setLeftSliderFunc(3, { | val |
+  var release = val.linlin(0, 127, 0, 10);
+  ~prm.subtractive.setReleaseTime(release);
+}, lfo2SliderBank, page);
+
+
+//////// knobs:
+///// carryovers:
+// cutoff:
+~ohm.setLeftKnobFunc(0, 0, { | val |
+  var cutoff = val.linexp(0, 127, 50, 20000);
+  ~prm.subtractive.setFilterCutoff(cutoff);
+}, lfo2KnobBank, page);
+// res:
+~ohm.setLeftKnobFunc(1, 0, { | val |
+  var res = val.linlin(0, 127, 0, 2.5);
+  ~prm.subtractive.setFilterRes(res);
+}, lfo2KnobBank, page);
+// filter lfo 2 cutoff:
+~ohm.setLeftKnobFunc(2, 0, { | val |
+  var amountLow = val.linlin(0, 127, 1, 0.03125);
+  var amountHigh = val.linlin(0, 127, 1, 32);
+  ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountLow);
+  ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountHigh);
+}, lfo2KnobBank, page);
+// amp lfo 2:
+~ohm.setLeftKnobFunc(3, 0, { | val |
+  var amount = val.linlin(0, 127, 1, 0);
+  ~prm.subtractive.setAmplitudeLFO2Bottom(amount);
+}, lfo2KnobBank, page);
+
+// freq:
+~ohm.setLeftKnobFunc(0, 1, { | val |
+  var freq = val.linexp(0, 127, 0.001, 220);
+  ~prm.subtractive.setLFO2Freq(freq);
+}, lfo2KnobBank, page);
+// pulse width:
+~ohm.setLeftKnobFunc(1, 1, { | val |
+  var width = val.linlin(0, 127, 0, 1);
+  ~prm.subtractive.setLFO2PulseWidth(width);
+}, lfo2KnobBank, page);
+// waveform:
+~ohm.setLeftKnobFunc(2, 1, { | val |
+  var waveform = val.linlin(0, 127, 0, 5);
+  ~prm.subtractive.setLFO2Waveform(waveform);
+}, lfo2KnobBank, page);
+// lfo 1 frequency modulation:
+~ohm.setLeftKnobFunc(3, 1, { | val |
+  var amountLow = val.linexp(0, 127, 1, 0.5);
+  var amountHigh = val.linlin(0, 127, 1, 2);
+  ~prm.subtractive.setLFO1FreqLFO2BottomRatio(amountLow);
+  ~prm.subtractive.setLFO1FreqLFO2TopRatio(amountHigh);
+}, lfo2KnobBank, page);
+
+
+// filter cutoff lfo 1:
+~ohm.setLeftKnobFunc(0, 2, { | val |
+  var amountLow = val.linlin(0, 127, 1, 0.03125);
+  var amountHigh = val.linlin(0, 127, 1, 32);
+  ~prm.subtractive.setFilterCutoffLFO1BottomRatio(amountLow);
+  ~prm.subtractive.setFilterCutoffLFO1TopRatio(amountHigh);
+}, lfo2KnobBank, page);
+// filter cutoff lfo 2:
+~ohm.setLeftKnobFunc(1, 2, { | val |
+  var amountLow = val.linlin(0, 127, 1, 0.03125);
+  var amountHigh = val.linlin(0, 127, 1, 32);
+  ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountLow);
+  ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountHigh);
+}, lfo2KnobBank, page);
+// lfo 1 freq:
+~ohm.setLeftKnobFunc(2, 2, { | val |
+  var freq = val.linexp(0, 127, 0.001, 60);
+  ~prm.subtractive.setLFO1Freq(freq);
+}, lfo2KnobBank, page);
+// lfo 1 waveform:
+~ohm.setLeftKnobFunc(3, 2, { | val |
+  var waveform = val.linlin(0, 127, 0, 5);
+  ~prm.subtractive.setLFO1Waveform(waveform);
+}, lfo2KnobBank, page);
+
+//////// grid:
+
+
+//// LFO 2 Waveforms:
+
+// sine:
+~ohm.setGridMonitorFunc(2, 5, {
+  if( ~prm.subtractive.lfo2Waveform == 0,
+    { ~ohm.turnGridGreen(2, 5, lfo2GridBank, page); }, {~ohm.turnGridWhite(2, 5, lfo2GridBank, page); });
+}, lfo2GridBank, page);
+~ohm.setGridFunc(2, 5, { ~prm.subtractive.setLFO2Waveform('sine'); }, bank: lfo2GridBank, page: page);
+
+// saw:
+~ohm.setGridMonitorFunc(3, 5, {
+  if( (~prm.subtractive.lfo2Waveform >=1) && (~prm.subtractive.lfo2Waveform < 2),
+    { ~ohm.turnGridGreen(3, 5, lfo2GridBank, page); }, { ~ohm.turnGridBlue(3, 5, lfo2GridBank, page); });
+}, lfo2GridBank, page);
+~ohm.setGridFunc(3, 5, { ~prm.subtractive.setLFO2Waveform('saw'); }, bank: lfo2GridBank, page: page);
+
+// revSaw:
+~ohm.setGridMonitorFunc(4, 5, {
+  if( (~prm.subtractive.lfo2Waveform >=2) && (~prm.subtractive.lfo2Waveform <3),
+    { ~ohm.turnGridGreen(4, 5, lfo2GridBank, page); }, { ~ohm.turnGridYellow(4, 5, lfo2GridBank, page); });
+}, lfo2GridBank, page);
+~ohm.setGridFunc(4, 5, { ~prm.subtractive.setLFO2Waveform('revSaw'); }, bank: lfo2GridBank, page: page);
+
+// rect:
+~ohm.setGridMonitorFunc(5, 5, {
+  if( (~prm.subtractive.lfo2Waveform >=3) && (~prm.subtractive.lfo2Waveform < 4),
+    { ~ohm.turnGridGreen(5, 5, lfo2GridBank, page); }, { ~ohm.turnGridMagenta(5, 5, lfo2GridBank, page); });
+}, lfo2GridBank, page);
+~ohm.setGridFunc(5, 5, { ~prm.subtractive.setLFO2Waveform('rect'); }, bank: lfo2GridBank, page: page);
+
+// noise:
+~ohm.setGridMonitorFunc(7, 5, {
+  if (~prm.subtractive.lfo2Waveform >=5,
+    { ~ohm.turnGridGreen(7, 5, lfo2GridBank, page); }, { ~ohm.turnGridRed(7, 5, lfo2GridBank, page); });
+}, lfo2GridBank, page);
+~ohm.setGridFunc(7, 5, { ~prm.subtractive.setLFO2Waveform('noise'); }, bank: lfo2GridBank, page: page);
+
+// sample and hold:
+~ohm.setGridMonitorFunc(6, 5, {
+  if( ( ~prm.subtractive.lfo2Waveform >=4) && (~prm.subtractive.lfo2Waveform <5),
+    { ~ohm.turnGridGreen(6, 5, lfo2GridBank, page); }, { ~ohm.turnGridCyan(6, 5, lfo2GridBank, page); });
+}, lfo2GridBank, page);
+~ohm.setGridFunc(6, 5, { ~prm.subtractive.setLFO2Waveform('sampleAndHold'); }, bank: lfo2GridBank, page: page);

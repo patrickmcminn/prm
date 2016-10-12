@@ -218,13 +218,13 @@ var presetsButtonBank = 7;
 
 // 2, 2 : LFO 1 Freq:
 ~ohm.setLeftKnobFunc(2, 2, { | val |
-  var freq = val.linexp(0, 127, 0.001, 220);
+  var freq = val.linexp(0, 127, 0.001, 60);
   ~prm.subtractive.setLFO1Freq(freq);
 }, mainKnobBank, page);
 
 // 3, 2 : LFO 2 Freq:
 ~ohm.setLeftKnobFunc(3, 2, { | val |
-  var freq = val.linexp(0, 127, 0.001, 220);
+  var freq = val.linexp(0, 127, 0.001, 60);
   ~prm.subtractive.setLFO2Freq(freq);
 }, mainKnobBank, page);
 

@@ -52,6 +52,10 @@ var lfo1ButtonBank = 5;
 var lfo2ButtonBank = 6;
 var presetsButtonBank = 7;
 
+var presetArray = Array.newClear(48);
+var presetNum = 0;
+
+
 // presets:
 ~ohm.setGridFunc(0, 7, {
   ~ohm.setActiveGridBank(mainGridBank);
@@ -114,5 +118,145 @@ var presetsButtonBank = 7;
   ~ohm.setActiveLeftSlidersBank(presetsSliderBank);
   ~ohm.setActiveCrossfaderBank(presetsCrossfaderBank);
 }, bank: presetsGridBank, page: page);
+
+//////// grid:
+~ohm.setGridMonitorFunc(0, 0, {
+  6.do({ |row | 8.do({ | column |  ~ohm.turnGridBlue(column, row); }); });
+  ~ohm.turnGridGreen(presetNum % 8, presetNum/8);
+}, presetsGridBank, page);
+
+// preset loading:
+6.do({ | row | 8.do({ | column |
+  ~ohm.setGridFunc(column, row, {
+    presetNum = row + column;
+    if( presetArray[row + column] != nil, { ~prm.subtractive.loadPreset(presetArray[column + row]); });
+  }, 'noteOn', presetsGridBank, page);
+  });
+});
+
+// parameter printing:
+~ohm.turnGridMagenta(0, 6, presetsGridBank, page);
+~ohm.setGridFunc(0, 6, { ~prm.subtractive.printAllParameters; }, 'noteOn', presetsGridBank, page);
+
+
+//////// carryovers:
+//// Left Knobs:
+
+// 0, 0: Filter Cutoff:
+~ohm.setLeftKnobFunc(0, 0, { | val |
+  var cutoff = val.linexp(0, 127, 60, 20000);
+  ~prm.subtractive.setFilterCutoff(cutoff);
+}, presetsKnobBank, page);
+
+// 1, 0: Filter Resonance:
+~ohm.setLeftKnobFunc(1, 0, { | val |
+  var res = val.linlin(0, 127, 0, 1.5);
+  ~prm.subtractive.setFilterRes(res);
+}, presetsKnobBank, page);
+
+// 2, 0: LFO 1 to Cutoff:
+~ohm.setLeftKnobFunc(2, 0, { | val |
+  var amountLow = val.linlin(0, 127, 1, 0.03125);
+  var amountHigh = val.linlin(0, 127, 1, 32);
+  ~prm.subtractive.setFilterCutoffLFO1BottomRatio(amountLow);
+  ~prm.subtractive.setFilterCutoffLFO1TopRatio(amountHigh);
+}, presetsKnobBank, page);
+
+// 3, 0: LFO 2 to Cutoff:
+~ohm.setLeftKnobFunc(3, 0, { | val |
+  var amountLow = val.linlin(0, 127, 1, 0.03125);
+  var amountHigh = val.linlin(0, 127, 1, 32);
+  ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountLow);
+  ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountHigh);
+}, presetsKnobBank, page);
+
+// 0, 1: Oscillator 1 Volume:
+~ohm.setLeftKnobFunc(0, 1, { | val |
+  ~prm.subtractive.setOsc1Vol(val.ccdbfs(-70, 0));
+}, presetsKnobBank, page);
+
+// 1, 1: Oscillator 1 Pulse Width:
+~ohm.setLeftKnobFunc(1, 1, { | val |
+  var width = val.linlin(0, 127, 0.0, 1.0);
+  ~prm.subtractive.setOsc1PulseWidth(width);
+}, presetsKnobBank, page);
+
+// 2, 1: Oscillator 2 Volume:
+~ohm.setLeftKnobFunc(2, 1, { | val |
+  ~prm.subtractive.setOsc2Vol(val.ccdbfs(-70, 0));
+  val.postln;
+}, presetsKnobBank, page);
+
+// 3, 1: Oscillator 2 Pulse Width:
+~ohm.setLeftKnobFunc(3, 1, { | val |
+  var width = val.linlin(0, 127, 0.0, 1.0);
+  ~prm.subtractive.setOsc2PulseWidth(width);
+}, presetsKnobBank, page);
+
+// 0, 2 : Oscillator 1 Pulse Width LFO 1:
+~ohm.setLeftKnobFunc(0, 2, { | val |
+  var amountLow = val.linlin(0, 127, 0.0, -1.0);
+  var amountHigh = val.linlin(0, 127, 0.0, 1.0);
+  ~prm.subtractive.setOsc1PulseWidthLFO1Bottom(amountLow);
+  ~prm.subtractive.setOsc1PulseWidthLFO1Top(amountHigh);
+}, presetsKnobBank, page);
+
+// 1, 2 : Oscillator 1 Pulse Width LFO 1:
+~ohm.setLeftKnobFunc(1, 2, { | val |
+  var amountLow = val.linlin(0, 127, 0.0, -1.0);
+  var amountHigh = val.linlin(0, 127, 0.0, 1.0);
+  ~prm.subtractive.setOsc2PulseWidthLFO1Bottom(amountLow);
+  ~prm.subtractive.setOsc2PulseWidthLFO1Top(amountHigh);
+}, presetsKnobBank, page);
+
+// 2, 2 : LFO 1 Freq:
+~ohm.setLeftKnobFunc(2, 2, { | val |
+  var freq = val.linexp(0, 127, 0.001, 60);
+  ~prm.subtractive.setLFO1Freq(freq);
+}, presetsKnobBank, page);
+
+// 3, 2 : LFO 2 Freq:
+~ohm.setLeftKnobFunc(3, 2, { | val |
+  var freq = val.linexp(0, 127, 0.001, 60);
+  ~prm.subtractive.setLFO2Freq(freq);
+}, presetsKnobBank, page);
+
+
+//// Left Sliders:
+
+// 0: Attack Time:
+~ohm.setLeftSliderFunc(0, { | val |
+  var attack = val.linlin(0, 127, 0, 7);
+  ~prm.subtractive.setAttackTime(attack);
+}, presetsSliderBank, page);
+
+// 1: decayTime:
+~ohm.setLeftSliderFunc(1, { | val |
+  var decay = val.linlin(0, 127, 0, 7);
+  ~prm.subtractive.setDecayTime(decay);
+}, presetsSliderBank, page);
+
+// 2: sustain Level:
+~ohm.setLeftSliderFunc(2, { | val |
+  var sustain = val.linlin(0, 127, 0.0, 1.0);
+  ~prm.subtractive.setSustainLevel(sustain);
+}, presetsSliderBank, page);
+
+// 3: release time:
+~ohm.setLeftSliderFunc(3, { | val |
+  var release = val.linlin(0, 127, 0.0, 12);
+  ~prm.subtractive.setReleaseTime(release);
+}, presetsSliderBank, page);
+
+
+//////// Presets:
+
+// default:
+presetArray[0] = 'default';
+~prm.subtractive.savePreset(presetArray[0], [ 1, 1, 0, 1, 0.5, 0, 0.05, 0.05, 1, 0.5, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0.5, 0.5, 0, 0.5, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 3, 0.5, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0, 0.05, false, 1, 1, 1, 1, 0, 0, 0, 0, 1, 2000, 0, 0, 1, 1, 1, 1, 0.05, 0.05, 1, 0.05, 0, 0, 0, 0, 0 ]);
+
+// Music for Reemergence:
+presetArray[1] = 'emerge';
+~prm.subtractive.savePreset(presetArray[1], [ 1, 1, 5, 0.1, 0.5, 0, 0.05, 0.05, 0.11, 0.5, 5, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0.4, 1, 1, 1, -0.5, 1.3, 0, 0, 0, 0.5, 0.5, 0, 2, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0.4, 1, 1, 0.3, -1, 0, 0, 1, 0.5, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0, 0.05, false, 0.7, 1.3, 1, 1, 0, 0, 0, 0, 1, 1500, 0.3, 0, 1, 1, 1, 1, 10, 0.05, 1, 10, 0, -1, 1, 0, 0 ]);
 
 

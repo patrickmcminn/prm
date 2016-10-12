@@ -52,7 +52,7 @@ var lfo1ButtonBank = 5;
 var lfo2ButtonBank = 6;
 var presetsButtonBank = 7;
 
-// lfo 1:
+// bank set:
 ~ohm.setGridFunc(0, 7, {
   ~ohm.setActiveGridBank(mainGridBank);
   ~ohm.setActiveLeftKnobsBank(mainKnobBank, page);
@@ -114,3 +114,163 @@ var presetsButtonBank = 7;
   ~ohm.setActiveLeftSlidersBank(presetsSliderBank);
   ~ohm.setActiveCrossfaderBank(presetsCrossfaderBank);
 }, bank: lfo1GridBank, page: page);
+
+//////// sliders:
+
+//// amplitude envelope:
+// attack time:
+~ohm.setLeftSliderFunc(0, { | val |
+  var attack = val.linlin(0, 127, 0, 10);
+  ~prm.subtractive.setAttackTime(attack);
+}, lfo1SliderBank, page);
+// decay time:
+~ohm.setLeftSliderFunc(1, { | val |
+  var decay = val.linlin(0, 127, 0, 10);
+  ~prm.subtractive.setDecayTime(decay);
+}, lfo1SliderBank, page);
+// sustain level:
+~ohm.setLeftSliderFunc(2, { | val |
+  var sustain = val.linlin(0, 127, 0.0, 1.0);
+  ~prm.subtractive.setSustainLevel(sustain);
+}, lfo1SliderBank, page);
+// release time:
+~ohm.setLeftSliderFunc(3, { | val |
+  var release = val.linlin(0, 127, 0, 10);
+  ~prm.subtractive.setReleaseTime(release);
+}, lfo1SliderBank, page);
+
+
+
+//////// knobs:
+
+///// carryovers:
+// cutoff:
+~ohm.setLeftKnobFunc(0, 0, { | val |
+  var cutoff = val.linexp(0, 127, 50, 20000);
+  ~prm.subtractive.setFilterCutoff(cutoff);
+}, lfo1KnobBank, page);
+// res:
+~ohm.setLeftKnobFunc(1, 0, { | val |
+  var res = val.linlin(0, 127, 0, 2.5);
+  ~prm.subtractive.setFilterRes(res);
+}, lfo1KnobBank, page);
+// filter lfo 1 cutoff:
+~ohm.setLeftKnobFunc(2, 0, { | val |
+  var amountLow = val.linlin(0, 127, 1, 0.03125);
+  var amountHigh = val.linlin(0, 127, 1, 32);
+  ~prm.subtractive.setFilterCutoffLFO1BottomRatio(amountLow);
+  ~prm.subtractive.setFilterCutoffLFO1TopRatio(amountHigh);
+}, lfo1KnobBank, page);
+// amp lfo 1:
+~ohm.setLeftKnobFunc(3, 0, { | val |
+  var amount = val.linlin(0, 127, 1, 0);
+  ~prm.subtractive.setAmplitudeLFO1Bottom(amount);
+}, lfo1KnobBank, page);
+
+// lfo 1 freq:
+~ohm.setLeftKnobFunc(0, 1, { | val |
+  var freq = val.linexp(0, 127, 0.001, 220);
+  ~prm.subtractive.setLFO1Freq(freq);
+}, lfo1KnobBank, page);
+// lfo 1 Pulse Width:
+~ohm.setLeftKnobFunc(1, 1, { | val |
+  var width = val.linlin(0, 127, 0, 1);
+  ~prm.subtractive.setLFO1PulseWidth(width);
+}, lfo1KnobBank, page);
+// lfo 1 waveform:
+~ohm.setLeftKnobFunc(2, 1, { | val |
+  var waveform = val.linlin(0, 127, 0, 5);
+  ~prm.subtractive.setLFO1Waveform(waveform);
+}, lfo1KnobBank, page);
+// lfo 1 frequency modulation:
+~ohm.setLeftKnobFunc(3, 1, { | val |
+  var amountLow = val.linexp(0, 127, 1, 0.025);
+  var amountHigh = val.linlin(0, 127, 1, 16);
+  ~prm.subtractive.setLFO1FreqLFO2BottomRatio(amountLow);
+  ~prm.subtractive.setLFO1FreqLFO2TopRatio(amountHigh);
+}, lfo1KnobBank, page);
+
+
+// lfo 1 attack time:
+~ohm.setLeftKnobFunc(0, 2, { | val |
+  var attack = val.linlin(0, 127, 0, 5);
+  ~prm.subtractive.setLFO1AttackTime(attack);
+}, lfo1KnobBank, page);
+// lfo 1 release time:
+~ohm.setLeftKnobFunc(1, 2, { | val |
+  var release = val.linlin(0, 127, 0, 5);
+  ~prm.subtractive.setLFO1ReleaseTime(release);
+}, lfo1KnobBank, page);
+// lfo 2 freq:
+~ohm.setLeftKnobFunc(2, 2, { | val |
+  var freq = val.linexp(0, 127, 0.001, 60);
+  ~prm.subtractive.setLFO2Freq(freq);
+}, lfo1KnobBank, page);
+// lfo 2 waveform:
+~ohm.setLeftKnobFunc(3, 2, { | val |
+  var waveform = val.linlin(0, 127, 0, 5);
+  ~prm.subtractive.setLFO2Waveform(waveform);
+}, lfo1KnobBank, page);
+
+
+//////// grid:
+
+//// Envelope Type:
+
+// monitor func:
+~ohm.setGridMonitorFunc(0, 0, {
+  4.do({ | i | ~ohm.turnGridCyan(i, 0); });
+  ~ohm.turnGridGreen(~prm.subtractive.lfo1EnvType, 0);
+}, lfo1GridBank, page);
+// none:
+~ohm.setGridFunc(0, 0, { ~prm.subtractive.setLFO1EnvType('none'); }, bank: lfo1GridBank, page: page);
+// attack:
+~ohm.setGridFunc(1, 0, { ~prm.subtractive.setLFO1EnvType('attack'); }, bank: lfo1GridBank, page: page);
+// release:
+~ohm.setGridFunc(2, 0, { ~prm.subtractive.setLFO1EnvType('release'); }, bank: lfo1GridBank, page: page);
+// attack and release:
+~ohm.setGridFunc(3, 0, { ~prm.subtractive.setLFO1EnvType('attackAndRelease'); }, bank: lfo1GridBank, page: page);
+
+// LFO 1 Waveforms:
+
+// sine:
+~ohm.setGridMonitorFunc(2, 4, {
+  if( ~prm.subtractive.lfo1Waveform == 0,
+    { ~ohm.turnGridGreen(2, 4, lfo1GridBank, page); }, {~ohm.turnGridWhite(2, 4, lfo1GridBank, page); });
+}, lfo1GridBank, page);
+~ohm.setGridFunc(2, 4, { ~prm.subtractive.setLFO1Waveform('sine'); }, bank: lfo1GridBank, page: page);
+
+// saw:
+~ohm.setGridMonitorFunc(3, 4, {
+  if( (~prm.subtractive.lfo1Waveform >=1) && (~prm.subtractive.lfo1Waveform < 2),
+    { ~ohm.turnGridGreen(3, 4, lfo1GridBank, page); }, { ~ohm.turnGridBlue(3, 4, lfo1GridBank, page); });
+}, lfo1GridBank, page);
+~ohm.setGridFunc(3, 4, { ~prm.subtractive.setLFO1Waveform('saw'); }, bank: lfo1GridBank, page: page);
+
+// revSaw:
+~ohm.setGridMonitorFunc(4, 4, {
+  if( (~prm.subtractive.lfo1Waveform >=2) && (~prm.subtractive.lfo1Waveform <3),
+    { ~ohm.turnGridGreen(4, 4, lfo1GridBank, page); }, { ~ohm.turnGridYellow(4, 4, lfo1GridBank, page); });
+}, lfo1GridBank, page);
+~ohm.setGridFunc(4, 4, { ~prm.subtractive.setLFO1Waveform('revSaw'); }, bank: lfo1GridBank, page: page);
+
+// rect:
+~ohm.setGridMonitorFunc(5, 4, {
+  if( (~prm.subtractive.lfo1Waveform >=3) && (~prm.subtractive.lfo1Waveform < 4),
+    { ~ohm.turnGridGreen(5, 4, lfo1GridBank, page); }, { ~ohm.turnGridMagenta(5, 4, lfo1GridBank, page); });
+}, lfo1GridBank, page);
+~ohm.setGridFunc(5, 4, { ~prm.subtractive.setLFO1Waveform('rect'); }, bank: lfo1GridBank, page: page);
+
+// noise:
+~ohm.setGridMonitorFunc(7, 4, {
+  if (~prm.subtractive.lfo1Waveform >=5,
+    { ~ohm.turnGridGreen(7, 4, lfo1GridBank, page); }, { ~ohm.turnGridRed(7, 4, lfo1GridBank, page); });
+}, lfo1GridBank, page);
+~ohm.setGridFunc(7, 4, { ~prm.subtractive.setLFO1Waveform('noise'); }, bank: lfo1GridBank, page: page);
+
+// sample and hold:
+~ohm.setGridMonitorFunc(6, 4, {
+  if( ( ~prm.subtractive.lfo1Waveform >=4) && (~prm.subtractive.lfo1Waveform <5),
+    { ~ohm.turnGridGreen(6, 4, lfo1GridBank, page); }, { ~ohm.turnGridCyan(6, 4, lfo1GridBank, page); });
+}, lfo1GridBank, page);
+~ohm.setGridFunc(6, 4, { ~prm.subtractive.setLFO1Waveform('sampleAndHold'); }, bank: lfo1GridBank, page: page);

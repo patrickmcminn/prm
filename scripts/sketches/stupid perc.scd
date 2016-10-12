@@ -65,6 +65,7 @@ y.addKey(\test1, \releaseTime, Pwhite(0.05, 0.7));
 z.addKey(\four, \dur, 0.5);
 z.addKey(\four, \rate, 1);
 z.addKey(\four, \legato, 1);
+z.addKey(\four, \amp, 0.4);
 
 a.addKey(\yeah, \dur, 1/5);
 a.addKey(\yeah, \note, Pseq([Pseq([0, -5, -7, -9, -12], 16), Pseq([0, -2, 3, 5, 7], 16)], inf));

@@ -1,7 +1,7 @@
 ~prm = AudioSystem.new(2);
 
 (
-~prm.subtractive.setAllParameters([ 1, 1, 5, 0.1, 0.5, 0, 0.05, 0.05, 0.11, 0.5, 5, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0.4, 1, 1, 1, -0.5, 1.3, 0, 0, 0, 0.5, 0.5, 0, 2, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0.4, 1, 1, 0.3, -1, 0, 0, 1, 0.5, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0, 0.05, false, 0.7, 1.3, 1, 1, 0, 0, 0, 0, 1, 1500, 0.3, 0, 1, 1, 1, 1, 10, 0.05, 1, 10, 0, -1, 1, 0, 0 ]);
+~prm.subtractive.setAllParameters([ 1, 1, 5, 0.1, 0.5, 0, 0.05, 0.05, 0.11, 0.5, 5, 1, 1, 1, 0, 1, 1, 1, 1, 0.4, 0.4, -0.4, 0.4, 0.4, 1, 1, 1, 0, 1.8, 0, 0, 0, 0.5, 0.5, 0, 2, 0, 1, 1, 0, 1, 1, 1, 1, 0.4, -0.4, 0.4, -0.4, 1, 0.4, 1, 1, 0.3, -0.9, 0, 0, 1, 0.5, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0, 0.05, false, 0.7, 1.3, 1, 1, 0, 0, 0, 0, 1, 1500, 0.3, 0, 1, 1, 1, 1, 10, 0.05, 1, 10, 0, -1, 1, 0, 0 ]);
 
 ~prm.subtractive.mixer.setSendVol(0, -12);
 ~prm.subtractive.mixer.setSendVol(1, -100);
@@ -133,24 +133,29 @@ s.meter;
 ~prm.subtractive.setOsc1AmpLFO1Bottom(0.4);
 ~prm.subtractive.setOsc2AmpLFO1Top(0.4);
 
-~prm.subtractive.setOsc1WaveformLFO1Bottom(-0.5);
-~prm.subtractive.setOsc1WaveformLFO1Top(1.3);
+~prm.subtractive.setOsc1WaveformLFO1Bottom(0);
+~prm.subtractive.setOsc1WaveformLFO1Top(1.8);
 
 ~prm.subtractive.setOsc2WaveformLFO1Bottom(0.3);
-~prm.subtractive.setOsc2WaveformLFO1Top(-1);
+~prm.subtractive.setOsc2WaveformLFO1Top(-0.9);
 
 
-~prm.subtractive.setOsc1PulseWidthLFO2Bottom(-1);
-~prm.subtractive.setOsc1PulseWidthLFO2Bottom(1);
-~prm.subtractive.setOsc1PulseWidthLFO1Bottom(-1);
-~prm.subtractive.setOsc1PulseWidthLFO1Bottom(1);
+~prm.subtractive.setOsc1PulseWidthLFO2Bottom(-0.4);
+~prm.subtractive.setOsc1PulseWidthLFO2Top(0.4);
+~prm.subtractive.setOsc1PulseWidthLFO1Bottom(0.4);
+~prm.subtractive.setOsc1PulseWidthLFO1Top(0.4);
 
-~prm.subtractive.setOsc2PulseWidthLFO2Bottom(-1);
-~prm.subtractive.setOsc2PulseWidthLFO2Bottom(1);
-~prm.subtractive.setOsc2PulseWidthLFO1Bottom(-1);
-~prm.subtractive.setOsc2PulseWidthLFO1Bottom(1);
+~prm.subtractive.setOsc2PulseWidthLFO2Top(-0.4);
+~prm.subtractive.setOsc2PulseWidthLFO2Bottom(0.4);
+~prm.subtractive.setOsc2PulseWidthLFO1Top(-0.4);
+~prm.subtractive.setOsc2PulseWidthLFO1Bottom(0.4);
 
 ~prm.subtractive.setFilterType('lowPass');
 //~prm.subtractive.setFilterType('highPass');
 );
 */
+
+~prm.subtractive.printAllParameters;
+
+~prm.subtractive.setOsc1PulseWidthLFO1Bottom(-0.4);
+~prm.subtractive.osc1PulseWidthLFO1Bottom;

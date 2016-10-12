@@ -53,6 +53,12 @@ var lfo1ButtonBank = 5;
 var lfo2ButtonBank = 6;
 var presetsButtonBank = 7;
 
+var cutoffLFO1Invert = false;
+var cutoffLFO2Invert = false;
+var pulseWidthOsc1Invert = false;
+var pulseWidthOsc2Invert = false;
+
+
 //////// Bank Change:
 ~ohm.setGridMonitorFunc(0, 7, {
   8.do({ | i | ~ohm.turnGridYellow(i, 7, mainGridBank, page); });
@@ -165,16 +171,32 @@ var presetsButtonBank = 7;
 ~ohm.setLeftKnobFunc(2, 0, { | val |
   var amountLow = val.linlin(0, 127, 1, 0.03125);
   var amountHigh = val.linlin(0, 127, 1, 32);
-  ~prm.subtractive.setFilterCutoffLFO1BottomRatio(amountLow);
-  ~prm.subtractive.setFilterCutoffLFO1TopRatio(amountHigh);
+  if( cutoffLFO1Invert == false,
+    {
+      ~prm.subtractive.setFilterCutoffLFO1BottomRatio(amountLow);
+      ~prm.subtractive.setFilterCutoffLFO1TopRatio(amountHigh);
+    },
+    {
+      ~prm.subtractive.setFilterCutoffLFO1BottomRatio(amountHigh);
+      ~prm.subtractive.setFilterCutoffLFO1TopRatio(amountLow);
+    }
+  );
 }, mainKnobBank, page);
 
 // 3, 0: LFO 2 to Cutoff:
 ~ohm.setLeftKnobFunc(3, 0, { | val |
   var amountLow = val.linlin(0, 127, 1, 0.03125);
   var amountHigh = val.linlin(0, 127, 1, 32);
-  ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountLow);
-  ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountHigh);
+  if( cutoffLFO2Invert == false,
+    {
+      ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountLow);
+      ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountHigh);
+    },
+    {
+      ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountHigh);
+      ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountLow);
+    }
+  );
 }, mainKnobBank, page);
 
 // 0, 1: Oscillator 1 Volume:
@@ -204,16 +226,32 @@ var presetsButtonBank = 7;
 ~ohm.setLeftKnobFunc(0, 2, { | val |
   var amountLow = val.linlin(0, 127, 0.0, -1.0);
   var amountHigh = val.linlin(0, 127, 0.0, 1.0);
-  ~prm.subtractive.setOsc1PulseWidthLFO1Bottom(amountLow);
-  ~prm.subtractive.setOsc1PulseWidthLFO1Top(amountHigh);
+  if( pulseWidthOsc1Invert == false,
+    {
+      ~prm.subtractive.setOsc1PulseWidthLFO1Bottom(amountLow);
+      ~prm.subtractive.setOsc1PulseWidthLFO1Top(amountHigh);
+    },
+    {
+      ~prm.subtractive.setOsc1PulseWidthLFO1Bottom(amountHigh);
+      ~prm.subtractive.setOsc1PulseWidthLFO1Top(amountLow);
+    }
+  );
 }, mainKnobBank, page);
 
-// 1, 2 : Oscillator 1 Pulse Width LFO 1:
+// 1, 2 : Oscillator 2 Pulse Width LFO 1:
 ~ohm.setLeftKnobFunc(1, 2, { | val |
   var amountLow = val.linlin(0, 127, 0.0, -1.0);
   var amountHigh = val.linlin(0, 127, 0.0, 1.0);
-  ~prm.subtractive.setOsc2PulseWidthLFO1Bottom(amountLow);
-  ~prm.subtractive.setOsc2PulseWidthLFO1Top(amountHigh);
+  if( pulseWidthOsc2Invert == false,
+    {
+      ~prm.subtractive.setOsc2PulseWidthLFO1Bottom(amountLow);
+      ~prm.subtractive.setOsc2PulseWidthLFO1Top(amountHigh);
+    },
+    {
+      ~prm.subtractive.setOsc2PulseWidthLFO1Bottom(amountHigh);
+      ~prm.subtractive.setOsc2PulseWidthLFO1Top(amountLow);
+    }
+  );
 }, mainKnobBank, page);
 
 // 2, 2 : LFO 1 Freq:
@@ -467,6 +505,40 @@ var presetsButtonBank = 7;
 ~ohm.setGridFunc(1, 6, { ~prm.subtractive.setFilterType('highPass') }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(2, 6, { ~prm.subtractive.setFilterType('bandPass') }, bank: mainGridBank, page: page);
 
+
+//// LFO Inversions:
+
+// Cutoff LFO1:
+~ohm.setGridMonitorFunc(4, 6, {
+  if( cutoffLFO1Invert == false, { ~ohm.turnGridBlue(4, 6); }, { ~ohm.turnGridWhite(4, 6); });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(4, 6, {
+  if( cutoffLFO1Invert == false, { cutoffLFO1Invert = true; }, { cutoffLFO1Invert= false });
+}, bank: mainGridBank, page: page);
+
+// Cutoff LFO2:
+~ohm.setGridMonitorFunc(5, 6, {
+  if( cutoffLFO2Invert == false, { ~ohm.turnGridBlue(5, 6); }, { ~ohm.turnGridWhite(5, 6); });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(5, 6, {
+  if( cutoffLFO2Invert == false, { cutoffLFO2Invert = true; }, { cutoffLFO2Invert= false });
+}, bank: mainGridBank, page: page);
+
+// Pulse Width OSC1 LFO1:
+~ohm.setGridMonitorFunc(6, 6, {
+  if( pulseWidthOsc1Invert == false, { ~ohm.turnGridBlue(6, 6); }, { ~ohm.turnGridWhite(6, 6); });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(6, 6, {
+  if( pulseWidthOsc1Invert == false, { pulseWidthOsc1Invert = true; }, { pulseWidthOsc1Invert= false });
+}, bank: mainGridBank, page: page);
+
+// Pulse Width OSC2 LFO1:
+~ohm.setGridMonitorFunc(7, 6, {
+  if( pulseWidthOsc2Invert == false, { ~ohm.turnGridBlue(7, 6); }, { ~ohm.turnGridWhite(7, 6); });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(7, 6, {
+  if( pulseWidthOsc2Invert == false, { pulseWidthOsc2Invert = true; }, { pulseWidthOsc2Invert= false });
+}, bank: mainGridBank, page: page);
 
 
 //////// Crossfader:

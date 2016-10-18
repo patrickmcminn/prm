@@ -52,6 +52,11 @@ var lfo1ButtonBank = 5;
 var lfo2ButtonBank = 6;
 var presetsButtonBank = 7;
 
+var cutoffLFO1Invert = false;
+var resLFO1Invert = false;
+var cutoffLFO2Invert = false;
+var resLFO2Invert = false;
+
 // filter:
 ~ohm.setGridFunc(0, 7, {
   ~ohm.setActiveGridBank(mainGridBank);
@@ -174,32 +179,60 @@ var presetsButtonBank = 7;
 ~ohm.setLeftKnobFunc(0, 1, { | val |
   var amountLow = val.linlin(0, 127, 1, 0.03125);
   var amountHigh = val.linlin(0, 127, 1, 32);
-  ~prm.subtractive.setFilterCutoffLFO1BottomRatio(amountLow);
-  ~prm.subtractive.setFilterCutoffLFO1TopRatio(amountHigh);
+  if( cutoffLFO1Invert == false,
+    {
+      ~prm.subtractive.setFilterCutoffLFO1BottomRatio(amountLow);
+      ~prm.subtractive.setFilterCutoffLFO1TopRatio(amountHigh);
+    },
+    {
+      ~prm.subtractive.setFilterCutoffLFO1BottomRatio(amountHigh);
+      ~prm.subtractive.setFilterCutoffLFO1TopRatio(amountLow);
+  });
 }, filterKnobBank, page);
 
 // Res LFO 1:
 ~ohm.setLeftKnobFunc(1, 1, { | val |
   var amountLow = val.linlin(0, 127, 0, -2);
   var amountHigh = val.linlin(0, 127, 0, 2);
-  ~prm.subtractive.setFilterResLFO1Bottom(amountLow);
-  ~prm.subtractive.setFilterResLFO1Top(amountHigh);
+  if( resLFO1Invert == false,
+    {
+      ~prm.subtractive.setFilterResLFO1Bottom(amountLow);
+      ~prm.subtractive.setFilterResLFO1Top(amountHigh);
+    },
+    {
+      ~prm.subtractive.setFilterResLFO1Bottom(amountHigh);
+      ~prm.subtractive.setFilterResLFO1Top(amountLow);
+  });
 }, filterKnobBank, page);
 
 // Cutoff LFO 2:
 ~ohm.setLeftKnobFunc(2, 1, { | val |
   var amountLow = val.linlin(0, 127, 1, 0.03125);
   var amountHigh = val.linlin(0, 127, 1, 32);
-  ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountLow);
-  ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountHigh);
+  if( cutoffLFO2Invert == false,
+    {
+      ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountLow);
+      ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountHigh);
+    },
+    {
+      ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountHigh);
+      ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountLow);
+  });
 }, filterKnobBank, page);
 
 // Res LFO 2:
 ~ohm.setLeftKnobFunc(3, 1, { | val |
-   var amountLow = val.linlin(0, 127, 0, -2);
+  var amountLow = val.linlin(0, 127, 0, -2);
   var amountHigh = val.linlin(0, 127, 0, 2);
-  ~prm.subtractive.setFilterResLFO2Bottom(amountLow);
-  ~prm.subtractive.setFilterResLFO2Top(amountHigh);
+  if( resLFO2Invert == false,
+    {
+      ~prm.subtractive.setFilterResLFO2Bottom(amountLow);
+      ~prm.subtractive.setFilterResLFO2Top(amountHigh);
+    },
+    {
+      ~prm.subtractive.setFilterResLFO2Bottom(amountHigh);
+      ~prm.subtractive.setFilterResLFO2Top(amountLow);
+  });
 }, filterKnobBank, page);
 
 // Filter Env Attack Ratio:
@@ -500,3 +533,37 @@ var presetsButtonBank = 7;
     { ~ohm.turnGridGreen(6, 5, filterGridBank, page); }, { ~ohm.turnGridCyan(6, 5, filterGridBank, page); });
 }, filterGridBank, page);
 ~ohm.setGridFunc(6, 5, { ~prm.subtractive.setLFO2Waveform('sampleAndHold'); }, bank: filterGridBank, page: page);
+
+//// LFO Inversions:
+
+// Cutoff LFO 1:
+~ohm.setGridMonitorFunc(4, 6, {
+  if( cutoffLFO1Invert == false, { ~ohm.turnGridBlue(4, 6); }, { ~ohm.turnGridWhite(4, 6); });
+}, filterGridBank, page);
+~ohm.setGridFunc(4, 6, {
+  if( cutoffLFO1Invert == false, { cutoffLFO1Invert = true }, { cutoffLFO1Invert = false });
+}, bank: filterGridBank, page: page);
+
+// Res LFO 1:
+~ohm.setGridMonitorFunc(5, 6, {
+  if( resLFO1Invert == false, { ~ohm.turnGridBlue(5, 6); }, { ~ohm.turnGridWhite(5, 6); });
+}, filterGridBank, page);
+~ohm.setGridFunc(5, 6, {
+  if( resLFO1Invert == false, { resLFO1Invert = true }, { resLFO1Invert = false });
+}, bank: filterGridBank, page: page);
+
+// Cutoff LFO 2:
+~ohm.setGridMonitorFunc(6, 6, {
+  if( cutoffLFO2Invert == false, { ~ohm.turnGridBlue(6, 6); }, { ~ohm.turnGridWhite(6, 6); });
+}, filterGridBank, page);
+~ohm.setGridFunc(6, 6, {
+  if( cutoffLFO2Invert == false, { cutoffLFO2Invert = true }, { cutoffLFO2Invert = false });
+}, bank: filterGridBank, page: page);
+
+// Res LFO 2:
+~ohm.setGridMonitorFunc(7, 6, {
+  if( resLFO2Invert == false, { ~ohm.turnGridBlue(7, 6); }, { ~ohm.turnGridWhite(7, 6); });
+}, filterGridBank, page);
+~ohm.setGridFunc(7, 6, {
+  if( resLFO2Invert == false, { resLFO2Invert = true }, { resLFO2Invert = false });
+}, bank: filterGridBank, page: page);

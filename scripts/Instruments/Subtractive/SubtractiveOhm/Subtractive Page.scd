@@ -26,6 +26,7 @@ var lfo1GridBank = 5;
 var lfo2GridBank = 6;
 var presetsGridBank = 7;
 var keyboardGridBank = 8;
+var keyboardSustainGridBank = 9;
 
 var mainSliderBank = 0;
 var osc1SliderBank = 1;
@@ -53,11 +54,12 @@ var vcaButtonBank = 4;
 var lfo1ButtonBank = 5;
 var lfo2ButtonBank = 6;
 var presetsButtonBank = 7;
+var keyboardButtonBank = 8;
 
 ~ohm.makePage(page);
 
-~ohm.addGridBanks(8, page);
-~ohm.addLeftButtonsBanks(7, page);
+~ohm.addGridBanks(9, page);
+~ohm.addLeftButtonsBanks(8, page);
 ~ohm.addLeftKnobsBanks(7, page);
 ~ohm.addLeftSlidersBanks(7, page);
 ~ohm.addCrossfaderButtonsBanks(7, page);

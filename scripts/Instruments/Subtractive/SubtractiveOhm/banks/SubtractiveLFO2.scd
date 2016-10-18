@@ -52,6 +52,9 @@ var lfo1ButtonBank = 5;
 var lfo2ButtonBank = 6;
 var presetsButtonBank = 7;
 
+var cutoffLFO2Invert = false;
+var lfo1FreqInvert = false;
+
 // lfo 2:
 ~ohm.setGridFunc(0, 7, {
   ~ohm.setActiveGridBank(mainGridBank);
@@ -157,8 +160,15 @@ var presetsButtonBank = 7;
 ~ohm.setLeftKnobFunc(2, 0, { | val |
   var amountLow = val.linlin(0, 127, 1, 0.03125);
   var amountHigh = val.linlin(0, 127, 1, 32);
-  ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountLow);
-  ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountHigh);
+  if( cutoffLFO2Invert == false,
+    {
+      ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountLow);
+      ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountHigh);
+    },
+    {
+      ~prm.subtractive.setFilterCutoffLFO2BottomRatio(amountHigh);
+      ~prm.subtractive.setFilterCutoffLFO2TopRatio(amountLow);
+  });
 }, lfo2KnobBank, page);
 // amp lfo 2:
 ~ohm.setLeftKnobFunc(3, 0, { | val |
@@ -183,11 +193,19 @@ var presetsButtonBank = 7;
 }, lfo2KnobBank, page);
 // lfo 1 frequency modulation:
 ~ohm.setLeftKnobFunc(3, 1, { | val |
-  var amountLow = val.linexp(0, 127, 1, 0.5);
-  var amountHigh = val.linlin(0, 127, 1, 2);
-  ~prm.subtractive.setLFO1FreqLFO2BottomRatio(amountLow);
-  ~prm.subtractive.setLFO1FreqLFO2TopRatio(amountHigh);
+  var amountLow = val.linexp(0, 127, 1, 0.025);
+  var amountHigh = val.linlin(0, 127, 1, 16);
+  if( lfo1FreqInvert == false,
+    {
+      ~prm.subtractive.setLFO1FreqLFO2BottomRatio(amountLow);
+      ~prm.subtractive.setLFO1FreqLFO2TopRatio(amountHigh);
+    },
+    {
+      ~prm.subtractive.setLFO1FreqLFO2BottomRatio(amountHigh);
+      ~prm.subtractive.setLFO1FreqLFO2TopRatio(amountLow);
+  });
 }, lfo2KnobBank, page);
+
 
 
 // filter cutoff lfo 1:
@@ -261,3 +279,21 @@ var presetsButtonBank = 7;
     { ~ohm.turnGridGreen(6, 5, lfo2GridBank, page); }, { ~ohm.turnGridCyan(6, 5, lfo2GridBank, page); });
 }, lfo2GridBank, page);
 ~ohm.setGridFunc(6, 5, { ~prm.subtractive.setLFO2Waveform('sampleAndHold'); }, bank: lfo2GridBank, page: page);
+
+////// LFO Inversions:
+
+// LFO 1 Filter Cutoff:
+~ohm.setGridMonitorFunc(6, 6, {
+  if( cutoffLFO2Invert == false, { ~ohm.turnGridBlue(6, 6); }, { ~ohm.turnGridWhite(6, 6); });
+}, lfo2GridBank, page);
+~ohm.setGridFunc(6, 6, {
+  if( cutoffLFO2Invert == false, { cutoffLFO2Invert = true }, { cutoffLFO2Invert = false });
+}, bank: lfo2GridBank, page: page);
+
+// LFO 1 LFO 2 Freq Mod:
+~ohm.setGridMonitorFunc(7, 6, {
+  if( lfo1FreqInvert == false, { ~ohm.turnGridBlue(7, 6); }, { ~ohm.turnGridWhite(7, 6); });
+}, lfo2GridBank, page);
+~ohm.setGridFunc(7, 6, {
+  if( lfo1FreqInvert == false, { lfo1FreqInvert = true }, { lfo1FreqInvert = false });
+}, bank:lfo2GridBank, page: page);

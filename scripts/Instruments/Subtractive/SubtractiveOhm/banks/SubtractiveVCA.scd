@@ -53,6 +53,11 @@ var lfo1ButtonBank = 5;
 var lfo2ButtonBank = 6;
 var presetsButtonBank = 7;
 
+var noiseFilterLFO1Invert = false;
+var noiseFilterLFO2Invert = false;
+var panLFO1Invert = false;
+var panLFO2Invert = false;
+
 // VCA:
 ~ohm.setGridFunc(0, 7, {
   ~ohm.setActiveGridBank(mainGridBank);
@@ -177,15 +182,29 @@ var presetsButtonBank = 7;
 ~ohm.setLeftKnobFunc(2, 1, { | val |
   var amountLow = val.linlin(0, 127, 1, 0.0025);
   var amountHigh = val.linlin(0, 127, 1, 16);
-  ~prm.subtractive.setNoiseOscFilterLFO1BottomRatio(amountLow);
-  ~prm.subtractive.setNoiseOscFilterLFO1TopRatio(amountHigh);
+  if( noiseFilterLFO1Invert == false,
+    {
+      ~prm.subtractive.setNoiseOscFilterLFO1BottomRatio(amountLow);
+      ~prm.subtractive.setNoiseOscFilterLFO1TopRatio(amountHigh);
+    },
+    {
+      ~prm.subtractive.setNoiseOscFilterLFO1BottomRatio(amountHigh);
+      ~prm.subtractive.setNoiseOscFilterLFO1TopRatio(amountLow);
+  });
 }, vcaKnobBank, page);
 // noise osc filter lfo 2:
 ~ohm.setLeftKnobFunc(3, 1, { | val |
   var amountLow = val.linlin(0, 127, 1, 0.0025);
   var amountHigh = val.linlin(0, 127, 1, 16);
-  ~prm.subtractive.setNoiseOscFilterLFO2BottomRatio(amountLow);
-  ~prm.subtractive.setNoiseOscFilterLFO2TopRatio(amountHigh);
+  if( noiseFilterLFO2Invert == false,
+    {
+      ~prm.subtractive.setNoiseOscFilterLFO2BottomRatio(amountLow);
+      ~prm.subtractive.setNoiseOscFilterLFO2TopRatio(amountHigh);
+    },
+    {
+      ~prm.subtractive.setNoiseOscFilterLFO2BottomRatio(amountHigh);
+      ~prm.subtractive.setNoiseOscFilterLFO2TopRatio(amountLow);
+  });
 }, vcaKnobBank, page);
 
 
@@ -203,17 +222,65 @@ var presetsButtonBank = 7;
 ~ohm.setLeftKnobFunc(2, 2, { | val |
   var amountLow = val.linlin(0, 127, 0, -1);
   var amountHigh = val.linlin(0, 127, 0, 1);
-  ~prm.subtractive.setPanLFO1Bottom(amountLow);
-  ~prm.subtractive.setPanLFO1Top(amountHigh);
+  if( panLFO1Invert == false,
+    {
+      ~prm.subtractive.setPanLFO1Bottom(amountLow);
+      ~prm.subtractive.setPanLFO1Top(amountHigh);
+    },
+    {
+      ~prm.subtractive.setPanLFO1Bottom(amountHigh);
+      ~prm.subtractive.setPanLFO1Top(amountLow);
+  });
 }, vcaKnobBank, page);
 // pan lfo 2:
 ~ohm.setLeftKnobFunc(3, 2, { | val |
   var amountLow = val.linlin(0, 127, 0, -1);
   var amountHigh = val.linlin(0, 127, 0, 1);
-  ~prm.subtractive.setPanLFO2Bottom(amountLow);
-  ~prm.subtractive.setPanLFO2Top(amountHigh);
+  if( panLFO2Invert == false,
+    {
+      ~prm.subtractive.setPanLFO2Bottom(amountLow);
+      ~prm.subtractive.setPanLFO2Top(amountHigh);
+    },
+    {
+      ~prm.subtractive.setPanLFO2Bottom(amountHigh);
+      ~prm.subtractive.setPanLFO2Top(amountLow);
+  });
 }, vcaKnobBank, page);
 
 
-// grid:
+//////// grid:
+
+//// LFO Inversions:
+
+// Noise Filter LFO 1:
+~ohm.setGridMonitorFunc(4, 6, {
+  if( noiseFilterLFO1Invert == false, { ~ohm.turnGridBlue(4, 6); }, { ~ohm.turnGridWhite(4, 6); });
+}, vcaGridBank, page);
+~ohm.setGridFunc(4, 6, {
+  if( noiseFilterLFO1Invert == false, { noiseFilterLFO1Invert = true }, { noiseFilterLFO1Invert = false });
+}, bank: vcaGridBank, page: page);
+
+// Noise Filter LFO 2:
+~ohm.setGridMonitorFunc(5, 6, {
+  if( noiseFilterLFO2Invert == false, { ~ohm.turnGridBlue(5, 6); }, { ~ohm.turnGridWhite(5, 6); });
+}, vcaGridBank, page);
+~ohm.setGridFunc(5, 6, {
+  if( noiseFilterLFO2Invert == false, { noiseFilterLFO2Invert = true }, { noiseFilterLFO2Invert = false });
+}, bank: vcaGridBank, page: page);
+
+// Pan LFO 1:
+~ohm.setGridMonitorFunc(6, 6, {
+  if( panLFO1Invert == false, { ~ohm.turnGridBlue(6, 6); }, { ~ohm.turnGridWhite(6, 6); });
+}, vcaGridBank, page);
+~ohm.setGridFunc(6, 6, {
+  if( panLFO1Invert == false, { panLFO1Invert = true }, { panLFO1Invert = false });
+}, bank: vcaGridBank, page: page);
+
+// Pan LFO 2:
+~ohm.setGridMonitorFunc(7, 6, {
+  if( panLFO2Invert == false, { ~ohm.turnGridBlue(7, 6); }, { ~ohm.turnGridWhite(7, 6); });
+}, vcaGridBank, page);
+~ohm.setGridFunc(7, 6, {
+  if( panLFO2Invert == false, { panLFO2Invert = true }, { panLFO2Invert = false });
+}, bank: vcaGridBank, page: page);
 

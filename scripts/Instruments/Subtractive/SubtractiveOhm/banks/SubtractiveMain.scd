@@ -52,6 +52,7 @@ var vcaButtonBank = 4;
 var lfo1ButtonBank = 5;
 var lfo2ButtonBank = 6;
 var presetsButtonBank = 7;
+var keyboardButtonBank = 8;
 
 var cutoffLFO1Invert = false;
 var cutoffLFO2Invert = false;
@@ -550,6 +551,15 @@ var pulseWidthOsc2Invert = false;
     { keyboardGridBank }, { ~ohm.turnCrossfaderButtonBlue(0, mainCrossfaderBank, page); }
   );
 }, mainCrossfaderBank, page);
-~ohm.setCrossfaderButtonFunc(0, { ~ohm.setActiveGridBank(keyboardGridBank, page); },
-  bank: mainCrossfaderBank, page: page);
+~ohm.setCrossfaderButtonFunc(0, {
+  if( ~ohm.activeGridBank != keyboardGridBank,
+    {
+      ~ohm.setActiveGridBank(keyboardGridBank, page);
+      ~ohm.setActiveLeftButtonsBank(keyboardButtonBank, page);
+    },
+    {
+      ~ohm.setActiveGridBank(mainGridBank, page);
+      ~ohm.setActiveLeftButtonsBank(mainButtonBank, page);
+  });
+  }, bank: mainCrossfaderBank, page: page);
 

@@ -76,4 +76,5 @@ var keyboardButtonBank = 8;
 "/banks/SubtractiveLFO1.scd".loadRelative;
 "/banks/SubtractiveLFO2.scd".loadRelative;
 "/banks/SubtractivePresets.scd".loadRelative;
+"/banks/SubtractiveKeyboard.scd".loadRelative;
 );

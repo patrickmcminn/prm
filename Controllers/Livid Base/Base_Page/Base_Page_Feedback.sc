@@ -9,36 +9,36 @@
 
   turnGridColor { | column = 0, row = 0, color = 'off', bank = 'active' |
     var num = (row * 8) + column;
-    if( bank == 'active', { bank = activeGridBank });
+    if( bank == 'active', { bank = activeGridBnk });
     gridBankArray[bank][num][3] = color;
-    this.turnButtonColor(num + 36, gridBankArray[activeGridBank][num][3]);
+    this.turnButtonColor(num + 36, gridBankArray[activeGridBnk][num][3]);
   }
 
   turnControlButtonColor { | button = 1, led = 'left', color = 'off', bank = 'active' |
     var num = (button - 1) + switch(led, { 'left' }, { 0 }, { 'right' }, { 8 });
-    if( bank == 'active', { bank = activeControlButtonsBank });
+    if( bank == 'active', { bank = activeControlButtonsBnk });
     controlButtonsBankArray[bank][2][num] = color;
-    this.turnButtonColor(num + 18, controlButtonsBankArray[activeControlButtonsBank][2][num]);
+    this.turnButtonColor(num + 18, controlButtonsBankArray[activeControlButtonsBnk][2][num]);
   }
 
   turnTouchButtonColor { | button = 1, led = 'middle', color = 'off', bank = 'active' |
     var num = button + switch(led, { 'middle' }, { 0 }, { 'top' }, { 8 });
     var midi = button + switch(led, { 'middle' }, { 10 }, { 'top' }, { 68 });
-    if( bank == 'active', { bank = activeTouchButtonsBank });
+    if( bank == 'active', { bank = activeTouchButtonsBnk });
     touchButtonsBankArray[bank][2][num] = color;
-    this.turnButtonColor(midi, touchButtonsBankArray[activeTouchButtonsBank][2][num]);
+    this.turnButtonColor(midi, touchButtonsBankArray[activeTouchButtonsBnk][2][num]);
   }
 
   setFaderMode { | fader = 1, mode = 'redFill', bank = 'active' |
-    if( bank == 'active', { bank = activeFadersBank });
+    if( bank == 'active', { bank = activeFadersBnk });
     fadersBankArray[bank][fader - 1][2] = mode;
-    faderModeArray[fader-1] = fadersBankArray[activeFadersBank][fader - 1][2];
+    faderModeArray[fader-1] = fadersBankArray[activeFadersBnk][fader - 1][2];
   }
 
   setFaderValue { | fader = 1, value = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeFadersBank });
+    if( bank == 'active', { bank = activeFadersBnk });
     fadersBankArray[bank][fader - 1][1] = value;
-    faderValueArray[fader-1] = fadersBankArray[activeFadersBank][fader - 1][1];
+    faderValueArray[fader-1] = fadersBankArray[activeFadersBnk][fader - 1][1];
   }
 
 }

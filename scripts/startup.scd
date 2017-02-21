@@ -20,10 +20,11 @@ r {
   try { ~ohm = OhmRGB.new(device, ohm); };
   try { ~base = Base.new(device, base); };
 
-  "/Global Functions/Load Global Functions.scd".loadRelative;
-  "/System Scripts/Load System Scripts.scd".loadRelative;
-  "/Songs/Load Songs.scd".loadRelative;
+  //"/Global Functions/Load Global Functions.scd".loadRelative;
+  //"/System Scripts/Load System Scripts.scd".loadRelative;
+  //"/Songs/Load Songs.scd".loadRelative;
 
 }.play;
 
 s.meter;
+

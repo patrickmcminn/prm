@@ -12,7 +12,7 @@ var dauphineStreetIsLoaded = false;
 var cortezIsLoaded = false;
 
 ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
-~ohm.addPageLoadFunction({
+~ohm.addPageLoadFunction(\globalMixer, {
   ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 }, page);
 

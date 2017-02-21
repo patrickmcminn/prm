@@ -264,8 +264,8 @@
   }
 
   turnAllTouchButtonsColor { | color = 'off', bank = 'active', page = 'active' |
-    8.do({ | button | this.turnTouchButtonColor(button, 'middle', color, bank, page); });
-    8.do({ | button | this.turnTouchButtonColor(button, 'top', color, bank, page); });
+    8.do({ | button | this.turnTouchButtonColor(button + 1, 'middle', color, bank, page); });
+    8.do({ | button | this.turnTouchButtonColor(button + 1, 'top', color, bank, page); });
   }
   turnAllTouchButtonsOff { | bank = 'active', page = 'active' |
     this.turnAllTouchButtonsColor('off', bank, page);

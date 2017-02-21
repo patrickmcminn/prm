@@ -155,7 +155,7 @@ Sampler : IM_Module {
       tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
       tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
       playHead = Line.ar(BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos,
-        (BufSamples.ir(buffer)/SampleRate.ir)/rate);
+        ((BufSamples.ir(buffer) * (endPos - startPos))/SampleRate.ir)/rate);
       //playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
         //BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(2, buffer, playHead, loop);
@@ -218,7 +218,7 @@ Sampler : IM_Module {
       tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
       tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
       playHead = Line.ar(BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos,
-        (BufSamples.ir(buffer)/SampleRate.ir)/rate);
+        ((BufSamples.ir(buffer) * (endPos - startPos))/SampleRate.ir)/rate);
       //playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
         //BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
       player = BufRd.ar(1, buffer, playHead, loop);

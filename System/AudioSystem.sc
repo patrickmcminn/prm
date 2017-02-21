@@ -18,6 +18,8 @@ AudioSystem {
 
   var <modular, modularIn, <microphone, micIn;
 
+  var <subtractive;
+
   var <songBook;
 
   *new { | numOutputs = 2 |
@@ -51,7 +53,7 @@ AudioSystem {
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
-
+      // send out to modular system
       modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
       while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 
@@ -108,6 +110,9 @@ AudioSystem {
       modular.setVol(-70);
       microphone.setVol(-70);
 
+      subtractive = Subtractive.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus, nil, procGroup,
+        \addToHead);
+      while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
 
       songBook = IdentityDictionary.new;
 

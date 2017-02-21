@@ -825,7 +825,6 @@
 
   setAllParameters { | array |
 
-
     // LFO 1:
     this.setLFO1FreqLFO2BottomRatio(array.at(0));
     this.setLFO1FreqLFO2TopRatio(array.at(1));

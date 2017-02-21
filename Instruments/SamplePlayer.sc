@@ -10,10 +10,13 @@ SamplePlayer : IM_Module {
   var server;
   var <buffer;
   var samplerDict;
-  var <attackTime, <decayTime, <sustainLevel, <releaseTime, sustainTime;
+  var <attackTime, <decayTime, <sustainLevel, <releaseTime, <sustainTime;
   var <filterCutoff;
   var <tremoloRate, <tremoloDepth, <tremoloWaveform;
   var monoOrStereo;
+  var sequencerDict, <sequencerClock;
+  var <tempo;
+
 
   *newMono {
     |
@@ -49,6 +52,7 @@ SamplePlayer : IM_Module {
       decayTime = 0;
       sustainLevel = 1;
       releaseTime = 0.05;
+      sustainTime = 1;
       // filter:
       filterCutoff = 20000;
       // tremolo:
@@ -57,10 +61,15 @@ SamplePlayer : IM_Module {
       tremoloWaveform = 0;
 
       //sustainTime = buffer.numFrames.postln;
-      sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
+      //sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
+      sequencerDict = IdentityDictionary.new;
+      sequencerClock = TempoClock.new;
+
       server.sync;
+
 
       isLoaded = true;
     };
@@ -81,6 +90,7 @@ SamplePlayer : IM_Module {
       decayTime = 0;
       sustainLevel = 1;
       releaseTime = 0.05;
+      sustainTime = 1;
       // filter:
       filterCutoff = 20000;
       // tremolo:
@@ -89,9 +99,13 @@ SamplePlayer : IM_Module {
       tremoloWaveform = 0;
 
       //sustainTime = buffer.numFrames.postln;
-      sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
+      //sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
+      sequencerDict = IdentityDictionary.new;
+      sequencerClock = TempoClock.new;
+
       server.sync;
 
       isLoaded = true;
@@ -128,35 +142,6 @@ SamplePlayer : IM_Module {
       Out.ar(outBus, sig);
     }).add;
 
-    SynthDef(\prm_SamplePlayer_Stereo_OneShot, {
-      |
-      outBus = 0, amp = 1, buffer, rate = 1, loop = 0,
-      startPos = 0, endPos = 1,
-      tremFreq = 0, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
-      attackTime = 0.05, sustainTime = 1, releaseTime = 0.05,
-      filterCutoff = 20000, pan = 0
-      |
-      var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
-      var tremolo, playHead, player, filter, env, sig;
-      tremSine = SinOsc.ar(tremFreq).range((1-tremDepth), 1);
-      tremSaw = LFSaw.ar(tremFreq, 1).range((1-tremDepth), 1);
-      tremRevSaw = LFSaw.ar(tremFreq, 1).range(-1, (1-tremDepth).neg) * -1;
-      tremRect = LFPulse.ar(tremFreq, 0, tremPulseWidth).range((1-tremDepth), 1);
-      tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
-      tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
-      tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
-      playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
-        BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
-      player = BufRd.ar(2, buffer, playHead, loop);
-      filter = LPF.ar(player, filterCutoff);
-      env = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, 1, -4), 1, doneAction: 2);
-      sig = tremolo * env;
-      sig = sig * filter;
-      sig = sig * amp;
-      sig = Balance2.ar(sig[0], sig[1], pan);
-      Out.ar(outBus, sig);
-    }).add;
-
     SynthDef(\prm_SamplePlayer_Mono_ADSR, {
       |
       outBus = 0, amp = 1, buffer, rate = 1, loop = 0,
@@ -183,6 +168,35 @@ SamplePlayer : IM_Module {
       sig = sig * filter;
       sig = sig * amp;
       sig = Pan2.ar(sig, pan);
+      Out.ar(outBus, sig);
+    }).add;
+
+    SynthDef(\prm_SamplePlayer_Stereo_OneShot, {
+      |
+      outBus = 0, amp = 1, buffer, rate = 1, loop = 0,
+      startPos = 0, endPos = 1,
+      tremFreq = 0, tremDepth = 0, tremWaveform = 0, tremPulseWidth = 0.5,
+      attackTime = 0.05, sustainTime = 1, releaseTime = 0.05,
+      filterCutoff = 20000, pan = 0
+      |
+      var tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold;
+      var tremolo, playHead, player, filter, env, sig;
+      tremSine = SinOsc.ar(tremFreq).range((1-tremDepth), 1);
+      tremSaw = LFSaw.ar(tremFreq, 1).range((1-tremDepth), 1);
+      tremRevSaw = LFSaw.ar(tremFreq, 1).range(-1, (1-tremDepth).neg) * -1;
+      tremRect = LFPulse.ar(tremFreq, 0, tremPulseWidth).range((1-tremDepth), 1);
+      tremNoise = LFDNoise1.ar(tremFreq).range((1-tremDepth), 1);
+      tremSampleAndHold = LFDNoise0.ar(tremFreq).range((1-tremDepth), 1);
+      tremolo = SelectX.ar(tremWaveform, [tremSine, tremSaw, tremRevSaw, tremRect, tremNoise, tremSampleAndHold]);
+      playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
+        BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
+      player = BufRd.ar(2, buffer, playHead, loop);
+      filter = LPF.ar(player, filterCutoff);
+      env = EnvGen.kr(Env.linen(attackTime, sustainTime, releaseTime, 1, -4), 1, doneAction: 2);
+      sig = tremolo * env;
+      sig = sig * filter;
+      sig = sig * amp;
+      sig = Balance2.ar(sig[0], sig[1], pan);
       Out.ar(outBus, sig);
     }).add;
 
@@ -257,17 +271,27 @@ SamplePlayer : IM_Module {
     samplerDict[name].set(\gate, 0);
   }
 
-  playSampleOneShot { | vol = 0, rate = 1, startPos = 0, endPos = 1, pan = 0 |
+  playSampleOneShot { | vol = 0, rate = 1, startPos = 0, endPos = 1, sustainType = 'oneShot', loop = 0, pan = 0 |
     var amp = vol.dbamp;
-    sustainTime = (((buffer.numFrames * (endPos-startPos))* (1/rate)) / server.sampleRate) - (attackTime + releaseTime);
+    var sus;
+    switch( sustainType,
+      'oneShot',
+      {
+        sus = (((buffer.numFrames * (endPos-startPos))* (1/rate)) / server.sampleRate) -
+        (attackTime + releaseTime);
+      },
+      'linen',
+      { sus = sustainTime; }
+    );
+    sus.postln;
     if( monoOrStereo == 'stereo',
       {
         Synth(\prm_SamplePlayer_Stereo_OneShot,
           [
             \outBus, mixer.chanStereo(0), \rate, rate, \loop, 0, \startPos, startPos, \endPos, endPos,
             \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
-            \tremWaveform, tremoloWaveform,
-            \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime,
+            \tremWaveform, tremoloWaveform, \loop, loop,
+            \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sus,
             \amp, amp, \pan, pan, \buffer, buffer
           ],
           group, \addToHead);
@@ -277,8 +301,8 @@ SamplePlayer : IM_Module {
           [
             \outBus, mixer.chanStereo(0), \rate, rate, \loop, 0, \startPos, startPos, \endPos, endPos,
             \filterCutoff, filterCutoff, \tremFreq, tremoloRate, \tremDepth, tremoloDepth,
-            \tremWaveform, tremoloWaveform,
-            \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sustainTime,
+            \tremWaveform, tremoloWaveform, \loop, loop,
+            \attackTime, attackTime, \releaseTime, releaseTime, \sustainTime, sus,
             \amp, amp, \pan, pan, \buffer, buffer
           ],
           group, \addToHead);
@@ -294,6 +318,7 @@ SamplePlayer : IM_Module {
   setDecayTime { | decay = 0 | decayTime = decay; }
   setSustainLevel { | sustain = 1 | sustainLevel = sustain; }
   setReleaseTime { | release = 0.05 | releaseTime = release; }
+  setSustainTime { | sustain = 1 | sustainTime = sustain; }
 
   // filter:
   setFilterCutoff { | cutoff = 20000 |
@@ -325,5 +350,69 @@ SamplePlayer : IM_Module {
     samplerDict.do({ | synth | synth.set(\tremWaveform, tremoloWaveform);});
   }
 
+  //////// pattern sequencer:
+  makeSequence { | name, type = 'sustaining' |
+    fork {
+      sequencerDict[name] = IM_PatternSeq.new(name, group, \addToHead);
+      sequencerDict[name].stop;
+      server.sync;
+      //sequencerDict[name].addKey(\instrument, \prm_Sampler_Stereo_OneShot);
+      if( type == 'sustaining',
+        {
+          if( monoOrStereo == 'stereo',
+            { sequencerDict[name].addKey(\instrument, \prm_SamplePlayer_Stereo_ADSR) },
+            { sequencerDict[name].addKey(\instrument, \prm_SamplePlayer_Mono_ADSR) });
+        },
+        {
+          if( monoOrStereo == 'stereo',
+            { sequencerDict[name].addKey(\instrument, \prm_SamplePlayer_Stereo_OneShot); },
+            { sequencerDict[name].addKey(\instrument, \prm_SamplePlayer_Mono_OneShot); },
+          );
+          sequencerDict[name].addKey(\sustainTime, Pfunc( {
+            ( buffer.numFrames / server.sampleRate ) - (attackTime + releaseTime) }
+          ));
+
+
+      });
+
+      sequencerDict[name].addKey(\outBus, mixer.chanStereo(0));
+
+      sequencerDict[name].addKey(\attackTime, Pfunc({ attackTime }));
+      sequencerDict[name].addKey(\decayTime, Pfunc({ decayTime }));
+      sequencerDict[name].addKey(\sustainLevel, Pfunc({ sustainLevel }));
+      sequencerDict[name].addKey(\releaseTime, Pfunc({ releaseTime }));
+      sequencerDict[name].addKey(\filterCutoff, Pfunc({ filterCutoff }));
+      sequencerDict[name].addKey(\tremFreq, Pfunc({ tremoloRate }));
+      sequencerDict[name].addKey(\tremDepth, Pfunc ({ tremoloDepth }));
+      sequencerDict[name].addKey(\tremWaveform, Pfunc({ tremoloWaveform }));
+      sequencerDict[name].addKey(\amp, 1);
+      sequencerDict[name].addKey(\freq, 1);
+      sequencerDict[name].addKey(\buffer, buffer);
+
+    };
+  }
+
+  addKey {  | name, key, action |
+    sequencerDict[name].addKey(key, action);
+  }
+
+  playSequence { | name, clock = 'internal', quant = 'nil' |
+    var playClock;
+    if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
+    sequencerDict[name].play(playClock);
+  }
+
+  resetSequence { | name | sequencerDict[name].reset; }
+  stopSequence { | name | sequencerDict[name].stop; }
+  pauseSequence { | name | sequencerDict[name].pause }
+  resumeSequence { | name | sequencerDict[name].resume; }
+  isSequencePlaying { | name | ^sequencerDict[name].isPlaying }
+  setSequenceQuant { | name, quant = 0 | sequencerDict[name].setQuant(quant) }
+
+  setSequencerClockTempo { | bpm = 60 |
+    var bps = bpm/60;
+    tempo = bps;
+    sequencerClock.tempo = tempo;
+  }
 
 }

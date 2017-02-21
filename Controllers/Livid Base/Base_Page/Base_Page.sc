@@ -3,20 +3,21 @@ Base_Page {
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
   var buttonColorArray, <faderModeArray, <faderValueArray;
 
-  var <gridBankArray, controlButtonsBankArray, fadersBankArray, touchButtonsBankArray;
-  var <activeGridBank, <activeControlButtonsBank, <activeFadersBank, <activeTouchButtonsBank;
+  var <gridBankArray, <controlButtonsBankArray, <fadersBankArray, <touchButtonsBankArray;
+  var <activeGridBnk, <activeControlButtonsBnk, <activeFadersBnk, <activeTouchButtonsBnk;
 
-  var <loadFunction, <offLoadFunction;
+  var <loadFunctionDict, <offLoadFunctionDict;
 
   *new { ^super.new.prInit }
 
   prInit {
+    loadFunctionDict = IdentityDictionary.new;
+    offLoadFunctionDict = IdentityDictionary.new;
     this.prMakeResponders;
     this.prMakeButtonColorArray;
     this.prMakeFaderModeArray;
     this.prMakeFaderValueArray;
     this.prMakeBanks;
-    this.setLoadFunction({});
   }
 
   prMakeResponders {
@@ -39,7 +40,6 @@ Base_Page {
   }
 
   prFreeNoteResponders { noteOnFuncArray.do({ | func | func.free; }); }
-
   prMakeControlResponders { controlFuncArray = Array.fill(72, { }); }
   prFreeControlResponders { controlFuncArray.do({ | func | func.free; }); }
 
@@ -145,13 +145,14 @@ Base_Page {
     ^this.getFunc(num, \control);
   }
 
-  setLoadFunction { | func |
-    loadFunction = func;
+  addLoadFunction { | name, func |
+    loadFunctionDict[name] = func;
   }
 
-  setOffLoadFunction { | func |
-    offLoadFunction = func;
+  addOffLoadFunction { | name, func |
+    offLoadFunctionDict[name] = func;
   }
+
 
   /*
   setPolyTouchFunc { | num = 0, func = nil|
@@ -175,6 +176,7 @@ Base_Page {
   }
   */
 
+
 }
 
 // convenience functions w/ bank arguments:
@@ -187,8 +189,8 @@ Base_Page {
     // column is from left to right
     var num = ((row * 8) + column);
     var midiNum = num + 36;
-    if( bank == activeGridBank, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeGridBank }, { bankSelect = bank });
+    if( bank == activeGridBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeGridBnk }, { bankSelect = bank });
     if( (row >3) || (column > 7), { "out of range!"}, {
       switch(type,
         { \noteOn }, {
@@ -204,12 +206,29 @@ Base_Page {
     });
   }
 
+  setGridMonitorFunc { | column = 0, row = 0, func, bank = 'active' |
+    var bankSelect;
+    var num = ((row * 8) + column);
+    if( bank == activeGridBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeGridBnk }, { bankSelect = bank });
+    if( ( row > 3) || (column >7), { "out of range!"}, {
+      gridBankArray[bankSelect][num][5].stop;
+      gridBankArray[bankSelect][num][5] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        }
+      };
+      //if( bank == 'active', { gridBankArray[bankSelect][num][5].reset.play; });
+    });
+  }
+
   setControlButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
     var num = button - 1;
     var midinum = button + 17;
-    if( bank == activeControlButtonsBank, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeControlButtonsBank }, { bankSelect = bank });
+    if( bank == activeControlButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeControlButtonsBnk }, { bankSelect = bank });
     if( num > 7, { "out of range!" }, {
       switch(type,
         { \noteOn }, {
@@ -222,12 +241,30 @@ Base_Page {
     });
   }
 
+  setControlButtonMonitorFunc { | button = 1, func, bank = 'active' |
+    var bankSelect;
+    var num = button -1;
+    if( bank == activeControlButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeControlButtonsBnk }, { bankSelect = bank });
+    if( num > 7, { "Out of Range!" }, {
+      controlButtonsBankArray[bankSelect][4][num].stop;
+      controlButtonsBankArray[bankSelect][4][num] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        }
+      };
+      //if( bank == 'active', { controlButtonsBankArray[bankSelect][4][num].reset.play; });
+    });
+  }
+
+
   setTouchButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
     var num = button -1;
     var midinum = button + 9;
-    if( bank == activeTouchButtonsBank, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeTouchButtonsBank }, { bankSelect = bank });
+    if( bank == activeTouchButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeTouchButtonsBnk }, { bankSelect = bank });
     if( num > 7, { "out of range!".postln; }, {
       switch(type,
         { \noteOn }, {
@@ -240,21 +277,61 @@ Base_Page {
     });
   }
 
+  setTouchButtonMonitorFunc { | button = 1, func, bank = 'active' |
+    var bankSelect;
+    var num = button - 1;
+    //button.postln;
+    //func.postln;
+    //bank.postln;
+    if( bank == activeTouchButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeTouchButtonsBnk }, { bankSelect = bank });
+    //bankSelect.postln;
+    //num.postln;
+    if( num > 7, { "out of range!".postln; }, {
+      touchButtonsBankArray[bankSelect][4][num].stop;
+      touchButtonsBankArray[bankSelect][4][num] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        };
+      };
+      //if( bank == 'active', { touchButtonsBankArray[bankSelect][4][num].reset.play; });
+    });
+  }
+
   setFaderFunc { | fader = 1, func, bank = 'active' |
     var bankSelect;
     var faderIndex = fader - 1;
     var num = fader;
-    if( bank == activeFadersBank, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeFadersBank }, { bankSelect = bank });
+    if( bank == activeFadersBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeFadersBnk }, { bankSelect = bank });
     if( fader > 9, { "out of range!" }, {
       fadersBankArray[bankSelect][faderIndex][0] = func;
       if( bank == 'active', { this.setControlFunc(num, func); }); });
   }
 
+  setFaderMonitorFunc { | fader = 1, func, bank = 'active' |
+    var bankSelect;
+    var faderIndex = fader - 1;
+    var num = fader;
+    if( bank == activeFadersBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeFadersBnk }, { bankSelect = bank });
+    if( fader > 9, { "out of range!" }, {
+      fadersBankArray[bankSelect][faderIndex][4].stop;
+      fadersBankArray[bankSelect][faderIndex][4] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        };
+      };
+      //if( bank == 'active', { fadersBankArray[bankSelect][faderIndex][4].reset.play; });
+    });
+  }
+
   setMasterFaderFunc { | func, bank = 'active' |
     var bankSelect;
-    if( bank == activeFadersBank, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeFadersBank }, { bankSelect = bank });
+    if( bank == activeFadersBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeFadersBnk }, { bankSelect = bank });
     fadersBankArray[bankSelect][8][0] = func;
     if( bank == 'active', { this.setControlFunc(9, func); });
   }

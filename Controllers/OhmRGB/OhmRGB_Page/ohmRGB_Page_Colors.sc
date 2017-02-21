@@ -19,14 +19,14 @@
   turnGridColor { | column = 0, row = 0, color = \off, bank = 'active' |
     var num = (column * 8) + row;
     //var bankSet;
-    if( bank == 'active', { bank = activeGridBank });
+    if( bank == 'active', { bank = activeGridBnk });
     gridBankArray[bank][num][2] = color;
-    this.turnColor(num, gridBankArray[activeGridBank][num][2]);
+    this.turnColor(num, gridBankArray[activeGridBnk][num][2]);
     /*
-    if ( bank == activeGridBank, { bank = 'active' });
+    if ( bank == activeGridBnk, { bank = 'active' });
     if( bank == 'active',
       {
-        bankSet = activeGridBank;
+        bankSet = activeGridBnk;
         gridBankArray[bankSet][num][2] = color;
         this.turnColor(num, color);
       },
@@ -60,10 +60,6 @@
 
   turnGridMagenta { | column = 0, row = 0, bank = 'active' |
     this.turnGridColor(column, row, \magenta, bank);
-  }
-
-  turnGridPurple { | column = 0, row = 0, bank = 'active' |
-    this.turnGridColor(column, row, \purple, bank);
   }
 
   turnGridCyan { | column = 0, row = 0, bank = 'active' |
@@ -102,10 +98,6 @@
     this.turnAllGrid('yellow', bank);
   }
 
-  turnAllGridPurple { | bank = 'active' |
-    this.turnAllGrid('purple', bank);
-  }
-
   turnAllGridMagenta { | bank = 'active' |
     this.turnAllGrid('magenta', bank);
   }
@@ -126,13 +118,13 @@
   turnLeftButtonColor { | num = 0, color = \off, bank = 'active' |
     //var bankSet;
     var buttonArray = [65, 73, 66, 74];
-    if( bank == 'active', { bank = activeLeftButtonsBank });
+    if( bank == 'active', { bank = activeLeftButtonsBnk });
     leftButtonsBankArray[bank][num][2] = color;
-    this.turnColor(buttonArray[num], leftButtonsBankArray[activeLeftButtonsBank][num][2]);
+    this.turnColor(buttonArray[num], leftButtonsBankArray[activeLeftButtonsBnk][num][2]);
     /*
-    if( bank == activeLeftButtonsBank, { bank = 'active' });
+    if( bank == activeLeftButtonsBnk, { bank = 'active' });
     if( bank == 'active',
-      { bankSet = activeLeftButtonsBank; this.turnColor(buttonArray[num], color); },
+      { bankSet = activeLeftButtonsBnk; this.turnColor(buttonArray[num], color); },
       { bankSet = bank }
     );
     leftButtonsBankArray[bankSet][num][2] = color;
@@ -157,10 +149,6 @@
 
   turnLeftButtonYellow { | num, bank = 'active' |
     this.turnLeftButtonColor(num, \yellow, bank);
-  }
-
-  turnLeftButtonPurple { | num, bank = 'active' |
-    this.turnLeftButtonColor(num, \purple, bank);
   }
 
   turnLeftButtonMagenta { | num, bank = 'active' |
@@ -199,10 +187,6 @@
     this.turnAllLeftButtonsColor(\yellow, bank);
   }
 
-  turnAllLeftButtonsPurple { | bank = 'active' |
-    this.turnAllLeftButtonsColor(\purple, bank);
-  }
-
   turnAllLeftButtonsMagenta { | bank = 'active' |
     this.turnAllLeftButtonsColor(\magenta, bank);
   }
@@ -218,13 +202,13 @@
   turnRightButtonColor { | num = 0, color = \off, bank = 'active' |
     //var bankSet;
     var buttonArray = [67, 75, 68, 76];
-    if( bank == 'active', { bank = activeRightButtonsBank });
+    if( bank == 'active', { bank = activeRightButtonsBnk });
     rightButtonsBankArray[bank][num][2] = color;
-    this.turnColor(buttonArray[num], rightButtonsBankArray[activeRightButtonsBank][num][2]);
+    this.turnColor(buttonArray[num], rightButtonsBankArray[activeRightButtonsBnk][num][2]);
     /*
-    if( bank == activeRightButtonsBank, { bank = 'active' });
+    if( bank == activeRightButtonsBnk, { bank = 'active' });
     if( bank == 'active',
-      { bankSet = activeRightButtonsBank; this.turnColor(buttonArray[num], color); },
+      { bankSet = activeRightButtonsBnk; this.turnColor(buttonArray[num], color); },
       { bankSet = bank }
     );
     rightButtonsBankArray[bankSet][num][2] = color;
@@ -249,10 +233,6 @@
 
   turnRightButtonYellow { | num = 0, bank = 'active' |
     this.turnRightButtonColor(num, \yellow, bank);
-  }
-
-  turnRightButtonPurple { | num = 0, bank = 'active' |
-    this.turnRightButtonColor(num, \purple, bank);
   }
 
   turnRightButtonMagenta { | num = 0, bank = 'active' |
@@ -291,10 +271,6 @@
     this.turnAllRightButtonsColor(\yellow, bank);
   }
 
-  turnAllRightButtonsPurple { | bank = 'active' |
-    this.turnAllRightButtonsColor(\purple, bank);
-  }
-
   turnAllRightButtonsMagenta { | bank = 'active' |
     this.turnAllRightButtonsColor(\magenta, bank);
   }
@@ -310,13 +286,13 @@
   turnCrossfaderButtonColor { | num = 0, color = \off, bank = 'active' |
     //var bankSet;
     var buttonArray = [64, 72];
-    if( bank == 'active', { bank = activeCrossfaderButtonsBank; });
+    if( bank == 'active', { bank = activeCrossfaderButtonsBnk; });
     crossfaderButtonsBankArray[bank][num][2] = color;
-    this.turnColor(buttonArray[num], crossfaderButtonsBankArray[activeCrossfaderButtonsBank][num][2]);
+    this.turnColor(buttonArray[num], crossfaderButtonsBankArray[activeCrossfaderButtonsBnk][num][2]);
     /*
-    if( bank == activeCrossfaderButtonsBank, { bank = 'active' });
+    if( bank == activeCrossfaderButtonsBnk, { bank = 'active' });
     if( bank == 'active',
-      { bankSet = activeCrossfaderButtonsBank; this.turnColor(buttonArray[num], color); },
+      { bankSet = activeCrossfaderButtonsBnk; this.turnColor(buttonArray[num], color); },
       { bankSet = bank; }
     );
     crossfaderButtonsBankArray[bankSet][num][2] = color;
@@ -341,10 +317,6 @@
 
   turnCrossfaderButtonYellow { | num, bank = 'active' |
     this.turnCrossfaderButtonColor(num, 'yellow', bank);
-  }
-
-  turnCrossfaderButtonPurple { | num, bank = 'active' |
-    this.turnCrossfaderButtonColor(num, 'purple', bank);
   }
 
   turnCrossfaderButtonMagenta { | num, bank = 'active' |
@@ -383,10 +355,6 @@
     this.turnAllCrossfaderButtonsColor(\yellow, bank);
   }
 
-  turnAllCrossfaderButtonsPurple { | bank = 'active' |
-    this.turnAllCrossfaderButtonsColor(\purple, bank);
-  }
-
   turnAllCrossfaderButtonsMagenta { | bank = 'active' |
     this.turnAllCrosffaderButtonsColor(\magenta, bank);
   }
@@ -403,13 +371,13 @@
     //var bankSet;
     var num = (column * 2) + row;
     var buttonArray = [69, 77, 70, 78, 71, 79, 80];
-    if( bank == 'active', { bank = activeControlButtonsBank });
+    if( bank == 'active', { bank = activeControlButtonsBnk });
     controlButtonsBankArray[bank][num][2] = color;
-    this.turnColor(buttonArray[num], controlButtonsBankArray[activeControlButtonsBank][num][2]);
+    this.turnColor(buttonArray[num], controlButtonsBankArray[activeControlButtonsBnk][num][2]);
     /*
-    if( bank == activeControlButtonsBank, { bank = 'active' });
+    if( bank == activeControlButtonsBnk, { bank = 'active' });
     if( bank == 'active',
-      { bankSet = activeControlButtonsBank; this.turnColor(buttonArray[num], color); },
+      { bankSet = activeControlButtonsBnk; this.turnColor(buttonArray[num], color); },
       { bankSet = bank; }
     );
     controlButtonsBankArray[bankSet][num][2] = color;
@@ -434,10 +402,6 @@
 
   turnControlButtonYellow { | column = 0, row = 0, bank = 'active' |
     this.turnControlButtonColor(row, column, \yellow, bank);
-  }
-
-  turnControlButtonPurple { | column = 0, row = 0, bank = 'active' |
-    this.turnControlButtonColor(row, column, \purple, bank);
   }
 
   turnControlButtonMagenta { | column = 0, row = 0, bank = 'active' |

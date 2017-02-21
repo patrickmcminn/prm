@@ -8,10 +8,10 @@ OhmRGB_Page : OhmRGB {
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray, animationArray;
 
   var leftSlidersBankArray, rightSlidersBankArray, leftKnobsBankArray, rightKnobsBankArray, crossfaderBankArray;
-  var <activeLeftSlidersBank, <activeRightSlidersBank, <activeLeftKnobsBank, <activeRightKnobsBank, <activeCrossfaderBank;
+  var <activeLeftSlidersBnk, <activeRightSlidersBnk, <activeLeftKnobsBnk, <activeRightKnobsBnk, <activeCrossfaderBnk;
 
   var <gridBankArray, <leftButtonsBankArray, <rightButtonsBankArray, <crossfaderButtonsBankArray, <controlButtonsBankArray;
-  var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeCrossfaderButtonsBank, <activeControlButtonsBank;
+  var <activeGridBnk, <activeLeftButtonsBnk, <activeRightButtonsBnk, <activeCrossfaderButtonsBnk, <activeControlButtonsBnk;
 
   var <loadFunctionDict, <offLoadFunctionDict, <storageDict;
 
@@ -139,19 +139,33 @@ OhmRGB_Page : OhmRGB {
   setGridFunc { | column = 0, row = 0, func, type = \noteOn, bank = 'active' |
     var bankSet;
     var num = (column * 8) + row;
-    if( bank == activeGridBank, { bank = 'active' });
-    if( bank == 'active', { bankSet = activeGridBank }, { bankSet = bank });
+    if( bank == activeGridBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeGridBnk }, { bankSet = bank });
     switch(type,
       { \noteOn }, { gridBankArray[bankSet][num][0] = func; if( bank == 'active', { this.setNoteOnFunc(num, func); }) },
       { \noteOff }, { gridBankArray[bankSet][num][1] = func; if( bank == 'active', { this.setNoteOffFunc(num, func); }) }
     );
   }
 
+  setGridMonitorFunc { | column = 0, row = 0, func, bank = 'active' |
+    var bankSet;
+    var num = (column * 8) + row;
+    if( bank == activeGridBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeGridBnk }, { bankSet = bank });
+    gridBankArray[bankSet][num][4].stop;
+    gridBankArray[bankSet][num][4] = r {
+      loop {
+        func.value;
+        0.05.wait;
+      }
+    };
+  }
+
   setLeftButtonFunc { | num, func, type = \noteOn, bank = 'active' |
     var bankSet;
     var buttonArray = [65, 73, 66, 74];
-    if( bank == activeLeftButtonsBank, { bank = 'active' });
-    if( bank == 'active', { bankSet = activeLeftButtonsBank }, { bankSet = bank });
+    if( bank == activeLeftButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeLeftButtonsBnk }, { bankSet = bank });
     if( num < 5,
       { switch(type,
         { \noteOn},
@@ -170,11 +184,27 @@ OhmRGB_Page : OhmRGB {
     );
   }
 
+  setLeftButtonMonitorFunc {  | num, func, bank = 'active' |
+    var bankSet;
+    var buttonArray = [65, 73, 66, 74];
+    if( bank == activeLeftButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeLeftButtonsBnk }, { bankSet = bank });
+    if( num < 5, {
+      leftButtonsBankArray[bankSet][num][4].stop;
+      leftButtonsBankArray[bankSet][num][4] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        }
+      };
+    }, { ^"not that many left buttons"; });
+  }
+
   setRightButtonFunc { | num, func, type = \noteOn, bank = 'active' |
     var bankSet;
     var buttonArray = [67, 75, 68, 76];
-    if( bank == activeRightButtonsBank, { bank = 'active' });
-    if( bank == 'active', { bankSet = activeRightButtonsBank }, { bankSet = bank });
+    if( bank == activeRightButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeRightButtonsBnk }, { bankSet = bank });
     if( num < 5,
       { switch(type,
         { \noteOn},
@@ -193,11 +223,28 @@ OhmRGB_Page : OhmRGB {
     );
   }
 
+  setRightButtonMonitorFunc { | num, func, bank = 'active' |
+    var bankSet;
+    var buttonArray = [67, 75, 68, 76];
+    if( bank == activeRightButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeRightButtonsBnk }, { bankSet = bank });
+    if( num < 5, {
+      rightButtonsBankArray[bankSet][num][4].stop;
+      rightButtonsBankArray[bankSet][num][4] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        };
+      };
+    }, { ^"not that many right buttons"; });
+  }
+
+
   setCrossfaderButtonFunc { | num, func, type = \noteOn, bank = 'active' |
     var bankSet;
     var buttonArray = [64, 72];
-    if( bank == activeCrossfaderButtonsBank, { bank = 'active' });
-    if( bank == 'active', { bankSet = activeCrossfaderButtonsBank }, { bankSet = bank });
+    if( bank == activeCrossfaderButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeCrossfaderButtonsBnk }, { bankSet = bank });
     if ( num < 3,
       { switch(type,
         { \noteOn },
@@ -216,12 +263,30 @@ OhmRGB_Page : OhmRGB {
     );
   }
 
+  setCrossfaderButtonMonitorFunc { | num, func, bank = 'active' |
+    var bankSet;
+    var buttonArray = [64, 72];
+    if( bank == activeCrossfaderButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeCrossfaderButtonsBnk }, { bankSet = bank });
+    if ( num < 3,
+      {
+        crossfaderButtonsBankArray[bankSet][num][4].stop;
+        crossfaderButtonsBankArray[bankSet][num][4] = r {
+          loop {
+            func.value;
+            0.05.wait;
+          };
+        };
+    }, { ^"not that many crossfader buttons"; });
+  }
+
+
   setControlButtonFunc { | column = 0, row = 0, func, type = \noteOn, bank = 'active' |
     var bankSet;
     var buttonArray = [69, 77, 70, 78, 71, 79, 80];
     var num = (column * 2) + row;
-    if( bank == activeControlButtonsBank, { bank = 'active' });
-    if( bank == 'active', { bankSet = activeControlButtonsBank }, { bankSet = bank });
+    if( bank == activeControlButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeControlButtonsBnk }, { bankSet = bank });
     if( num < 7,
       { switch(type,
         { \noteOn },
@@ -240,6 +305,24 @@ OhmRGB_Page : OhmRGB {
     );
   }
 
+  setControlButtonMonitorFunc { | column = 0, row = 0, func, bank = 'active' |
+    var bankSet;
+    var buttonArray = [69, 77, 70, 78, 71, 79, 80];
+    var num = (column * 2) + row;
+    if( bank == activeControlButtonsBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeControlButtonsBnk }, { bankSet = bank });
+    if( num < 7, {
+      controlButtonsBankArray[bankSet][num][4].stop;
+      controlButtonsBankArray[bankSet][num][4] = r {
+        loop {
+          func.value;
+          0.05.wait;
+        };
+      };
+    }, { ^"not that many control buttons" });
+  }
+
+
   // don't use?
   setMasterButtonFunc { | func, type = \noteOn |
     switch(type,
@@ -255,8 +338,8 @@ OhmRGB_Page : OhmRGB {
     var sliderArray = [23, 22, 15, 14];
      if( num < 4,
       {
-        if( bank == activeLeftSlidersBank, { bank = 'active'});
-        if( bank == 'active', { bankSet = activeLeftSlidersBank }, { bankSet = bank });
+        if( bank == activeLeftSlidersBnk, { bank = 'active'});
+        if( bank == 'active', { bankSet = activeLeftSlidersBnk }, { bankSet = bank });
         leftSlidersBankArray[bankSet][num] = func;
         if( bank == 'active', { this.setCCFunc(sliderArray[num], func); });
       },
@@ -269,8 +352,8 @@ OhmRGB_Page : OhmRGB {
     var sliderArray = [5, 7, 6, 4];
      if( num < 4,
       {
-        if( bank == activeRightSlidersBank, { bank = 'active'});
-        if( bank == 'active', { bankSet = activeRightSlidersBank }, { bankSet = bank });
+        if( bank == activeRightSlidersBnk, { bank = 'active'});
+        if( bank == 'active', { bankSet = activeRightSlidersBnk }, { bankSet = bank });
         rightSlidersBankArray[bankSet][num] = func;
         if( bank == 'active', { this.setCCFunc(sliderArray[num], func); });
       },
@@ -286,8 +369,8 @@ OhmRGB_Page : OhmRGB {
     var knobArray = [17, 19, 21, 16, 18, 20, 9, 11, 13, 8, 10, 12];
     if( num < 12,
       {
-        if( bank == activeLeftKnobsBank, { bank = 'active' });
-        if( bank == 'active', { bankSet = activeLeftKnobsBank }, { bankSet = bank });
+        if( bank == activeLeftKnobsBnk, { bank = 'active' });
+        if( bank == 'active', { bankSet = activeLeftKnobsBnk }, { bankSet = bank });
         leftKnobsBankArray[bankSet][num] = func;
         if( bank == 'active', { this.setCCFunc(knobArray[num], func); });
       },
@@ -300,8 +383,8 @@ OhmRGB_Page : OhmRGB {
     var knobArray = [3, 1, 0, 2];
     if ( num < 4,
       {
-        if( bank == activeRightKnobsBank, { bank = 'active' });
-        if( bank == 'active', { bankSet = activeRightKnobsBank }, { bankSet = bank });
+        if( bank == activeRightKnobsBnk, { bank = 'active' });
+        if( bank == 'active', { bankSet = activeRightKnobsBnk }, { bankSet = bank });
         rightKnobsBankArray[bankSet][num] = func;
         if( bank == 'active', { this.setCCFunc(knobArray[num], func); });
       },
@@ -311,8 +394,8 @@ OhmRGB_Page : OhmRGB {
 
   setCrossfaderFunc { | func, bank = 'active' |
     var bankSet;
-    if( bank == activeCrossfaderBank, { bank = 'active' });
-    if( bank == 'active', { bankSet = activeCrossfaderBank }, { bankSet = bank });
+    if( bank == activeCrossfaderBnk, { bank = 'active' });
+    if( bank == 'active', { bankSet = activeCrossfaderBnk }, { bankSet = bank });
     crossfaderBankArray[bankSet] = func;
     if( bank == 'active', { this.setCCFunc(24, func); });
 

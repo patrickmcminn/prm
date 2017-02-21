@@ -10,21 +10,21 @@ OhmRGB_Animation.sc
   stopGridAnimations { | bank = 'active', page = 'active' |
     //var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     64.do({ | led | pageDict[page].gridBankArray[bank][led][3].stop; });
   }
 
   playGridAnimations { | bank = 'active', page = 'active' |
     //var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     64.do({ | led | pageDict[page].gridBankArray[bank][led][3].play; });
   }
 
   blinkGridPlay { | column = 0, row = 0, color = 'red', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     pageDict[page].gridBankArray[bank][num][3].source = {
       loop {
         this.turnGridColor(column, row, color, bank, page);
@@ -39,7 +39,7 @@ OhmRGB_Animation.sc
   blinkGridStop { | column = 0, row = 0, stopColor = 'off', bank = 'active', page = 'active' |
     var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     pageDict[page].gridBankArray[bank][num][3].stop;
     this.turnGridColor(column, row, stopColor, bank, page);
   }
@@ -48,7 +48,7 @@ OhmRGB_Animation.sc
     | column = 0, row = 0, color1 = 'red', color2 = 'green', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     pageDict[page].gridBankArray[bank][num][3].source = {
       loop {
         this.turnGridColor(column, row, color1, bank, page);
@@ -63,27 +63,27 @@ OhmRGB_Animation.sc
   alternateGridStop { | column = 0, row = 0, stopColor = 'off', bank = 'active', page = 'active' |
     var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     pageDict[page].gridBankArray[bank][num][3].stop;
     this.turnGridColor(column, row, stopColor, bank, page);
   }
 
   stopLeftButtonAnimations { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     4.do({ | led | pageDict[page].leftButtonsBankArray[bank][led][3].stop; });
   }
 
   playLeftButtonAnimations { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     4.do({ | led | pageDict[page].leftButtonsBankArray[bank][led][3].play; });
   }
 
   blinkLeftButtonPlay { | num = 0, color = 'red', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     //var buttonArray = [65, 73, 66, 74];
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBnk });
     pageDict[page].leftButtonsBankArray[bank][num][3].source = {
       loop {
         this.turnLeftButtonColor(num, color, bank, page);
@@ -97,7 +97,7 @@ OhmRGB_Animation.sc
 
   blinkLeftButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBnk });
     pageDict[page].leftButtonsBankArray[bank][num][3].stop;
     this.turnLeftButtonColor(num, stopColor, bank, page);
 
@@ -106,7 +106,7 @@ OhmRGB_Animation.sc
   alternateLeftButtonPlay {
     | num = 0, color1 = 'red', color2 = 'green', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBnk });
     pageDict[page].leftButtonsBankArray[bank][num][3].source = {
       loop {
         this.turnLeftButtonColor(num, color1, bank, page);
@@ -120,26 +120,26 @@ OhmRGB_Animation.sc
 
   alternateLeftButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBnk });
     pageDict[page].leftButtonsBankArray[bank][num][3].stop;
     this.turnLeftButtonColor(num, stopColor, bank, page);
   }
 
   stopRightButtonAnimations { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     4.do({ | led | pageDict[page].rightButtonsBankArray[bank][led][3].stop; });
   }
 
   playRightButtonAnimations { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     4.do({ | led | pageDict[page].rightButtonsBankArray[bank][led][3].play; });
   }
 
   blinkRightButtonPlay { | num = 0, color = 'red', clock = nil, mul = 1, width = 0.5,bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBnk });
     pageDict[page].rightButtonsBankArray[bank][num][3].source = {
       loop {
         this.turnRightButtonColor(num, color, bank, page);
@@ -153,7 +153,7 @@ OhmRGB_Animation.sc
 
   blinkRightButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBnk });
     pageDict[page].rightButtonsBankArray[bank][num][3].stop;
     this.turnRightButtonColor(num, stopColor, bank, page);
   }
@@ -161,7 +161,7 @@ OhmRGB_Animation.sc
   alternateRightButtonPlay {
     | num = 0, color1 = 'red', color2 = 'green', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBnk });
     pageDict[page].rightButtonsBankArray[bank][num][3].source = {
       loop {
         this.turnRightButtonColor(num, color1, bank, page);
@@ -175,26 +175,26 @@ OhmRGB_Animation.sc
 
   alternateRightButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeRightButtonsBnk });
     pageDict[page].rightButtonsBankArray[bank][num][3].stop;
     this.turnRightButtonColor(num, stopColor, bank, page);
   }
 
   stopCrossfaderButtonAnimations { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     2.do({ | led | pageDict[page].crossfaderButtonsBankArray[bank][led][3].stop; });
   }
 
   playCrossfaderButtonAnimations { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     2.do({ | led | pageDict[page].crossfaderButtonsBankArray[bank][led][3].play; });
   }
 
   blinkCrossfaderButtonPlay { | num = 0, color = 'red', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBnk });
     pageDict[page].crossfaderButtonsBankArray[bank][num][3].source = {
       loop {
         this.turnCrossfaderButtonColor(num, color, bank, page);
@@ -208,7 +208,7 @@ OhmRGB_Animation.sc
 
   blinkCrossfaderButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBnk });
     pageDict[page].crossfaderButtonsBankArray[bank][num][3].stop;
     this.turnCrossfaderButtonColor(num, stopColor, bank, page);
   }
@@ -216,7 +216,7 @@ OhmRGB_Animation.sc
   alternateCrossfaderButtonPlay {
     | num = 0, color1 = 'red', color2 = 'green', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBnk });
     pageDict[page].crossfaderButtonsBankArray[bank][num][3].source = {
       loop {
         this.turnCrossfaderButtonColor(num, color1, bank, page);
@@ -230,27 +230,27 @@ OhmRGB_Animation.sc
 
   alternateCrossfaderButtonStop { | num = 0, stopColor = 'off', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBnk });
     pageDict[page].crossfaderButtonsBankArray[bank][num][3].stop;
     this.turnCrossfaderButtonColor(num, stopColor, bank, page);
   }
 
   stopControlButtonAnimations { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     7.do({ | led | pageDict[page].controlButtonsBankArray[bank][led][3].stop; });
   }
 
   playControlButtonAnimations { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeGridBank });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     7.do({ | led | pageDict[page].controlButtonsBankArray[bank][led][3].play; });
   }
 
   blinkControlButtonPlay { | column = 0, row = 0, color = 'red', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBnk });
     pageDict[page].controlButtonsBankArray[bank][num][3].source = {
       loop {
         this.turnControlButtonColor(column, row, color, bank, page);
@@ -265,7 +265,7 @@ OhmRGB_Animation.sc
   blinkControlButtonStop { | column = 0, row = 0, stopColor = 'off', bank = 'active', page = 'active' |
     var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBnk });
     pageDict[page].controlButtonsBankArray[bank][num][3].stop;
     this.turnControlButtonColor(column, row, stopColor, bank, page);
   }
@@ -274,7 +274,7 @@ OhmRGB_Animation.sc
     | column = 0, row = 0, color1 = 'red', color2 = 'green', clock = nil, mul = 1, width = 0.5, bank = 'active', page = 'active' |
     var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBnk });
     pageDict[page].controlButtonsBankArray[bank][num][3].source = {
       loop {
         this.turnControlButtonColor(column, row, color1, bank, page);
@@ -289,7 +289,7 @@ OhmRGB_Animation.sc
   alternateControlButtonStop { | column = 0, row = 0, stopColor = 'off', bank = 'active', page = 'active' |
     var num = (column * 2) + row;
     if( page == 'active', { page = activePageKey; });
-    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBank });
+    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBnk });
     pageDict[page].controlButtonsBankArray[bank][num][3].stop;
     this.turnControlButtonColor(column, row, stopColor, bank, page);
   }

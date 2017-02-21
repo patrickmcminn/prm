@@ -7,8 +7,12 @@ OhmRGB {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
-  var <pageDict, <activePage, activePageKey, <storageDict;
+  var <pageDict, <activePage, <activePageKey, <storageDict;
   var colorArray;
+  var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeControlButtonsBank;
+  var <activeLeftSlidersBank, <activeRightSlidersBank;
+  var <activeLeftKnobsBank, <activeRightKnobsBank;
+  var <activeCrossfaderBank, <activeCrossfaderButtonsBank;
 
   *new { | deviceName = "OhmRGB", portName = "Controls" |
     ^super.new.prInit(deviceName, portName);
@@ -137,13 +141,19 @@ OhmRGB {
   }
 
   setPage { | name = 'page' |
+    activePage.stopActiveBankMonitorRoutines;
     activePage.offLoadFunctionDict.do({ | func | func.value; });
     activePageKey = name;
     activePage = pageDict[activePageKey];
+
+    this.prSetCurrentBanks;
+
     81.do({ | num | this.setNoteOnFunc(num, activePage.getNoteOnFunc(num)); });
     81.do({ | num | this.setNoteOffFunc(num, activePage.getNoteOffFunc(num)); });
     25.do({ | num | this.setCCFunc(num, activePage.getCCFunc(num)); });
     81.do({ | num | this.turnColor(num, activePage.getColor(num)); });
+
+    activePage.startActiveBankMonitorRoutines;
     activePage.loadFunctionDict.do({ | func | func.value; });
   }
 

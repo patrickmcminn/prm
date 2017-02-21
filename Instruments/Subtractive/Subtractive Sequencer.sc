@@ -123,10 +123,10 @@
     sequencerDict[name].addKey(key, action);
   }
 
-  playSequence { | name, clock = 'internal', quant = 'nil' |
+  playSequence { | name, clock = 'internal', quant = 0 |
     var playClock;
     if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
-    sequencerDict[name].play(playClock);
+    sequencerDict[name].play(playClock, quant);
   }
 
   resetSequence { | name | sequencerDict[name].reset; }

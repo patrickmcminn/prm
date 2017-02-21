@@ -67,7 +67,7 @@ Distortion : IM_Module {
       while( { try { mixer.isLoaded } != true }, { 0.001.wait } );
 
 
-      postEQ = Equalizer.newStereo(mixer.chanMono(0), group, 'addToHead');
+      postEQ = Equalizer.newStereo(mixer.chanStereo(0), group, 'addToHead');
       server.sync;
       while( { try { postEQ.isLoaded } != true }, { 0.001.wait; });
 

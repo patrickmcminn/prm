@@ -44,10 +44,10 @@ Base_Page_Banks.sc
     fadersBankArray = Array.new;
     this.addFadersBanks(numBanks);
 
-    activeGridBank = 0;
-    activeControlButtonsBank = 0;
-    activeTouchButtonsBank = 0;
-    activeFadersBank = 0;
+    activeGridBnk = 0;
+    activeControlButtonsBnk = 0;
+    activeTouchButtonsBnk = 0;
+    activeFadersBnk = 0;
   }
 
   addGridBanks { | numBanks = 1 |
@@ -102,54 +102,54 @@ Base_Page_Banks.sc
   //////// Setting banks:
 
   setActiveGridBank { | bank = 0 |
-    32.do({ | index | gridBankArray[activeGridBank][index][5].stop; });
-    activeGridBank = bank;
+    32.do({ | index | gridBankArray[activeGridBnk][index][5].stop; });
+    activeGridBnk = bank;
     32.do({ | index |
-      this.setNoteOnFunc(index + 36, gridBankArray[activeGridBank][index][0]);
-      this.setNoteOffFunc(index + 36, gridBankArray[activeGridBank][index][1]);
-      this.setControlFunc(index + 36, gridBankArray[activeGridBank][index][2]);
-      this.turnButtonColor(index + 36, gridBankArray[activeGridBank][index][3]);
-      gridBankArray[activeGridBank][index][5].reset.play;
+      this.setNoteOnFunc(index + 36, gridBankArray[activeGridBnk][index][0]);
+      this.setNoteOffFunc(index + 36, gridBankArray[activeGridBnk][index][1]);
+      this.setControlFunc(index + 36, gridBankArray[activeGridBnk][index][2]);
+      this.turnButtonColor(index + 36, gridBankArray[activeGridBnk][index][3]);
+      gridBankArray[activeGridBnk][index][5].reset.play;
     });
   }
 
   setActiveControlButtonsBank { | bank = 0 |
-    8.do({ | index | controlButtonsBankArray[activeControlButtonsBank][4][index].stop; });
-    activeControlButtonsBank = bank;
+    8.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][4][index].stop; });
+    activeControlButtonsBnk = bank;
     8.do({ | index |
-      this.setNoteOnFunc(index + 18, controlButtonsBankArray[activeControlButtonsBank][0][index]);
-      this.setNoteOffFunc(index + 18, controlButtonsBankArray[activeControlButtonsBank][1][index]);
-      controlButtonsBankArray[activeControlButtonsBank][4][index].reset.play;
+      this.setNoteOnFunc(index + 18, controlButtonsBankArray[activeControlButtonsBnk][0][index]);
+      this.setNoteOffFunc(index + 18, controlButtonsBankArray[activeControlButtonsBnk][1][index]);
+      controlButtonsBankArray[activeControlButtonsBnk][4][index].reset.play;
     });
     16.do({ | index |
-      this.turnButtonColor(index + 18, controlButtonsBankArray[activeControlButtonsBank][2][index]);
+      this.turnButtonColor(index + 18, controlButtonsBankArray[activeControlButtonsBnk][2][index]);
     });
   }
 
   setActiveTouchButtonsBank { | bank = 0 |
-    8.do({ | index | touchButtonsBankArray[activeTouchButtonsBank][4][index].stop; });
-    activeTouchButtonsBank = bank;
+    8.do({ | index | touchButtonsBankArray[activeTouchButtonsBnk][4][index].stop; });
+    activeTouchButtonsBnk = bank;
     8.do({ | index |
-      this.setNoteOnFunc(index + 10, touchButtonsBankArray[activeTouchButtonsBank][0][index]);
-      this.setNoteOffFunc(index + 10, touchButtonsBankArray[activeTouchButtonsBank][1][index]);
-      touchButtonsBankArray[activeTouchButtonsBank][4][index].reset.play;
+      this.setNoteOnFunc(index + 10, touchButtonsBankArray[activeTouchButtonsBnk][0][index]);
+      this.setNoteOffFunc(index + 10, touchButtonsBankArray[activeTouchButtonsBnk][1][index]);
+      touchButtonsBankArray[activeTouchButtonsBnk][4][index].reset.play;
     });
     8.do({ | index |
-      this.turnButtonColor(index + 10, touchButtonsBankArray[activeTouchButtonsBank][2][index]);
+      this.turnButtonColor(index + 10, touchButtonsBankArray[activeTouchButtonsBnk][2][index]);
     });
     8.do({ | index |
-      this.turnButtonColor(index + 68, touchButtonsBankArray[activeTouchButtonsBank][2][index + 8]);
+      this.turnButtonColor(index + 68, touchButtonsBankArray[activeTouchButtonsBnk][2][index + 8]);
     });
   }
 
   setActiveFadersBank { | bank = 0 |
-    9.do({ | index | fadersBankArray[activeFadersBank][index][4].stop; });
-    activeFadersBank = bank;
+    9.do({ | index | fadersBankArray[activeFadersBnk][index][4].stop; });
+    activeFadersBnk = bank;
     9.do({ | index |
-      this.setControlFunc(index + 1, fadersBankArray[activeFadersBank][index][0]);
-      this.setFaderValue(index + 1, fadersBankArray[activeFadersBank][index][1]);
-      this.setFaderMode(index + 1, fadersBankArray[activeFadersBank][index][2]);
-      fadersBankArray[activeFadersBank][index][4].reset.play;
+      this.setControlFunc(index + 1, fadersBankArray[activeFadersBnk][index][0]);
+      this.setFaderValue(index + 1, fadersBankArray[activeFadersBnk][index][1]);
+      this.setFaderMode(index + 1, fadersBankArray[activeFadersBnk][index][2]);
+      fadersBankArray[activeFadersBnk][index][4].reset.play;
     });
   }
 
@@ -163,17 +163,17 @@ Base_Page_Banks.sc
   }
 
   stopActiveBankMonitorRoutines {
-    32.do({ | index | gridBankArray[activeGridBank][index][5].stop; });
-    8.do({ | index | controlButtonsBankArray[activeControlButtonsBank][4][index].stop; });
-    8.do({ | index | touchButtonsBankArray[activeTouchButtonsBank][4][index].stop; });
-    9.do({ | index | fadersBankArray[activeFadersBank][index][4].stop; });
+    32.do({ | index | gridBankArray[activeGridBnk][index][5].stop; });
+    8.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][4][index].stop; });
+    8.do({ | index | touchButtonsBankArray[activeTouchButtonsBnk][4][index].stop; });
+    9.do({ | index | fadersBankArray[activeFadersBnk][index][4].stop; });
   }
 
   startActiveBankMonitorRoutines {
-    32.do({ | index | gridBankArray[activeGridBank][index][5].reset.play; });
-    8.do({ | index | controlButtonsBankArray[activeControlButtonsBank][4][index].reset.play; });
-    8.do({ | index | touchButtonsBankArray[activeTouchButtonsBank][4][index].reset.play; });
-    9.do({ | index | fadersBankArray[activeFadersBank][index][4].reset.play; });
+    32.do({ | index | gridBankArray[activeGridBnk][index][5].reset.play; });
+    8.do({ | index | controlButtonsBankArray[activeControlButtonsBnk][4][index].reset.play; });
+    8.do({ | index | touchButtonsBankArray[activeTouchButtonsBnk][4][index].reset.play; });
+    9.do({ | index | fadersBankArray[activeFadersBnk][index][4].reset.play; });
   }
 
 }

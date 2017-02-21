@@ -198,7 +198,7 @@ Base {
   setPage { | name = 'page' |
     // stops routines that update control surface values on active page:
     activePage.stopActiveBankMonitorRoutines;
-    activePage.offLoadFunction.value;
+    activePage.offLoadFunctionDict.do({ | func | func.value; });
 
     activePageKey = name;
     activePage = pageDict[activePageKey];
@@ -219,18 +219,17 @@ Base {
 
     // starts routines that update control surface values on active page:
     activePage.startActiveBankMonitorRoutines;
-
-    activePage.loadFunction.value;
+    activePage.loadFunctionDict.do({ | func | func.value; });
   }
 
-  setPageLoadFunction { | func, page = 'active' |
+  addPageLoadFunction { | name, func, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].setLoadFunction(func);
+    pageDict[page].addLoadFunction(name, func);
   }
 
-  setPageOffLoadFunction { | func, page = 'active' |
+  addPageOffLoadFunction { | name func, page = 'active' |
     if( page == 'active', { page = activePageKey; });
-    pageDict[page].setOffLoadFunction(func);
+    pageDict[page].addOffLoadFunction(name, func);
   }
 
 

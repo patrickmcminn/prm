@@ -15,48 +15,38 @@ var clearBank = 3;
 var returnsMuteBank = 4;
 var numRightButtonsBanks = 5;
 
+
 var mixBank = 0;
 var rateBank = 1;
 var divBank = 2;
 var posBank = 3;
 var waveLossBank = 4;
 
-
 ~ohm.storageDict[\globalRightButtonsBank] = submixerMuteBank;
 ~ohm.storageDict[\globalRightKnobsBank] = mixBank;
 ~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
 
+
+
 ~ohm.storageDict[\globalRightKnobsChangeRoutine] = r {
     loop {
-    // removing:
-    /*
-    ~ohm.setActiveRightKnobsBank(rateBank);
-    ~ohm.storageDict[\globalRightKnobsBank] = rateBank;
-    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonYellow(3, bank: bank); }).yield;
-    */
 
-    // removing:
-    /*
     ~ohm.setActiveRightKnobsBank(divBank);
-    ~ohm.storageDict[\globalRightKnobsBank] = divBank;
-    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonBlue(3, bank: bank); }).yield;
-    */
+    ~ohm.storageDict[\globalRightKnobsBank] = divBank.yield;
+    //numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonBlue(3, bank: bank); }).yield;
 
-    // removing:
-    /*
     ~ohm.setActiveRightKnobsBank(posBank);
-    ~ohm.storageDict[\globalRightKnobsBank] = posBank;
-    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
-    */
+    ~ohm.storageDict[\globalRightKnobsBank] = posBank.yield;
+    //numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonCyan(3, bank: bank); }).yield;
 
     ~ohm.setActiveRightKnobsBank(waveLossBank);
-    ~ohm.storageDict[\globalRightKnobsBank] = waveLossBank;
-    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonWhite(3, bank: bank); }).yield;
+    ~ohm.storageDict[\globalRightKnobsBank] = waveLossBank.yield;
+    //numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonWhite(3, bank: bank); }).yield;
 
 
     ~ohm.setActiveRightKnobsBank(mixBank);
-    ~ohm.storageDict[\globalRightKnobsBank] = mixBank;
-    numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonGreen(3, bank: bank); }).yield;
+    ~ohm.storageDict[\globalRightKnobsBank] = mixBank.yield;
+    //numRightButtonsBanks.do({ | bank | ~ohm.turnRightButtonGreen(3, bank: bank); }).yield;
   }
 };
 
@@ -153,40 +143,45 @@ var waveLossBank = 4;
   // initial state:
   ~ohm.setActiveRightButtonsBank(~ohm.storageDict[\globalRightButtonsBank]);
   ~ohm.setActiveRightSlidersBank(~ohm.storageDict[\globalRightSlidersBank]);
-  switch(~ohm.storageDict[\globalRightButtonsBank],
+
+  ~ohm.setCrossfaderButtonMonitorFunc(1, {
+    switch(~ohm.storageDict[\globalRightButtonsBank],
     submixerMuteBank, { ~ohm.turnCrossfaderButtonCyan(1) },
     recordBank, { ~ohm.turnCrossfaderButtonBlue(1) },
     playToggleBank, { ~ohm.turnCrossfaderButtonGreen(1) },
     clearBank, { ~ohm.turnCrossfaderButtonRed(1) },
     returnsMuteBank, { ~ohm.turnCrossfaderButtonWhite(1) }
-  );
-
+  );});
   // function:
   ~ohm.setCrossfaderButtonFunc(1, { ~ohm.storageDict[\globalRightChangeRoutine].next });
 
   //////// Mute Bank:
-  // mutes submixes
 
-  // initial color:
-  if( ~prm.submixerA.mixer.isMuted, { ~ohm.turnRightButtonRed(0, bank: submixerMuteBank); }, { ~ohm.turnRightButtonGreen(0, bank: submixerMuteBank) });
-  if( ~prm.submixerB.mixer.isMuted, { ~ohm.turnRightButtonRed(1, bank: submixerMuteBank); }, { ~ohm.turnRightButtonGreen(1, bank: submixerMuteBank) });
-  if( ~prm.submixerC.mixer.isMuted, { ~ohm.turnRightButtonRed(2, bank: submixerMuteBank); }, { ~ohm.turnRightButtonGreen(2, bank: submixerMuteBank) });
-  //if( ~prm.systemMixer.isMuted(0), { ~ohm.turnRightButtonRed(3, bank: submixerMuteBank); }, { ~ohm.turnRightButtonGreen(3, bank: submixerMuteBank) });
-  // submixer A:
-  ~ohm.setRightButtonFunc(0, {
-    ~prm.submixerA.mixer.tglMute;
-    if( ~prm.submixerA.mixer.isMuted, { ~ohm.turnRightButtonRed(0); }, { ~ohm.turnRightButtonGreen(0) });
+  // mutes submixes:
+
+  ~ohm.setRightButtonMonitorFunc(0, {
+    if( ~prm.submixerA.mixer.isMuted,
+      { ~ohm.turnRightButtonRed(0, bank: submixerMuteBank); },
+      { ~ohm.turnRightButtonGreen(0, bank: submixerMuteBank) });
   }, bank: submixerMuteBank);
+  ~ohm.setRightButtonMonitorFunc(1, {
+    if( ~prm.submixerB.mixer.isMuted,
+      { ~ohm.turnRightButtonRed(1, bank: submixerMuteBank); },
+      { ~ohm.turnRightButtonGreen(1, bank: submixerMuteBank) });
+  }, bank: submixerMuteBank);
+  ~ohm.setRightButtonMonitorFunc(2, {
+     if( ~prm.submixerC.mixer.isMuted,
+      { ~ohm.turnRightButtonRed(2, bank: submixerMuteBank); },
+      { ~ohm.turnRightButtonGreen(2, bank: submixerMuteBank) });
+  }, bank: submixerMuteBank);
+
+  // submixer A:
+  ~ohm.setRightButtonFunc(0, { ~prm.submixerA.mixer.tglMute; }, bank: submixerMuteBank);
   // submixer B:
   ~ohm.setRightButtonFunc(1, {
-    ~prm.submixerB.mixer.tglMute;
-    if( ~prm.submixerB.mixer.isMuted, { ~ohm.turnRightButtonRed(1); }, { ~ohm.turnRightButtonGreen(1) });
-  }, bank: submixerMuteBank);
+    ~prm.submixerB.mixer.tglMute; }, bank: submixerMuteBank);
   // submixer C:
-   ~ohm.setRightButtonFunc(2, {
-    ~prm.submixerC.mixer.tglMute;
-    if( ~prm.submixerC.mixer.isMuted, { ~ohm.turnRightButtonRed(2); }, { ~ohm.turnRightButtonGreen(2) });
-  }, bank: submixerMuteBank);
+   ~ohm.setRightButtonFunc(2, { ~prm.submixerC.mixer.tglMute; }, bank: submixerMuteBank);
   /*
   // master volume:
    ~ohm.setRightButtonFunc(3, {
@@ -196,62 +191,66 @@ var waveLossBank = 4;
   */
 
   //////// Loop Recording Bank:
-
-  //// Initial Colors:
-  if( ~prm.submixerA.isRecording, { ~ohm.turnRightButtonGreen(0, bank: recordBank) }, { ~ohm.turnRightButtonBlue(0, bank: recordBank) });
-  if( ~prm.submixerB.isRecording, { ~ohm.turnRightButtonGreen(1, bank: recordBank) }, { ~ohm.turnRightButtonBlue(1, bank: recordBank) });
-  if( ~prm.submixerB.isRecording, { ~ohm.turnRightButtonGreen(2, bank: recordBank) }, { ~ohm.turnRightButtonBlue(2, bank: recordBank) });
+  ~ohm.setRightButtonMonitorFunc(0, {
+    if( ~prm.submixerA.isRecording,
+      { ~ohm.turnRightButtonWhite(0, bank: recordBank) },
+      { ~ohm.turnRightButtonBlue(0, bank: recordBank);
+        if( ~prm.submixerA.isPlaying, { ~ohm.turnRightButtonGreen(1); });
+    });
+  }, bank: recordBank);
+  ~ohm.setRightButtonMonitorFunc(1, {
+     if( ~prm.submixerB.isRecording,
+      { ~ohm.turnRightButtonWhite(1, bank: recordBank) },
+      { ~ohm.turnRightButtonBlue(1, bank: recordBank);
+        if( ~prm.submixerB.isPlaying, { ~ohm.turnRightButtonGreen(1); });
+    });
+  }, bank: recordBank);
+  ~ohm.setRightButtonMonitorFunc(2, {
+    if( ~prm.submixerC.isRecording,
+      { ~ohm.turnRightButtonWhite(2, bank: recordBank) },
+      { ~ohm.turnRightButtonBlue(2, bank: recordBank);
+        if( ~prm.submixerC.isPlaying, { ~ohm.turnRightButtonGreen(2);});
+    });
+  }, bank: recordBank);
   ~ohm.turnRightButtonOff(3, bank: recordBank);
 
   // submixer A:
-  ~ohm.setRightButtonFunc(0, {
-    ~prm.submixerA.loop;
-    if( ~prm.submixerA.isRecording,
-      {  ~ohm.turnRightButtonGreen(0); if( ~prm.submixerA.isPlaying, { ~ohm.turnRightButtonGreen(0, bank: playToggleBank) });},
-      { ~ohm.turnRightButtonBlue(0); if( ~prm.submixerA.isPlaying, { ~ohm.turnRightButtonGreen(0, bank: playToggleBank) }); })
-  }, bank: recordBank);
+  ~ohm.setRightButtonFunc(0, { ~prm.submixerA.loop; }, bank: recordBank);
 
   // submixer B:
-  ~ohm.setRightButtonFunc(1, {
-    ~prm.submixerB.loop;
-    if( ~prm.submixerB.isRecording,
-      {  ~ohm.turnRightButtonGreen(1); if( ~prm.submixerB.isPlaying, { ~ohm.turnRightButtonGreen(1, bank: playToggleBank) });},
-      { ~ohm.turnRightButtonBlue(1); if( ~prm.submixerB.isPlaying, { ~ohm.turnRightButtonGreen(1, bank: playToggleBank) }); })
-  }, bank: recordBank);
+  ~ohm.setRightButtonFunc(1, { ~prm.submixerB.loop; }, bank: recordBank);
 
   // submixer C:
-  ~ohm.setRightButtonFunc(2, {
-    ~prm.submixerC.loop;
-    if( ~prm.submixerC.isRecording,
-      {  ~ohm.turnRightButtonGreen(2); if( ~prm.submixerC.isPlaying, { ~ohm.turnRightButtonGreen(2, bank: playToggleBank) });},
-      { ~ohm.turnRightButtonBlue(2); if( ~prm.submixerC.isPlaying, { ~ohm.turnRightButtonGreen(2, bank: playToggleBank) }); })
-  }, bank: recordBank);
+  ~ohm.setRightButtonFunc(2, { ~prm.submixerC.loop; }, bank: recordBank);
 
   //////// Play Toggle Bank:
 
   //// Initial Colors:
-  if( ~prm.submixerA.isPlaying, { ~ohm.turnRightButtonGreen(0, bank: playToggleBank) }, { ~ohm.turnRightButtonRed(0, bank: playToggleBank); });
-  if( ~prm.submixerB.isPlaying, { ~ohm.turnRightButtonGreen(1, bank: playToggleBank) }, { ~ohm.turnRightButtonRed(1, bank: playToggleBank); });
-  if( ~prm.submixerC.isPlaying, { ~ohm.turnRightButtonGreen(2, bank: playToggleBank) }, { ~ohm.turnRightButtonRed(2, bank: playToggleBank); });
+  ~ohm.setRightButtonMonitorFunc(0, {
+    if( ~prm.submixerA.isPlaying,
+      { ~ohm.turnRightButtonGreen(0, bank: playToggleBank) },
+      { ~ohm.turnRightButtonRed(0, bank: playToggleBank); });
+  }, bank: playToggleBank);
+  ~ohm.setRightButtonMonitorFunc(1, {
+    if( ~prm.submixerB.isPlaying,
+      { ~ohm.turnRightButtonGreen(1, bank: playToggleBank) },
+      { ~ohm.turnRightButtonRed(1, bank: playToggleBank); });
+  }, bank: playToggleBank);
+  ~ohm.setRightButtonMonitorFunc(2, {
+    if( ~prm.submixerC.isPlaying,
+      { ~ohm.turnRightButtonGreen(2, bank: playToggleBank) },
+      { ~ohm.turnRightButtonRed(2, bank: playToggleBank); });
+  }, bank: playToggleBank);
   ~ohm.turnRightButtonOff(3, bank: playToggleBank);
 
   // submixer A:
-  ~ohm.setRightButtonFunc(0, {
-    ~prm.submixerA.togglePlayLoop;
-    if( ~prm.submixerA.isPlaying, { ~ohm.turnRightButtonGreen(0) }, { ~ohm.turnRightButtonRed(0) })
-  }, bank: playToggleBank);
+  ~ohm.setRightButtonFunc(0, { ~prm.submixerA.togglePlayLoop; }, bank: playToggleBank);
 
   // submixer B:
-  ~ohm.setRightButtonFunc(1, {
-    ~prm.submixerB.togglePlayLoop;
-    if( ~prm.submixerB.isPlaying, { ~ohm.turnRightButtonGreen(1) }, { ~ohm.turnRightButtonRed(1) })
-  }, bank: playToggleBank);
+  ~ohm.setRightButtonFunc(1, { ~prm.submixerB.togglePlayLoop; }, bank: playToggleBank);
 
   // submixer C:
-  ~ohm.setRightButtonFunc(2, {
-    ~prm.submixerC.togglePlayLoop;
-    if( ~prm.submixerC.isPlaying, { ~ohm.turnRightButtonGreen(2) }, { ~ohm.turnRightButtonRed(2) })
-  }, bank: playToggleBank);
+  ~ohm.setRightButtonFunc(2, { ~prm.submixerC.togglePlayLoop; }, bank: playToggleBank);
 
   //////// Clear Bank:
 
@@ -271,43 +270,69 @@ var waveLossBank = 4;
   //////// Returns Mute Bank:
 
   //// initial colors:
-  if( ~prm.reverb.mixer.isMuted, { ~ohm.turnRightButtonRed(0, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(0, bank: returnsMuteBank); });
-  if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(1, bank: returnsMuteBank); }, { ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
-  if( ~prm.modular.isMuted, { ~ohm.turnRightButtonRed(2, bank: returnsMuteBank); }, {
-    ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
+  ~ohm.setRightButtonMonitorFunc(0, {
+    if( ~prm.reverb.mixer.isMuted,
+      { ~ohm.turnRightButtonRed(0, bank: returnsMuteBank); },
+      { ~ohm.turnRightButtonGreen(0, bank: returnsMuteBank); });
+  }, bank: returnsMuteBank);
+  ~ohm.setRightButtonMonitorFunc(1, {
+    if( ~prm.granulator.mixer.isMuted,
+      { ~ohm.turnRightButtonRed(1, bank: returnsMuteBank); },
+      { ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
+  }, bank: returnsMuteBank);
+  ~ohm.setRightButtonMonitorFunc(2, {
+      if( ~prm.modular.isMuted,
+      { ~ohm.turnRightButtonRed(2, bank: returnsMuteBank); },
+      { ~ohm.turnRightButtonGreen(1, bank: returnsMuteBank); });
+  }, bank: returnsMuteBank);
+
 
   // reverb:
-  ~ohm.setRightButtonFunc(0, {
-    ~prm.reverb.mixer.tglMute;
-    if( ~prm.reverb.mixer.isMuted, { ~ohm.turnRightButtonRed(0); }, { ~ohm.turnRightButtonGreen(0); });
-  }, bank: returnsMuteBank);
+  ~ohm.setRightButtonFunc(0, { ~prm.reverb.mixer.tglMute; }, bank: returnsMuteBank);
 
   // granulator:
-  ~ohm.setRightButtonFunc(1, {
-    ~prm.granulator.mixer.tglMute;
-     if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(1); }, { ~ohm.turnRightButtonGreen(1); });
-  }, bank: returnsMuteBank);
+  ~ohm.setRightButtonFunc(1, { ~prm.granulator.mixer.tglMute; }, bank: returnsMuteBank);
 
   // modular:
-  ~ohm.setRightButtonFunc(2, {
-    ~prm.modular.tglMute;
-    if( ~prm.granulator.mixer.isMuted, { ~ohm.turnRightButtonRed(2); }, { ~ohm.turnRightButtonGreen(2); });
-  }, bank: returnsMuteBank);
+  ~ohm.setRightButtonFunc(2, { ~prm.modular.tglMute; }, bank: returnsMuteBank);
 
   //////////// Right Knob Change:
+
+  ~ohm.setRightButtonMonitorFunc(3, {
+    switch(~ohm.storageDict[\globalRightKnobsBank],
+      mixBank, { ~ohm.turnRightButtonGreen(3); },
+      divBank, { ~ohm.turnRightButtonBlue(3); },
+    posBank, { ~ohm.turnRightButtonCyan(3); },
+      waveLossBank, { ~ohm.turnRightButtonWhite(3); },
+  ); }, mixBank);
+  ~ohm.setRightButtonMonitorFunc(3, {
+    switch(~ohm.storageDict[\globalRightKnobsBank],
+      mixBank, { ~ohm.turnRightButtonGreen(3); },
+      divBank, { ~ohm.turnRightButtonBlue(3); },
+    posBank, { ~ohm.turnRightButtonCyan(3); },
+      waveLossBank, { ~ohm.turnRightButtonWhite(3); },
+  ); }, divBank);
+  ~ohm.setRightButtonMonitorFunc(3, {
+    switch(~ohm.storageDict[\globalRightKnobsBank],
+      mixBank, { ~ohm.turnRightButtonGreen(3); },
+      divBank, { ~ohm.turnRightButtonBlue(3); },
+    posBank, { ~ohm.turnRightButtonCyan(3); },
+      waveLossBank, { ~ohm.turnRightButtonWhite(3); },
+  ); }, posBank);
+  ~ohm.setRightButtonMonitorFunc(3, {
+    switch(~ohm.storageDict[\globalRightKnobsBank],
+      mixBank, { ~ohm.turnRightButtonGreen(3); },
+      divBank, { ~ohm.turnRightButtonBlue(3); },
+    posBank, { ~ohm.turnRightButtonCyan(3); },
+      waveLossBank, { ~ohm.turnRightButtonWhite(3); },
+  ); }, waveLossBank);
 
   //// bank change:
 
   // intial state:
   ~ohm.setActiveRightKnobsBank(~ohm.storageDict[\globalRightKnobsBank]);
-  case
-  { ~ohm.storageDict[\globalRightKnobsBank] == mixBank } { ~ohm.turnRightButtonGreen(3) }
-  { ~ohm.storageDict[\globalRightKnobsBank] == rateBank } { ~ohm.turnRightButtonYellow(3); }
-  { ~ohm.storageDict[\globalRightKnobsBank] == divBank } { ~ohm.turnRightButtonBlue(3) }
-  { ~ohm.storageDict[\globalRightKnobsBank] == posBank } { ~ohm.turnRightButtonCyan(3) }
-  { ~ohm.storageDict[\globalRightKnobsBank] == waveLossBank } { ~ohm.turnRightButtonWhite(3) };
   /// func:
-  4.do({  | bank |
+  numRightButtonsBanks.do({  | bank |
     ~ohm.setRightButtonFunc(3, { ~ohm.storageDict[\globalRightKnobsChangeRoutine].next; }, bank: bank);
   });
 
@@ -363,8 +388,6 @@ var waveLossBank = 4;
 
   //////// Loop Division Knobs:
 
-  // gonna remove these, I think:
-  /*
 
   // Submixer A:
   ~ohm.setRightKnobFunc(0, { | val |
@@ -383,12 +406,9 @@ var waveLossBank = 4;
     var div = val.linlin(0, 127, 1, 15).asInt;
     ~prm.submixerC.setLoopDivison(div);
   }, bank: divBank);
-  */
 
   //////// Loop Position Knobs:
 
-  // also gonna remove these:
-  /*
   // Submixer A:
   ~ohm.setRightKnobFunc(0, { | val |
     var pos = val.linlin(0, 127, 0, 1);

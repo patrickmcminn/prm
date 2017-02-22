@@ -51,38 +51,43 @@ var waveLossBank = 4;
 };
 
 ~ohm.storageDict[\globalRightChangeRoutine] =  r {
-    loop {
-    ~ohm.setActiveRightButtonsBank(recordBank);
-    ~ohm.setActiveRightSlidersBank(submixerBank);
-    ~ohm.storageDict[\globalRightButtonsBank] = recordBank;
-    ~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
-    ~ohm.turnCrossfaderButtonBlue(1).yield;
+	loop {
+		~ohm.setActiveRightButtonsBank(recordBank);
+		~ohm.setActiveRightSlidersBank(submixerBank);
+		~ohm.storageDict[\globalRightButtonsBank] = recordBank;
+		~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
+		~ohm.storageDict[\globalRightButtonsBank].postln.yield;
+		// ~ohm.turnCrossfaderButtonBlue(1).yield;
 
-    ~ohm.setActiveRightButtonsBank(playToggleBank);
-    ~ohm.setActiveRightSlidersBank(submixerBank);
-    ~ohm.storageDict[\globalRightButtonsBank] = playToggleBank;
-    ~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
-    ~ohm.turnCrossfaderButtonGreen(1).yield;
+		~ohm.setActiveRightButtonsBank(playToggleBank);
+		~ohm.setActiveRightSlidersBank(submixerBank);
+		~ohm.storageDict[\globalRightButtonsBank] = playToggleBank;
+		~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
+		~ohm.storageDict[\globalRightButtonsBank].postln.yield;
+		//~ohm.turnCrossfaderButtonGreen(1).yield;
 
-    ~ohm.setActiveRightButtonsBank(clearBank);
-    ~ohm.setActiveRightSlidersBank(submixerBank);
-    ~ohm.storageDict[\globalRightButtonsBank] = clearBank;
-    ~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
-    ~ohm.turnCrossfaderButtonRed(1).yield;
+		~ohm.setActiveRightButtonsBank(clearBank);
+		~ohm.setActiveRightSlidersBank(submixerBank);
+		~ohm.storageDict[\globalRightButtonsBank] = clearBank;
+		~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
+		~ohm.storageDict[\globalRightButtonsBank].postln.yield;
+		//~ohm.turnCrossfaderButtonRed(1).yield;
 
-    ~ohm.setActiveRightButtonsBank(returnsMuteBank);
-    ~ohm.setActiveRightSlidersBank(returnsBank);
-    ~ohm.storageDict[\globalRightButtonsBank] = returnsMuteBank;
-    ~ohm.storageDict[\globalRightSlidersBank] = returnsBank;
-    ~ohm.turnCrossfaderButtonWhite(1).yield;
+		~ohm.setActiveRightButtonsBank(returnsMuteBank);
+		~ohm.setActiveRightSlidersBank(returnsBank);
+		~ohm.storageDict[\globalRightButtonsBank] = returnsMuteBank;
+		~ohm.storageDict[\globalRightSlidersBank] = returnsBank;
+		~ohm.storageDict[\globalRightButtonsBank].postln.yield;
+		//~ohm.turnCrossfaderButtonWhite(1).yield;
 
-    ~ohm.setActiveRightButtonsBank(submixerMuteBank);
-    ~ohm.setActiveRightSlidersBank(submixerBank);
-    ~ohm.storageDict[\globalRightButtonsBank] = submixerMuteBank;
-    ~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
-    ~ohm.turnCrossfaderButtonCyan(1).yield;
+		~ohm.setActiveRightButtonsBank(submixerMuteBank);
+		~ohm.setActiveRightSlidersBank(submixerBank);
+		~ohm.storageDict[\globalRightButtonsBank] = submixerMuteBank;
+		~ohm.storageDict[\globalRightSlidersBank] = submixerBank;
+		~ohm.storageDict[\globalRightButtonsBank].postln.yield;
+		//~ohm.turnCrossfaderButtonCyan(1).yield;
 
-  };
+	};
 };
 
 
@@ -426,7 +431,6 @@ var waveLossBank = 4;
     var pos = val.linlin(0, 127, 0, 1);
     ~prm.submixerC.setLoopPosition(pos);
   }, bank: posBank);
-  */
 
   //////// WaveLoss Knobs:
 

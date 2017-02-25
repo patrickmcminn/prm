@@ -48,7 +48,7 @@ FalseSelf_Kick : IM_Module {
       this.prInitializeEQ;
       this.prMakeSequences;
       server.sync;
-      this.prSequenceSequences;
+      this.prSequenceSection1;
 
       server.sync;
       isLoaded = true;
@@ -80,24 +80,56 @@ FalseSelf_Kick : IM_Module {
 
   prMakeSequences {
     drums.makeSequence(\section1, 'oneShot');
-    drums.makeSequence(\section1_long, 'oneShot');
     drums.makeSequence(\chorus1, 'oneShot');
     drums.makeSequence(\chorus2, 'oneShot');
     drums.makeSequence(\canon, 'oneShot');
     drums.makeSequence(\end, 'oneShot');
   }
 
-  prSequenceSequences {
-    drums.addKey(\section1, \dur, 1);
-    drums.addKey(\section1, \buffer, [drums.bufferArray[0], drums.bufferArray[1], drums.bufferArray[2]]);
+  prSequenceSection1 {
+    var part1, part2, part3, part4;
+    var drum0 = drums.bufferArray[0];
+    var drum1 = drums.bufferArray[1];
+    var drum2 = drums.bufferArray[2];
+    var drum3 = drums.bufferArray[3];
+
+    part1 = Pseq([
+      [drum0, drum1, drum2, drum3],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2]
+    ], 8);
+    part2 = Pseq([
+      [drum0, drum1, drum2, drum3],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2]
+    ], 6);
+    part3 = Pseq([
+      [drum0, drum1, drum2, drum3],
+      [drum0, drum1, drum2, drum3],
+      [drum0, drum1, drum2, drum3],
+      [drum0, drum1, drum2, drum3]
+    ], 4);
+    part4 = Pseq([
+      [drum0, drum1, drum2, drum3], drum1, drum2, drum0,
+      drum1, drum0, drum2, drum0,
+      [drum0, drum1, drum2], drum1, drum0, drum2,
+      drum1, drum0, drum0, drum2,
+      [drum0, drum1, drum2], drum2, drum1, drum0,
+      drum1, drum2, drum1, drum0,
+      [drum0, drum1, drum2], drum1, drum2, drum1,
+      [drum0, drum1, drum2, drum3], [drum0, drum1, drum2], [drum0, drum1, drum2], [drum0, drum1, drum2]
+    ], 1);
+
+
+    drums.addKey(\section1, \dur, Pseq([Pseq([1], 64), Pseq([2], 24), Pseq([1], 16), Pseq([0.25], inf)], inf));
+    drums.addKey(\section1, \buffer, Pseq([part1, part2, part3, part4], 1));
     drums.addKey(\section1, \amp, 0.3);
-
-    drums.addKey(\section1_long, \dur, 4);
-    drums.addKey(\section1_long, \buffer, drums.bufferArray[3]);
-    drums.addKey(\section1_long, \amp, 0.4);
-
-
-
   }
 
   //////// public functions:

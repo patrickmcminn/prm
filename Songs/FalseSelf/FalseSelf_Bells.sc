@@ -17,6 +17,8 @@ FalseSelf_Bells : IM_Module {
   }
 
   prInit {
+    var path, sampleArray;
+
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;

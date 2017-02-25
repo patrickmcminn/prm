@@ -132,6 +132,11 @@ FalseSelf_Kick : IM_Module {
     drums.addKey(\section1, \amp, 0.3);
   }
 
+  prSequenceChorus1 { }
+  prSequenceChorus2 { }
+  prSequenceCanon { }
+  prSequenceEnd { }
+
   //////// public functions:
 
   setHighPassCutoff { | cutoff = 20 |

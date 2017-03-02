@@ -282,4 +282,25 @@ FalseSelf_Kick : IM_Module {
     highPassCutoff = cutoff;
   }
 
+  playDrum0 { | vol = -6 | drums.playSampleOneShot(0, vol); }
+  playDrum1 { | vol = -6 | drums.playSampleOneShot(1, vol); }
+  playDrum2 { | vol = -6 | drums.playSampleOneShot(2, vol); }
+  playDrum3 { | vol = -6 | drums.playSampleOneShot(3, vol); }
+
+  playSection1 { drums.playSequence(\section1); }
+  stopSection1 { drums.stopSequence(\section1); }
+
+  playChorus1 { drums.playSequence(\chorus1); }
+  stopChorus1 { drums.stopSequence(\chorus1); }
+
+  playChorus2 { drums.playSequence(\chorus2); }
+  stopChorus2 { drums.stopSequence(\chorus2); }
+
+  playCanon { drums.playSequence(\canon); }
+  stopCanon { drums.stopSequence(\canon); }
+
+  playEnding { drums.playSequence(\ending); }
+  stopEnding { drums.stopSequence(\ending); }
+
+  setSequencerClockTempo { | tempo = 160 | drums.setSequencerClockTempo(tempo); }
 }

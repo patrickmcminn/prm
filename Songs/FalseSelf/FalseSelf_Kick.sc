@@ -49,6 +49,10 @@ FalseSelf_Kick : IM_Module {
       this.prMakeSequences;
       server.sync;
       this.prSequenceSection1;
+      this.prSequenceChorus1;
+      this.prSequenceChorus2;
+      this.prSequenceCanon;
+      this.prSequenceEnding;
 
       server.sync;
       isLoaded = true;
@@ -83,7 +87,7 @@ FalseSelf_Kick : IM_Module {
     drums.makeSequence(\chorus1, 'oneShot');
     drums.makeSequence(\chorus2, 'oneShot');
     drums.makeSequence(\canon, 'oneShot');
-    drums.makeSequence(\end, 'oneShot');
+    drums.makeSequence(\ending, 'oneShot');
   }
 
   prSequenceSection1 {
@@ -129,13 +133,147 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\section1, \dur, Pseq([Pseq([1], 64), Pseq([2], 24), Pseq([1], 16), Pseq([0.25], inf)], inf));
     drums.addKey(\section1, \buffer, Pseq([part1, part2, part3, part4], 1));
-    drums.addKey(\section1, \amp, 0.3);
+    drums.addKey(\section1, \amp, 0.2);
   }
 
-  prSequenceChorus1 { }
-  prSequenceChorus2 { }
-  prSequenceCanon { }
-  prSequenceEnd { }
+  prSequenceChorus1 {
+    var part1, part2, part3;
+    var drum0 = drums.bufferArray[0];
+    var drum1 = drums.bufferArray[1];
+    var drum2 = drums.bufferArray[2];
+    var drum3 = drums.bufferArray[3];
+
+    part1 = Pseq([
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+    ], 1);
+
+    part2 = Pseq([
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, [drum1, drum2], [drum1, drum2],
+
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+    ], 1);
+
+    part3 = Pseq([
+      Rest, Rest, Rest, Rest,
+      [drum1, drum2], Rest, [drum1, drum2], Rest,
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      [drum1, drum3], Rest, Rest, Rest,
+      [drum1, drum2], Rest, Rest, Rest,
+      [drum2, drum3], Rest, Rest, Rest,
+      [drum1, drum2], Rest, Rest, Rest,
+
+      [drum0, drum3], Rest, Rest, Rest,
+      [drum1, drum2], [drum1, drum2], [drum1, drum2], [drum1, drum2],
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      [drum1, drum2], Rest, Rest, Rest,
+
+      Pseq([[drum1, drum2], Rest, Rest, Rest], 4);
+    ], 1);
+
+    drums.addKey(\chorus1, \dur, 0.25);
+    drums.addKey(\chorus1, \buffer, Pseq([part1, part2, part3], 1));
+    drums.addKey(\chorus1, \amp, 0.2);
+  }
+
+  prSequenceChorus2 {
+    var part1, part2;
+    var drum0 = drums.bufferArray[0];
+    var drum1 = drums.bufferArray[1];
+    var drum2 = drums.bufferArray[2];
+    var drum3 = drums.bufferArray[3];
+
+    part1 = Pseq([[drum0, drum1, drum2, drum3], Rest, Rest, Rest], 11*4);
+    part2 = Pseq([
+      [drum0, drum1, drum2, drum3], drum1, drum2, drum0,
+      drum1, drum0, drum2, drum0,
+      [drum0, drum1, drum2], drum1, drum0, drum2,
+      drum1, drum0, drum0, drum2,
+
+      [drum0, drum1, drum2], drum2, drum1, drum0,
+      drum1, drum2, drum1, drum0,
+      [drum0, drum1, drum2], drum1, drum2, drum1,
+      [drum0, drum1, drum2, drum3],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2]
+    ], 1);
+
+    drums.addKey(\chorus2, \dur, 0.25);
+    drums.addKey(\chorus2, \buffer, Pseq([part1, part2], 1));
+    drums.addKey(\chorus2, \amp, 0.2);
+  }
+
+
+  prSequenceCanon {
+    var introPart;
+    var mainPart;
+    var drum0 = drums.bufferArray[0];
+    var drum1 = drums.bufferArray[1];
+    var drum2 = drums.bufferArray[2];
+    var drum3 = drums.bufferArray[3];
+
+    introPart = Pseq([
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      [drum0, drum1, drum2], drum1, drum2, drum1,
+      [drum0, drum1, drum2, drum3],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2]
+    ], 1);
+    mainPart = Pseq([
+      [drum0, drum1, drum2, drum3], drum1, drum2, drum0,
+      drum1, drum0, drum2, drum0,
+      [drum0, drum1, drum2], drum1, drum0, drum2,
+      drum1, drum0, drum0, drum2,
+
+      [drum0, drum1, drum2], drum2, drum1, drum0,
+      drum1, drum2, drum1, drum0,
+      [drum0, drum1, drum2], drum1, drum2, drum1,
+      [drum0, drum1, drum2, drum3],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2]
+    ], inf);
+
+    drums.addKey(\canon, \dur, 0.25);
+    drums.addKey(\canon, \buffer, Pseq([introPart, mainPart], 1));
+    drums.addKey(\canon, \amp, 0.2);
+  }
+
+  prSequenceEnding {
+    var drum2 = drums.bufferArray[2];
+
+    drums.addKey(\ending, \dur, Pseq([1], inf));
+    drums.addKey(\ending, \buffer, Pseq([drum2], inf));
+    drums.addKey(\ending, \amp, 0.15);
+
+  }
 
   //////// public functions:
 

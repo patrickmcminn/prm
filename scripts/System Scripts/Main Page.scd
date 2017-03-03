@@ -12,9 +12,7 @@ var dauphineStreetIsLoaded = false;
 var cortezIsLoaded = false;
 
 ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
-~ohm.addPageLoadFunction(\globalMixer, {
-  ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
-}, page);
+~ohm.addPageLoadFunction(\mainGlobalMixer, { ~ohm.storageDict[\loadGlobalSubmixerFunc].value; }, page);
 
 //////////// Grid Functions:
 

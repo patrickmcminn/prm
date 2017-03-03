@@ -11,28 +11,55 @@ var submixerABank = 0;
 var submixerBBank = 1;
 var submixerCBank = 2;
 
+var submixerADiv, submixerBDiv, submixerCDiv;
+var submixerAPos, submixerBPos, submixerCPos;
+var submixerARate, submixerBRate, submixerCRate;
+
+var currentSubmixerBank;
+
 ~ohm.makePage(page);
 
 ~ohm.addGridBanks(2, page: page);
 
-~ohm.addPageLoadFunction({
+~ohm.addPageLoadFunction(\looperGlobalMixer, {
   ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 }, page);
+
+currentSubmixerBank = submixerABank;
+submixerADiv = 0;
+submixerBDiv = 0;
+submixerCDiv = 0;
+
+submixerAPos;
+submixerBPos;
+submixerCPos;
+
+submixerARate;
+submixerBRate;
+submixerCRate;
 
 ///////////// Grid Functions:
 
 //////// Bank Change:
-~ohm.turnCrossfaderButtonBlue(0, page: page);
+
+~ohm.setCrossfaderButtonMonitorFunc(0, {
+  switch(currentSubmixerBank,
+    submixerABank, { ~ohm.turnCrossfaderButtonBlue(0); },
+    submixerBBank, { ~ohm.turnCrossfaderButtonCyan(0); },
+    submixerCBank, { ~ohm.turnCrossfaderButtonMagenta(0); }
+  );
+}, page: page);
+
 
 ~ohm.setCrossfaderButtonFunc(0, r {
   ~ohm.setActiveGridBank(submixerBBank);
-  ~ohm.turnCrossfaderButtonCyan(0).yield;
+  (currentSubmixerBank = submixerBBank).yield;
 
   ~ohm.setActiveGridBank(submixerCBank);
-  ~ohm.turnCrossfaderButtonPurple(0).yield;
+  (currentSubmixerBank = submixerCBank).yield;
 
   ~ohm.setActiveGridBank(submixerABank);
-  ~ohm.turnCrossfaderButtonBlue(0).yield;
+  (currentSubmixerBank = submixerABank).yield;
 }.loop, page: page);
 
 

@@ -277,6 +277,15 @@ FalseSelf_Kick : IM_Module {
 
   //////// public functions:
 
+  free {
+    highPass.free;
+    eq.free;
+    highPassBus.free;
+    drums.free;
+    this.freeModule;
+    isLoaded = false;
+  }
+
   setHighPassCutoff { | cutoff = 20 |
     highPass.set(\cutoff, cutoff);
     highPassCutoff = cutoff;

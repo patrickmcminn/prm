@@ -93,7 +93,7 @@
       this.setNoteOffFunc(num, activePage.getNoteOffFunc(num));
       this.turnColor(num, activePage.getColor(num));
     });
-    activePage.stopActiveRightButtonsBankMonitorRoutines;
+    activePage.startActiveRightButtonsBankMonitorRoutines;
     this.prSetCurrentBanks;
   }
 

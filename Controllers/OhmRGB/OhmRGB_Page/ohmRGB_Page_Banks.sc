@@ -282,7 +282,7 @@
   }
 
   startActiveLeftButtonsBankMonitorRoutines {
-    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].stop; });
+    4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].reset.play; });
   }
   stopActiveLeftButtonsBankMonitorRoutines {
     4.do({ | index | leftButtonsBankArray[activeLeftButtonsBnk][index][4].stop; });

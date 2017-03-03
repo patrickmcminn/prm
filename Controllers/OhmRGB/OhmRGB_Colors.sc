@@ -14,38 +14,14 @@
     );
   }
 
-  turnOff { | num |
-    this.turnColor(num, \off);
-  }
-
-  turnRed { | num |
-    this.turnColor(num, \red);
-  }
-
-  turnGreen { | num |
-    this.turnColor(num, \green);
-  }
-
-  turnBlue { | num |
-    this.turnColor(num, \blue);
-  }
-
-  turnYellow { | num |
-    this.turnColor(num, \yellow);
-  }
-
-  turnMagenta { | num |
-    this.turnColor(num, \magenta);
-  }
-
-  turnCyan { | num |
-    this.turnColor(num, \cyan);
-  }
-
-  turnWhite { | num |
-    this.turnColor(num, \white);
-  }
-
+  turnOff { | num | this.turnColor(num, \off); }
+  turnRed { | num | this.turnColor(num, \red); }
+  turnGreen { | num |this.turnColor(num, \green); }
+  turnBlue { | num | this.turnColor(num, \blue); }
+  turnYellow { | num | this.turnColor(num, \yellow); }
+  turnMagenta { | num | this.turnColor(num, \magenta); }
+  turnCyan { | num | this.turnColor(num, \cyan); }
+  turnWhite { | num | this.turnColor(num, \white); }
   turnRandomColor { | num |
     var color;
     color = [\red, \green, \blue, \yellow, \magenta, \cyan, \white].choose;

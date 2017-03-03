@@ -1,6 +1,7 @@
 /*
 Tuesday, January 28th 2014
 prm
+updated 2017.3.2
 */
 
 OhmRGB {

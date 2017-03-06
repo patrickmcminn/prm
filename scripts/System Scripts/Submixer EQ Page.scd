@@ -22,9 +22,8 @@ var submixerBankResetFunc;
 ~ohm.makePage(page);
 ~ohm.addLeftKnobsBanks(9, page: page);
 
-~ohm.addPageLoadFunction({
-  ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
-}, page);
+~ohm.addPageLoadFunction(\eqGlobalMixer, { ~ohm.storageDict[\loadGlobalSubmixerFunc].value; }, page);
+
 
 //////////// Grid Functions:
 

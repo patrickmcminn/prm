@@ -103,9 +103,12 @@ var waveLossBank = 4;
   ~ohm.turnControlButtonGreen(3, 0);
   ~ohm.setControlButtonFunc(3, 0, { ~ohm.setPage('main') });
 
+  // Go Back a Page:
+  ~ohm.turnControlButtonCyan(2, 1);
+  ~ohm.setControlButtonFunc(2, 1, { ~ohm.setToPreviousPage; });
   // bring Base to Ohm:
-  ~ohm.turnControlButtonMagenta(2, 1);
-  ~ohm.setControlButtonFunc(2, 1, { try { ~base.setPage(~ohm.activePageKey); }}; );
+  ~ohm.turnControlButtonMagenta(1, 1);
+  ~ohm.setControlButtonFunc(1, 1, { try { ~base.setPage(~ohm.activePageKey); }}; );
 
   //// audio system mixer volumes:
 

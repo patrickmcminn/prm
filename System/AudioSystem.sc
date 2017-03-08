@@ -16,7 +16,7 @@ AudioSystem {
 
   var <submixerA, <submixerB, <submixerC;
 
-  var <modular, modularIn, <microphone, micIn;
+  var <modular, modularIn, <microphone, micIn, <moog, <moogIn;
 
   var <subtractive;
 
@@ -89,13 +89,13 @@ AudioSystem {
         procGroup, \addToHead);
       while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
 
-      /*
-      submixerA.mixer.setPreVol(12);
-      submixerB.mixer.setPreVol(12);
-      submixerC.mixer.setPreVol(12);
-      */
 
-      modular = IM_Mixer_1Ch.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus, nil, false, procGroup, \addToHead);
+      submixerA.mixer.setPreVol(6);
+      submixerB.mixer.setPreVol(6);
+      submixerC.mixer.setPreVol(6);
+
+      modular = IM_Mixer_1Ch.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus,
+        nil, false, procGroup, \addToHead);
       while( { try { modular.isLoaded } != true }, { 0.001.wait; });
       modularIn = IM_HardwareIn.new(2, modular.chanMono, procGroup, \addToHead);
       while({ try { modularIn.isLoaded } != true }, { 0.001.wait; });
@@ -105,6 +105,12 @@ AudioSystem {
       while({ try { microphone.isLoaded } != true }, { 0.001.wait; });
       micIn = IM_HardwareIn.new(1, microphone.chanMono(0), procGroup, \addToHead);
       while({ try { micIn.isLoaded } != true }, { 0.001.wait; });
+
+      moog = IM_Mixer_1Ch.new(this.submixA, reverb.inBus, granulator.inBus, modularSend.inBus, nil, false,
+        procGroup, \addToHead);
+      while({ try { moog.isLoaded } != true }, { 0.001.wait; });
+      moogIn = IM_HardwareIn.new(2, moog.chanMono(0), procGroup, \addToHead);
+      while({ try { moogIn.isLoaded } != true }, { 0.001.wait; });
 
       // modular + mic come in muted
       modular.setVol(-70);

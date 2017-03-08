@@ -13,6 +13,8 @@ device = "iConnectAudio4+";
 ohm = "HST1";
 base = "HST3";*/
 
+s.boot;
+
 r {
   ~prm = AudioSystem.new(2);
 

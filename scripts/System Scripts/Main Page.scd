@@ -117,17 +117,16 @@ var cortezIsLoaded = false;
   }
 }, page: page);
 
-// mic:
-~ohm.turnLeftButtonGreen(3, page: page);
-~ohm.setLeftButtonFunc(3, {
-  ~prm.microphone.tglMute;
-  if( ~prm.microphone.isMuted, { ~ohm.turnLeftButtonRed(3); }, { ~ohm.turnLeftButtonGreen(3); });
+//// mic:
+~ohm.setLeftButtonMonitorFunc(3, {
+  if( ~prm.microphone.isMuted, { ~ohm.turnLeftButtonRed(3); }, { ~ohm.turnLeftButtonGreen(3) });
 }, page: page);
-
+~ohm.setLeftButtonFunc(3, { ~prm.microphone.tglMute; }, page: page);
 ~ohm.setLeftSliderFunc(3, { | val |
   ~prm.microphone.setVol(val.ccdbfs(-70, 0));
 }, page: page);
 
+// sends:
 ~ohm.setLeftKnobFunc(3, 2, { | val |
   ~prm.microphone.setSendVol(0, val.ccdbfs(-70, 0));
 }, page: page);
@@ -138,24 +137,34 @@ var cortezIsLoaded = false;
   ~prm.microphone.setSendVol(2, val.ccdbfs(-70, 0));
 }, page: page);
 
-// modular:
-~ohm.turnLeftButtonGreen(2, page: page);
-~ohm.setLeftButtonFunc(2, {
-  ~prm.microphone.tglMute;
-  if( ~prm.microphone.isMuted, { ~ohm.turnLeftButtonRed(2) }, { ~ohm.turnLeftButtonGreen(2); });
+//// Moog:
+~ohm.setLeftButtonMonitorFunc(2, {
+  if( ~prm.moog.isMuted, { ~ohm.turnLeftButtonRed(2); }, { ~ohm.turnLeftButtonGreen(2) });
 }, page: page);
+~ohm.setLeftButtonFunc(2, { ~prm.moog.tglMute; }, page: page);
+~ohm.setLeftSliderFunc(2, { | val | ~prm.moog.setVol(val.ccdbfs(-70, 0)); }, page: page);
+// sends:
+~ohm.setLeftKnobFunc(2, 2, { | val | ~prm.moog.setSendVol(0, val.ccdbfs(-70, 0)); }, page: page);
+~ohm.setLeftKnobFunc(2, 1, { | val | ~prm.moog.setSendVol(1, val.ccdbfs(-70, 0)); }, page: page);
+~ohm.setLeftKnobFunc(2, 0, { | val | ~prm.moog.setSendVol(2, val.ccdbfs(-70, 0)); }, page: page);
 
-~ohm.setLeftSliderFunc(2, { | val |
+//// modular:
+~ohm.setLeftButtonMonitorFunc(1, {
+  if( ~prm.modular.isMuted, { ~ohm.turnLeftButtonRed(1); }, { ~ohm.turnLeftButtonGreen(1); })
+}, page: page);
+~ohm.setLeftButtonFunc(1, { ~prm.modular.tglMute; }, page: page);
+~ohm.setLeftSliderFunc(1, { | val |
   ~prm.modular.setVol(val.ccdbfs(-70, 0));
 }, page: page);
 
-~ohm.setLeftKnobFunc(2, 2, { | val |
+// sends:
+~ohm.setLeftKnobFunc(1, 2, { | val |
   ~prm.modular.setSendVol(0, val.ccdbfs(-70, 0));
 }, page: page);
-~ohm.setLeftKnobFunc(2, 1, { | val |
+~ohm.setLeftKnobFunc(1, 1, { | val |
   ~prm.modular.setSendVol(1, val.ccdbfs(-70, 0));
 }, page: page);
-~ohm.setLeftKnobFunc(2, 0, { | val |
+~ohm.setLeftKnobFunc(1, 0, { | val |
   ~prm.modular.setSendVol(2, val.ccdbfs(-70, 0));
 }, page: page);
 

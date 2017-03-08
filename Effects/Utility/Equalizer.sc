@@ -67,7 +67,7 @@ Equalizer : IM_Processor {
       peak2Freq = 1000, peak2RQ = 1, peak2Gain = 0,
       peak3Freq = 1500, peak3RQ = 1, peak3Gain = 0,
       highFreq = 2500, highRQ = 1, highGain = 0,
-      lowPassCutoff = 20000, lowPassRQ = 1.0,
+      lowPassCutoff = 20000, lowPassRQ = 3,
       inBus = 0, outBus = 0
       |
       var input, highPass, lowShelf, peak1, peak2, peak3, highShelf, lowPass, sig;
@@ -92,7 +92,7 @@ Equalizer : IM_Processor {
       peak2Freq = 1000, peak2RQ = 1, peak2Gain = 0,
       peak3Freq = 1500, peak3RQ = 1, peak3Gain = 0,
       highFreq = 2500, highRQ = 1, highGain = 0,
-      lowPassCutoff = 20000, lowPassRQ = 1.0,
+      lowPassCutoff = 20000, lowPassRQ = 3,
       inBus = 0, outBus = 0
       |
       var input, highPass, lowShelf, peak1, peak2, peak3, highShelf, lowPass, sig;
@@ -126,7 +126,7 @@ Equalizer : IM_Processor {
     highRQ = 1;
     highGain = 0;
     lowPassCutoff = 20000;
-    lowPassRQ = 1.0;
+    lowPassRQ = 3;
     highPassCutoff = 5;
     highPassRQ = 1;
   }

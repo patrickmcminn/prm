@@ -11,7 +11,6 @@ FeedbackSynth : IM_Module {
   var <sampler;
   var <attackTime, <decayTime, <sustainLevel, <releaseTime;
   var <filterCutoff;
-  var sequencerDict, sequencerClock, <tempo;
 
   *new { | outBus = 0, send0Bus = 0, send1Bus = 0, send2Bus = 0, send3Bus = 0, relGroup = nil, addAction = 'addToTail' |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -22,7 +21,6 @@ FeedbackSynth : IM_Module {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
-      sequencerDict = IdentityDictionary.new;
       path = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/FeedbackSynth/samples/feedbackSynthSample.wav";
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
       sampler = SamplePlayer.newStereo(mixer.chanStereo(0), path, relGroup: group, addAction: \addToHead);
@@ -43,7 +41,6 @@ FeedbackSynth : IM_Module {
 
   free {
     sampler.free;
-    sequencerDict.free;
     this.freeModule;
   }
 
@@ -83,44 +80,34 @@ FeedbackSynth : IM_Module {
 
   makeSequence { | name |
     fork {
-      sequencerDict[name] = IM_PatternSeq.new(name, group, \addToHead);
-      sequencerDict[name].stop;
+      sampler.makeSequence(name, 'sustaining');
       server.sync;
-      //sequencerDict[name].addKey(\instrument, \prm_Sampler_Stereo_OneShot);
-      sequencerDict[name].addKey(\instrument, \prm_SamplePlayer_Stereo_ADSR);
-      sequencerDict[name].addKey(\outBus, mixer.chanStereo(0));
-      //sequencerDict[name].addKey(\attackTime, Pfunc({ sampler.attackTime }));
-      //sequencerDict[name].addKey(\decayTime, Pfunc({ sampler.decayTime }));
-      //sequencerDict[name].addKey(\sustainLevel, Pfunc({ sampler.sustainLevel }));
-      //sequencerDict[name].addKey(\releaseTime, Pfunc({ sampler.releaseTime }));
-      //sequencerDict[name].addKey(\filterCutoff, Pfunc({ sampler.filterCutoff }));
-      sequencerDict[name].addKey(\amp, 1);
-      sequencerDict[name].addKey(\freq, 1);
-      sequencerDict[name].addKey(\rate, Pfunc( { (Pkey(\freq)/44.midicps) }));
+      sampler.addKey(name, \attackTime, attackTime);
+      sampler.addKey(name, \decayTime, decayTime);
+      sampler.addKey(name, \sustainLevel, sustainLevel);
+      sampler.addKey(name, \releaseTime, releaseTime);
+      sampler.addKey(name, \rate, Pkey(\freq)/44.midicps);
     };
   }
 
   addKey {  | name, key, action |
-    sequencerDict[name].addKey(key, action);
+    sampler.addKey(name, key, action);
   }
 
   playSequence { | name, clock = 'internal', quant = 'nil' |
-    var playClock;
-    if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
-    sequencerDict[name].play(playClock);
+    sampler.playSequence(name, clock, quant);
   }
 
-  resetSequence { | name | sequencerDict[name].reset; }
-  stopSequence { | name | sequencerDict[name].stop; }
-  pauseSequence { | name | sequencerDict[name].pause }
-  resumeSequence { | name | sequencerDict[name].resume; }
-  isSequencePlaying { | name | ^sequencerDict[name].isPlaying }
-  setSequenceQuant { | name, quant = 0 | sequencerDict[name].setQuant(quant) }
+
+  resetSequence { | name | sampler.resetSequence(name); }
+  stopSequence { | name | sampler.stopSequence(name); }
+  pauseSequence { | name | sampler.pauseSequence(name); }
+  resumeSequence { | name | sampler.resumeSequence(name); }
+  isSequencePlaying { | name |^sampler.isSequencePlaying }
+  setSequenceQuant { | name, quant = 0 | sampler.setSequenceQuant(name, quant); }
 
   setSequencerClockTempo { | bpm = 60 |
-    var bps = bpm/60;
-    tempo = bps;
-    sequencerClock.tempo = tempo;
+    sampler.setSequencerClockTempo(bpm);
   }
 
 

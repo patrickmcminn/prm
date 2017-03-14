@@ -38,11 +38,16 @@ FalseSelf_BassSection :IM_Module {
 
 
       server.sync;
+      satur.makeSequence('bassline');
+      server.sync;
 
+      this.prMakeSaturSynthPattern;
       this.prMakeMoogPattern;
       guitar.setFilterCutoff(238);
 
       server.sync;
+
+      mixer.setMasterVol(-9);
 
       isLoaded = true;
     }
@@ -54,6 +59,28 @@ FalseSelf_BassSection :IM_Module {
     feedback.free;
     satur.free;
     this.freeModule;
+  }
+
+  prMakeSaturSynthPattern {
+    {
+      var part1Note, part1Dur, part2Note, part2Dur, part3Note, part3Dur;
+
+      server.sync;
+
+      part1Note = Pseq([1], 1);
+      part1Dur = 56;
+      part2Note = Pseq([6, 5, 6, 5, 6, 8, 6, 13, 6, 5], 2);
+      part2Dur = Pseq([6, 8, 6, 6, 6, 8, 2, 2, 2, 6], 2);
+      part3Note = Pseq([1], 1);
+      part3Dur = 256;
+
+      satur.addKey(\bassline, \dur, Pseq([part2Dur, part3Dur], 1));
+      satur.addKey(\bassline, \note, Pseq([part2Note, part3Note], 1));
+      satur.addKey(\bassline, \octave, 3);
+      satur.addKey(\bassline, \legato, 1);
+      satur.addKey(\bassline, \releaseTime, 0.1);
+
+    }.fork;
   }
 
   prMakeMoogPattern {

@@ -114,6 +114,7 @@ AudioSystem {
 
       // modular + mic come in muted
       modular.setVol(-70);
+      moog.setVol(-70);
       microphone.setVol(-70);
 
       subtractive = Subtractive.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus, nil, procGroup,

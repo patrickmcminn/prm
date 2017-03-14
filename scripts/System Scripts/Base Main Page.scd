@@ -11,17 +11,24 @@ var submixASendBank = 1;
 var submixBSendBank = 2;
 var submixCSendBank = 3;
 
+var inputsBank = 4;
+var modularInputBank = 5;
+var moogInputBank = 6;
+var microphoneInputBank = 7;
+
 var gridLooperBank = 0;
 var gridSubmixSelectBank = 1;
 
 var controlButtonResetFunc;
 var activeBank = 0;
 
-var activeSubmixBank = submixASendBank;
+var activeSubmixBank = submixVolumeBank;
+var activeInputsBank = inputsBank;
 
-~base.addFadersBanks(3, page: page);
-~base.addTouchButtonsBanks(3, page: page);
-~base.addGridBanks(3, page: page);
+
+~base.addFadersBanks(7, page: page);
+~base.addTouchButtonsBanks(7, page: page);
+~base.addGridBanks(5, page: page);
 
 //////// control buttons:
 
@@ -51,6 +58,14 @@ var activeSubmixBank = submixASendBank;
   ~base.setActiveFadersBank(activeSubmixBank);
   ~base.setActiveTouchButtonsBank(activeSubmixBank);
   ~base.setActiveGridBank(gridSubmixSelectBank);
+}, page: page);
+
+// 3: main inputs Bank:
+~base.setControlButtonFunc(3, {
+  activeBank = 2;
+  ~base.setActiveFadersBank(activeInputsBank);
+  ~base.setActiveFadersBank(activeInputsBank);
+  ~base.setActiveGridBank(inputsBank);
 }, page: page);
 
 
@@ -141,6 +156,7 @@ var activeSubmixBank = submixASendBank;
   ~prm.granulator.mixer.setVol(val.ccdbfs(-140, 0));
 }, bank: submixVolumeBank, page: page);
 
+
 ////// Submix A Sends:
 ~base.setFaderMode(1, 'magentaFill', bank: submixASendBank, page: page);
 3.do({ | i | ~base.setFaderMode(i+2, 'blueFill', bank: submixASendBank, page: page);});
@@ -216,6 +232,160 @@ var activeSubmixBank = submixASendBank;
 }, bank: submixCSendBank, page: page);
 
 
+////////// Inputs:
+
+// mode:
+3.do({ | fader | ~base.setFaderMode(fader + 1, 'whiteFill', bank: inputsBank, page: page); });
+
+//// 1: Modular:
+// Fader:
+~base.setFaderMonitorFunc(1, { ~base.setFaderValue(1, ~prm.modular.vol.dbfsCC); },
+  bank: inputsBank, page: page);
+~base.setFaderFunc(1, { | val | ~prm.modular.setVol(val.ccdbfs); },
+  bank: inputsBank, page: page);
+// Button:
+~base.setTouchButtonMonitorFunc(1, {
+  if( ~prm.modular.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1); });
+}, bank: inputsBank, page: page);
+~base.setTouchButtonFunc(1, { ~prm.modular.tglMute; }, bank: inputsBank, page: page);
+
+//// 2: Moog:
+// Fader:
+~base.setFaderMonitorFunc(2, { ~base.setFaderValue(2, ~prm.moog.vol.dbfsCC); },
+  bank: inputsBank, page: page);
+~base.setFaderFunc(2, { | val | ~prm.moog.setVol(val.ccdbfs); },
+  bank: inputsBank, page: page);
+// Button:
+~base.setTouchButtonMonitorFunc(2, {
+  if( ~prm.moog.isMuted, { ~base.turnTouchButtonRed(2); }, { ~base.turnTouchButtonGreen(2); });
+}, bank: inputsBank, page: page);
+~base.setTouchButtonFunc(2, { ~prm.moog.tglMute;}, bank: inputsBank, page: page);
+
+//// 3: tpt pickup (microphone):
+// Fader:
+~base.setFaderMonitorFunc(3, { ~base.setFaderValue(3, ~prm.microphone.vol.dbfsCC); },
+  bank: inputsBank, page: page);
+~base.setFaderFunc(3, { | val | ~prm.microphone.setVol(val.ccdbfs); },
+  bank: inputsBank, page: page);
+// Button:
+~base.setTouchButtonMonitorFunc(3, {
+  if( ~prm.microphone.isMuted, { ~base.turnTouchButtonRed(3); }, { ~base.turnTouchButtonGreen(3); }); },
+  bank: inputsBank, page: page);
+~base.setTouchButtonFunc(3, { ~prm.microphone.tglMute; }, bank: inputsBank, page: page);
+
+/////// Modular Input:
+~base.setFaderMode(1, 'whiteFill', bank: modularInputBank, page: page);
+3.do({ | fader | ~base.setFaderMode(fader + 2, 'blueFill', bank: modularInputBank, page: page); });
+
+//// Send Pre/Post:
+~base.setTouchButtonMonitorFunc(2, {
+  if( ~prm.modular.preOrPost == 'post', { ~base.turnTouchButtonCyan(2); }, { ~base.turnTouchButtonWhite(2); });
+}, bank: modularInputBank, page: page);
+~base.setTouchButtonFunc(2, {
+  if( ~prm.modular.preOrPost == 'post', { ~prm.modular.setSendPre }, { ~prm.modular.setSendPost });
+}, bank: modularInputBank, page: page);
+
+//// Volume:
+// Fader:
+~base.setFaderMonitorFunc(1, { ~base.setFaderValue(1, ~prm.modular.vol.dbfsCC) }, bank: modularInputBank, page: page);
+~base.setFaderFunc(1, { | val | ~prm.modular.setVol(val.ccdbfs); }, bank: modularInputBank, page: page);
+// Button:
+~base.setTouchButtonMonitorFunc(1, {
+  if( ~prm.modular.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1); });
+}, bank: modularInputBank, page: page);
+~base.setTouchButtonFunc(1, { ~prm.modular.tglMute; }, bank: modularInputBank, page: page);
+
+//// Reverb Send:
+~base.setFaderMonitorFunc(2, { ~base.setFaderValue(2, ~prm.modular.sendVol(0).dbfsCC); },
+  bank: modularInputBank, page: page);
+~base.setFaderFunc(2, { | val | ~prm.modular.setSendVol(0, val.ccdbfs); }, bank: modularInputBank, page: page);
+
+//// Granulator Send:
+~base.setFaderMonitorFunc(3, { ~base.setFaderValue(3, ~prm.modular.sendVol(1).dbfsCC); },
+  bank: modularInputBank, page: page);
+~base.setFaderFunc(3, { | val | ~prm.modular.setSendVol(1, val.ccdbfs); }, bank: modularInputBank, page: page);
+
+//// Modular Send:
+~base.setFaderMonitorFunc(4, { ~base.setFaderValue(4, ~prm.modular.sendVol(2).dbfsCC); },
+  bank: modularInputBank, page: page);
+~base.setFaderFunc(4, { | val | ~prm.modular.setSendVol(2, val.ccdbfs); }, bank: modularInputBank, page: page);
+
+
+/////// Moog Input:
+~base.setFaderMode(1, 'whiteFill', bank: moogInputBank, page: page);
+3.do({ | fader | ~base.setFaderMode(fader + 2, 'blueFill', bank: moogInputBank, page: page); });
+
+//// Send Pre/Post:
+~base.setTouchButtonMonitorFunc(2, {
+  if(~prm.moog.preOrPost == 'post', { ~base.turnTouchButtonCyan(2); }, { ~base.turnTouchButtonWhite(2); });
+}, bank: moogInputBank, page: page);
+~base.setTouchButtonFunc(2, {
+  if( ~prm.moog.preOrPost == 'post', { ~prm.moog.setSendPre }, { ~prm.moog.setSendPost; });
+}, bank: moogInputBank, page: page);
+
+//// Volume:
+// Fader:
+~base.setFaderMonitorFunc(1, { ~base.setFaderValue(1, ~prm.moog.vol.dbfsCC); }, bank: moogInputBank, page: page);
+~base.setFaderFunc(1, { | val | ~prm.moog.setVol(val.ccdbfs); }, bank: moogInputBank, page: page);
+// Button:
+~base.setTouchButtonMonitorFunc(1, {
+  if( ~prm.moog.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1); });
+}, bank: moogInputBank, page: page);
+~base.setTouchButtonFunc(1, { ~prm.moog.tglMute; }, bank: moogInputBank, page: page);
+
+//// Reverb Send:
+~base.setFaderMonitorFunc(2, { ~base.setFaderValue(2, ~prm.moog.sendVol(0).dbfsCC); },
+  bank: moogInputBank, page: page);
+~base.setFaderFunc(2, { | val | ~prm.moog.setSendVol(0, val.ccdbfs); }, bank: moogInputBank, page: page);
+
+//// Granulator Send:
+~base.setFaderMonitorFunc(3, { ~base.setFaderValue(3, ~prm.moog.sendVol(1).dbfsCC); },
+  bank: moogInputBank, page: page);
+~base.setFaderFunc(3, { | val | ~prm.moog.setSendVol(1, val.ccdbfs); }, bank: moogInputBank, page: page);
+
+//// Modular Send:
+~base.setFaderMonitorFunc(4, { ~base.setFaderValue(4, ~prm.moog.sendVol(2).dbfsCC); },
+  bank: moogInputBank, page: page);
+~base.setFaderFunc(4, { | val | ~prm.moog.setSendVol(2, val.ccdbfs); }, bank: moogInputBank, page: page);
+
+
+////// Microphone Input:
+~base.setFaderMode(1, 'whiteFill', bank: microphoneInputBank, page: page);
+3.do({ | fader | ~base.setFaderMode(fader + 2, 'blueFill', bank: microphoneInputBank, page: page); });
+
+//// Send Pre/Post:
+~base.setTouchButtonMonitorFunc(2, {
+  if( ~prm.microphone.preOrPost == 'post', { ~base.turnTouchButtonCyan(2); }, { ~base.turnTouchButtonWhite(2); });
+}, bank: microphoneInputBank, page: page);
+~base.setTouchButtonFunc(2, {
+  if( ~prm.microphone.preOrPost == 'post', { ~prm.microphone.setSendPre; }, { ~prm.microphone.setSendPost; });
+}, bank: microphoneInputBank, page: page);
+
+//// Volume:
+
+// Fader:
+~base.setFaderMonitorFunc(1, { ~base.setFaderValue(1, ~prm.microphone.vol.dbfsCC)},
+  bank: microphoneInputBank, page: page);
+~base.setFaderFunc(1, { | val | ~prm.microphone.setVol(val.ccdbfs); }, bank: microphoneInputBank, page: page);
+//Button:
+~base.setTouchButtonMonitorFunc(1, {
+  if( ~prm.microphone.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1); }); },
+  bank: microphoneInputBank, page: page);
+~base.setTouchButtonFunc(1, { ~prm.microphone.tglMute }, bank: microphoneInputBank, page: page);
+
+//// Reverb Send:
+~base.setFaderMonitorFunc(2, { ~base.setFaderValue(2, ~prm.microphone.sendVol(0).dbfsCC); },
+  bank: microphoneInputBank, page: page);
+~base.setFaderFunc(2, { | val | ~prm.microphone.setSendVol(0, val.ccdbfs); }, bank: microphoneInputBank, page: page);
+//// Granulator Send:
+~base.setFaderMonitorFunc(3, { ~base.setFaderValue(3, ~prm.microphone.sendVol(1).dbfsCC); },
+  bank: microphoneInputBank, page: page);
+~base.setFaderFunc(3, { | val | ~prm.microphone.setSendVol(1, val.ccdbfs); },
+  bank: microphoneInputBank, page: page);
+//// Modular Send:
+~base.setFaderMonitorFunc(4, { ~base.setFaderValue(4, ~prm.microphone.sendVol(2).dbfsCC); },
+  bank: microphoneInputBank, page: page);
+~base.setFaderFunc(4, { | val | ~prm.microphone.setSendVol(2, val.ccdbfs); }, bank: microphoneInputBank, page: page);
 
 
 //////// main grid:
@@ -399,6 +569,48 @@ var activeSubmixBank = submixASendBank;
 // Reset:
 ~base.turnGridRed(2, 2, bank: gridSubmixSelectBank, page: page);
 ~base.setGridFunc(2, 2, { ~prm.submixerC.clearLoop(30); }, bank: gridSubmixSelectBank, page: page);
+
+
+////// Inputs Bank:
+
+~base.turnAllGridCyan(inputsBank, page);
+~base.setGridMonitorFunc(0, 3, {
+  ~base.turnGridYellow(0, 3);
+  ~base.turnGridMagenta(1, 3);
+  ~base.turnGridWhite(2, 3);
+  ~base.turnGridBlue(3, 3);
+  ~base.turnGridGreen(activeInputsBank - 4, 3);
+}, bank: inputsBank, page: page);
+
+// Regular Inputs:
+~base.setGridFunc(0, 3, {
+  activeInputsBank = inputsBank;
+  ~base.setActiveFadersBank(activeInputsBank);
+  ~base.setActiveTouchButtonsBank(activeInputsBank);
+}, bank: inputsBank, page: page);
+
+// Modular Input:
+~base.setGridFunc(1, 3, {
+  activeInputsBank = modularInputBank;
+  ~base.setActiveFadersBank(activeInputsBank);
+  ~base.setActiveTouchButtonsBank(activeInputsBank);
+}, bank: inputsBank, page: page);
+
+// Moog Input:
+~base.setGridFunc(2, 3, {
+  activeInputsBank = moogInputBank;
+  ~base.setActiveFadersBank(activeInputsBank);
+  ~base.setActiveTouchButtonsBank(activeInputsBank);
+}, bank: inputsBank, page: page);
+
+// Microphone Input:
+~base.setGridFunc(3, 3, {
+  activeInputsBank = microphoneInputBank;
+  ~base.setActiveFadersBank(activeInputsBank);
+  ~base.setActiveTouchButtonsBank(activeInputsBank);
+}, bank: inputsBank, page: page);
+
+
 
 
 

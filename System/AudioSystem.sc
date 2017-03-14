@@ -22,20 +22,24 @@ AudioSystem {
 
   var <songBook;
 
+  var <server;
+
   *new { | numOutputs = 2 |
     ^super.new.prInit(numOutputs);
   }
 
   prInit { |numOutputs|
-    var server = Server.default;
+    server = Server.default;
 
     this.prSetServerOptions(server, 64, 131072, 512, nil);
 
     server.waitForBoot {
       var masterOutArray;
-      var tempTime = SystemClock.seconds;
+      //var tempTime = SystemClock.seconds;
 
       isLoaded = false;
+
+      server.sync;
 
       hardwareOut = IM_HardwareOut(numOutputs);
       procGroup = Group(server, \addToHead);
@@ -44,7 +48,7 @@ AudioSystem {
 
       // Fix input checking: a numOutputs of 1 will result 0.5 passed to Array.fill
       masterOutArray = Array.fill(numOutputs / 2, { |index| index * 2 });
-      systemMixer = IM_MasterMixer.new(masterOutArray, systemGroup);
+      systemMixer = IM_MasterMixer.new([0, 1], systemGroup);
       // while( { try { systemMixer.inBus(0) } == nil }, { 0.001.wait });
       server.sync;
       while ( { try { systemMixer.isLoaded} != true }, { 0.001.wait } );
@@ -52,6 +56,7 @@ AudioSystem {
       irLibrary = IM_IRLibrary.new("~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses");
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
+
 
       // send out to modular system
       modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
@@ -70,14 +75,14 @@ AudioSystem {
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
+
+
       //reverb.setMix(1);
-      /*
+
       reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.4Cathedral'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
-      */
-
 
       submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);

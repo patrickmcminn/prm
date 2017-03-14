@@ -71,8 +71,10 @@
       {
         var num = ((row * 8) + column) + 36;
         if( page == 'active', { page = activePageKey });
+        if( page == activePageKey, { if(
+          color != activePage.getButtonColor(num),
+          { this.turnButtonColor(num, color); }); });
         pageDict[page].turnGridColor(column, row, color, bank);
-        if( page == activePageKey, { this.turnButtonColor(num, activePage.getButtonColor(num)); });
       }
     );
   }
@@ -83,8 +85,11 @@
         var num = (button - 1) + switch(led, { 'left' }, { 0 }, { 'right' }, { 8 });
         var midinum = num + 18;
         if( page == 'active', { page = activePageKey });
+        if( page == activePageKey, { if(
+          color != activePage.getButtonColor(midinum),
+          { this.turnButtonColor(midinum, color); });
+        });
         pageDict[page].turnControlButtonColor(button, led, color, bank);
-        if( page == activePageKey, { this.turnButtonColor(midinum, activePage.getButtonColor(midinum)); });
       }
     );
   }
@@ -94,8 +99,11 @@
       {
         var num = (button-1) + switch(led, { 'middle' }, { 10 }, { 'top' }, { 68 });
         if( page == 'active', { page = activePageKey });
+        if( page == activePageKey, { if(
+          color != activePage.getButtonColor(num),
+          { this.turnButtonColor(num, color); });
+        });
         pageDict[page].turnTouchButtonColor((button-1), led, color, bank);
-        if( page == activePageKey, { this.turnButtonColor(num, activePage.getButtonColor(num)); });
       }
     );
   }
@@ -104,8 +112,11 @@
     if(fader > 9, { "Out of Range".postln; },
       {
         if( page == 'active', { page = activePageKey });
+        if( page == activePageKey, { if(
+          value != activePage.faderValueArray[fader-1],
+          { this.prSetFaderValue(fader, value); });
+        });
         pageDict[page].setFaderValue(fader, value, bank);
-        if( page == activePageKey, { this.prSetFaderValue(fader, activePage.faderValueArray[fader-1]); });
       }
     );
   }
@@ -114,8 +125,11 @@
     if(fader > 9, { "Out of Range".postln; },
       {
         if( page == 'active', { page = activePageKey });
+        if( page == activePageKey, { if(
+          mode != activePage.faderModeArray[fader-1],
+          { this.prSetFaderMode(fader + 9, mode); });
+        });
         pageDict[page].setFaderMode(fader, mode, bank);
-        if( page == activePageKey, { this.prSetFaderMode(fader + 9, activePage.faderModeArray[fader-1]); });
       }
     );
   }

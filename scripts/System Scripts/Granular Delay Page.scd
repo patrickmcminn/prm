@@ -15,6 +15,7 @@ var grainEnvResetFunc, grainRateResetFunc, delayFilterResetFunc;
 ~ohm.makePage(page);
 ~ohm.addLeftKnobsBanks(1);
 
+~ohm.addPageLoadFunction(\delayPageGlobalMixer, { ~ohm.storageDict[\loadGlobalSubmixerFunc].value; }, page);
 
 
 //////// Left Knobs:

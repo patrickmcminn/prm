@@ -14,6 +14,7 @@ Mother32 : IM_Module {
   var <hardwareIn;
   var midiOutPort;
   var <midiChannel;
+  var <sequencerDict, <sequencerClock, <tempo, <beats;
 
   *new { | hardwareInBus = 0, outBus = 0, deviceName = nil, portName = nil, midiChan = 1, assignableCC = 1,
     send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, relGroup = nil, addAction = 'addToHead' |
@@ -36,7 +37,11 @@ Mother32 : IM_Module {
       hardwareIn = IM_HardwareIn.new(hardwareInBus, mixer.chanMono(0), group, \addToHead);
       while({ try { hardwareIn.isLoaded } != true }, { 0.001.wait; });
 
+      sequencerDict = IdentityDictionary.new;
+      sequencerClock = TempoClock.new;
+
       isLoaded = true;
+      midiOutPort.postln;
     }
   }
 
@@ -61,4 +66,41 @@ Mother32 : IM_Module {
   releaseNote { | freq = 220 |
     midiOutPort.noteOff(midiChannel, freq.cpsmidi);
   }
+
+  makeSequence { | name |
+    {
+      sequencerDict[name] = IM_PatternSeq.new(name, group, \addToHead);
+      sequencerDict[name].stop;
+      server.sync;
+      sequencerDict[name].addKey(\type, \midi);
+      sequencerDict[name].addKey(\midicmd, \noteOn);
+      sequencerDict[name].addKey(\midiout, midiOutPort);
+      sequencerDict[name].addKey(\chan, midiChannel);
+    }.fork;
+  }
+
+  addKey {  | name, key, action |
+    sequencerDict[name].addKey(key, action);
+  }
+
+  playSequence { | name, clock = 'internal', quant = 'nil' |
+    var playClock;
+    if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
+    sequencerDict[name].play(playClock);
+  }
+
+  resetSequence { | name | sequencerDict[name].reset; }
+  stopSequence { | name | sequencerDict[name].stop; }
+  pauseSequence { | name | sequencerDict[name].pause }
+  resumeSequence { | name | sequencerDict[name].resume; }
+  isSequencePlaying { | name | ^sequencerDict[name].isPlaying }
+  setSequenceQuant { | name, quant = 0 | sequencerDict[name].setQuant(quant) }
+
+  setSequencerClockTempo { | bpm = 60 |
+    var bps = bpm/60;
+    tempo = bps;
+    sequencerClock.tempo = tempo;
+  }
+
+
 }

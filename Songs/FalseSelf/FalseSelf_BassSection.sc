@@ -42,23 +42,42 @@ FalseSelf_BassSection :IM_Module {
       moog.makeSequence('chorus');
       moog.makeSequence('postChorus');
 
+
+      server.sync;
+
       satur.makeSequence('preChorus');
       satur.makeSequence('chorus');
       satur.makeSequence('postChorus');
       satur.makeSequence('end');
 
+      server.sync;
+
       feedback.makeSequence('preChorus');
+      feedback.makeSequence('preChorusOctave');
+      feedback.makeSequence('preChorusSecondOctave');
+
       feedback.makeSequence('chorus');
-      feedback.makeSequence('postChorus');
-      feedback.makeSequence('preEnd');
+      feedback.makeSequence('chorusOctave');
+      feedback.makeSequence('chorusSecondOctave');
+
+      //feedback.makeSequence('postChorus');
+      //feedback.makeSequence('preEnd');
       feedback.makeSequence('end');
+      feedback.makeSequence('endOctave');
 
       server.sync;
 
-      this.prMakeFeedbackSynthPatterns;
+      guitar.makeSequence('chorus');
+
+      server.sync;
+
+      this.prMakeGuitarPatterns;
       this.prMakeSaturSynthPatterns;
       this.prMakeMoogPatterns;
-      guitar.setFilterCutoff(238);
+      this.prMakeFeedbackSynthPatterns;
+
+      guitar.setFilterCutoff(1200);
+      feedback.setFilterCutoff(30);
 
       server.sync;
 
@@ -73,49 +92,93 @@ FalseSelf_BassSection :IM_Module {
     guitar.free;
     feedback.free;
     satur.free;
+    moog.free;
     this.freeModule;
   }
 
+  prMakeGuitarPatterns {
+    var note, dur;
+    note = Pseq([[6, 18], [5, 17], [6, 18], [5, 17], [6, 18], [8, 20], [6, 18], [13, 25], [6, 18],  [5, 17]], 2);
+    dur = Pseq([6, 8, 6, 6, 6, 8, 2, 2, 2, 6], 2);
+
+    guitar.addKey(\chorus, \octave, 3);
+    guitar.addKey(\chorus, \legato, 1);
+    guitar.addKey(\chorus, \note, note);
+    guitar.addKey(\chorus, \dur, dur);
+
+  }
+
   prMakeFeedbackSynthPatterns {
-    var chorus1Note, chorus2Note, chorusDur;
+    var chorusNote, chorusDur;
     var endDur, endNote;
 
-    chorus1Note = Pseq([[6, 18], [5, 17], [6, 18], [5, 17], [6, 18], [8, 20], [6, 18], [13, 25], [6, 18],  [5, 17]], 1);
-    chorus2Note = Pseq(
-      [
-        [6, 18, 30], [5, 17, 29], [6, 18, 30], [5, 17, 29], [6, 18, 30], [8, 20, 32], [6, 18, 30], [13, 25, 37],
-        [6, 18, 30],  [5, 17, 29]
-    ], 1);
+    chorusNote = Pseq([6, 5, 6, 5, 6, 8, 6, 13, 6, 5], 2);
     chorusDur = Pseq([6, 8, 6, 6, 6, 8, 2, 2, 2, 6], 2);
 
     endDur = Pseq([8, 8, 6, 10, 8, 8, 6, 6, 8, 6, 8], 1);
     endNote = Pseq([1, 0, 1, -4, -3, 1, -3, -4, -6, -8, -13], 1);
 
-    feedback.addKey(\preChorus, \dur, 56);
+
+    feedback.addKey(\preChorus, \dur, Pseq([56], 1));
     feedback.addKey(\preChorus, \octave, 3);
     feedback.addKey(\preChorus, \legato, 1);
-    feedback.addKey(\preChorus, \note, Pseq([[1, 13, 25]], 1));
+    feedback.addKey(\preChorus, \note, 1);
+
+    feedback.addKey(\preChorusOctave, \dur, Pseq([56], 1));
+    feedback.addKey(\preChorusOctave, \octave, 3);
+    feedback.addKey(\preChorusOctave, \legato, 1);
+    feedback.addKey(\preChorusOctave, \note, 13);
+
+    feedback.addKey(\preChorusSecondOctave, \dur, Pseq([56], 1));
+    feedback.addKey(\preChorusSecondOctave, \octave, 3);
+    feedback.addKey(\preChorusSecondOctave, \legato, 1);
+    feedback.addKey(\preChorusSecondOctave, \note, 25);
 
     feedback.addKey(\chorus, \octave, 3);
     feedback.addKey(\chorus, \legato, 1);
     feedback.addKey(\chorus, \releaseTime, 0.1);
     feedback.addKey(\chorus, \dur, chorusDur);
-    feedback.addKey(\chorus, \note, Pseq([chorus1Note, chorus2Note], 1));
+    feedback.addKey(\chorus, \note, chorusNote);
+    feedback.addKey(\chorus, \filterCutoff, 5720);
+    feedback.addKey(\chorusOctave, \octave, 4);
+    feedback.addKey(\chorusOctave, \legato, 1);
+    feedback.addKey(\chorusOctave, \releaseTime, 0.1);
+    feedback.addKey(\chorusOctave, \dur, chorusDur);
+    feedback.addKey(\chorusOctave, \note, chorusNote);
+    feedback.addKey(\chorusOctave, \filterCutoff, 5720);
+    feedback.addKey(\chorusSecondOctave, \octave, 5);
+    feedback.addKey(\chorusSecondOctave, \legato, 1);
+    feedback.addKey(\chorusSecondOctave, \releaseTime, 0.1);
+    feedback.addKey(\chorusSecondOctave, \dur, chorusDur);
+    feedback.addKey(\chorusSecondOctave, \note, Pseq([Pseq([\r], 10), chorusNote], 1));
+    feedback.addKey(\chorusSecondOctave, \filterCutoff, 5720);
+    feedback.addKey(\chorusSecondOctave, \amp, 0.5);
 
+    /*
     feedback.addKey(\postChorus, \octave, 3);
     feedback.addKey(\postChorus, \legato, 1);
     feedback.addKey(\postChorus, \note, Pseq([[1, 13, 20]], inf));
     feedback.addKey(\postChorus, \dur, Pseq([4], inf));
+    */
 
+    /*
     feedback.addKey(\preEnd, \octave, 4);
     feedback.addKey(\preEnd, \legato, 1);
     feedback.addKey(\preEnd, \dur, 8);
     feedback.addKey(\preEnd, \note, Pseq([[1, 13]], 1));
+    */
 
-    feedback.addKey(\end, \octave, [4, 5]);
+    feedback.addKey(\end, \octave, 4);
     feedback.addKey(\end, \legato, 1);
     feedback.addKey(\end, \dur, endDur);
     feedback.addKey(\end, \note, endNote);
+    feedback.addKey(\end, \filterCutoff, 500);
+    feedback.addKey(\endOctave, \octave, 5);
+    feedback.addKey(\endOctave, \legato, 1);
+    feedback.addKey(\endOctave, \dur, endDur);
+    feedback.addKey(\endOctave, \note, endNote);
+    feedback.addKey(\endOctave, \filterCutoff, 950);
+
   }
 
   prMakeSaturSynthPatterns {
@@ -149,12 +212,14 @@ FalseSelf_BassSection :IM_Module {
     satur.addKey(\postChorus, \legato, 1);
     satur.addKey(\postChorus, \note, Pseq([[1, 13, 20]], inf));
     satur.addKey(\postChorus, \dur, Pseq([4], inf));
+    satur.addKey(\postChorus, \releaseTime, 0.5);
+    satur.addKey(\postChorus, \attackTime, 0.25);
 
 
-    feedback.addKey(\end, \octave, [4, 5, 6]);
-    feedback.addKey(\end, \legato, 1);
-    feedback.addKey(\end, \dur, endDur);
-    feedback.addKey(\end, \note, endNote);
+    satur.addKey(\end, \octave, [3, 4, 5]);
+    satur.addKey(\end, \legato, 1);
+    satur.addKey(\end, \dur, endDur);
+    satur.addKey(\end, \note, endNote);
   }
 
   prMakeMoogPatterns {
@@ -178,6 +243,7 @@ FalseSelf_BassSection :IM_Module {
     moog.addKey(\postChorus, \dur, Pseq([4], inf));
     moog.addKey(\postChorus, \note, Pseq([1], inf));
   }
+
 
   playBassNote { | freq, saturVol = -6, feedbackVol = -6, guitarVol = -6 |
     satur.playNote(freq, saturVol);

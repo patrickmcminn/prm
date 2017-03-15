@@ -76,6 +76,11 @@ FeedbackSynth : IM_Module {
     sampler.setFilterCutoff(cutoff);
   }
 
+  sweepFilter { | startFreq = 1000, endFreq = 100, time =  1 |
+    sampler.sweepFilter(startFreq, endFreq, time);
+    filterCutoff = endFreq;
+  }
+
   //////// sequencer:
 
   makeSequence { | name |
@@ -109,6 +114,4 @@ FeedbackSynth : IM_Module {
   setSequencerClockTempo { | bpm = 60 |
     sampler.setSequencerClockTempo(bpm);
   }
-
-
 }

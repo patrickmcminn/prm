@@ -31,6 +31,7 @@ MicroCluster : IM_Processor {
       server.sync;
       this.prMakeSynths(numPitchShifts);
       server.sync;
+      isLoaded = true;
     }
   }
 

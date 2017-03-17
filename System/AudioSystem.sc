@@ -76,13 +76,7 @@ AudioSystem {
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
 
-
       //reverb.setMix(1);
-
-      reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.4Cathedral'],
-        relGroup: systemGroup, addAction: \addToHead);
-      server.sync;
-      while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);

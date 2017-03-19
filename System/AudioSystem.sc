@@ -108,7 +108,7 @@ AudioSystem {
       moog = IM_Mixer_1Ch.new(this.submixA, reverb.inBus, granulator.inBus, modularSend.inBus, nil, false,
         procGroup, \addToHead);
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
-      moogIn = IM_HardwareIn.new(2, moog.chanMono(0), procGroup, \addToHead);
+      moogIn = IM_HardwareIn.new(3, moog.chanMono(0), procGroup, \addToHead);
       while({ try { moogIn.isLoaded } != true }, { 0.001.wait; });
 
       // modular + mic come in muted

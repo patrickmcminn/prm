@@ -9,6 +9,7 @@ Habit_TrumpetLoopers :IM_Processor {
   var <isLoaded;
   var server;
   var <looper1, <looper2, <looper3, <looper4;
+  var splitter;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, 4, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -35,12 +36,26 @@ Habit_TrumpetLoopers :IM_Processor {
 
       server.sync;
 
+      splitter = Splitter.newMono(4,
+        [looper1.inBus, looper2.inBus, looper3.inBus, looper4.inBus],
+        relGroup: group, addAction: \addToHead);
+      while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
+
       isLoaded = true;
 
     }
   }
 
+  inBus { ^splitter.inBus }
 
-
-
+  free {
+    splitter.free;
+    looper1.free;
+    looper2.free;
+    looper3.free;
+    looper4.free;
+    splitter.free;
+    this.freeProcessor;
+    isLoaded = false;
+  }
 }

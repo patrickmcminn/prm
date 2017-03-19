@@ -40,8 +40,10 @@ Mother32 : IM_Module {
       sequencerDict = IdentityDictionary.new;
       sequencerClock = TempoClock.new;
 
+      server.sync;
+
       isLoaded = true;
-      midiOutPort.postln;
+      //midiOutPort.postln;
     }
   }
 

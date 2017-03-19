@@ -128,3 +128,13 @@ y = { Out.ar(~prm.submixC, [SoundIn.ar(2), SoundIn.ar(2)]); }.play;
 ~prm.modular.setSendVol(0, -15);
 ~prm.modular.setSendVol(1, -3);
 
+
+~moog.playSequence1;
+
+~moog.playSequence2;
+
+~moog.playSectionEnd
+~moog.playPieceEnd;
+
+
+

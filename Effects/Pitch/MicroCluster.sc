@@ -12,7 +12,7 @@ MicroCluster : IM_Processor {
 
   *new {
     |
-    outBus = 0, amp = 1, numPitchShifts = 12,
+    outBus = 0, numPitchShifts = 12,
     send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, feedback = false,
     relGroup = nil, addAction = 'addToHead'
     |
@@ -31,6 +31,7 @@ MicroCluster : IM_Processor {
       server.sync;
       this.prMakeSynths(numPitchShifts);
       server.sync;
+      while({ try { pitchShiftArray[numPitchShifts-1] } == nil }, { 0.001.wait; });
       isLoaded = true;
     }
   }
@@ -79,9 +80,9 @@ MicroCluster : IM_Processor {
   prMakeSynths { | numPitchShifts = 12 |
     pitchShiftArray = Array.fill(numPitchShifts, {
       Synth(\PRM_triggerShifter, [\inBus, inBus, \outBus, mixer.chanStereo(1), \trigBus, trigBus,
-        \amp, 1/(numPitchShifts), \pan, rrand(-1, 1)], group, \addToHead);
+        \amp, 0.5, \pan, rrand(-1, 1)], group, \addToHead);
     });
-    drySynth = Synth(\PRM_dryOutput, [\inBus, inBus, \outBus, mixer.chanMono(0)], group, \addToTail);
+    drySynth = Synth(\PRM_dryOutput, [\inBus, inBus, \outBus, mixer.chanMono(0)], group, \addToHead);
     triggerSynth = Synth(\PRM_externalImpulse, [\outBus, trigBus], group, \addToHead);
   }
 

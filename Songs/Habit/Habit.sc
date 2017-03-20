@@ -30,19 +30,21 @@ Habit : Song {
       clock = TempoClock.new(1);
       server.sync;
 
-      delay = SimpleDelay.newStereo(mixerC.chanStereo(0), 2, 0.83, 5, send0Bus, send1Bus, send2Bus, send3Bus,
+      delay = SimpleDelay.newStereo(mixerC.chanMono(0), 2, 0.6, 5, send0Bus, send1Bus, send2Bus, send3Bus,
         relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       modular = IM_Mixer_1Ch.new(mixerB.chanStereo(0), send0Bus, send1Bus, send2Bus, delay.inBus, false,
         group, 'addToHead');
       while({ try { modular.isLoaded } != true }, { 0.001.wait; });
-      modularInput = IM_HardwareIn.new(modularIn, modular.inBus, group, \addToHead);
+      modularInput = IM_HardwareIn.new(modularIn, modular.chanMono, group, \addToHead);
       while({ try { modularInput.isLoaded} != true }, { 0.001.wait; });
+
 
       moog = Habit_Moog.new(moogIn, mixerB.chanStereo(1), send0Bus, send1Bus, send2Bus, delay.inBus,
         group, \addToHead, moogDeviceName, moogPortName);
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
+
 
       trumpet = Habit_LiveTrumpet.new(mixerA.chanStereo(0), send0Bus, send1Bus, send2Bus, delay.inBus,
         group, \addToHead);
@@ -58,10 +60,11 @@ Habit : Song {
 
       server.sync;
 
-      delay.mixer.setSendVol(0, -6);
+      delay.mixer.setSendVol(0, -12);
 
       modular.setSendVol(0, -13);
       modular.setSendVol(3, -23.5);
+
 
       moog.mixer.setSendVol(0, -14.6);
       moog.mixer.setSendVol(3, -25.3);
@@ -77,10 +80,10 @@ Habit : Song {
       trumpetLoopers.mixer.setSendVol(3, 0);
       trumpetLoopers.mixer.setSendVol(2, -inf);
 
-      modular.mixer.setVol(-6);
+      modular.setVol(-6);
       moog.mixer.setVol(-6);
       trumpet.mixer.setVol(-6);
-      trumpetLoopers.mixer.setVol(-9);
+      trumpetLoopers.mixer.setMasterVol(-9);
 
       server.sync;
 
@@ -101,6 +104,11 @@ Habit : Song {
     delay.free;
     clock.free;
     this.freeSong;
+  }
+
+  setClockTempo { | tempo = 60 |
+    var bps = tempo/60
+    clock.tempo = bps;
   }
 
 

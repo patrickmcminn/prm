@@ -137,4 +137,51 @@ y = { Out.ar(~prm.submixC, [SoundIn.ar(2), SoundIn.ar(2)]); }.play;
 ~moog.playPieceEnd;
 
 
+~habit = Habit.new(1, 2, 3, "iConnectAudio4+", "DIN",
+  ~prm.submixA, ~prm.submixB, ~prm.submixC,
+  ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+  relGroup: ~prm.procGroup, addAction: \addToHead);
+
+~habit.trumpet.mixer.tglMute;
+~habit.trumpet.mixer.setSendVol(2, 0);
+
+~habit.modular.tglMute;
+~habit.moog;
+
+~habit.mixerB.chanMono(0);
+
+~habit.delay.mixer.tglMute;
+
+~habit.moog.playSequence1(~habit.clock);
+~habit.moog.playSectionEndLoop(~habit.clock);
+~habit.moog.playSectionEnd(~habit.clock);
+~habit.moog.playPieceEnd(~habit.clock);
+
+~habit.clock.tempo = 2;
+
+~habit.moog.stopAllSequences;
+
+IM_Mixer_1Ch
+s.meter
+
+
+z = IM_HardwareIn.new(2, ~habit.mixerB.chanMono(0));
+
+~habit.mixerB.setSendVol(0, 0, -6);
+z.free;
+
+~habit.modular.setSendVol(1, 0);
+~habit.moog.mixer.setSendVol(1, -6);
+~prm.granulator.setGrainEnvelope('rexpodec');
+~prm.granulator.setGrainDur(0.01, 0.5);
+~prm.granulator.setSync(0);
+
+
+~habit.moog.mixer.setSendVol(0, -9);
+~habit.modular.setSendVol(0, -9);
+
+~habit.moog.mixer.setVol(-9);
+
+
+
 

@@ -28,7 +28,7 @@ Habit_LiveTrumpet : IM_Processor {
       server.sync;
 
       eq.setHighPassCutoff(200);
-      eq.setLowPassCutoff(3500);
+      eq.setLowPassCutoff(5500);
 
       server.sync;
 

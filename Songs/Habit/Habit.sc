@@ -30,7 +30,7 @@ Habit : Song {
       clock = TempoClock.new(1);
       server.sync;
 
-      delay = SimpleDelay.newStereo(mixerC.chanMono(0), 2, 0.6, 5, send0Bus, send1Bus, send2Bus, send3Bus,
+      delay = SimpleDelay.newStereo(mixerC.chanStereo(0), 2, 0.6, 5, send0Bus, send1Bus, send2Bus, send3Bus,
         relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
@@ -107,7 +107,7 @@ Habit : Song {
   }
 
   setClockTempo { | tempo = 60 |
-    var bps = tempo/60
+    var bps = tempo/60;
     clock.tempo = bps;
   }
 

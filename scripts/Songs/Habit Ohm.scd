@@ -100,7 +100,7 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
   bank: mainMixBank, page: page);
 ~ohm.setLeftButtonFunc(3, { ~habit.trumpetLoopers.mixer.tglMute; }, bank: mainMixBank, page: page);
 //// Volume:
-~ohm.setLeftSliderFunc(3, { | val | ~habit.trumpetLoopers.mixer.setMasterVol(val.ccdbfs(-70, 0)); },
+~ohm.setLeftSliderFunc(3, { | val | ~habit.trumpetLoopers.mixer.setVol(val.ccdbfs(-70, 0)); },
   bank: mainMixBank, page: page);
 //// Sends:
 // Reverb:
@@ -118,42 +118,42 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 //// Looper 1:
 // Mute:
 ~ohm.setLeftButtonMonitorFunc(0, {
-  if( ~habit.trumpetLoopers.looper1.mixer.isMuted, { ~ohm.turnLeftButtonRed(0); }, { ~ohm.turnLeftButtonGreen(0); });
+  if( ~habit.trumpetLoopers.mixer.isMuted(0), { ~ohm.turnLeftButtonRed(0); }, { ~ohm.turnLeftButtonGreen(0); });
 }, bank: trumpetLooperBank, page: page);
-~ohm.setLeftButtonFunc(0, { ~habit.trumpetLoopers.looper1.mixer.tglMute; }, bank: trumpetLooperBank, page: page);
+~ohm.setLeftButtonFunc(0, { ~habit.trumpetLoopers.mixer.tglMute(0); }, bank: trumpetLooperBank, page: page);
 // Volume:
-~ohm.setLeftSliderFunc(0, { | val | ~habit.trumpetLoopers.looper1.mixer.setVol(val.ccdbfs(-70, 0));
+~ohm.setLeftSliderFunc(0, { | val | ~habit.trumpetLoopers.mixer.setVol(0, val.ccdbfs(-70, 0));
 }, bank: trumpetLooperBank, page: page);
 
 //// Looper 2:
 // Mute:
 ~ohm.setLeftButtonMonitorFunc(1, {
-  if( ~habit.trumpetLoopers.looper2.mixer.isMuted, { ~ohm.turnLeftButtonRed(1); }, { ~ohm.turnLeftButtonGreen(1); });
+  if( ~habit.trumpetLoopers.mixer.isMuted(1), { ~ohm.turnLeftButtonRed(1); }, { ~ohm.turnLeftButtonGreen(1); });
 }, bank: trumpetLooperBank, page: page);
-~ohm.setLeftButtonFunc(1, { ~habit.trumpetLoopers.looper2.mixer.tglMute; }, bank: trumpetLooperBank, page: page);
+~ohm.setLeftButtonFunc(1, { ~habit.trumpetLoopers.mixer.tglMute(1); }, bank: trumpetLooperBank, page: page);
 // Volume:
-~ohm.setLeftSliderFunc(1, { | val | ~habit.trumpetLoopers.looper2.mixer.setVol(val.ccdbfs(-70, 0));
+~ohm.setLeftSliderFunc(1, { | val | ~habit.trumpetLoopers.mixer.setVol(1, val.ccdbfs(-70, 0));
 }, bank: trumpetLooperBank, page: page);
 
 //// Looper 3:
 // Mute:
 ~ohm.setLeftButtonMonitorFunc(2, {
-  if( ~habit.trumpetLoopers.looper3.mixer.isMuted, { ~ohm.turnLeftButtonRed(2); }, { ~ohm.turnLeftButtonGreen(2); });
+  if( ~habit.trumpetLoopers.mixer.isMuted(2), { ~ohm.turnLeftButtonRed(2); }, { ~ohm.turnLeftButtonGreen(2); });
 }, bank: trumpetLooperBank, page: page);
-~ohm.setLeftButtonFunc(2, { ~habit.trumpetLoopers.looper3.mixer.tglMute; }, bank: trumpetLooperBank, page: page);
+~ohm.setLeftButtonFunc(2, { ~habit.trumpetLoopers.mixer.tglMute(2); }, bank: trumpetLooperBank, page: page);
 // Volume:
-~ohm.setLeftSliderFunc(2, { | val | ~habit.trumpetLoopers.looper3.mixer.setVol(val.ccdbfs(-70, 0));
+~ohm.setLeftSliderFunc(2, { | val | ~habit.trumpetLoopers.mixer.setVol(2, val.ccdbfs(-70, 0));
 }, bank: trumpetLooperBank, page: page);
 
 
 //// Looper 4:
 // Mute:
 ~ohm.setLeftButtonMonitorFunc(3, {
-  if( ~habit.trumpetLoopers.looper4.mixer.isMuted, { ~ohm.turnLeftButtonRed(3); }, { ~ohm.turnLeftButtonGreen(3); });
+  if( ~habit.trumpetLoopers.mixer.isMuted(3), { ~ohm.turnLeftButtonRed(3); }, { ~ohm.turnLeftButtonGreen(3); });
 }, bank: trumpetLooperBank, page: page);
-~ohm.setLeftButtonFunc(3, { ~habit.trumpetLoopers.looper4.mixer.tglMute; }, bank: trumpetLooperBank, page: page);
+~ohm.setLeftButtonFunc(3, { ~habit.trumpetLoopers.mixer.tglMute(3); }, bank: trumpetLooperBank, page: page);
 // Volume:
-~ohm.setLeftSliderFunc(3, { | val | ~habit.trumpetLoopers.looper4.mixer.setVol(val.ccdbfs(-70, 0));
+~ohm.setLeftSliderFunc(3, { | val | ~habit.trumpetLoopers.mixer.setVol(3, val.ccdbfs(-70, 0));
 }, bank: trumpetLooperBank, page: page);
 
 //////// Left Knob Misc. Bank:
@@ -306,7 +306,7 @@ sequenceResetFunc = {
 ~ohm.setGridFunc(2, 2, { ~habit.trumpetLoopers.looper3.clearLoop(15); }, page: page);
 
 
-//// Looper 3:
+//// Looper 4:
 // Loop:
 ~ohm.setGridMonitorFunc(3, 4, {
   if( ~habit.trumpetLoopers.looper4.isRecording, { ~ohm.turnGridWhite(3, 4); },

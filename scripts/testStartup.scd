@@ -38,4 +38,10 @@ r {
 s.meter;
 
 
+
+
 ~ohm.setPage('habit');
+~base.setPage('habit');
+
+Server.killAll;
+

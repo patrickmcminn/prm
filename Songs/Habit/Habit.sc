@@ -61,6 +61,7 @@ Habit : Song {
       server.sync;
 
       delay.mixer.setSendVol(0, -12);
+      delay.setMix(1);
 
       modular.setSendVol(0, -13);
       modular.setSendVol(3, -23.5);

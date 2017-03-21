@@ -118,42 +118,42 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 //// Looper 1:
 // Mute:
 ~ohm.setLeftButtonMonitorFunc(0, {
-  if( ~habit.trumpetLoopers.mixer.isMuted(0), { ~ohm.turnLeftButtonRed(0); }, { ~ohm.turnLeftButtonGreen(0); });
+  if( ~habit.trumpetLoopers.submixer.isMuted(0), { ~ohm.turnLeftButtonRed(0); }, { ~ohm.turnLeftButtonGreen(0); });
 }, bank: trumpetLooperBank, page: page);
-~ohm.setLeftButtonFunc(0, { ~habit.trumpetLoopers.mixer.tglMute(0); }, bank: trumpetLooperBank, page: page);
+~ohm.setLeftButtonFunc(0, { ~habit.trumpetLoopers.submixer.tglMute(0); }, bank: trumpetLooperBank, page: page);
 // Volume:
-~ohm.setLeftSliderFunc(0, { | val | ~habit.trumpetLoopers.mixer.setVol(0, val.ccdbfs(-70, 0));
+~ohm.setLeftSliderFunc(0, { | val | ~habit.trumpetLoopers.submixer.setVol(0, val.ccdbfs(-70, 0));
 }, bank: trumpetLooperBank, page: page);
 
 //// Looper 2:
 // Mute:
 ~ohm.setLeftButtonMonitorFunc(1, {
-  if( ~habit.trumpetLoopers.mixer.isMuted(1), { ~ohm.turnLeftButtonRed(1); }, { ~ohm.turnLeftButtonGreen(1); });
+  if( ~habit.trumpetLoopers.submixer.isMuted(1), { ~ohm.turnLeftButtonRed(1); }, { ~ohm.turnLeftButtonGreen(1); });
 }, bank: trumpetLooperBank, page: page);
-~ohm.setLeftButtonFunc(1, { ~habit.trumpetLoopers.mixer.tglMute(1); }, bank: trumpetLooperBank, page: page);
+~ohm.setLeftButtonFunc(1, { ~habit.trumpetLoopers.submixer.tglMute(1); }, bank: trumpetLooperBank, page: page);
 // Volume:
-~ohm.setLeftSliderFunc(1, { | val | ~habit.trumpetLoopers.mixer.setVol(1, val.ccdbfs(-70, 0));
+~ohm.setLeftSliderFunc(1, { | val | ~habit.trumpetLoopers.submixer.setVol(1, val.ccdbfs(-70, 0));
 }, bank: trumpetLooperBank, page: page);
 
 //// Looper 3:
 // Mute:
 ~ohm.setLeftButtonMonitorFunc(2, {
-  if( ~habit.trumpetLoopers.mixer.isMuted(2), { ~ohm.turnLeftButtonRed(2); }, { ~ohm.turnLeftButtonGreen(2); });
+  if( ~habit.trumpetLoopers.submixer.isMuted(2), { ~ohm.turnLeftButtonRed(2); }, { ~ohm.turnLeftButtonGreen(2); });
 }, bank: trumpetLooperBank, page: page);
-~ohm.setLeftButtonFunc(2, { ~habit.trumpetLoopers.mixer.tglMute(2); }, bank: trumpetLooperBank, page: page);
+~ohm.setLeftButtonFunc(2, { ~habit.trumpetLoopers.submixer.tglMute(2); }, bank: trumpetLooperBank, page: page);
 // Volume:
-~ohm.setLeftSliderFunc(2, { | val | ~habit.trumpetLoopers.mixer.setVol(2, val.ccdbfs(-70, 0));
+~ohm.setLeftSliderFunc(2, { | val | ~habit.trumpetLoopers.submixer.setVol(2, val.ccdbfs(-70, 0));
 }, bank: trumpetLooperBank, page: page);
 
 
 //// Looper 4:
 // Mute:
 ~ohm.setLeftButtonMonitorFunc(3, {
-  if( ~habit.trumpetLoopers.mixer.isMuted(3), { ~ohm.turnLeftButtonRed(3); }, { ~ohm.turnLeftButtonGreen(3); });
+  if( ~habit.trumpetLoopers.submixer.isMuted(3), { ~ohm.turnLeftButtonRed(3); }, { ~ohm.turnLeftButtonGreen(3); });
 }, bank: trumpetLooperBank, page: page);
-~ohm.setLeftButtonFunc(3, { ~habit.trumpetLoopers.mixer.tglMute(3); }, bank: trumpetLooperBank, page: page);
+~ohm.setLeftButtonFunc(3, { ~habit.trumpetLoopers.submixer.tglMute(3); }, bank: trumpetLooperBank, page: page);
 // Volume:
-~ohm.setLeftSliderFunc(3, { | val | ~habit.trumpetLoopers.mixer.setVol(3, val.ccdbfs(-70, 0));
+~ohm.setLeftSliderFunc(3, { | val | ~habit.trumpetLoopers.submixer.setVol(3, val.ccdbfs(-70, 0));
 }, bank: trumpetLooperBank, page: page);
 
 //////// Left Knob Misc. Bank:
@@ -264,7 +264,7 @@ sequenceResetFunc = {
 ~ohm.setGridFunc(0, 3, { ~habit.trumpetLoopers.looper1.togglePlayLoop; }, page: page);
 // erase:
 ~ohm.turnGridRed(0, 2, page: page);
-~ohm.setGridFunc(0, 2, { ~habit.trumpetLoopers.looper1.clearLoop(15); }, page: page);
+~ohm.setGridFunc(0, 2, { ~habit.trumpetLoopers.looper1.clearLoop(90); }, page: page);
 
 //// Looper 2:
 // Loop:
@@ -283,7 +283,7 @@ sequenceResetFunc = {
 ~ohm.setGridFunc(1, 3, { ~habit.trumpetLoopers.looper2.togglePlayLoop; }, page: page);
 // erase:
 ~ohm.turnGridRed(1, 2, page: page);
-~ohm.setGridFunc(1, 2, { ~habit.trumpetLoopers.looper2.clearLoop(15); }, page: page);
+~ohm.setGridFunc(1, 2, { ~habit.trumpetLoopers.looper2.clearLoop(90); }, page: page);
 
 
 //// Looper 3:
@@ -303,7 +303,7 @@ sequenceResetFunc = {
 ~ohm.setGridFunc(2, 3, { ~habit.trumpetLoopers.looper3.togglePlayLoop; }, page: page);
 // erase:
 ~ohm.turnGridRed(2, 2, page: page);
-~ohm.setGridFunc(2, 2, { ~habit.trumpetLoopers.looper3.clearLoop(15); }, page: page);
+~ohm.setGridFunc(2, 2, { ~habit.trumpetLoopers.looper3.clearLoop(90); }, page: page);
 
 
 //// Looper 4:
@@ -323,7 +323,7 @@ sequenceResetFunc = {
 ~ohm.setGridFunc(3, 3, { ~habit.trumpetLoopers.looper4.togglePlayLoop; }, page: page);
 // erase:
 ~ohm.turnGridRed(3, 2, page: page);
-~ohm.setGridFunc(3, 2, { ~habit.trumpetLoopers.looper4.clearLoop(15); }, page: page);
+~ohm.setGridFunc(3, 2, { ~habit.trumpetLoopers.looper4.clearLoop(90); }, page: page);
 
 //// Grain envelopes:
 ~ohm.setGridMonitorFunc(0, 5, {

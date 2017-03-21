@@ -26,16 +26,16 @@ Habit_TrumpetLoopers :IM_Processor {
       submixer = IM_Mixer.new(4, mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { submixer.isLoaded } != true }, { 0.001.wait; });
 
-      looper1 = Looper.newMono(submixer.chanStereo(0), 15, 1, relGroup: group, addAction: 'addToHead');
+      looper1 = Looper.newMono(submixer.chanStereo(0), 90, 1, relGroup: group, addAction: 'addToHead');
       while({ try { looper1.isLoaded } != true }, { 0.001.wait; });
 
-      looper2 = Looper.newMono(submixer.chanStereo(1), 15, 1, relGroup: group, addAction: 'addToHead');
+      looper2 = Looper.newMono(submixer.chanStereo(1), 90, 1, relGroup: group, addAction: 'addToHead');
       while({ try { looper2.isLoaded } != true }, { 0.001.wait; });
 
-      looper3 = Looper.newMono(submixer.chanStereo(2), 15, 1, relGroup: group, addAction: 'addToHead');
+      looper3 = Looper.newMono(submixer.chanStereo(2), 90, 1, relGroup: group, addAction: 'addToHead');
       while({ try { looper3.isLoaded } != true }, { 0.001.wait; });
 
-      looper4 = Looper.newMono(submixer.chanStereo(3), 15, 1, relGroup: group, addAction: 'addToHead');
+      looper4 = Looper.newMono(submixer.chanStereo(3), 90, 1, relGroup: group, addAction: 'addToHead');
       while({ try { looper4.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;

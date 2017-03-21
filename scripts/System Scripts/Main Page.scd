@@ -16,6 +16,28 @@ var cortezIsLoaded = false;
 
 //////////// Grid Functions:
 
+
+'Habit Fills Up What Remains';
+
+~ohm.turnGridMagenta(0, 0, page: page);
+~ohm.setGridFunc(0, 0, r {
+  loop {
+    ~habit = Habit.new(1, 2, 3, "iConnectAudio4+", "DIN",
+      ~prm.submixA, ~prm.submixB, ~prm.submixC,
+      ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+      relGroup: ~prm.procGroup, addAction: \addToHead);
+    while({ try { ~habit.isLoaded } != true }, { 0.001.wait; });
+    ~ohm.setGridFunc(1, 0, { ~ohm.setPage('habit'); }, page: page);
+    ~ohm.turnGridGreen(1, 0).yield;
+
+    ~habit.free;
+    ~habit = nil;
+    ~ohm.setGridFunc(1, 0, { });
+    ~ohm.turnGridOff(1, 0).yield;
+  }
+}, page: page);
+
+/*
 // Nebula Page:
 ~ohm.turnGridCyan(0, 0, page: page);
 // not working:
@@ -101,6 +123,7 @@ var cortezIsLoaded = false;
       cortezIsLoaded = false;
   });
 }, page: page);
+*/
 
 
 

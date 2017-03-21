@@ -28,9 +28,12 @@ r {
   try { ~ohm = OhmRGB.new; };
   try { ~base = Base.new; };
 
+  ~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
+  ~base = Base.new("iConnectAudio4+", "HST3");
+
   "/Global Functions/Load Global Functions.scd".loadRelative;
   "/System Scripts/Load System Scripts.scd".loadRelative;
-  //"/Songs/Load Songs.scd".loadRelative;
+  "/Songs/Load Songs.scd".loadRelative;
 
 }.play;
 
@@ -44,4 +47,9 @@ s.meter;
 ~base.setPage('habit');
 
 Server.killAll;
+
+
+MIDIIn.connectAll;
+~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
+~base = Base.new("iConnectAudio4+", "HST3");
 

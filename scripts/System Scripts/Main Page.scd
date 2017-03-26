@@ -27,7 +27,7 @@ var cortezIsLoaded = false;
       ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
       relGroup: ~prm.procGroup, addAction: \addToHead);
     while({ try { ~habit.isLoaded } != true }, { 0.001.wait; });
-    ~ohm.setGridFunc(1, 0, { ~ohm.setPage('habit'); }, page: page);
+    ~ohm.setGridFunc(1, 0, { ~ohm.setPage('habit'); }, page: 'main');
     ~ohm.turnGridGreen(1, 0).yield;
 
     ~habit.free;

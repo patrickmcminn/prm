@@ -62,7 +62,13 @@ Habit_Moog : IM_Module {
 
     synth.addKey(\habit_sequence1, \octave, 4);
     synth.addKey(\habit_sequence1, \legato, 0.99);
-    synth.addKey(\habit_sequence1, \dur, Prand([1.5, 3, 1, 2.5, 2, 2, 0.5, 1.5, 1.5, 0.75, 0.25, 0.5, 0.5, 0.25, 1.5, 3, 2, 1, 4], inf));
+    synth.addKey(\habit_sequence1, \dur, Pxrand([
+      Pseq([1.5, 3, 1, 2.5, 2, 2, 0.5, 1.5, 1.5, 2, 0.5, 1, 2.5, 0.5, 1, 2.5, 2.5], 1),
+      Pseq([0.5, 0.25, 1.25, 0.25, 0.5, 1, 1, 0.25, 0.75, 0.75, 1.25, 0.25, 0.5, 1.5, 0.5, 1.25, 1.25]*2, 1),
+      Pseq([3, 3, 6], 1),
+      Pseq([2, 2, 4], 1),
+      Pseq([Pseq([0.5], 4), Pseq([0.25], 8), 4]),
+    ], inf));
     synth.addKey(\habit_sequence1, \note, Prand([part1, part1, part1, part2, part2, part3, part3, part3, part3, part4], inf));
     synth.addKey(\habit_sequence1, \notePlaying, Pfunc({ |ev| notePlaying = ev[\note]%12; }));
   }
@@ -73,10 +79,15 @@ Habit_Moog : IM_Module {
     part2 = Pseq([13, \r, 13, \r, 8, 6, 1, \r, -4, -6, -8, \r, -3, -11, -1, 6, 1], 1);
     part3 = Pseq([1, -4, -6], 1);
     part4 = Pseq([Pseq([1], 4), Pseq([-4], 8), 6], 1);
-
     synth.addKey(\habit_sequence2, \octave, 4);
     synth.addKey(\habit_sequence2, \legato, 0.99);
-    synth.addKey(\habit_sequence2, \dur, Pxrand([4.75, 2, 10.75, 5.25, 10.25, 6.25, 8, 2.5, 4.75, 0.75, 7.5, 8.25, 5.25, 10.5, 2.5, 2.25, 9.25, 1.5, 9.5, 2.25, 5.25, 2.5, 5, 3.25, 4, 2.5, 3.75, 4.25, 2.5, 5.25, 1.25, 1.25, 4.5, 0.75, 4.75, 16, 16, 32, 4, 4, 8, Pseq([ Pseq([1], 4), Pseq([0.5], 8)], 6), Pseq([Pseq([0.25], 16), Pseq([0.5], 8)], 1),  Pseq([Pseq([1], 4), Pseq([0.5], 8)], 1)], inf));
+    synth.addKey(\habit_sequence2, \dur, Pxrand([
+      Pseq([4.75, 2, 10.75, 5.25, 10.25, 6.25, 8, 2.5, 4.75, 0.75, 7.5, 0.25, 8.25, 5.25, 10.5, 2.5, 2.25, 9.25, 1.5, 9.5], 1),
+      Pseq([2.25, 1.25, 5.25, 2.5, 5, 3.25, 4, 1.5, 2.5, 3.75, 0.25, 4.25, 2.5, 5.25, 1.25, 1.25, 4.5, 0.75, 4.75], 1),
+      Pseq([8, 8, 16],1),
+      Pseq([4, 4, 8], 1),
+      Pseq([Pseq([ Pseq([ Pseq([1], 4), Pseq([0.5], 8)], 6), Pseq([0.25], 16), Pseq([0.5], 8),  Pseq([1], 4), Pseq([0.5], 8)], 1), 16], 1)
+    ], inf));
     synth.addKey(\habit_sequence2, \note, Prand([part1, part1, part1, part2, part2, part3, part3, part3, part3, part4], inf));
     synth.addKey(\habit_sequence2, \notePlaying, Pfunc({ |ev| notePlaying = ev[\note]%12; }));
   }

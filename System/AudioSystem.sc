@@ -89,9 +89,9 @@ AudioSystem {
       while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
 
 
-      submixerA.mixer.setPreVol(6);
-      submixerB.mixer.setPreVol(6);
-      submixerC.mixer.setPreVol(6);
+      submixerA.mixer.setPreVol(3);
+      submixerB.mixer.setPreVol(3);
+      submixerC.mixer.setPreVol(3);
 
       modular = IM_Mixer_1Ch.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus,
         nil, false, procGroup, \addToHead);

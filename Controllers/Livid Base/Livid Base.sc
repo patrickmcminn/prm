@@ -7,7 +7,7 @@ Base {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, touchFuncArray, bendFuncArray;
-  var <pageDict, <activePage, activePageKey, <storageDict;
+  var <pageDict, <activePage, activePageKey, <storageDict, <previousPage;
   var colorArray;
 
   *new { | deviceName = "Base", portName = "Controls", localControl = 'allOff' |
@@ -200,6 +200,8 @@ Base {
     activePage.stopActiveBankMonitorRoutines;
     activePage.offLoadFunctionDict.do({ | func | func.value; });
 
+    previousPage = activePageKey;
+
     activePageKey = name;
     activePage = pageDict[activePageKey];
 
@@ -232,6 +234,6 @@ Base {
     pageDict[page].addOffLoadFunction(name, func);
   }
 
-
+  setToPreviousPage { this.setPage(previousPage); }
 
 }

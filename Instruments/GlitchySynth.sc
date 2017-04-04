@@ -1,27 +1,42 @@
-GlitchySynth {
+GlitchySynth : IM_Module {
 
-  var server, group, noteGroup;
-  var procBus, <synth, buffer;
-  var attack, sustain, release;
-  var <numVoices;
+  var server, <isLoaded;
 
-  var noteDict;
+  var synth, buffer;
+  var <attackTime, <sustainLevel, <releaseTime;
+  var <glitchLooper;
 
-  *new { | outBus = 0, amp = 1, pan = 0, relGroup = nil, addAction = 'addToTail' |
-    ^super.new.prInit(outBus, amp, pan, relGroup, addAction);
+  var procBus;
+
+  var noteDict, <numVoices;
+  var <sequencerDict, <sequencerClock, <tempo;
+
+  *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
+    relGroup = nil, addAction = 'addToTail' |
+    ^super.new(2, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
   }
 
-  prInit { | outBus = 0, amp = 1, pan = 0, relGroup = nil, addAction = 'addToTail' |
+  prInit {
     server = Server.default;
     server.waitForBoot {
+      isLoaded = false;
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
       this.prInitializeParameters;
       this.prAddSynthDefs;
       server.sync;
-      this.prMakeGroups(relGroup, addAction);
-      //this.prMakeBuffer;
-      this.prMakeBus;
+
+      glitchLooper = GlitchLooper.newStereo(mixer.chanStereo(1), 1, relGroup: group, addAction: \addToHead);
+      while({ try { glitchLooper.isLoaded } != true }, { 0.001.wait; });
+
+      procBus = Bus.audio(server, 2);
+      this.prMakeSynth(mixer.chanStereo(0), glitchLooper.inBus);
+
+      sequencerDict = IdentityDictionary.new;
+      sequencerClock = TempoClock.new;
+
       server.sync;
-      this.prMakeSynth(outBus, amp, pan);
+
+      isLoaded = true;
     }
   }
 
@@ -35,7 +50,7 @@ GlitchySynth {
       var saw, env, filter, sig;
       saw = Saw.ar(freq);
       filter = RLPF.ar(saw, cutoff, rq);
-      env = EnvGen.kr(Env.asr(attack, sustain, release), gate, doneAction: 2);
+      env = EnvGen.kr(Env.asr(attack, sustain, release), gate + Impulse.ar(0), doneAction: 2);
       sig = filter * env;
       sig = sig * amp;
       Out.ar(outBus, sig);
@@ -44,15 +59,14 @@ GlitchySynth {
 
     SynthDef(\prm_glitchySynth_proc, {
       |
-      inBus = 0, outBus = 0, amp = 1, pan = 0,
+      inBus = 0, outBus1 = 0, outBus2 = 0, amp = 1, pan = 0,
       attack = 0.05, susLevel = 1, release = 0.05, gate = 0,
-      distAmp = 0.1, distGain = 1000, bitDepth = 8, noiseAmp = 0,
-      loopAmp = 0.2, loopChance = 0.8, delayTime = 0.0664, repeats = 26,
+      distAmp = 0.1, distGain = 10, bitDepth = 8, noiseAmp = 0,
       cutoff = 3580, rq = 1, waveLossAmount = 0
       |
 
       var input, crush, dist, noise, distSum, env;
-      var buffer, loopTrig, loopRec, looper, sum, filter, panner, waveLoss, sig;
+      var buffer, playHead, recordHead, recorder, looper, sum, filter, panner, waveLoss, sig;
 
       input = In.ar(inBus);
 
@@ -61,12 +75,6 @@ GlitchySynth {
       dist = dist * distAmp;
       noise = WhiteNoise.ar(noiseAmp);
       distSum = dist + noise;
-
-      //buffer = LocalBuf(server.sampleRate, 1);
-      //loopTrig;
-      //loopRec;
-      //looper;
-      //sum = distSum + looper;
       sum = distSum;
 
       filter = RLPF.ar(sum, cutoff, rq);
@@ -77,7 +85,8 @@ GlitchySynth {
 
       sig = waveLoss * env;
       sig = sig * amp;
-      Out.ar(outBus, sig);
+      Out.ar(outBus1, sig);
+      Out.ar(outBus2, sig);
     }).add;
 
   }
@@ -85,27 +94,13 @@ GlitchySynth {
   prInitializeParameters {
     noteDict = IdentityDictionary.new;
     numVoices = 0;
-    attack = 0.05;
-    release = 0.05;
+    attackTime = 0.05;
+    releaseTime = 0.05;
   }
 
-  prMakeGroups { | relGroup = nil, addAction = 'addToTail' |
-    group = Group.new(relGroup, addAction);
-    noteGroup = Group.new(group, \addToHead);
-  }
-
-  prFreeGroups {
-    group.free;
-    noteGroup.free;
-  }
-
-  prMakeBus { procBus = Bus.audio; }
-
-  prFreeBus { procBus.free; }
-
-  prMakeSynth { | outBus = 0, amp = 1, pan = 0 |
-    synth = Synth(\prm_glitchySynth_proc, [\inBus, procBus, \outBus, outBus, \amp, amp, \pan, pan],
-      group, \addToTail);
+  prMakeSynth { | outBus1 = 0, outBus2 = 0 |
+    synth = Synth(\prm_glitchySynth_proc, [\inBus, procBus, \outBus1, outBus1, \outBus2, outBus2, \amp, 1, \pan, 0],
+      group, \addToHead);
   }
 
 
@@ -120,25 +115,18 @@ GlitchySynth {
     this.prFreeGroups;
   }
 
-  setAmp { | amp = 1 |
-    synth.set(\amp, amp);
-  }
-
-  setVol { | vol = 0 |
-    synth.set(\amp, vol.dbamp);
-  }
 
   playNote { | freq = 220, amp = 1, cutoff = 5309, rq = 0.3 |
     if( noteDict[freq.asSymbol].notNil, { this.releaseNote(freq); });
     if( numVoices == 0,
       {
-        synth.set(\attack, attack, \gate, 1);
+        synth.set(\attack, attackTime, \gate, 1);
         noteDict[freq.asSymbol] = Synth(\prm_glitchySynth_osc, [\outBus, procBus, \freq, freq, \amp, amp,
-          \cutoff, cutoff, \rq, rq], noteGroup, \addToTail);
+          \cutoff, cutoff, \rq, rq], group, \addToHead);
       },
       {
         noteDict[freq.asSymbol] = Synth(\prm_glitchySynth_osc, [\outBus, procBus, \freq, freq, \amp, amp,
-          \attack, attack, \release, release, \cutoff, cutoff, \rq, rq], noteGroup, \addToTail);
+          \attack, attackTime, \release, releaseTime, \cutoff, cutoff, \rq, rq], group, \addToHead);
     });
     numVoices = numVoices + 1;
   }
@@ -147,7 +135,7 @@ GlitchySynth {
     var released;
     if( noteDict[freq.asSymbol].notNil, {
       released = noteDict[freq.asSymbol];
-      released.set(\release, release, \gate, 0);
+      released.set(\release, releaseTime, \gate, 0);
       noteDict[freq.asSymbol] = nil;
       }
     );
@@ -157,40 +145,37 @@ GlitchySynth {
   freeNote { | freq = 220 |
     noteDict[freq.asSymbol].free;
     noteDict[freq.asSymbol] = nil;
-    numVoices = numVoices = 1;
+    numVoices = numVoices - 1;
   }
 
   // releaseAllNotes { noteDict.do({ | synth | synth.set(\gate, 0); }); }
 
   freeAllNotes { noteDict.keysValuesDo({ | key | this.freeNote(key); }); }
 
-  setAttack { | atk = 0.05 |
-    attack = atk;
+  setAttackTime { | attack = 0.05 |
+    attackTime = attack;
     noteDict.do({ | synth | synth.set(\attack, attack) });
   }
 
-  setRelease { | rel = 0.05 |
-    release = rel;
+  setReleaseTime { | release = 0.05 |
+    releaseTime = release;
     noteDict.do({ | synth | synth.set(\release, release); });
   }
 
-  setNoteAmp { | freq = 220, amp = 1 |
-    noteDict[freq.asSymbol].set(\amp, amp);
-  }
 
-  setNoteCutoff { | freq = 220, cutoff = 5309 |
+  setNoteFilterCutoff { | freq = 220, cutoff = 5309 |
     noteDict[freq.asSymbol].set(\cutoff, cutoff);
   }
 
-  setNoteRQ { | freq = 220, rq = 0.3 |
+  setNoteFilterRQ { | freq = 220, rq = 0.3 |
     noteDict[freq.asSymbol].set(\rq, rq);
   }
 
-  setCutoff { | cutoff = 3580 |
+  setFilterCutoff { | cutoff = 3580 |
     synth.set(\cutoff, cutoff);
   }
 
-  setRQ { | rq = 1 |
+  setFilterRQ { | rq = 1 |
     synth.set(\rq, rq);
   }
 
@@ -199,4 +184,43 @@ GlitchySynth {
   }
 
   setWaveLossAmount { | amount = 0 | synth.set(\waveLossAmount, amount); }
+
+  ///////// Pattern Sequencer:
+  makeSequence { | name |
+    fork {
+      sequencerDict[name] = IM_PatternSeq.new(name, group, \addToHead);
+      sequencerDict[name].stop;
+      server.sync;
+      sequencerDict[name].addKey(\instrument, \prm_glitchySynth_osc);
+      sequencerDict[name].addKey(\outBus, procBus);
+      //sequencerDict[name].addKey(\attack, Pfunc({ attackTime }));
+      //sequencerDict[name].addKey(\sustainLevel, Pfunc({ sustainLevel }));
+      //sequencerDict[name].addKey(\release, Pfunc({ releaseTime }));
+      sequencerDict[name].addKey(\amp, 1);
+
+    };
+  }
+
+  addKey {  | name, key, action |
+    sequencerDict[name].addKey(key, action);
+  }
+
+  playSequence { | name, clock = 'internal', quant = 'nil' |
+    var playClock;
+    if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
+    sequencerDict[name].play(playClock);
+  }
+
+  resetSequence { | name | sequencerDict[name].reset; }
+  stopSequence { | name | sequencerDict[name].stop; }
+  pauseSequence { | name | sequencerDict[name].pause }
+  resumeSequence { | name | sequencerDict[name].resume; }
+  isSequencePlaying { | name | ^sequencerDict[name].isPlaying }
+  setSequenceQuant { | name, quant = 0 | sequencerDict[name].setQuant(quant) }
+
+  setSequencerClockTempo { | bpm = 60 |
+    var bps = bpm/60;
+    tempo = bps;
+    sequencerClock.tempo = tempo;
+  }
 }

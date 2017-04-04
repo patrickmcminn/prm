@@ -4,29 +4,35 @@ MicroCluster.sc
 prm
 */
 
-MicroCluster {
+MicroCluster : IM_Processor {
 
-  var input;
-  var trigBus, faderBus, <outBus, nilBus;
-  var triggerSynth, drySynth, pitchShiftArray, faderSynth;
+  var <isLoaded;
+  var trigBus;
+  var triggerSynth, drySynth, pitchShiftArray;
 
-  *new { | inBus, amp = 1, numPitchShifts = 12, rangeLo = -1.0, rangeHi = 1.0,
-    trigType = 0, trigRate = 5, dryAmp = 0, cutoff = 15000, pan = 0, group = nil |
-    ^super.new.prInit(inBus, amp, numPitchShifts, rangeLo, rangeHi, trigType, trigRate, dryAmp, cutoff, pan, group);
-
+  *new {
+    |
+    outBus = 0, numPitchShifts = 12,
+    send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, feedback = false,
+    relGroup = nil, addAction = 'addToHead'
+    |
+    ^super.new(1, 2, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInit(numPitchShifts);
   }
 
-  prInit { | inBus, amp = 1, numPitchShifts = 12, rangeLo = -1.0, rangeHi = 1.0,
-    trigType = 0, trigRate = 5, dryAmp = 0, cutoff = 15000, pan = 0, group = nil |
+  prInit { | numPitchShifts = 12 |
     var server = Server.default;
     server.waitForBoot {
+      isLoaded = false;
+      while({ try { mixer.isLoaded } != true}, { 0.01.wait; });
       server.sync;
       this.prMakeSynthDefs;
       server.sync;
-      this.prMakeBusses;
+      trigBus = Bus.audio(Server.default);
       server.sync;
-      this.prMakeSynths(inBus, amp, numPitchShifts, rangeLo, rangeHi, trigType, trigRate, dryAmp, cutoff, pan, group);
+      this.prMakeSynths(numPitchShifts);
       server.sync;
+      while({ try { pitchShiftArray[numPitchShifts-1] } == nil }, { 0.001.wait; });
+      isLoaded = true;
     }
   }
 
@@ -53,7 +59,7 @@ MicroCluster {
 
     SynthDef(\PRM_triggerShifter, {
       | inBus, outBus, trigBus, trigSelect = 1, trigRate = 5,
-      amp = 1, rangeLo = -1.0, rangeHi = 1.0, pan = 0, cutoff = 15000, mute = 1 |
+      amp = 1, rangeLo = -1.0, rangeHi = 1.0, pan = 0, cutoff = 15000 |
       var input, triggerInput, trigger, trigShift, interval, pitchShift, filter, sig;
       var lagTime = 0.05;
       input = In.ar(inBus);
@@ -63,83 +69,33 @@ MicroCluster {
       interval = exp(0.057762265 * trigShift);
       pitchShift = PitchShift.ar(input, 0.2, interval);
       filter = LPF.ar(pitchShift, cutoff.lag(lagTime));
-      //sig = Pan2.ar(filter, 0, amp.lag(lagTime));
-      sig = filter * amp.lag(lagTime);
-      sig = sig * mute;
-      sig = Out.ar(outBus, sig);
-    }).add;
-
-    SynthDef(\PRM_fader, {
-      | inBus, outBus, amp = 0.6, bal = 0, mute = 1 |
-      var input, balance, sig;
-      var lagTime = 0.05;
-      input = In.ar(inBus);
-      //balance = Balance2.ar(input[0], input[1], bal, amp.lag(lagTime));
-      sig = input * amp;
-      sig = sig * mute;
+      sig = Pan2.ar(filter, pan, amp.lag(lagTime));
+      //sig = filter * amp.lag(lagTime);
       sig = Out.ar(outBus, sig);
     }).add;
 
   }
 
-  prMakeBusses {
-    trigBus = Bus.audio(Server.default);
-    faderBus = Bus.audio(Server.default);
-    outBus = Bus.audio(Server.default);
-    //nilBus = Bus.audio(Server.default, 2);
-  }
 
-  prFreeBusses {
-    trigBus.free;
-    faderBus.free;
-    outBus.free;
-  }
-
-  prMakeSynths {
-    | inBus, outBus, amp = 1, numPitchShifts = 12, rangeLo = -1.0, rangeHi = 1.0,
-    trigType = 0, trigRate = 5, dryAmp = 0, cutoff = 15000, pan = 0, group = nil |
-    triggerSynth = Synth(\PRM_externalImpulse, [\outBus, trigBus, \trigRate, trigRate], group, \addToTail);
-    drySynth = Synth(\PRM_dryOutput, [\inBus, inBus, \outBus, faderBus, \amp, dryAmp], group, \addToTail);
+  prMakeSynths { | numPitchShifts = 12 |
     pitchShiftArray = Array.fill(numPitchShifts, {
-      Synth(\PRM_triggerShifter, [\inBus, inBus, \outBus, faderBus, \trigBus, trigBus, \amp, 1/(numPitchShifts/2), \trigSelect, trigType,
-        \trigRate, trigRate, \rangeLo, rangeLo, \rangeHi, rangeHi, \pan, pan, \cutoff, cutoff], group, \addToTail);
+      Synth(\PRM_triggerShifter, [\inBus, inBus, \outBus, mixer.chanStereo(1), \trigBus, trigBus,
+        \amp, 0.5, \pan, rrand(-1, 1)], group, \addToHead);
     });
-    faderSynth = Synth(\PRM_fader, [\inBus, faderBus, \outBus, outBus, \balance, pan, \amp, amp], group, \addToTail);
-
+    drySynth = Synth(\PRM_dryOutput, [\inBus, inBus, \outBus, mixer.chanMono(0)], group, \addToHead);
+    triggerSynth = Synth(\PRM_externalImpulse, [\outBus, trigBus], group, \addToHead);
   }
 
   prFreeSynths {
     triggerSynth.free;
     drySynth.free;
     pitchShiftArray.do({ | synth | synth.free; });
-    faderSynth.free;
   }
 
   ////////////// Public Methods:
 
-  setAmp { | amp = 0.5 |
-    faderSynth.set(\amp, amp);
-  }
-
-  setVol { | vol |
-    faderSynth.set(\amp, vol.dbamp);
-  }
-
-  setDryAmp { | amp |
-    drySynth.set(\amp, amp);
-  }
-
-  setDryVol { | vol |
-    drySynth.set(\amp, vol.dbamp);
-  }
-
-  setWetAmp { | amp |
-    pitchShiftArray.do({ | synth | synth.set(\amp, amp/(pitchShiftArray.size/2)) });
-  }
-
-  setWetVol { | vol |
-    pitchShiftArray.do({ | synth | synth.set(\amp, vol.dbamp/(pitchShiftArray.size/2)) });
-  }
+  setDryVol{ | vol = 0 | mixer.setVol(0, vol); }
+  setWetVol { | vol = 0 | mixer.setVol(1, vol); }
 
   setCutoff { | cutoff = 15000 |
     pitchShiftArray.do({ | synth | synth.set(\cutoff, cutoff) });
@@ -170,51 +126,10 @@ MicroCluster {
     pitchShiftArray.do({ | synth | synth.set(\trigRate, rrand(rangeLo, rangeHi) ); });
   }
 
-  tglMute {
-    faderSynth.get(\mute, { | mute |
-      if( mute == 0, { faderSynth.set(\mute, 1); }, { faderSynth.set(\mute, 0) });
-    });
-  }
-
-  mute {
-    faderSynth.set(\mute, 0);
-  }
-
-  unMute {
-    faderSynth.set(\mute, 1);
-  }
-
-  tglMuteDry {
-    drySynth.get(\mute, { | mute |
-      if( mute == 0, { drySynth.set(\mute, 1); }, { drySynth.set(\mute, 0) });
-    });
-  }
-
-  muteDry {
-    drySynth.set(\mute, 0);
-  }
-
-  unMuteDry {
-    drySynth.set(\mute, 1);
-  }
-
-  tglMuteWet {
-    pitchShiftArray.do({ | synth |
-      synth.get(\mute, { | mute |
-        if( mute == 0, { synth.set(\mute, 1); }, { synth.set(\mute, 0) }); });
-    });
-  }
-
-  muteWet {
-    pitchShiftArray.do({ | synth | synth.set(\mute, 0); });
-  }
-
-  unMuteWet {
-    pitchShiftArray.do({ | synth | synth.set(\mute, 1); });
-  }
 
   free {
     this.prFreeSynths;
-    this.prFreeBusses;
+    trigBus.free;
+    this.freeProcessor;
   }
 }

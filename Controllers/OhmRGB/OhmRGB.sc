@@ -8,7 +8,7 @@ OhmRGB {
 
   var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray;
-  var <pageDict, <activePage, <activePageKey, <storageDict;
+  var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
   var colorArray;
   var <activeGridBank, <activeLeftButtonsBank, <activeRightButtonsBank, <activeControlButtonsBank;
   var <activeLeftSlidersBank, <activeRightSlidersBank;
@@ -144,6 +144,8 @@ OhmRGB {
   setPage { | name = 'page' |
     activePage.stopActiveBankMonitorRoutines;
     activePage.offLoadFunctionDict.do({ | func | func.value; });
+    previousPage = activePageKey;
+
     activePageKey = name;
     activePage = pageDict[activePageKey];
 
@@ -167,5 +169,7 @@ OhmRGB {
     if( page == 'active', { page = activePageKey; });
     pageDict[page].addOffLoadFunction(name, func);
   }
+
+  setToPreviousPage { this.setPage(previousPage); }
 
 }

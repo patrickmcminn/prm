@@ -9,6 +9,7 @@ GranularDelay : IM_Module {
   var <isLoaded = false;
   var <granulator, <delay;
   var rateChangeRoutine;
+  var <grainEnv;
 
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit;
@@ -24,6 +25,7 @@ GranularDelay : IM_Module {
       granulator = IM_Granulator.new(delay.inBus, relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true}, { 0.01.wait; });
       granulator.setCrossfade(-1);
+      grainEnv = 'sine';
       isLoaded = true;
     };
   }
@@ -67,7 +69,10 @@ GranularDelay : IM_Module {
   setPosLow { | posLow = 0.2 | granulator.setPosLow(posLow); }
   setPosHigh { | posHigh = 0.6 | granulator.setPosHigh(posHigh); }
   setSync { | sync = 0 | granulator.setSync(sync);}
-  setGrainEnvelope { | env = 'gabor' | granulator.setGrainEnvelope(env); }
+  setGrainEnvelope { | env = 'gabor' |
+    grainEnv = env;
+    granulator.setGrainEnvelope(env);
+  }
   setGranulatorFilterCutoff { | cutoff = 20000 | granulator.setFilterCutoff(cutoff); }
   setGranulatorCrossfade { | crossfade = 1 | granulator.setCrossfade(crossfade); }
 

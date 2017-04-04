@@ -11,7 +11,7 @@ Looper : IM_Module {
   var server, buffer, <eq, <looper, <inBus;
   var isStereo;
   var prLooperRoutine;
-  var <mix;
+  var <mix, <rate, <div, <pos, <waveLoss, <waveLossMode;
 
   *newStereo {
     |
@@ -75,11 +75,11 @@ Looper : IM_Module {
       isPlaying = false;
       isRecording = false;
       isStereo = true;
-      buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 1);
+      buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 2);
       inBus = Bus.audio(server);
       server.sync;
 
-      eq = Equalizer.newMono(mixer.chanMono(0), group, 'addToHead');
+      eq = Equalizer.newMono(mixer.chanStereo(0), group, 'addToHead');
       while( { try { eq.isLoaded } != true }, { 0.001.wait; });
       looper = Synth(\prm_looperMono, [\inBus, inBus, \outBus, eq.inBus, \buffer, buffer, \mix, mix],
         group, \addToHead);
@@ -176,6 +176,12 @@ Looper : IM_Module {
   //////// public functions:
 
   prMakeLooperRoutine {
+    mix = 0;
+    rate = 1;
+    div = 1;
+    pos = 0;
+    waveLoss = 0;
+    waveLossMode = 2;
     prLooperRoutine = r {
       this.toggleRecordLoop.yield;
 
@@ -253,24 +259,29 @@ Looper : IM_Module {
 
   setLoopRate { | loopRate = 1 |
     //looper.set(\t_playTrig, 1);
+    rate = loopRate;
     looper.set(\loopRate, loopRate, \t_resetPlayTrig, 1);
   }
 
   setLoopDivison { | division = 1 |
     //looper.set(\t_playTrig, 1);
+    div = division;
     looper.set(\loopDiv, division,  \t_resetPlayTrig, 1);
   }
 
-  setLoopPosition { | pos = 0 |
+  setLoopPosition { | position = 0 |
     //looper.set(\t_playTrig, 1);
+    pos = position;
     looper.set(\loopPos, pos,  \t_resetPlayTrig, 1);
   }
 
   setWaveLossAmount { | amount = 0 |
+    waveLoss = amount;
     looper.set(\waveLossAmount, amount);
   }
 
   setWaveLossMode { | mode = 2 |
+    waveLossMode = mode;
     looper.set(\waveLossMode, mode);
   }
 }

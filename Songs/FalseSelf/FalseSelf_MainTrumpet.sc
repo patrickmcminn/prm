@@ -1,0 +1,88 @@
+/*
+Wednesday, March 15th 2017
+FalseSelf_MainTrumpet.sc
+prm
+*/
+
+FalseSelf_MainTrumpet : IM_Processor {
+
+  var <isLoaded;
+  var server;
+  var <distortion, <delay, <eq, <reverb;
+
+  *new { |outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
+    ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
+  }
+
+  prInit {
+    server = Server.default;
+    server.waitForBoot {
+      isLoaded = false;
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
+      server.sync;
+
+      reverb = IM_Reverb.new(mixer.chanStereo(0), mix: 0.4, roomSize: 0.9, damp: 0.2,
+        relGroup: group, addAction: \addToHead);
+      while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
+
+      eq = Equalizer.newStereo(reverb.inBus, relGroup: group, addAction: \addToHead);
+      while({ try { eq.isLoaded } != true }, { 0.001.wait; });
+
+      delay = SimpleDelay.newStereo(reverb.inBus, 0.375, 0.22, 5, relGroup: group, addAction: \addToHead);
+      while({ try { delay.isLoaded } != true }, { 0.001.wait; });
+
+      distortion = Distortion.newMono(delay.inBus, 1000, relGroup: group, addAction: \addToHead);
+      while({ try { distortion.isLoaded } != true }, { 0.001.wait; });
+
+      //input = IM_HardwareIn.new(inBus, distortion.inBus, relGroup: group, addAction: \addToHead);
+
+      server.sync;
+
+      this.prInitializeReverb;
+      this.prInitializeEQ;
+      this.prInitializeDelay;
+      this.prInitializeDistortion;
+
+      server.sync;
+
+      isLoaded = true;
+    }
+
+  }
+
+  inBus { ^distortion.inBus }
+
+  prInitializeReverb {
+    reverb.setLowPassFreq(5500);
+  }
+
+  prInitializeEQ {
+    eq.setLowPassCutoff(9500);
+    eq.setHighPassCutoff(173);
+    eq.setPeak1Freq(1000);
+    eq.setPeak1Gain(3.1);
+    eq.mixer.setPreVol(-15);
+  }
+
+  prInitializeDelay {
+    delay.setMix(0.35);
+  }
+
+  prInitializeDistortion {
+    distortion.preEQ.setHighPassCutoff(200);
+    distortion.postEQ.setHighPassCutoff(200);
+    distortion.postEQ.setLowPassCutoff(10000);
+  }
+
+  //////// public functions:
+
+  free {
+    distortion.free;
+    delay.free;
+    eq.free;
+    reverb.free;
+    this.freeProcessor;
+  }
+
+}

@@ -9,6 +9,8 @@ SimpleDelay : IM_Processor {
   var <isLoaded;
   var synth;
 
+  var <delayTime, <feedback, <mix;
+
   *newMono {
     |
     outBus, delayTime = 0.3, delayFeedback = 0.2, maxDelayTime = 5,
@@ -29,29 +31,35 @@ SimpleDelay : IM_Processor {
       delayTime, delayFeedback, maxDelayTime);
   }
 
-  prInitMono { | delayTime = 0.3, delayFeedback = 0.2, maxDelayTime = 5 |
+  prInitMono { | delay = 0.3, fb = 0.2, maxDelayTime = 5 |
     var server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+      delayTime = delay;
+      feedback = fb;
+      mix = 0.5;
       while({ try { mixer.isLoaded } != true}, { 0.01.wait; });
       this.prAddSynthDef;
       server.sync;
       synth = Synth(\prm_simpleDelayMono, [\inBus, inBus, \outBus, mixer.chanMono(0), \amp, 1, \delayTime, delayTime,
-        \feedback, delayFeedback, \maxDelayTime, maxDelayTime, \cutoff, 20000, \rq, 1, \mix, 0.5], group, \addToHead);
+        \feedback, feedback, \maxDelayTime, maxDelayTime, \cutoff, 20000, \rq, 1, \mix, 0.5], group, \addToHead);
       server.sync;
       isLoaded = true;
     };
   }
 
-  prInitStereo { | delayTime = 0.3, delayFeedback = 0.2, maxDelayTime = 5 |
+  prInitStereo { | delay = 0.3, fb = 0.2, maxDelayTime = 5 |
     var server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+      delayTime = delay;
+      feedback = fb;
+      mix = 0.5;
       while({ try { mixer.isLoaded } != true}, { 0.01.wait; });
       this.prAddSynthDef;
       server.sync;
       synth = Synth(\prm_simpleDelayStereo, [\inBus, inBus, \outBus, mixer.chanStereo(0), \amp, 1, \delayTime, delayTime,
-        \feedback, delayFeedback, \maxDelayTime, maxDelayTime, \cutoff, 20000, \rq, 1, \mix, 0.5], group, \addToHead);
+        \feedback, feedback, \maxDelayTime, maxDelayTime, \cutoff, 20000, \rq, 1, \mix, 0.5], group, \addToHead);
       server.sync;
       isLoaded = true;
     };
@@ -111,9 +119,16 @@ SimpleDelay : IM_Processor {
     this.freeProcessor;
   }
 
-  setDelayTime { | delayTime = 0.2 | synth.set(\delayTime, delayTime); }
-  setFeedback { | feedback = 0.2 | synth.set(\feedback, feedback); }
-  setMix { | mix = 0.5 | synth.set(\mix, mix); }
+  setDelayTime { | delay = 0.2 |
+    delayTime = delay;
+    synth.set(\delayTime, delayTime); }
+  setFeedback { | fb = 0.2 |
+    feedback = fb;
+    synth.set(\feedback, feedback); }
+  setMix { | delayMix = 0.5 |
+    mix = delayMix;
+    synth.set(\mix, mix);
+  }
   setFilterCutoff { | cutoff = 20000 | synth.set(\cutoff, cutoff); }
   setFilterRQ { | rq = 1 | synth.set(\rq, 1); }
   setFilterType { | type = 'none' |

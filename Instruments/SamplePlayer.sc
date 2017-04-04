@@ -16,6 +16,7 @@ SamplePlayer : IM_Module {
   var monoOrStereo;
   var sequencerDict, <sequencerClock;
   var <tempo;
+  var sweepBus;
 
 
   *newMono {
@@ -35,13 +36,16 @@ SamplePlayer : IM_Module {
   }
 
   prInitStereo { | path |
+    var pathName;
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+      pathName = PathName.new(path);
+      server.sync;
       monoOrStereo = 'stereo';
       this.prAddSynthDefs;
       samplerDict = IdentityDictionary.new;
-      buffer = Buffer.read(server, path);
+      buffer = Buffer.read(server, pathName.absolutePath);
       server.sync;
       //// parameters:
       // envelope:
@@ -61,6 +65,8 @@ SamplePlayer : IM_Module {
       //sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
+      sweepBus = Bus.control;
 
       sequencerDict = IdentityDictionary.new;
       sequencerClock = TempoClock.new;
@@ -99,6 +105,8 @@ SamplePlayer : IM_Module {
       //sustainTime = buffer.numFrames * server.sampleRate - (attackTime + releaseTime);
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
+      sweepBus = Bus.control;
 
       sequencerDict = IdentityDictionary.new;
       sequencerClock = TempoClock.new;
@@ -345,6 +353,12 @@ SamplePlayer : IM_Module {
         );
     });
     samplerDict.do({ | synth | synth.set(\tremWaveform, tremoloWaveform);});
+  }
+
+  sweepFilter { | startFreq = 1000, endFreq = 100, time =  1 |
+    { Out.kr(sweepBus, XLine.kr(startFreq, endFreq, time, doneAction: 2)); }.play(group);
+    samplerDict.do({ | synth | synth.set(\filterCutoff, sweepBus.asMap); });
+    filterCutoff = endFreq;
   }
 
   //////// pattern sequencer:

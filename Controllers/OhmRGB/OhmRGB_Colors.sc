@@ -4,7 +4,7 @@
   turnColor { | num, color = \off |
     switch(color,
       { \off }, { midiOutPort.noteOn(16, colorArray[num], 0) },
-      { \red }, { midiOutPort.noteOn(16, colorArray[num], 16) },
+      { \red }, { midiOutPort.noteOn(16, colorArray[num], 16); },
       { \green }, { midiOutPort.noteOn(16, colorArray[num], 127) },
       { \blue }, { midiOutPort.noteOn(16, colorArray[num], 32) },
       { \yellow }, { midiOutPort.noteOn(16, colorArray[num], 64) },
@@ -14,38 +14,14 @@
     );
   }
 
-  turnOff { | num |
-    this.turnColor(num, \off);
-  }
-
-  turnRed { | num |
-    this.turnColor(num, \red);
-  }
-
-  turnGreen { | num |
-    this.turnColor(num, \green);
-  }
-
-  turnBlue { | num |
-    this.turnColor(num, \blue);
-  }
-
-  turnYellow { | num |
-    this.turnColor(num, \yellow);
-  }
-
-  turnMagenta { | num |
-    this.turnColor(num, \magenta);
-  }
-
-  turnCyan { | num |
-    this.turnColor(num, \cyan);
-  }
-
-  turnWhite { | num |
-    this.turnColor(num, \white);
-  }
-
+  turnOff { | num | this.turnColor(num, \off); }
+  turnRed { | num | this.turnColor(num, \red); }
+  turnGreen { | num |this.turnColor(num, \green); }
+  turnBlue { | num | this.turnColor(num, \blue); }
+  turnYellow { | num | this.turnColor(num, \yellow); }
+  turnMagenta { | num | this.turnColor(num, \magenta); }
+  turnCyan { | num | this.turnColor(num, \cyan); }
+  turnWhite { | num | this.turnColor(num, \white); }
   turnRandomColor { | num |
     var color;
     color = [\red, \green, \blue, \yellow, \magenta, \cyan, \white].choose;
@@ -58,8 +34,10 @@
     var num = (column * 8) + row;
     if( page == 'active', { page = activePageKey; });
     if( bank == 'active', { bank = pageDict[page].activeGridBnk });
+    if( page == activePageKey, {
+      if( color != activePage.getColor(num), { this.turnColor(num, color); });
+    });
     pageDict[page].turnGridColor(column, row, color, bank);
-    if( page == activePageKey, { this.turnColor(num, activePage.getColor(num)); });
   }
 
   turnGridOff { | column = 0, row = 0, bank = 'active', page = 'active' |
@@ -142,8 +120,11 @@
     var buttonArray = [65, 73, 66, 74];
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeLeftButtonsBnk; });
+    if( page == activePageKey, {
+      if( color != activePage.getColor(buttonArray[num]),
+        { this.turnColor(buttonArray[num], color); });
+    });
     pageDict[page].turnLeftButtonColor(num, color, bank);
-    if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
 
   turnLeftButtonOff { | num, bank = 'active', page = 'active' |
@@ -182,8 +163,11 @@
     var buttonArray = [67, 75, 68, 76];
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeRightButtonsBnk; });
+    if( page == activePageKey, {
+      if( color != activePage.getColor(buttonArray[num]),
+        { this.turnColor(buttonArray[num], color); });
+    });
     pageDict[page].turnRightButtonColor(num, color, bank);
-    if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
 
   turnRightButtonOff { | num, bank = 'active', page = 'active' |
@@ -222,8 +206,11 @@
     var buttonArray = [64, 72];
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeCrossfaderButtonsBnk; });
+    if( page == activePageKey, {
+      if(color != activePage.getColor(buttonArray[num]),
+        { this.turnColor(buttonArray[num], color); });
+    });
     pageDict[page].turnCrossfaderButtonColor(num, color, bank);
-    if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
 
   turnCrossfaderButtonOff { | num = 0, bank = 'active', page = 'active' |
@@ -263,8 +250,11 @@
     var buttonArray = [69, 77, 70, 78, 71, 79, 80];
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeControlButtonsBnk; });
+    if( page == activePageKey, {
+      if(color != activePage.getColor(buttonArray[num]),
+        { this.turnColor(buttonArray[num], color); });
+    });
     pageDict[page].turnControlButtonColor(column, row, color, bank);
-    if( page == activePageKey, { this.turnColor(buttonArray[num], activePage.getColor(buttonArray[num])); });
   }
 
   turnControlButtonOff { | column = 0, row = 0, bank = 'active', page = 'active' |

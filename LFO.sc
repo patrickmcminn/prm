@@ -9,7 +9,7 @@ prm
 LFO {
 
   var <isLoaded;
-  var synth;
+  var <synth;
   var group, <outBus;
   var lfoWaveform;
 
@@ -51,7 +51,7 @@ LFO {
       lfoSine = SinOsc.kr(freq);
       lfoSaw = LFSaw.kr(freq, 1);
       lfoRevSaw = LFSaw.kr(freq, 1) * -1;
-      lfoRect = LFPulse.kr(freq, width: lfoPulseWidth);
+      lfoRect = LFPulse.kr(freq, width: lfoPulseWidth).range(-1, 1).lag2(0.05);
       lfoNoise0 = LFNoise0.kr(freq);
       lfoNoise2 = LFNoise2.kr(freq);
       lfo = SelectX.kr(lfoWaveform, [lfoSine, lfoSaw, lfoRevSaw, lfoRect, lfoNoise0, lfoNoise2]);

@@ -5,7 +5,6 @@ prm
 
 OhmRGB_Page : OhmRGB {
 
-  //var midiInPort, midiOutPort;
   var noteOnFuncArray, noteOffFuncArray, controlFuncArray, colorArray, animationArray;
 
   var leftSlidersBankArray, rightSlidersBankArray, leftKnobsBankArray, rightKnobsBankArray, crossfaderBankArray;
@@ -14,31 +13,22 @@ OhmRGB_Page : OhmRGB {
   var <gridBankArray, <leftButtonsBankArray, <rightButtonsBankArray, <crossfaderButtonsBankArray, <controlButtonsBankArray;
   var <activeGridBnk, <activeLeftButtonsBnk, <activeRightButtonsBnk, <activeCrossfaderButtonsBnk, <activeControlButtonsBnk;
 
-  var <loadFunctionDict, <offLoadFunctionDict;
+  var <loadFunctionDict, <offLoadFunctionDict, <storageDict;
 
   *new {
     ^super.new.prInit;
   }
 
   prInit {
-    //this.prInitMIDI;
     loadFunctionDict = IdentityDictionary.new;
     offLoadFunctionDict = IdentityDictionary.new;
+    storageDict = IdentityDictionary.new;
     this.prMakeResponders;
     this.prMakeColorArray;
     this.prMakeAnimationArray;
     this.prMakeNoteBanks;
     this.prMakeControlBanks;
   }
-
-  /*
-  prInitMIDI {
-    MIDIIn.connectAll;
-    midiInPort = MIDIIn.findPort("OhmRGB", "Controls");
-    midiOutPort = MIDIOut.newByName("OhmRGB", "Controls");
-    midiOutPort.latency = 0;
-  }
-  */
 
   prMakeResponders {
     this.prMakeNoteResponders;
@@ -137,6 +127,13 @@ OhmRGB_Page : OhmRGB {
     offLoadFunctionDict[name] = func;
   }
 
+  store { | name, item |
+    storageDict[name] = item;
+  }
+
+  removeFromStorage { | name |
+    storageDict.removeAt[name];
+  }
   //////// Convenience Methods:
 
   setGridFunc { | column = 0, row = 0, func, type = \noteOn, bank = 'active' |

@@ -13,7 +13,12 @@ device = "iConnectAudio4+";
 ohm = "HST1";
 base = "HST3";*/
 
-s.boot;
+//
+// s.options.blockSize = 64;
+// s.options.memSize = 131072;
+// s.options.numAudioBusChannels = 512;
+
+//s.boot;
 
 r {
   ~prm = AudioSystem.new(2);
@@ -23,14 +28,30 @@ r {
   try { ~ohm = OhmRGB.new; };
   try { ~base = Base.new; };
 
+  ~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
+  ~base = Base.new("iConnectAudio4+", "HST3");
+
   "/Global Functions/Load Global Functions.scd".loadRelative;
   "/System Scripts/Load System Scripts.scd".loadRelative;
-  //"/Songs/Load Songs.scd".loadRelative;
+  "/Songs/Load Songs.scd".loadRelative;
 
 }.play;
 
+
 s.meter;
 
+
+
+
+~ohm.setPage('habit');
+~base.setPage('habit');
+
+Server.killAll;
+
+
+MIDIIn.connectAll;
+~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
+~base = Base.new("iConnectAudio4+", "HST3");
 
 
 

@@ -75,11 +75,11 @@ Looper : IM_Module {
       isPlaying = false;
       isRecording = false;
       isStereo = true;
-      buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 1);
+      buffer = Buffer.alloc(server, server.sampleRate * bufferSize, 2);
       inBus = Bus.audio(server);
       server.sync;
 
-      eq = Equalizer.newMono(mixer.chanMono(0), group, 'addToHead');
+      eq = Equalizer.newMono(mixer.chanStereo(0), group, 'addToHead');
       while( { try { eq.isLoaded } != true }, { 0.001.wait; });
       looper = Synth(\prm_looperMono, [\inBus, inBus, \outBus, eq.inBus, \buffer, buffer, \mix, mix],
         group, \addToHead);

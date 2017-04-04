@@ -13,7 +13,7 @@ FakeGuitar : IM_Module {
   var attack, sustain, release;
   var vibratoSpeed, vibratoDepth;
 
-  var noteDict, sequencerDict, <sequencerClock, <tempo;
+  var noteDict, <sequencerDict, <sequencerClock, <tempo;
 
   *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, relGroup = nil, addAction = 'addToTail' |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -189,11 +189,11 @@ FakeGuitar : IM_Module {
     });
   }
 
-  setAttack { | atk = 0.05 |
+  setAttackTime { | atk = 0.05 |
     attack = atk;
     noteDict.do({ | synth | synth.set(\attack, attack); });
   }
-  setRelease { | rel = 0.05 |
+  setReleaseTime { | rel = 0.05 |
     release = rel;
     noteDict.do({ | synth | synth.set(\release, release); });
   }
@@ -241,8 +241,8 @@ FakeGuitar : IM_Module {
   setReverbDamp { | damp = 0.3 | synth.set(\damp, damp); }
   setLowGain { | gain = 6 | synth.set(\lowGain, gain); }
   setHighGain { | gain = 3 | synth.set(\highGain, gain); }
-  setCutoff { | cutoff = 5364 | synth.set(\cutoff, cutoff); }
-  setRQ { | rq = 1 | synth.set(\rq, rq); }
+  setFilterCutoff { | cutoff = 5364 | synth.set(\cutoff, cutoff); }
+  setFilterRQ { | rq = 1 | synth.set(\rq, rq); }
   setFilterType { | type = 0 | synth.set(\filterType, type); }
   setWaveLossAmount { | amount = 0 | synth.set(\waveLossAmount, amount); }
 

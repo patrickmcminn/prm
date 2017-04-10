@@ -70,9 +70,10 @@ FalseSelf_MainTrumpet : IM_Processor {
   }
 
   prInitializeDistortion {
-    distortion.preEQ.setHighPassCutoff(200);
-    distortion.postEQ.setHighPassCutoff(200);
-    distortion.postEQ.setLowPassCutoff(10000);
+    distortion.preEQ.setHighPassCutoff(100);
+    distortion.postEQ.setHighPassCutoff(100);
+    distortion.postEQ.setLowPassCutoff(7500);
+    distortion.mixer.setPreVol(-9);
   }
 
   //////// public functions:

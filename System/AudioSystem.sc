@@ -71,7 +71,7 @@ AudioSystem {
       granulator.delay.setMix(0);
 
       //reverb = Wash.newStereo(systemMixer.inBus(0), relGroup: systemGroup, addAction: \addToHead);
-      reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.4Cathedral'],
+      reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.2EmptyChurch'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });

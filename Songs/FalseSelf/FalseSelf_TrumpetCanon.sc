@@ -48,6 +48,9 @@ FalseSelf_TrumpetCanon : IM_Processor {
       postEQ.setLowPassCutoff(5350);
       postEQ.setHighPassCutoff(30);
       processor.delay.setMix(0);
+      processor.distortion.setDistortionGain(2);
+      processor.distortion.postEQ.setLowPassCutoff(10000);
+      processor.distortion.mixer.setPreVol(-9);
 
       inputIsMuted = true;
       delaysMuted = false;
@@ -86,6 +89,8 @@ FalseSelf_TrumpetCanon : IM_Processor {
     }).add;
 
   }
+
+  //inBus { ^processor.inBus }
 
   //////// public functions:
 

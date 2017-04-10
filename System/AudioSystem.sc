@@ -76,13 +76,7 @@ AudioSystem {
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
 
-
       //reverb.setMix(1);
-
-      reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.4Cathedral'],
-        relGroup: systemGroup, addAction: \addToHead);
-      server.sync;
-      while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
@@ -95,9 +89,9 @@ AudioSystem {
       while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
 
 
-      submixerA.mixer.setPreVol(6);
-      submixerB.mixer.setPreVol(6);
-      submixerC.mixer.setPreVol(6);
+      submixerA.mixer.setPreVol(3);
+      submixerB.mixer.setPreVol(3);
+      submixerC.mixer.setPreVol(3);
 
       modular = IM_Mixer_1Ch.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus,
         nil, false, procGroup, \addToHead);
@@ -114,7 +108,7 @@ AudioSystem {
       moog = IM_Mixer_1Ch.new(this.submixA, reverb.inBus, granulator.inBus, modularSend.inBus, nil, false,
         procGroup, \addToHead);
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
-      moogIn = IM_HardwareIn.new(2, moog.chanMono(0), procGroup, \addToHead);
+      moogIn = IM_HardwareIn.new(3, moog.chanMono(0), procGroup, \addToHead);
       while({ try { moogIn.isLoaded } != true }, { 0.001.wait; });
 
       // modular + mic come in muted

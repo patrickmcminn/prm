@@ -13,7 +13,7 @@ FakeGuitar : IM_Module {
   var attack, sustain, release;
   var vibratoSpeed, vibratoDepth;
 
-  var noteDict, sequencerDict, <sequencerClock, <tempo;
+  var noteDict, <sequencerDict, <sequencerClock, <tempo;
 
   *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, relGroup = nil, addAction = 'addToTail' |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;

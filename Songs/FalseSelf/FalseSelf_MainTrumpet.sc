@@ -22,17 +22,17 @@ FalseSelf_MainTrumpet : IM_Processor {
 
       server.sync;
 
-      reverb = IM_Reverb.new(mixer.chanStereo(0), mix: 0.5, roomSize: 0.8, damp: 0.45,
+      reverb = IM_Reverb.new(mixer.chanStereo(0), mix: 0.4, roomSize: 0.9, damp: 0.2,
         relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       eq = Equalizer.newStereo(reverb.inBus, relGroup: group, addAction: \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
-      delay = SimpleDelay.newStereo(eq.inBus, 0.375, 0.22, 5, relGroup: group, addAction: \addToHead);
+      delay = SimpleDelay.newStereo(reverb.inBus, 0.375, 0.22, 5, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
-      distortion = Distortion.newMono(delay.inBus, 100, relGroup: group, addAction: \addToHead);
+      distortion = Distortion.newMono(delay.inBus, 1000, relGroup: group, addAction: \addToHead);
       while({ try { distortion.isLoaded } != true }, { 0.001.wait; });
 
       //input = IM_HardwareIn.new(inBus, distortion.inBus, relGroup: group, addAction: \addToHead);
@@ -54,24 +54,26 @@ FalseSelf_MainTrumpet : IM_Processor {
   inBus { ^distortion.inBus }
 
   prInitializeReverb {
-    reverb.setLowPassFreq(1040);
+    reverb.setLowPassFreq(5500);
   }
 
   prInitializeEQ {
-    eq.setLowPassCutoff(3880);
+    eq.setLowPassCutoff(9500);
     eq.setHighPassCutoff(173);
     eq.setPeak1Freq(1000);
     eq.setPeak1Gain(3.1);
+    eq.mixer.setPreVol(-15);
   }
 
   prInitializeDelay {
-    delay.setMix(0.45);
+    delay.setMix(0.35);
   }
 
   prInitializeDistortion {
-    distortion.preEQ.setHighPassCutoff(200);
-    distortion.postEQ.setHighPassCutoff(200);
-    distortion.postEQ.setLowPassCutoff(4000);
+    distortion.preEQ.setHighPassCutoff(100);
+    distortion.postEQ.setHighPassCutoff(100);
+    distortion.postEQ.setLowPassCutoff(7500);
+    distortion.mixer.setPreVol(-9);
   }
 
   //////// public functions:

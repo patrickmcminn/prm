@@ -8,7 +8,7 @@ Splitter {
 
   var <isLoaded;
   var server;
-  var group;
+  var <group;
   var <inBus, splitBus, nilBus;
   var inputSynth, outputSynthArray;
 

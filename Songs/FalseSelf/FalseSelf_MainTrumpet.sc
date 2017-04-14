@@ -9,6 +9,8 @@ FalseSelf_MainTrumpet : IM_Processor {
   var <isLoaded;
   var server;
   var <distortion, <delay, <eq, <reverb;
+  var <buffer, recordBus;
+  var <splitter;
 
   *new { |outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -20,7 +22,12 @@ FalseSelf_MainTrumpet : IM_Processor {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
+      recordBus = Bus.audio(server, 1);
+      buffer = Buffer.alloc(server, server.sampleRate * 29.5);
+
       server.sync;
+
+      this.prAddSynthDefs;
 
       reverb = IM_Reverb.new(mixer.chanStereo(0), mix: 0.4, roomSize: 0.9, damp: 0.2,
         relGroup: group, addAction: \addToHead);
@@ -34,6 +41,9 @@ FalseSelf_MainTrumpet : IM_Processor {
 
       distortion = Distortion.newMono(delay.inBus, 1000, relGroup: group, addAction: \addToHead);
       while({ try { distortion.isLoaded } != true }, { 0.001.wait; });
+
+      splitter = Splitter.newMono(2, [distortion.inBus, recordBus], false, group, \addToHead);
+      while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
       //input = IM_HardwareIn.new(inBus, distortion.inBus, relGroup: group, addAction: \addToHead);
 
@@ -51,7 +61,24 @@ FalseSelf_MainTrumpet : IM_Processor {
 
   }
 
-  inBus { ^distortion.inBus }
+  inBus { ^splitter.inBus }
+
+  prAddSynthDefs {
+    SynthDef(\prm_falseSelf_TrumpetRecorder, {
+      | inBus, buffer |
+      var input, record;
+      input = In.ar(inBus, 1);
+      record = RecordBuf.ar(input, buffer, 0, 1, 0, 1, 0, 1, 2);
+    }).add;
+
+    SynthDef(\prm_falseSelf_trumpetWarp, {
+      | outBus = 0, buffer, time = 19.5, amp = 1 |
+      var warp, sig;
+      warp = Warp1.ar(1, buffer, Line.kr(0, 1, time, doneAction: 2), 1);
+      sig = warp * amp;
+      Out.ar(outBus, sig);
+    }).add;
+  }
 
   prInitializeReverb {
     reverb.setLowPassFreq(5500);
@@ -79,11 +106,19 @@ FalseSelf_MainTrumpet : IM_Processor {
   //////// public functions:
 
   free {
+    splitter.free;
     distortion.free;
     delay.free;
     eq.free;
     reverb.free;
+    recordBus.free;
     this.freeProcessor;
+  }
+
+  recordLoop { Synth(\prm_falseSelf_TrumpetRecorder, [\inBus, recordBus, \buffer, buffer], splitter.group, 'addAfter'); }
+  playWarpedLoop { | time = 19.5 |
+    Synth(\prm_falseSelf_trumpetWarp, [\outBus, distortion.inBus, \buffer, buffer, \time, time],
+      group, \addToHead);
   }
 
 }

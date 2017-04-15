@@ -9,6 +9,8 @@ FalseSelf_BellSection : IM_Module {
   var <isLoaded, server;
   var <synth, <bells;
 
+  var <delayTime;
+
   *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
     relGroup = nil, addAction = \addToHead |
     ^super.new(2, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -18,6 +20,9 @@ FalseSelf_BellSection : IM_Module {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+
+      delayTime = 0.1875;
+
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
       synth = GlockSynth.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { synth.isLoaded } != true }, { 0.001.wait; });
@@ -43,4 +48,11 @@ FalseSelf_BellSection : IM_Module {
       synth.releaseNote(freq);
     }.fork;
   }
+
+  setDelayTime { | time = 0.1875 |
+    delayTime = time;
+    synth.delay.setDelayTime(delayTime);
+    bells.delay.setDelayTime(delayTime);
+  }
+
 }

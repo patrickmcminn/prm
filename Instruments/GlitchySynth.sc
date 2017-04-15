@@ -25,6 +25,9 @@ GlitchySynth : IM_Module {
       this.prAddSynthDefs;
       server.sync;
 
+      mixer.tglMute(0);
+      mixer.tglMute(1);
+
       glitchLooper = GlitchLooper.newStereo(mixer.chanStereo(1), 1, relGroup: group, addAction: \addToHead);
       while({ try { glitchLooper.isLoaded } != true }, { 0.001.wait; });
 
@@ -35,6 +38,14 @@ GlitchySynth : IM_Module {
       sequencerClock = TempoClock.new;
 
       server.sync;
+
+      this.playNote(0);
+      this.releaseNote(0);
+      server.sync;
+      mixer.tglMute(0);
+      mixer.tglMute(1);
+
+      mixer.setVol(1, -6);
 
       isLoaded = true;
     }
@@ -61,12 +72,12 @@ GlitchySynth : IM_Module {
       |
       inBus = 0, outBus1 = 0, outBus2 = 0, amp = 1, pan = 0,
       attack = 0.05, susLevel = 1, release = 0.05, gate = 0,
-      distAmp = 0.1, distGain = 10, bitDepth = 8, noiseAmp = 0,
-      cutoff = 3580, rq = 1, waveLossAmount = 0
+      distAmp = 0.1, distGain = 10, bitDepth = 6, noiseAmp = 0,
+      cutoff = 3000, rq = 1, waveLossAmount = 0
       |
 
       var input, crush, dist, noise, distSum, env;
-      var buffer, playHead, recordHead, recorder, looper, sum, filter, panner, waveLoss, sig;
+      var buffer, playHead, recordHead, recorder, looper, sum, filter, panner, waveLoss, highPass, sig;
 
       input = In.ar(inBus);
 
@@ -81,9 +92,11 @@ GlitchySynth : IM_Module {
       panner = Pan2.ar(filter, pan);
       waveLoss = WaveLoss.ar(panner, waveLossAmount, 100, 2);
 
+      highPass = HPF.ar(waveLoss, 50);
+
       env = EnvGen.kr(Env.asr(attack, susLevel, release), gate);
 
-      sig = waveLoss * env;
+      sig = highPass * env;
       sig = sig * amp;
       Out.ar(outBus1, sig);
       Out.ar(outBus2, sig);

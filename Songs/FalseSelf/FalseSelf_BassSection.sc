@@ -9,6 +9,7 @@ FalseSelf_BassSection :IM_Module {
 
   var server, <isLoaded;
   var <satur, <feedback, <guitar, <moog;
+  var <saturFadeBus, <feedbackFadeBus, <moogFadeBus;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead',
     moogDeviceName = "iConnectAudio4+", moogPortName = "DIN" |
@@ -36,6 +37,9 @@ FalseSelf_BassSection :IM_Module {
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
 
 
+      saturFadeBus = Bus.control;
+      feedbackFadeBus = Bus.control;
+      moogFadeBus = Bus.control;
 
       server.sync;
       moog.makeSequence('preChorus');
@@ -79,6 +83,8 @@ FalseSelf_BassSection :IM_Module {
       guitar.setFilterCutoff(1200);
       feedback.setFilterCutoff(30);
 
+      satur.mixer.setVol(-6);
+
       server.sync;
 
       mixer.setMasterVol(-9);
@@ -93,6 +99,9 @@ FalseSelf_BassSection :IM_Module {
     feedback.free;
     satur.free;
     moog.free;
+    feedbackFadeBus.free;
+    saturFadeBus.free;
+    moogFadeBus.free;
     this.freeModule;
   }
 
@@ -255,6 +264,49 @@ FalseSelf_BassSection :IM_Module {
     satur.releaseNote(freq);
     feedback.releaseNote(freq);
     guitar.releaseNote(freq);
+  }
+
+  playPreChorus { | clock |
+    moog.playSequence(\preChorus, clock);
+    satur.playSequence(\preChorus, clock);
+    feedback.playSequence(\preChorus, clock);
+    feedback.playSequence(\preChorusOctave, clock);
+    feedback.playSequence(\preChorusSecondOctave, clock);
+  }
+
+  playChorus { | clock |
+    moog.playSequence(\chorus, clock);
+    satur.playSequence(\chorus, clock);
+    feedback.playSequence(\chorus, clock);
+    feedback.playSequence(\chorusOctave, clock);
+    feedback.playSequence(\chorusSecondOctave, clock);
+    guitar.playSequence(\chorus, clock);
+  }
+
+  playPostChorus { | clock |
+    moog.playSequence(\postChorus, clock);
+    satur.playSequnece(\postChorus, clock);
+  }
+
+  playEnd { | clock |
+    satur.playSequence(\postChorus, clock);
+    feedback.playSequence(\postChorus, clock);
+    feedback.playSequencE(\postChorusOctave, clock);
+  }
+
+  fadeSaturSynth { | start = 0, end = 0.5, time = 21 |
+    { Out.kr(saturFadeBus, Line.kr(start, end, time, doneAction: 2)); }.play;
+    satur.mixer.mapAmp(saturFadeBus);
+  }
+
+  fadeFeedbackSynth { | start = 0, end = 1, time = 21 |
+    { Out.kr(feedbackFadeBus, Line.kr(start, end, time, doneAction: 2)); }.play;
+    feedback.mixer.mapAmp(feedbackFadeBus);
+  }
+
+  fadeMoog { | start = 0, end = 1, time = 21 |
+    { Out.kr(moogFadeBus, Line.kr(start, end, time, doneAction: 2)); }.play;
+    moog.mixer.mapAmp(moogFadeBus);
   }
 }
 

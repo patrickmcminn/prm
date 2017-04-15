@@ -296,19 +296,19 @@ FalseSelf_Kick : IM_Module {
   playDrum2 { | vol = -6 | drums.playSampleOneShot(2, vol); }
   playDrum3 { | vol = -6 | drums.playSampleOneShot(3, vol); }
 
-  playSection1 { drums.playSequence(\section1); }
+  playSection1 { | clock = 'internal', quant = nil | drums.playSequence(\section1, clock, quant); }
   stopSection1 { drums.stopSequence(\section1); }
 
-  playChorus1 { drums.playSequence(\chorus1); }
+  playChorus1 { | clock = 'internal', quant = nil | drums.playSequence(\chorus1, clock, quant); }
   stopChorus1 { drums.stopSequence(\chorus1); }
 
-  playChorus2 { drums.playSequence(\chorus2); }
+  playChorus2 { | clock = 'internal', quant = nil | drums.playSequence(\chorus2, clock, quant); }
   stopChorus2 { drums.stopSequence(\chorus2); }
 
-  playCanon { drums.playSequence(\canon); }
+  playCanon { | clock = 'internal', quant = nil | drums.playSequence(\canon, clock, quant); }
   stopCanon { drums.stopSequence(\canon); }
 
-  playEnding { drums.playSequence(\ending); }
+  playEnding { | clock = 'internal', quant = nil | drums.playSequence(\ending, clock, quant); }
   stopEnding { drums.stopSequence(\ending); }
 
   setSequencerClockTempo { | tempo = 160 | drums.setSequencerClockTempo(tempo); }

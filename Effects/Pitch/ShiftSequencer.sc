@@ -115,10 +115,10 @@ ShiftSequencer : IM_Processor {
     sequencerDict[uniqueName].addKey(key, action);
   }
 
-  playSequence { | uniqueName, clock = 'internal' |
+  playSequence { | uniqueName, clock = 'internal', quant = nil |
     var playClock;
     if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
-    sequencerDict[uniqueName].play(clock);
+    sequencerDict[uniqueName].play(clock, quant);
   }
 
   resetSequence { | uniqueName | sequencerDict[uniqueName].reset; }

@@ -13,6 +13,8 @@ FalseSelf : Song {
   var <fakeGuitar, <bellSection, <melodySynth;
   var <bassSection, <modular, <modularInput;
   var <drums, <mainTrumpet, <mainTrumpetInput;
+	var <trumpetCanon, <drones, <sixteenthDrones, <orchestra, <planeBuzz, <flute;
+
   var <modularRoutine;
 
   *new { | mixAOutBus, mixBOutBus, mixCOutBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
@@ -215,7 +217,50 @@ FalseSelf : Song {
       //// Chorus: ////
       ///////////////////
 
+			// main trumpet:
+			clock.sched((55*4)-1, { mainTrumpet.recordLoop });
+			clock.sched(272-1, { mainTrumpet.playWarpedLoop(19.5); });
 
+			// bass:
+			clock.sched((55*4) -1, { bassSection.playChorus(clock); });
+
+			// melody synth:
+			clock.sched((55*4)-1, { melodySynth.playChorus(clock); });
+
+			// drums:
+			clock.sched((55*4) -1, { drums.playChorus1(clock); });
+
+			//// loaders:
+
+			// trumpet canon:
+			clock.sched((55*4)-1, {
+				trumpetCanon = FalseSelf_TrumpetCanon.new(mixerA.chanStereo(3), relGroup: group, addAction: \addToHead);
+			});
+
+			// drones:
+			clock.sched((55*4)-1, {
+				drones = FalseSelf_CrudeDrones.new(mixerC.chanStereo(1), relGroup: group, addAction: \addToHead);
+			});
+
+			// 16th drones:
+			clock.sched((55*4)-1, {
+				sixteenthDrones = FalseSelf_16thDrones.new(mixerC.chanStereo(2), relGroup: group, addAction: \addToHead);
+			});
+
+			// plane buzz:
+			clock.sched((55*4)-1, {
+				planeBuzz = FalseSelf_PlaneNoise.new(mixerC.chanStereo(3), relGroup: group, addAction: \addToHead);
+			});
+
+			// orchestra:
+			clock.sched((55*4) -1, {
+				orchestra = FalseSelf_Orchestra.new(mixerB.chanStereo(3), relGroup: group, addAction: \addToHead);
+			});
+
+			// flute:
+			clock.sched((55*4)-1, {
+				flute = FalseSelf_Flute.new(mixerB.chanStereo(4), relGroup: group, addAction: \addToHead);
+			});
     });
   }
 

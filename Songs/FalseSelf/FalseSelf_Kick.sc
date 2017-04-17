@@ -312,4 +312,28 @@ FalseSelf_Kick : IM_Module {
   stopEnding { drums.stopSequence(\ending); }
 
   setSequencerClockTempo { | tempo = 160 | drums.setSequencerClockTempo(tempo); }
+
+  fadeVolume { | start = -inf, end = 0, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
+      mixer.mapAmp(bus);
+      { bus.free }.defer(time);
+      { mixer.setVol(end) }.defer(time);
+    }.fork;
+  }
+
+  sweepFilter { | startFreq = 20, endFreq = 3500, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, XLine.kr(startFreq, endFreq, time, doneAction: 2)); }.play;
+      highPass.set(\cutoff, bus.asMap);
+      { bus.free }.defer(time);
+      { highPassCutoff = endFreq; }.defer(time);
+    }.fork;
+  }
+
+
 }

@@ -27,7 +27,7 @@ FalseSelf_MelodySynth : IM_Module {
       mixer.tglMute;
 
       synth.setAttackTime(15);
-      synth.setReleaseTime(7);
+      synth.setReleaseTime(0.05);
 
       this.prMakeSequence;
 
@@ -115,5 +115,16 @@ FalseSelf_MelodySynth : IM_Module {
     synth.playSequence(\chorusGSharp, clock);
     synth.playSequence(\chorusDSharp, clock);
     synth.playSequence(\chorusE, clock);
+  }
+
+  fadeVolume {  | start = -inf, end = 0, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
+      mixer.mapAmp(bus);
+      { bus.free }.defer(time);
+      { mixer.setVol(end) }.defer(time);
+    }.fork;
   }
 }

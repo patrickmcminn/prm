@@ -116,9 +116,23 @@ FalseSelf_MainTrumpet : IM_Processor {
   }
 
   recordLoop { Synth(\prm_falseSelf_TrumpetRecorder, [\inBus, recordBus, \buffer, buffer], splitter.group, 'addAfter'); }
+
   playWarpedLoop { | time = 19.5 |
     Synth(\prm_falseSelf_trumpetWarp, [\outBus, distortion.inBus, \buffer, buffer, \time, time],
       group, \addToHead);
   }
+
+  fadeVolume { | start = -inf, end = 0, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
+      mixer.mapAmp(bus);
+      { bus.free }.defer(time);
+      { mixer.setVol(end) }.defer(time);
+    }.fork;
+  }
+
+
 
 }

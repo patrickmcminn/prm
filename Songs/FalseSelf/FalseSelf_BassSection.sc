@@ -206,7 +206,7 @@ FalseSelf_BassSection :IM_Module {
     endNote = Pseq([1, 0, 1, -4, -3, 1, -3, -4, -6, -8, -13], 1);
 
 
-    satur.addKey(\preChorus, \dur, 56);
+    satur.addKey(\preChorus, \dur, Pseq([56], 1));
     satur.addKey(\preChorus, \octave, 3);
     satur.addKey(\preChorus, \legato, 1);
     satur.addKey(\preChorus, \note, [1, 13, 25]);

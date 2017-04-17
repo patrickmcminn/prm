@@ -8,7 +8,7 @@ FalseSelf : Song {
 
   var <server, <isLoaded;
 
-  var <clock;
+  var <clock, <bar, relBar;
 
   var <fakeGuitar, <bellSection, <melodySynth;
   var <bassSection, <modular, <modularInput;
@@ -54,7 +54,6 @@ FalseSelf : Song {
       while({ try { drums.isLoaded } != true }, { 0.001.wait; });
 
 
-
       modular = IM_Mixer_1Ch.new(mixerC.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { modular.isLoaded } != true }, { 0.001.wait; });
       modularInput = IM_HardwareIn.new(2, modular.chanMono, group, \addToHead);
@@ -65,6 +64,9 @@ FalseSelf : Song {
 
       this.prMakeModularRoutine;
       this.prSetInitialParameters;
+
+      relBar = 0;
+      clock.schedAbs(clock.beats.ceil, { | beat | bar = clock.bar - relBar; 1 });
 
       isLoaded = true;
     }
@@ -91,20 +93,22 @@ FalseSelf : Song {
     // bells:
     mixerA.setVol(1, -6);
     // trumpet:
-    mixerA.setVol(2, -25);
+    mixerA.setVol(2, 0);
 
     // melodySynth:
-    mixerB.setVol(0, -24);
+    mixerA.setVol(3, -6);
+
     // basses:
     mixerB.setVol(1, -6);
     bassSection.satur.mixer.setVol(-inf);
     bassSection.feedback.mixer.setVol(-inf);
     bassSection.moog.mixer.setVol(-inf);
+
     // drums:
-    mixerB.setVol(2, -inf);
 
     // modular:
-    mixerC.setVol(0, -inf);
+    //mixerC.setVol(0, -inf);
+    mixerC.setSendVol(0, 0, -10);
 
   }
 
@@ -116,6 +120,18 @@ FalseSelf : Song {
     bassSection.moog.assignableOut.triggerEnvelopeOneShot;
   }
 
+  prFadeModular { | start = -inf, end = 0, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
+      modular.mapAmp(bus);
+      { bus.free }.defer(time);
+      { modular.setVol(end) }.defer(time);
+    }.fork;
+  }
+
+
   //////// public functions:
 
   free {
@@ -124,5 +140,83 @@ FalseSelf : Song {
 
   playModularRoutine { modularRoutine.play; }
   stopModularRoutine { modularRoutine.stop.reset; }
+
+  //////// song sequencing:
+
+  startSong {
+    clock.playNextBar({
+
+      relBar = clock.bar;
+
+      ///////////////////////////
+      //// Clock Management: ////
+      //////////////////////////
+
+      //// tempo:
+      // chorus tempo:
+      clock.sched((55*4)-1, { clock.tempo = 106.66/60 });
+      // chorus pt.2 tempo:
+      clock.sched(272-1, { clock.tempo = 160/60 });
+
+      // meter:
+      clock.sched(228-1, { clock.beatsPerBar_(3) });
+      clock.sched(246-1, { clock.beatsPerBar_(4) });
+      clock.sched(254-1, { clock.beatsPerBar_(3) });
+      clock.sched(272-1, { clock.beatsPerBar_(4) });
+      clock.sched(280-1, { clock.beatsPerBar_(3) });
+      clock.sched(298-1, { clock.beatsPerBar_(4) });
+      clock.sched(306-1, { clock.beatsPerBar_(3) });
+      clock.sched(416-1, { clock.beatsPerBar_(4) });
+
+      ////////////////////
+      //// Beginning: ////
+      ///////////////////
+
+      //////// start FakeGuitar:
+      fakeGuitar.section1.playSampleOneShot;
+
+      ///////// Fake Guitar Modular:
+      clock.sched((21*4)-1, {
+        this.prFadeModular(-inf, 0, 4.5);
+        this.playModularRoutine;
+      });
+      clock.sched((33*4)-1, { mixerC.mute(0); });
+      clock.sched((35*4)-1, { mixerC.unMute(0); });
+      clock.sched((43*4)-1, { mixerC.mute(0); });
+      clock.sched((47*4)-1, { mixerC.unMute(0); });
+      clock.sched((55*4)-1, {
+        mixerC.mute(0);
+        this.stopModularRoutine;
+      });
+
+      //////// basses:
+      clock.sched((41*4)-1, {
+        bassSection.fadeMoog(0, 1, 15);
+        bassSection.fadeSaturSynth(0, 1, 21);
+        bassSection.fadeFeedbackSynth(0, 1, 21);
+        bassSection.feedback.sweepFilter(30, 1880, 21);
+      });
+      clock.sched((41*4)-1, { bassSection.playPreChorus(clock); });
+
+      //////// trumpet:
+      clock.sched((25*4)-1, { mainTrumpet.fadeVolume(-25, -12, 12); });
+      clock.sched((25*4)-1, { mixerA.unMute(2); });
+
+
+      //////// Melody Synth:
+      clock.sched((23*4)-1, { melodySynth.fadeVolume(-inf, 0, 20) });
+      clock.sched((23*4)-1, { melodySynth.playIntroSequence(clock) });
+
+      /////// Drums:
+      clock.sched((21*4)-1, { drums.fadeVolume(-inf, -3, 24); });
+      clock.sched((21*4)-1, { drums.playSection1(clock); });
+
+      ////////////////////
+      //// Chorus: ////
+      ///////////////////
+
+
+    });
+  }
 
 }

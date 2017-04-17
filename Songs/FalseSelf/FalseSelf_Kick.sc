@@ -55,6 +55,10 @@ FalseSelf_Kick : IM_Module {
       this.prSequenceEnding;
 
       server.sync;
+
+      mixer.setPreVol(3);
+
+
       isLoaded = true;
     }
   }
@@ -133,7 +137,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\section1, \dur, Pseq([Pseq([1], 64), Pseq([2], 24), Pseq([1], 16), Pseq([0.25], inf)], inf));
     drums.addKey(\section1, \buffer, Pseq([part1, part2, part3, part4], 1));
-    drums.addKey(\section1, \amp, 0.2);
+    drums.addKey(\section1, \amp, 0.75);
   }
 
   prSequenceChorus1 {
@@ -179,6 +183,21 @@ FalseSelf_Kick : IM_Module {
 
     part3 = Pseq([
       Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      Rest, Rest, Rest, Rest,
       [drum1, drum2], Rest, [drum1, drum2], Rest,
       [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
       Rest, Rest, Rest, Rest,
@@ -198,7 +217,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\chorus1, \dur, 0.25);
     drums.addKey(\chorus1, \buffer, Pseq([part1, part2, part3], 1));
-    drums.addKey(\chorus1, \amp, 0.2);
+    drums.addKey(\chorus1, \amp, 1);
   }
 
   prSequenceChorus2 {
@@ -226,7 +245,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\chorus2, \dur, 0.25);
     drums.addKey(\chorus2, \buffer, Pseq([part1, part2], 1));
-    drums.addKey(\chorus2, \amp, 0.2);
+    drums.addKey(\chorus2, \amp, 1);
   }
 
 
@@ -263,7 +282,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\canon, \dur, 0.25);
     drums.addKey(\canon, \buffer, Pseq([introPart, mainPart], 1));
-    drums.addKey(\canon, \amp, 0.2);
+    drums.addKey(\canon, \amp, 0.8);
   }
 
   prSequenceEnding {
@@ -271,7 +290,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\ending, \dur, Pseq([1], inf));
     drums.addKey(\ending, \buffer, Pseq([drum2], inf));
-    drums.addKey(\ending, \amp, 0.15);
+    drums.addKey(\ending, \amp, 0.6);
 
   }
 

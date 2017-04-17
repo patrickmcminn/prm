@@ -166,10 +166,9 @@ FalseSelf_BassSection :IM_Module {
     /*
     feedback.addKey(\postChorus, \octave, 3);
     feedback.addKey(\postChorus, \legato, 1);
-    feedback.addKey(\postChorus, \note, Pseq([[1, 13, 20]], inf));
+    feedback.addKey(\postChorus, \note, Pseq([1], inf));
     feedback.addKey(\postChorus, \dur, Pseq([4], inf));
     */
-
     /*
     feedback.addKey(\preEnd, \octave, 4);
     feedback.addKey(\preEnd, \legato, 1);
@@ -285,13 +284,22 @@ FalseSelf_BassSection :IM_Module {
 
   playPostChorus { | clock |
     moog.playSequence(\postChorus, clock);
-    satur.playSequnece(\postChorus, clock);
+    satur.playSequence(\postChorus, clock);
+    feedback.playNote(47.midicps);
+   // feedback.playNote(35.midicps);
+  }
+
+  stopPostChorus {
+    moog.stopSequence(\postChorus);
+    satur.stopSequence(\postChorus);
+    feedback.releaseNote(49.midicps);
+    //feedback.releaseNote(35.midicps);
   }
 
   playEnd { | clock |
     satur.playSequence(\postChorus, clock);
     feedback.playSequence(\postChorus, clock);
-    feedback.playSequencE(\postChorusOctave, clock);
+    feedback.playSequence(\postChorusOctave, clock);
   }
 
   fadeSaturSynth { | start = 0, end = 0.5, time = 21 |

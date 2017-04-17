@@ -13,7 +13,8 @@ FalseSelf : Song {
   var <fakeGuitar, <bellSection, <melodySynth;
   var <bassSection, <modular, <modularInput;
   var <drums, <mainTrumpet, <mainTrumpetInput;
-	var <trumpetCanon, <drones, <sixteenthDrones, <orchestra, <planeBuzz, <flute;
+	var <trumpetCanon, <trumpetCanonInput, <drones, <sixteenthDrones;
+  var <orchestra, <planeNoise, <midBuzz, <flute;
 
   var <modularRoutine;
 
@@ -28,11 +29,14 @@ FalseSelf : Song {
       isLoaded = false;
       while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
 
+      // make sure trumpet doesn't take your head off when the song loads:
       mixerA.tglMute(2);
 
       clock = TempoClock.new;
       server.sync;
       clock.tempo = 160/60;
+
+      //// Mixer A:
 
       fakeGuitar = FalseSelf_FakeGuitar.new(mixerA.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { fakeGuitar.isLoaded } != true }, { 0.001.wait; });
@@ -45,6 +49,13 @@ FalseSelf : Song {
       mainTrumpetInput = IM_HardwareIn.new(0, mainTrumpet.inBus, group, 'addToHead');
       while({ try { mainTrumpetInput.isLoaded } != true }, { 0.001.wait; });
 
+      trumpetCanon = FalseSelf_TrumpetCanon.new(mixerA.chanStereo(3), relGroup: group, addAction: \addToHead);
+      while({ try { trumpetCanon.isLoaded } != true }, { 0.001.wait; });
+      trumpetCanonInput = IM_HardwareIn.new(0, trumpetCanon.inBus, group, \addToHead);
+      while({ try { trumpetCanonInput.isLoaded } != true }, { 0.001.wait; });
+
+      //// Mixer B:
+
       melodySynth = FalseSelf_MelodySynth.new(mixerB.chanStereo(0), group, \addToHead);
       while({ try { melodySynth.isLoaded } != true }, { 0.001.wait; });
 
@@ -55,12 +66,28 @@ FalseSelf : Song {
       drums = FalseSelf_Kick.new(mixerB.chanStereo(2), relGroup: group, addAction: \addToHead);
       while({ try { drums.isLoaded } != true }, { 0.001.wait; });
 
+      orchestra = FalseSelf_Orchestra.new(mixerB.chanStereo(3), relGroup: group, addAction: \addToHead);
+      while({ try { orchestra.isLoaded } != true }, { 0.001.wait; });
+
+      //// Mixer C:
 
       modular = IM_Mixer_1Ch.new(mixerC.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { modular.isLoaded } != true }, { 0.001.wait; });
       modularInput = IM_HardwareIn.new(2, modular.chanMono, group, \addToHead);
       while({ try { modularInput.isLoaded } != true }, { 0.001.wait; });
 
+
+      drones = FalseSelf_CrudeDrones.new(mixerC.chanStereo(1), relGroup: group, addAction: \addToHead);
+      while({ try { drones.isLoaded } != true }, { 0.001.wait; });
+
+      sixteenthDrones = FalseSelf_16thDrones.new(mixerC.chanStereo(2), relGroup: group, addAction: \addToHead);
+      while({ try { sixteenthDrones.isLoaded } != true }, { 0.001.wait; });
+
+      planeNoise = FalseSelf_PlaneNoise.new(mixerC.chanStereo(3), relGroup: group, addAction: \addToHead);
+      while({ try { planeNoise.isLoaded } != true }, { 0.001.wait; });
+
+      midBuzz = FalseSelf_MidBuzz.new(mixerC.chanStereo(4), relGroup: group, addAction: \addToHead);
+      while({ try { midBuzz.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
 
@@ -89,28 +116,62 @@ FalseSelf : Song {
   }
 
   prSetInitialMixerLevels {
+    mixerA.setMasterVol(-6);
+    mixerB.setMasterVol(-6);
+    mixerC.setMasterVol(-6);
+
     // fake guitar:
-    mixerA.setVol(0, -3);
+    mixerA.setVol(0, -6);
     mixerA.setSendVol(0, 2, 0);
     // bells:
     mixerA.setVol(1, -6);
     // trumpet:
-    mixerA.setVol(2, 0);
+    mixerA.setVol(2, -6);
+    mainTrumpet.mixer.setVol(-25);
 
     // melodySynth:
-    mixerA.setVol(3, -6);
+    mixerB.setVol(0, -12);
 
     // basses:
-    mixerB.setVol(1, -6);
+    mixerB.setVol(1, -3);
     bassSection.satur.mixer.setVol(-inf);
     bassSection.feedback.mixer.setVol(-inf);
     bassSection.moog.mixer.setVol(-inf);
 
     // drums:
+    mixerB.setVol(2, -6);
+    mixerB.setSendVol(2, 0, -21);
+
 
     // modular:
     //mixerC.setVol(0, -inf);
-    mixerC.setSendVol(0, 0, -10);
+    mixerC.setSendVol(0, 0, -15);
+
+    // Trumpet Canon:
+    mixerA.setVol(3, -5);
+    mixerA.setSendVol(3, 0, -12);
+
+    // plane noise:
+    mixerC.setVol(3, -24);
+    mixerC.setSendVol(3, 0, -10);
+
+    // mid buzz:
+    mixerC.setVol(4, -12);
+    mixerC.setSendVol(4, 0, -10);
+
+    // crude drones:
+    mixerC.setVol(1, -12);
+    mixerC.setSendVol(1, 0, 0);
+    mixerC.setSendVol(1, 2, 0);
+
+    // 16th drones:
+    mixerC.setVol(2, -18);
+    mixerC.setSendVol(2, 0, -6);
+    mixerC.setSendVol(2, 2, 0);
+
+    // orchestra:
+    mixerB.setVol(3, -9);
+    mixerB.setSendVol(3, 0, -10);
 
   }
 
@@ -130,6 +191,54 @@ FalseSelf : Song {
       modular.mapAmp(bus);
       { bus.free }.defer(time);
       { modular.setVol(end) }.defer(time);
+    }.fork;
+  }
+
+  fadeMixerASend { | chan = 0, send = 0, start = -inf, end = 0, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
+      switch(send,
+        0, { mixerA.mapSend0Amp(chan, bus); },
+        1, { mixerA.mapSend1Amp(chan, bus); },
+        2, { mixerA.mapSend2Amp(chan, bus); },
+        3, { mixerA.mapSend3Amp(chan, bus); }
+      );
+      { mixerA.setSendVol(chan, send, end); }.defer(time);
+      { bus.free; }.defer(time);
+    }.fork;
+  }
+
+  fadeMixerBSend { | chan = 0, send = 0, start = -inf, end = 0, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
+      switch(send,
+        0, { mixerB.mapSend0Amp(chan, bus); },
+        1, { mixerB.mapSend1Amp(chan, bus); },
+        2, { mixerB.mapSend2Amp(chan, bus); },
+        3, { mixerB.mapSend3Amp(chan, bus); }
+      );
+      { mixerB.setSendVol(chan, send, end); }.defer(time);
+      { bus.free; }.defer(time);
+    }.fork;
+  }
+
+  fadeMixerCSend { | chan = 0, send = 0, start = -inf, end = 0, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
+      switch(send,
+        0, { mixerC.mapSend0Amp(chan, bus); },
+        1, { mixerC.mapSend1Amp(chan, bus); },
+        2, { mixerC.mapSend2Amp(chan, bus); },
+        3, { mixerC.mapSend3Amp(chan, bus); }
+      );
+      { mixerC.setSendVol(chan, send, end); }.defer(time);
+      { bus.free; }.defer(time);
     }.fork;
   }
 
@@ -213,15 +322,21 @@ FalseSelf : Song {
       clock.sched((21*4)-1, { drums.fadeVolume(-inf, -3, 24); });
       clock.sched((21*4)-1, { drums.playSection1(clock); });
 
+      // drums swell:
+      clock.sched((53*4)-1, { drums.fadeVolume(-3, 0, 3); });
+
       ////////////////////
       //// Chorus: ////
       ///////////////////
 
 			// main trumpet:
+      clock.sched((55*4)-1, { mainTrumpet.mixer.setVol(-6); });
 			clock.sched((55*4)-1, { mainTrumpet.recordLoop });
+      // chorus pt. 2:
 			clock.sched(272-1, { mainTrumpet.playWarpedLoop(19.5); });
 
 			// bass:
+      clock.sched((55*4)-1, { bassSection.feedback.setFilterCutoff(5720); });
 			clock.sched((55*4) -1, { bassSection.playChorus(clock); });
 
 			// melody synth:
@@ -229,38 +344,88 @@ FalseSelf : Song {
 
 			// drums:
 			clock.sched((55*4) -1, { drums.playChorus1(clock); });
+      // reverb send up:
+      clock.sched((55*4) -1, { mixerB.setSendVol(2, 0, -12) });
+      clock.sched(272-1, { mixerB.setSendVol(2, 0, -21); });
+      clock.sched(272-1, { drums.playChorus2(clock) });
 
-			//// loaders:
+      // reverb send up at the end of Chorus 2:
+      //clock.sched(316-1, { this.fadeMixerBSend(2, 0, -21, -11, 3); });
 
-			// trumpet canon:
-			clock.sched((55*4)-1, {
-				trumpetCanon = FalseSelf_TrumpetCanon.new(mixerA.chanStereo(3), relGroup: group, addAction: \addToHead);
-			});
+      ///////////////////////////
+      //// post-chorus/canon ////
+      //////////////////////////
 
-			// drones:
-			clock.sched((55*4)-1, {
-				drones = FalseSelf_CrudeDrones.new(mixerC.chanStereo(1), relGroup: group, addAction: \addToHead);
-			});
+      //// trumpet:
+      // mute:
+      clock.sched(324-1, { mixerA.mute(2); });
+      // free:
+      clock.sched(327-1, { mainTrumpet.free; });
 
-			// 16th drones:
-			clock.sched((55*4)-1, {
-				sixteenthDrones = FalseSelf_16thDrones.new(mixerC.chanStereo(2), relGroup: group, addAction: \addToHead);
-			});
+      //// bells:
+      clock.sched(327-1, { bellSection.free; });
 
-			// plane buzz:
-			clock.sched((55*4)-1, {
-				planeBuzz = FalseSelf_PlaneNoise.new(mixerC.chanStereo(3), relGroup: group, addAction: \addToHead);
-			});
+      //// modular:
+      clock.sched(327-1, { this.stopModularRoutine });
 
-			// orchestra:
-			clock.sched((55*4) -1, {
-				orchestra = FalseSelf_Orchestra.new(mixerB.chanStereo(3), relGroup: group, addAction: \addToHead);
-			});
+      //// trumpet canon:
+      // unmute input:
+      clock.sched(324-1, { trumpetCanon.unMuteInput; });
+      // mute delays:
+      clock.sched(420-1, { trumpetCanon.muteDelays; });
+      // high pass sweep:
+      clock.sched(348-1, { trumpetCanon.postEQ.sweepHighPassFilter(30, 1200, 31.5); });
 
-			// flute:
-			clock.sched((55*4)-1, {
-				flute = FalseSelf_Flute.new(mixerB.chanStereo(4), relGroup: group, addAction: \addToHead);
-			});
+      //// drums:
+      // play post chorus:
+      clock.sched(324-1, { drums.playCanon(clock); });
+      // sweep filter:
+      clock.sched(348-1, { drums.sweepFilter(30, 500, 36); });
+      // send to granulator:
+      clock.sched(372-1, { this.fadeMixerBSend(2, 1, -inf, 0, 11.25); });
+
+      //// fake guitar:
+      // send to granulator:
+      clock.sched(324-1, { this.fadeMixerASend(0, 1, -inf, 0, 9); });
+      // fade out:
+      clock.sched(324-1, { fakeGuitar.fadeVolume(0, -inf, 30); });
+
+
+      //// basses:
+      // feedback filter sweep:
+      //clock.sched(324-1, { bassSection.feedback.setFilterCutoff(3000); });
+      // play sequence:
+      clock.sched(324-1, { bassSection.playPostChorus; });
+      // fade out satur:
+      clock.sched(324-1, { bassSection.fadeSaturSynth(1, 0, 75); });
+      // fade out moog:
+      clock.sched(324-1, { bassSection.fadeMoog(1, 0, 50); });
+      // fade out feedback:
+      clock.sched(324-1, { bassSection.fadeFeedbackSynth(1, 0, 35); });
+
+
+      clock.sched(524-1, { bassSection.stopPostChorus; });
+
+      //// plane noise:
+      clock.sched(324-1, { planeNoise.playSample; });
+
+      //// mid buzz:
+      clock.sched(324-1, { midBuzz.playSequence(clock) });
+      // YOU ARE RESPONSIBLE FOR FADING OUT THE MID BUZZ
+/*
+      //// Crude Drones:
+      // play:
+      clock.sched(324-1, {
+        drones.playVoice1Sequence(clock);
+        drones.playVoice2SequencE(clock);
+        drones.playVoice3Sequence(clock);
+      });
+
+      //// orchestra:
+      clock.sched(324-1, { orchestra.playMahlerSample });
+
+*/
+
     });
   }
 

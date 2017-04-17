@@ -62,6 +62,18 @@ FalseSelf_MidBuzz :IM_Module {
     this.freeModule;
   }
 
+  fadeVolume { | start = 0, end = -inf, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)); }.play;
+      mixer.mapAmp(bus);
+      { mixer.setVol(end); }.defer(time);
+      { bus.free; }.defer(time);
+    }.fork;
+  }
+
+
   playSequence { | clock = 'internal' | sampler.playSequence(\midBuzz, clock); }
   stopSequence { sampler.stopSequence(\midBuzz); }
 

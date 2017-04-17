@@ -21,7 +21,7 @@ GlockSynth : IM_Module {
 
       delay = SimpleDelay.newStereo(mixer.chanStereo(0), 0.1875, 0.6, 5, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
-      reverb = IM_Reverb.new(delay.inBus, mix: 0.5, roomSize: 0.8, damp: 0, relGroup: group, addAction: \addToHead);
+      reverb = IM_Reverb.new(delay.inBus, mix: 0.5, roomSize: 0.7, damp: 0.3, relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
       synth = Subtractive.new(reverb.inBus, relGroup: group, addAction: \addToHead);
       while({ try { synth.isLoaded } != true }, { 0.001.wait; });

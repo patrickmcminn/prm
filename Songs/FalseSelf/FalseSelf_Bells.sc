@@ -27,7 +27,7 @@ FalseSelf_Bells : IM_Module {
       granulator = GranularDelay.new(mixer.chanStereo(0), group, 'addToHead');
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
-      reverb = IM_Reverb.new(granulator.inBus, mix: 0.55, roomSize: 0.95, damp: 0,
+      reverb = IM_Reverb.new(granulator.inBus, mix: 0.55, roomSize: 0.8, damp: 0.3,
         relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
@@ -44,7 +44,7 @@ FalseSelf_Bells : IM_Module {
 
       granulator.setGranulatorCrossfade(-0.1);
       granulator.setGrainDur(0.05, 0.2);
-      granulator.setTrigRate(34);
+      granulator.setTrigRate(20);
 
       mixer.setPreVol(-3);
 

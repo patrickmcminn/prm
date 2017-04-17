@@ -150,6 +150,16 @@ Equalizer : IM_Processor {
     highPassRQ = rq;
     synth.set(\highPassRQ, highPassRQ);
   }
+  sweepHighPassFilter { | start = 20, end = 1500, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, XLine.kr(start, end, time, doneAction: 2)) }.play;
+      synth.set(\highPassCutoff, bus.asMap);
+      { highPassCutoff = end }.defer(time);
+      { bus.free; }.defer(time);
+    }.fork;
+  }
 
   setLowFreq { | freq = 250 |
     lowFreq = freq;

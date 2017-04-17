@@ -17,7 +17,7 @@ var mainGridBank = 0;
 
 // G#:
 ~base.setGridFunc(0, 2, { | val |
-  var vol = val.linlin(0, 127, 0, 1).ampdb;
+  var vol = val.linlin(0, 127, 0, 0.5).ampdb;
   ~falseSelf.bellSection.playNote(68.midicps, vol-3, vol);
 }, 'noteOn', mainGridBank, page);
 // B#:
@@ -52,7 +52,7 @@ var mainGridBank = 0;
 ~base.setGridFunc(3, 3, {
   ~falseSelf.drums.playDrum0;
   ~falseSelf.drums.playDrum1;
-  ~falseSelf.drums.playDrum2;
-  ~falseSelf.drums.playDrum3;
+  ~falseSelf.drums.playDrum2(-12);
+  ~falseSelf.drums.playDrum3(-12);
 }, bank: mainGridBank, page: page);
 

@@ -35,9 +35,9 @@ FalseSelf_CrudeDrones :IM_Module {
 
       mixer.setPreVol(3);
       // reverb send:
-      mixer.setSendVol(0, -6);
+      //mixer.setSendVol(0, -6);
       // modular send:
-      mixer.setSendVol(2, 0);
+      //mixer.setSendVol(2, 0);
 
       isLoaded = true;
     }

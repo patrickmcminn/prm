@@ -29,15 +29,10 @@ var mainGridBank = 0;
   },page);
 },page: page);
 
-
 //////// main grid:
 
 ~ohm.turnGridBlue(0, 1, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(0, 1, { ~falseSelf.startSong; }, bank: mainGridBank, page: page);
-~ohm.setGridFunc(0, 0, { "Butts".postln; }, bank: mainGridBank, page: page);
-
-
-~ohm.setGridFunc(0, 2, { "balls".postln; });
 
 
 ~ohm.setPage('falseSelf');

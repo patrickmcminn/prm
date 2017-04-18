@@ -51,7 +51,7 @@ var activeLeftBank = mixerBank1;
 ~ohm.setCrossfaderButtonFunc(0, {
   if( activeGridBank == mainGridBank,
     { activeGridBank = endGridBank; ~ohm.setActiveGridBank(activeGridBank); },
-    { activeGridBank = mainGridBank; ~ohm.setAcrtiveGridBank(activeGridBank) });
+    { activeGridBank = mainGridBank; ~ohm.setActiveGridBank(activeGridBank) });
 }, page: page);
 
 
@@ -139,7 +139,7 @@ var activeLeftBank = mixerBank1;
 //// Drums:
 // loaded:
 ~ohm.setGridMonitorFunc(4, 3, {
-  if( ~falseSelf.drums.isLoaded { ~ohm.turnGridGreen(4, 3) }, { ~ohm.turnGridRed(4, 3) });
+  if( ~falseSelf.drums.isLoaded, { ~ohm.turnGridGreen(4, 3) }, { ~ohm.turnGridRed(4, 3) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(4, 3, {
   if( ~falseSelf.drums.isLoaded, { ~falseSelf.drums.free; });
@@ -333,7 +333,7 @@ var activeLeftBank = mixerBank1;
 //// Bank Change:
 ~ohm.setGridMonitorFunc(0, 7, {
   4.do({ | i | ~ohm.turnGridCyan(i, 7) });
-  ~ohm.turnGridGreen(activeLeftBank);
+  ~ohm.turnGridGreen(activeLeftBank, 7);
 }, bank: mainGridBank, page: page);
 
 // mix bank 1:
@@ -717,5 +717,7 @@ var activeLeftBank = mixerBank1;
 ~falseSelf.startSong;
 
 ~falseSelf.mixerA.tglMute(0);
+
+~falseSelf.startMelody
 
 */

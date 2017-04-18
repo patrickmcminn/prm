@@ -196,7 +196,7 @@ FalseSelf : Song {
     mixerC.setSendVol(2, 2, 0);
 
     // orchestra:
-    mixerB.setVol(3, -9);
+    mixerB.setVol(3, -6);
     mixerB.setSendVol(3, 0, -10);
 
   }
@@ -455,7 +455,7 @@ FalseSelf : Song {
       });
 
       //// orchestra:
-      clock.sched(324-1, { orchestra.playMahlerSample });
+      clock.sched(324-1, { orchestra.playMahlerPhrase });
     });
   }
 
@@ -465,7 +465,7 @@ FalseSelf : Song {
       //// Clock Management: ////
       //////////////////////////
 
-      clock.tempo = 142.20;
+      clock.tempo = 142.20/60;
 
       /////// time signature changes:
       clock.beatsPerBar_(8);
@@ -495,17 +495,40 @@ FalseSelf : Song {
       clock.sched(194-1, { freezeGuitar.playEndProgression(clock); });
 
       //////// bass:
+      clock.sched(107-1, {
+        bassSection.satur.mixer.setVol(0);
+        bassSection.moog.mixer.setVol(0);
+        bassSection.feedback.mixer.setVol(0);
+      });
       // end melody:
       clock.sched(108-1, { bassSection.playEnd });
       // coda:
       clock.sched(194-1, { bassSection.playCoda });
 
       ///// fake guitar:
-      clock.sched(48, { mixerA.setSendVol(0, 1, 0); });
-      clock.sched(48, { fakeGuitar.section2.setFilterCutoff(33); });
-      clock.sched(124, { fakeGuitar.section2.playSampleOneShot; });
-      clock.sched(124, { fakeGuitar.section2.sweepFilter(33, 539, 37.1); });
-      clock.sched(388, { fakeGuitar.section2.sweepFilter(539, 33, 5.1) });
+      clock.sched(48-1, { mixerA.setSendVol(0, 1, 0); });
+      clock.sched(47-1, { fakeGuitar.mixer.setVol(0); });
+      clock.sched(48-1, { fakeGuitar.section2.setFilterCutoff(33); });
+      clock.sched(124-1, { fakeGuitar.section2.playSampleOneShot; });
+      clock.sched(124-1, { fakeGuitar.section2.sweepFilter(33, 539, 37.1); });
+      clock.sched(388-1, { fakeGuitar.section2.sweepFilter(539, 33, 5.1) });
+
+      //// 16th drones:
+      clock.sched(68-1, {
+        sixteenthDrones.playVoice1Sequence(clock);
+        sixteenthDrones.playVoice2Sequence(clock);
+        sixteenthDrones.playVoice3Sequence(clock);
+      });
+
+      //// end drums:
+      clock.sched(189-1, { drums.mixer.setVol(-inf); });
+      clock.sched(190-1, {
+        drums.playEnding;
+        drums.fadeVolume(-inf, -12, 20);
+        mixerB.setSendVol(2, 1, -17);
+        mixerB.setSendVol(2, 0, -6);
+      });
+
     });
   }
 

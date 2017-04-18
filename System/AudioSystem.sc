@@ -31,7 +31,7 @@ AudioSystem {
   prInit { |numOutputs|
     server = Server.default;
 
-    this.prSetServerOptions(server, 64, 131072, 512, nil);
+    this.prSetServerOptions(server, 64, 131072, 1024, nil);
 
     server.waitForBoot {
       var masterOutArray;

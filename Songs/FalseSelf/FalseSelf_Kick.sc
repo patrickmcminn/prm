@@ -290,7 +290,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\ending, \dur, Pseq([1], inf));
     drums.addKey(\ending, \buffer, Pseq([drum2], inf));
-    drums.addKey(\ending, \amp, 0.6);
+    drums.addKey(\ending, \amp, 0.8);
 
   }
 

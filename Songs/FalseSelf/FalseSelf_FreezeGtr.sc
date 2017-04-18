@@ -123,7 +123,7 @@ FalseSelf_FreezeGtr : IM_Module {
         [bufferDict[\lowB], bufferDict[\midB], bufferDict[\highDSharp2], bufferDict[\midFSharp]]
       ], 1));
 
-      sampler.addKey(\chordProgression, \amp, 0.1);
+      sampler.addKey(\chordProgression, \amp, 0.75);
 
       sampler.addKey(\voice1, \legato, 1.1);
       sampler.addKey(\voice1, \buffer, Pseq([bufferDict[\lowGSharp], bufferDict[\midA], bufferDict[\midGsharp]], 1));
@@ -150,7 +150,7 @@ FalseSelf_FreezeGtr : IM_Module {
       ], 1));
       sampler.addKey(\voice4, \dur, Pseq([133, 51, 39, 52, 47], 1));
       sampler.addKey(\voice4, \releaseTime, 3);
-      sampler.addKey(\voice4, \amp, 0.1);
+      sampler.addKey(\voice4, \amp, 0.6);
 
     }.fork;
   }

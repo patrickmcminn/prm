@@ -276,6 +276,12 @@ FalseSelf : Song {
 
   free {
 
+    fakeGuitar.free; bellSection.free; melodySynth.free;
+    bassSection.free; modular.free; modularInput.free;
+    drums.free; mainTrumpet.free; mainTrumpetInput.free;
+    trumpetCanon.free; trumpetCanonInput.free; drones.free; sixteenthDrones.free;
+    orchestra.free; planeNoise.free; midBuzz.free; flute.free;
+    trumpetMelody.free; trumpetMelodyInput.free; freezeGuitar.free;
   }
 
   playModularRoutine { modularRoutine.play; }

@@ -118,7 +118,7 @@ ShiftSequencer : IM_Processor {
   playSequence { | uniqueName, clock = 'internal', quant = nil |
     var playClock;
     if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
-    sequencerDict[uniqueName].play(clock, quant);
+    sequencerDict[uniqueName].play(clock, 0);
   }
 
   resetSequence { | uniqueName | sequencerDict[uniqueName].reset; }

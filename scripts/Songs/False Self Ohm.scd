@@ -36,7 +36,7 @@ var activeLeftBank = mixerBank1;
     });
     ~ohm.turnControlButtonGreen(2, 0, page: page);
     { ~ohm.turnControlButtonOff(2, 0, page: page); }.defer(0.1);
-    //beat.postln;
+    ~falseSelf.bar.postln;
     1;
   },page);
 },page: page);
@@ -83,22 +83,22 @@ var activeLeftBank = mixerBank1;
   { ~ohm.turnGridGreen(0, 2) }, { ~ohm.turnGridBlue(0, 2) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridMonitorFunc(1, 2, { if( ~falseSelf.chorus1IsPlaying == true,
-  { ~ohm.turnGridGreen(1, 2) }, { ~ohm.turnGridYellow(0, 2) });
+  { ~ohm.turnGridGreen(1, 2) }, { ~ohm.turnGridOff(1, 2) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridMonitorFunc(2, 2, { if( ~falseSelf.chorus2IsPlaying == true,
-  { ~ohm.turnGridGreen(2, 2) }, { ~ohm.turnGridWhite(2, 2) });
+  { ~ohm.turnGridGreen(2, 2) }, { ~ohm.turnGridOff(2, 2) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridMonitorFunc(3, 2,{ if( ~falseSelf.canonIsPlaying == true,
-  { ~ohm.turnGridGreen(3, 2) }, { ~ohm.turnGridCyan(3, 2) });
+  { ~ohm.turnGridGreen(3, 2) }, { ~ohm.turnGridOff(3, 2) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridMonitorFunc(4, 2, { if( ~falseSelf.limboIsPlaying == true,
-  { ~ohm.turnGridGreen(4, 2) }, { ~ohm.turnGridBlue(4, 2) });
+  { ~ohm.turnGridGreen(4, 2) }, { ~ohm.turnGridOff(4, 2) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridMonitorFunc(5, 2, { if (~falseSelf.melodyIsPlaying == true,
-  { ~ohm.turnGridGreen(5, 2) }, { ~ohm.turnGridMagenta(5, 2) });
+  { ~ohm.turnGridGreen(5, 2) }, { ~ohm.turnGridOff(5, 2) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridMonitorFunc(6, 2, { if( ~falseSelf.endIsPlaying == true,
-  { ~ohm.turnGridGreen(6, 2) }, { ~ohm.turnGridCyan(6, 2) });
+  { ~ohm.turnGridGreen(6, 2) }, { ~ohm.turnGridOff(6, 2) });
 }, bank: mainGridBank, page: page);
 
 // start song:
@@ -139,7 +139,7 @@ var activeLeftBank = mixerBank1;
 //// Drums:
 // loaded:
 ~ohm.setGridMonitorFunc(4, 3, {
-  if( ~falseSelf.drums.isLoaded, { ~ohm.turnGridGreen(4, 3) }, { ~ohm.turnGridRed(4, 3) });
+  if( ~falseSelf.drums.isLoaded, { ~ohm.turnGridWhite(4, 3) }, { ~ohm.turnGridRed(4, 3) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(4, 3, {
   if( ~falseSelf.drums.isLoaded, { ~falseSelf.drums.free; });
@@ -147,7 +147,7 @@ var activeLeftBank = mixerBank1;
 // beginning:
 ~ohm.setGridMonitorFunc(5, 3, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\section1),
-    { ~ohm.turnGridGreen(5, 3) }, { ~ohm.turnGridCyan(5, 3) });
+    { ~ohm.turnGridGreen(5, 3) }, { ~ohm.turnGridRed(5, 3) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(5, 3, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\section1),
@@ -156,7 +156,7 @@ var activeLeftBank = mixerBank1;
 // chorus 1:
 ~ohm.setGridMonitorFunc(6, 3, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\chorus1),
-    { ~ohm.turnGridGreen(6, 3) }, { ~ohm.turnGridYellow(6, 3) });
+    { ~ohm.turnGridGreen(6, 3) }, { ~ohm.turnGridRed(6, 3) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(6, 3, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\chorus1),
@@ -165,7 +165,7 @@ var activeLeftBank = mixerBank1;
 // chorus 2:
 ~ohm.setGridMonitorFunc(7, 3, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\chorus2),
-    { ~ohm.turnGridGreen(7, 3) }, { ~ohm.turnGridWhite(7, 3) });
+    { ~ohm.turnGridGreen(7, 3) }, { ~ohm.turnGridRed(7, 3) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(7, 3, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\chorus2),
@@ -174,7 +174,7 @@ var activeLeftBank = mixerBank1;
 // canon:
 ~ohm.setGridMonitorFunc(4, 4, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\canon),
-    { ~ohm.turnGridGreen(4, 4) }, { ~ohm.turnGridMagenta(4, 4) });
+    { ~ohm.turnGridGreen(4, 4) }, { ~ohm.turnGridRed(4, 4) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(4, 4, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\canon),
@@ -183,11 +183,11 @@ var activeLeftBank = mixerBank1;
 // end:
 ~ohm.setGridMonitorFunc(5, 4, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
-    { ~ohm.turnGridGreen(5, 4) }, { ~ohm.turnGridBlue(5, 4) });
+    { ~ohm.turnGridGreen(5, 4) }, { ~ohm.turnGridRed(5, 4) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(5, 4, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
-    { ~falseSelf.drums.stopEnding }, { ~falseSelf.drums.playEnding });
+    { ~falseSelf.drums.stopEnding }, { ~falseSelf.drums.playEnding(~falseSelf.clock) });
 }, bank: mainGridBank, page: page);
 
 // Basses:
@@ -204,11 +204,11 @@ var activeLeftBank = mixerBank1;
 }, bank: endGridBank, page: page);
 // playing:
 ~ohm.setGridMonitorFunc(1, 3, {
-  if( ~falseSelf.planeNoise.samplePlayer.isSequencePlaying(\planeNoise),
+  if( ~falseSelf.planeNoise.isPlaying,
     { ~ohm.turnGridGreen(1, 3) }, { ~ohm.turnGridRed(1, 3) });
 }, bank: endGridBank, page: page);
 ~ohm.setGridFunc(1, 3, {
-  if( ~falseSelf.planeNoise.samplePlayer.isSequencePlaying(\planeNoise),
+  if( ~falseSelf.planeNoise.isPlaying,
     { ~falseSelf.planeNoise.releaseSample }, { ~falseSelf.planeNoise.playSample; });
 }, bank: endGridBank, page: page);
 
@@ -315,14 +315,14 @@ var activeLeftBank = mixerBank1;
 ~ohm.setGridMonitorFunc(5, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\chordProgression),
   { ~ohm.turnGridGreen(5, 4); }, { ~ohm.turnGridRed(5, 4) });
 }, bank: endGridBank, page: page);
-~ohm.setGridFunc(5, 4, { if( ~falseSelf.sampler.isSequencePlaying(\chordProgression),
+~ohm.setGridFunc(5, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\chordProgression),
   { ~falseSelf.freezeGuitar.stopChordProgression }, { ~falseSelf.freezeGuitar.playChordProgression(~falseSelf.clock) });
 }, bank: endGridBank, page: page);
 // end progression:
 ~ohm.setGridMonitorFunc(6, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\voice1),
   { ~ohm.turnGridGreen(6, 4) }, { ~ohm.turnGridRed(6, 4) });
 }, bank: endGridBank, page: page);
-~ohm.setGridFunc(6, 4, { if( ~falseSelf.sampler.isSequencePlaying(\voice1),
+~ohm.setGridFunc(6, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\voice1),
   { ~falseSelf.freezeGuitar.stopEndProgression }, { ~falseSelf.freezeGuitar.playEndProgression(~falseSelf.clock) })
 }, bank: endGridBank, page: page);
 
@@ -368,6 +368,44 @@ var activeLeftBank = mixerBank1;
   ~ohm.setActiveLeftKnobsBank(activeLeftBank);
 }, bank: mainGridBank, page: page);
 
+//// Bank Change (End Grid Bank):
+~ohm.setGridMonitorFunc(0, 7, {
+  4.do({ | i | ~ohm.turnGridCyan(i, 7) });
+  ~ohm.turnGridGreen(activeLeftBank, 7);
+}, bank: endGridBank, page: page);
+
+// mix bank 1:
+~ohm.setGridFunc(0, 7, {
+  activeLeftBank = mixerBank1;
+  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
+  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
+  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
+}, bank: endGridBank, page: page);
+
+// mix bank 2:
+~ohm.setGridFunc(1, 7, {
+  activeLeftBank = mixerBank2;
+  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
+  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
+  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
+}, bank: endGridBank, page: page);
+
+// mix bank 3:
+~ohm.setGridFunc(2, 7, {
+  activeLeftBank = mixerBank3;
+  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
+  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
+  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
+}, bank: endGridBank, page: page);
+
+// mix bank 4:
+~ohm.setGridFunc(3, 7, {
+  activeLeftBank = mixerBank4;
+  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
+  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
+  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
+}, bank: endGridBank, page: page);
+
 
 //////////////////////
 //// Left Side: /////
@@ -383,17 +421,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(0, { ~falseSelf.mixerA.tglMute(0); }, bank: mixerBank1, page: page);
 // volume:
 ~ohm.setLeftSliderFunc(0, { | val |
-  ~falseSelf.mixerA.setVol(0, val.ccdbfs);
+  ~falseSelf.mixerA.setVol(0, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 // sends:
 ~ohm.setLeftKnobFunc(0, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(0, 0, val.ccdbfs);
+  ~falseSelf.mixerA.setSendVol(0, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 ~ohm.setLeftKnobFunc(0, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(0, 1, val.ccdbfs);
+  ~falseSelf.mixerA.setSendVol(0, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 ~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(0, 2, val.ccdbfs);
+  ~falseSelf.mixerA.setSendVol(0, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 
 //// Drums:
@@ -404,17 +442,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(1, { ~falseSelf.mixerB.tglMute(2); }, bank: mixerBank1, page: page);
 // volume:
 ~ohm.setLeftSliderFunc(1, { | val |
-  ~falseSelf.mixerB.setVol(2, val.ccdbfs);
+  ~falseSelf.mixerB.setVol(2, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 // sends:
 ~ohm.setLeftKnobFunc(1, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(2, 0, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(2, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 ~ohm.setLeftKnobFunc(1, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(2, 1, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(2, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 ~ohm.setLeftKnobFunc(1, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(2, 2, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(2, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 
 ////Bass:
@@ -425,17 +463,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(2, { ~falseSelf.mixerB.tglMute(1); }, bank: mixerBank1, page: page);
 // volume:
 ~ohm.setLeftSliderFunc(2, { | val |
-  ~falseSelf.mixerB.setVol(1, val.ccdbfs);
+  ~falseSelf.mixerB.setVol(1, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 // sends:
 ~ohm.setLeftKnobFunc(2, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(1, 0, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(1, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 ~ohm.setLeftKnobFunc(2, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(1, 1, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(1, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 ~ohm.setLeftKnobFunc(2, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(1, 2, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(1, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 
 
@@ -447,17 +485,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(3, { ~falseSelf.mixerA.tglMute(2); }, bank: mixerBank1, page: page);
 // volume:
 ~ohm.setLeftSliderFunc(3, { | val |
-  ~falseSelf.mixerA.setVol(2, val.ccdbfs);
+  ~falseSelf.mixerA.setVol(2, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 // sends:
 ~ohm.setLeftKnobFunc(3, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(2, 0, val.ccdbfs);
+  ~falseSelf.mixerA.setSendVol(2, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 ~ohm.setLeftKnobFunc(3, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(2, 1, val.ccdbfs);
+  ~falseSelf.mixerA.setSendVol(2, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 ~ohm.setLeftKnobFunc(3, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(2, 2, val.ccdbfs);
+  ~falseSelf.mixerA.setSendVol(2, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank1, page: page);
 
 //// Bells:
@@ -468,17 +506,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(0, { ~falseSelf.mixerA.tglMute(1); }, bank: mixerBank2, page: page);
 // volume:
 ~ohm.setLeftSliderFunc(0, { | val |
-  ~falseSelf.mixerA.setVol(1, val.ccdbfs);
+  ~falseSelf.mixerA.setVol(1, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 // sends:
 ~ohm.setLeftKnobFunc(0, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(1, 0, val.ccbfs);
+  ~falseSelf.mixerA.setSendVol(1, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 ~ohm.setLeftKnobFunc(0, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(1, 1, val.ccbfs);
+  ~falseSelf.mixerA.setSendVol(1, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 ~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(1, 2, val.ccbfs);
+  ~falseSelf.mixerA.setSendVol(1, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 
 //// Melody Synth:
@@ -489,17 +527,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(1, { ~falseSelf.mixerB.tglMute(0); }, bank: mixerBank2, page: page);
 // volume:
 ~ohm.setLeftSliderFunc(1, { | val |
-  ~falseSelf.mixerB.setVol(0, val.ccdbfs);
+  ~falseSelf.mixerB.setVol(0, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 // sends:
 ~ohm.setLeftKnobFunc(1, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(0, 0, val.ccbfs);
+  ~falseSelf.mixerB.setSendVol(0, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 ~ohm.setLeftKnobFunc(1, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(0, 1, val.ccbfs);
+  ~falseSelf.mixerB.setSendVol(0, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 ~ohm.setLeftKnobFunc(1, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(0, 2, val.ccbfs);
+  ~falseSelf.mixerB.setSendVol(0, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 
 
@@ -511,17 +549,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(2, { ~falseSelf.mixerC.tglMute(0); }, bank: mixerBank2, page: page);
 // volume:
 ~ohm.setLeftSliderFunc(2, { | val |
-  ~falseSelf.mixerC.setVol(0, val.ccdbfs);
+  ~falseSelf.mixerC.setVol(0, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 // sends:
 ~ohm.setLeftKnobFunc(2, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(0, 0, val.ccbfs);
+  ~falseSelf.mixerC.setSendVol(0, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 ~ohm.setLeftKnobFunc(2, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(0, 1, val.ccbfs);
+  ~falseSelf.mixerC.setSendVol(0, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 ~ohm.setLeftKnobFunc(2, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(0, 2, val.ccbfs);
+  ~falseSelf.mixerC.setSendVol(0, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 
 //// trumpet canon:
@@ -532,17 +570,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(3, { ~falseSelf.mixerA.tglMute(3); }, bank: mixerBank2, page: page);
 // volume:
 ~ohm.setLeftSliderFunc(3, { | val |
-  ~falseSelf.mixerA.setVol(3, val.ccdbfs);
+  ~falseSelf.mixerA.setVol(3, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 // sends:
 ~ohm.setLeftKnobFunc(3, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(3, 0, val.ccbfs);
+  ~falseSelf.mixerA.setSendVol(3, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 ~ohm.setLeftKnobFunc(3, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(3, 1, val.ccbfs);
+  ~falseSelf.mixerA.setSendVol(3, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 ~ohm.setLeftKnobFunc(3, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(3, 2, val.ccbfs);
+  ~falseSelf.mixerA.setSendVol(3, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank2, page: page);
 
 //// Plane Noise:
@@ -553,17 +591,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(0, { ~falseSelf.mixerC.tglMute(3); }, bank: mixerBank3, page: page);
 //volume:
 ~ohm.setLeftSliderFunc(0, { | val |
-  ~falseSelf.mixerC.setVol(3, val.ccdbfs);
+  ~falseSelf.mixerC.setVol(3, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 //sends:
 ~ohm.setLeftKnobFunc(0, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(3, 0, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(3, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 ~ohm.setLeftKnobFunc(0, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(3, 1, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(3, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 ~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(3, 2, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(3, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 
 //// Mid Buzz:
@@ -574,17 +612,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(1, { ~falseSelf.mixerC.tglMute(4); }, bank: mixerBank3, page: page);
 //volume:
 ~ohm.setLeftSliderFunc(1, { | val |
-  ~falseSelf.mixerC.setVol(4, val.ccdbfs);
+  ~falseSelf.mixerC.setVol(4, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 //sends:
 ~ohm.setLeftKnobFunc(1, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(4, 0, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(4, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 ~ohm.setLeftKnobFunc(1, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(4, 1, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(4, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 ~ohm.setLeftKnobFunc(1, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(4, 2, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(4, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 
 //// drones:
@@ -595,17 +633,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(2, { ~falseSelf.mixerC.tglMute(1); }, bank: mixerBank3, page: page);
 //volume:
 ~ohm.setLeftSliderFunc(2, { | val |
-  ~falseSelf.mixerC.setVol(1, val.ccdbfs);
+  ~falseSelf.mixerC.setVol(1, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 //sends:
 ~ohm.setLeftKnobFunc(2, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(1, 0, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(1, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 ~ohm.setLeftKnobFunc(2, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(1, 1, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(1, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 ~ohm.setLeftKnobFunc(2, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(1, 2, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(1, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 
 //// orchestra:
@@ -616,17 +654,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(3, { ~falseSelf.mixerB.tglMute(3); }, bank: mixerBank3, page: page);
 //volume:
 ~ohm.setLeftSliderFunc(3, { | val |
-  ~falseSelf.mixerB.setVol(3, val.ccdbfs);
+  ~falseSelf.mixerB.setVol(3, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 //sends:
 ~ohm.setLeftKnobFunc(3, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(3, 0, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(3, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 ~ohm.setLeftKnobFunc(3, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(3, 1, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(3, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 ~ohm.setLeftKnobFunc(3, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(3, 2, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(3, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank3, page: page);
 
 //// 16th drones:
@@ -637,17 +675,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(0, { ~falseSelf.mixerC.tglMute(2); }, bank: mixerBank4, page: page);
 //volume:
 ~ohm.setLeftSliderFunc(0, { | val |
-  ~falseSelf.mixerC.setVol(2, val.ccdbfs);
+  ~falseSelf.mixerC.setVol(2, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 //sends:
 ~ohm.setLeftKnobFunc(0, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(2, 0, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(2, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 ~ohm.setLeftKnobFunc(0, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(2, 1, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(2, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 ~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(2, 2, val.ccdbfs);
+  ~falseSelf.mixerC.setSendVol(2, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 
 //// trumpet melody:
@@ -658,17 +696,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(1, { ~falseSelf.mixerA.tglMute(4); }, bank: mixerBank4, page: page);
 //volume:
 ~ohm.setLeftSliderFunc(1, { | val |
-  ~falseSelf.mixerA.setVol(4, val.ccdbfs);
+  ~falseSelf.mixerA.setVol(4, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 //sends:
 ~ohm.setLeftKnobFunc(1, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(4, 0, val.ccdbfs);
+  ~falseSelf.mixerA.setSendVol(4, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 ~ohm.setLeftKnobFunc(1, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(4, 1, val.ccdbfs);
+  ~falseSelf.mixerA.setSendVol(4, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 ~ohm.setLeftKnobFunc(1, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(4, 2, val.ccdbfs);
+  ~falseSelf.mixerA.setSendVol(4, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 
 //// freeze guitars:
@@ -679,17 +717,17 @@ var activeLeftBank = mixerBank1;
 ~ohm.setLeftButtonFunc(2, { ~falseSelf.mixerB.tglMute(4); }, bank: mixerBank4, page: page);
 //volume:
 ~ohm.setLeftSliderFunc(2, { | val |
-  ~falseSelf.mixerB.setVol(4, val.ccdbfs);
+  ~falseSelf.mixerB.setVol(4, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 //sends:
 ~ohm.setLeftKnobFunc(2, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(4, 0, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(4, 0, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 ~ohm.setLeftKnobFunc(2, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(4, 1, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(4, 1, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 ~ohm.setLeftKnobFunc(2, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(4, 2, val.ccdbfs);
+  ~falseSelf.mixerB.setSendVol(4, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 
 

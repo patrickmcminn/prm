@@ -28,8 +28,8 @@ r {
   try { ~ohm = OhmRGB.new; };
   try { ~base = Base.new; };
 
-  ~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
-  ~base = Base.new("iConnectAudio4+", "HST3");
+  //~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
+  //~base = Base.new("iConnectAudio4+", "HST3");
 
   "/Global Functions/Load Global Functions.scd".loadRelative;
   "/System Scripts/Load System Scripts.scd".loadRelative;

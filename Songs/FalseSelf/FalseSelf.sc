@@ -148,7 +148,7 @@ FalseSelf : Song {
 
     // fake guitar:
     mixerA.setVol(0, -6);
-    mixerA.setSendVol(0, 2, 0);
+
     // bells:
     mixerA.setVol(1, -6);
     // trumpet:
@@ -178,26 +178,29 @@ FalseSelf : Song {
     mixerA.setSendVol(3, 0, -12);
 
     // plane noise:
-    mixerC.setVol(3, -24);
+    mixerC.setVol(3, -27);
     mixerC.setSendVol(3, 0, -10);
 
     // mid buzz:
-    mixerC.setVol(4, -12);
+    mixerC.setVol(4, -15);
     mixerC.setSendVol(4, 0, -10);
 
     // crude drones:
-    mixerC.setVol(1, -12);
+    mixerC.setVol(1, -19);
     mixerC.setSendVol(1, 0, 0);
     mixerC.setSendVol(1, 2, 0);
 
     // 16th drones:
-    mixerC.setVol(2, -18);
+    mixerC.setVol(2, -21);
     mixerC.setSendVol(2, 0, -6);
     mixerC.setSendVol(2, 2, 0);
 
     // orchestra:
-    mixerB.setVol(3, -6);
-    mixerB.setSendVol(3, 0, -10);
+    mixerB.setVol(3, -3);
+    mixerB.setSendVol(3, 0, -18);
+
+    // trumpet melody:
+    mixerA.setSendVol(4, 0, -6);
 
   }
 
@@ -484,6 +487,9 @@ FalseSelf : Song {
       //// Trumpet Melody: ////
       ////////////////////////
 
+      melodyIsPlaying = true;
+      clock.sched(189-1, { endIsPlaying = true; });
+
       //////// trumpet melody:
       trumpetMelody.playPattern(clock);
       clock.sched(108-1, { trumpetMelody.dry.unMute; });
@@ -521,12 +527,13 @@ FalseSelf : Song {
       });
 
       //// end drums:
+      drums.setHighPassCutoff(60);
       clock.sched(189-1, { drums.mixer.setVol(-inf); });
       clock.sched(190-1, {
-        drums.playEnding;
-        drums.fadeVolume(-inf, -12, 20);
+        drums.playEnding(clock);
+        drums.fadeVolume(-inf, 0, 20);
         mixerB.setSendVol(2, 1, -17);
-        mixerB.setSendVol(2, 0, -6);
+        mixerB.setSendVol(2, 0, -30);
       });
 
     });

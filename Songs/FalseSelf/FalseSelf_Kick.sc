@@ -227,7 +227,7 @@ FalseSelf_Kick : IM_Module {
     var drum2 = drums.bufferArray[2];
     var drum3 = drums.bufferArray[3];
 
-    part1 = Pseq([[drum0, drum1, drum2, drum3], Rest, Rest, Rest], 11*4);
+    part1 = Pseq([[drum0, drum1, drum2], Rest, Rest, Rest], 11*4);
     part2 = Pseq([
       [drum0, drum1, drum2, drum3], drum1, drum2, drum0,
       drum1, drum0, drum2, drum0,

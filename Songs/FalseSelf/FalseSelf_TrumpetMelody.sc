@@ -49,7 +49,7 @@ FalseSelf_TrumpetMelody : IM_Processor {
   }
 
   prInitParameters {
-    mixer.setPreVol(-6);
+    mixer.setPreVol(0);
     dry.mute;
     // eq:
     eq.setHighPassCutoff(100);

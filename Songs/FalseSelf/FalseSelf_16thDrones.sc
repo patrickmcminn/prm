@@ -45,9 +45,9 @@ FalseSelf_16thDrones : IM_Module {
       filter1.setCutoffLFOBottomRatio(0);
       filter1.setCutoffLFOTopRatio(3);
 
-      mixer.setSendVol(2, 0);
-      mixer.setPreVol(3);
-      mixer.setVol(-6);
+      //mixer.setSendVol(2, 0);
+      //mixer.setPreVol(3);
+      //mixer.setVol(-6);
 
       this.prMakeSequences;
 

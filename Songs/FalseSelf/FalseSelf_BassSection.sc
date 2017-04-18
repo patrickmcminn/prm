@@ -53,6 +53,7 @@ FalseSelf_BassSection :IM_Module {
       satur.makeSequence('chorus');
       satur.makeSequence('postChorus');
       satur.makeSequence('end');
+      satur.makeSequence('coda');
 
       server.sync;
 
@@ -223,11 +224,15 @@ FalseSelf_BassSection :IM_Module {
     satur.addKey(\postChorus, \releaseTime, 0.5);
     satur.addKey(\postChorus, \attackTime, 0.25);
 
-
     satur.addKey(\end, \octave, [3, 4, 5]);
     satur.addKey(\end, \legato, 1);
     satur.addKey(\end, \dur, endDur);
     satur.addKey(\end, \note, endNote);
+
+    satur.addKey(\coda, \octave, [3, 4, 5]);
+    satur.addKey(\coda, \legato, 1);
+    satur.addKey(\coda, \dur, Pseq([16], inf));
+    satur.addKey(\coda, \note, Pseq([8], inf));
   }
 
   prMakeMoogPatterns {
@@ -300,6 +305,10 @@ FalseSelf_BassSection :IM_Module {
     satur.playSequence(\postChorus, clock);
     feedback.playSequence(\postChorus, clock);
     feedback.playSequence(\postChorusOctave, clock);
+  }
+
+  playCoda { | clock |
+    satur.playSequence(\coda, clock);
   }
 
   fadeSaturSynth { | start = 0, end = 0.5, time = 21 |

@@ -99,7 +99,13 @@ FalseSelf_FreezeGtr : IM_Module {
   prMakePatterns {
     {
       sampler.makeSequence(\chordProgression, 'sustaining');
+      sampler.makeSequence(\voice1);
+      sampler.makeSequence(\voice2);
+      sampler.makeSequence(\voice3);
+      sampler.makeSequence(\voice4);
+
       server.sync;
+
       sampler.addKey(\chordProgression, \legato, 1);
       sampler.addKey(\chordProgression, \dur, Pseq([20, 8, 8, 6, 10, 8, 8, 6, 6, 8, 6, 8], 1));
       sampler.addKey(\chordProgression, \buffer, Pseq([
@@ -116,7 +122,36 @@ FalseSelf_FreezeGtr : IM_Module {
         [bufferDict[\lowE], bufferDict[\lowB], bufferDict[\midE], bufferDict[\midGSharp]],
         [bufferDict[\lowB], bufferDict[\midB], bufferDict[\highDSharp2], bufferDict[\midFSharp]]
       ], 1));
+
       sampler.addKey(\chordProgression, \amp, 0.1);
+
+      sampler.addKey(\voice1, \legato, 1.1);
+      sampler.addKey(\voice1, \buffer, Pseq([bufferDict[\lowGSharp], bufferDict[\midA], bufferDict[\midGsharp]], 1));
+      sampler.addKey(\voice1, \dur, Pseq([190, 52, 77], 1));
+      sampler.addKey(\voice1, \releaseTime, 3);
+      sampler.addKey(\voice1, \amp, 0.1);
+
+      sampler.addKey(\voice2, \legato, 1.1);
+      sampler.addKey(\voice2, \buffer, Pseq([bufferDict[\midB], bufferDict[\highCSharp2]], 1));
+      sampler.addKey(\voice2, \dur, Pseq([208, 132], 1));
+      sampler.addKey(\voice2, \releaseTime, 3);
+      sampler.addKey(\voice2, \amp, 0.1);
+
+      sampler.addKey(\voice3, \legato, 1.1);
+      sampler.addKey(\voice3, \buffer, Pseq([bufferDict[\highDSharp2], bufferDict[\highE]], 1));
+      sampler.addKey(\voice3, \dur, Pseq([116, 202], 1));
+      sampler.addKey(\voice3, \releaseTime, 3);
+      sampler.addKey(\voice3, \amp, 0.1);
+
+      sampler.addKey(\voice4, \legato, 1.1);
+      sampler.addKey(\voice4, \buffer, Pseq(
+        [bufferDict[\midGSharp], bufferDict[\midE], bufferDict[\lowFSharp],
+          bufferDict[\highCSharp2], bufferDict[\highDSharp],
+      ], 1));
+      sampler.addKey(\voice4, \dur, Pseq([133, 51, 39, 52, 47], 1));
+      sampler.addKey(\voice4, \releaseTime, 3);
+      sampler.addKey(\voice4, \amp, 0.1);
+
     }.fork;
   }
 
@@ -130,5 +165,33 @@ FalseSelf_FreezeGtr : IM_Module {
 
   playNote { | name, vol = 0 | sampler.playSampleSustaining(name, noteDict[name], vol); }
   releaseNote { | name | sampler.releaseSampleSustaining(name); }
+
+  fadeVolume { | start = -inf, end = 0, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
+      mixer.mapAmp(bus);
+      { bus.free }.defer(time);
+      { mixer.setVol(end) }.defer(time);
+    }.fork;
+  }
+
+  playChordProgression { | clock | sampler.playSequence(\chordProgression, clock); }
+  stopChordProgression { | clock |sampler.stopSequence(\chordProgression, clock); }
+
+  playEndProgression { | clock |
+    sampler.playSequence(\voice1, clock);
+    sampler.playSequence(\voice2, clock);
+    sampler.playSequence(\voice3, clock);
+    sampler.playSequence(\voice4, clock);
+  }
+  stopEndProgression {
+    sampler.stopSequence(\voice1);
+    sampler.stopSequence(\voice2);
+    sampler.stopSequence(\voice3);
+    sampler.stopSequence(\voice4);
+  }
+
 }
 

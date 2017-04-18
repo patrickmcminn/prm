@@ -15,8 +15,12 @@ FalseSelf : Song {
   var <drums, <mainTrumpet, <mainTrumpetInput;
 	var <trumpetCanon, <trumpetCanonInput, <drones, <sixteenthDrones;
   var <orchestra, <planeNoise, <midBuzz, <flute;
+  var <trumpetMelody, <trumpetMelodyInput, <freezeGuitar;
 
   var <modularRoutine;
+
+  var <section1IsPlaying, <chorus1IsPlaying, <chorus2IsPlaying, <canonIsPlaying;
+  var <limboIsPlaying, <melodyIsPlaying, <endIsPlaying;
 
   *new { | mixAOutBus, mixBOutBus, mixCOutBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
     ^super.new(mixAOutBus, 8, mixBOutBus, 8, mixCOutBus, 8, send0Bus, send1Bus, send2Bus, send3Bus, false,
@@ -28,6 +32,8 @@ FalseSelf : Song {
     server.waitForBoot {
       isLoaded = false;
       while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
+
+      this.prSetInitialPlayingConditions;
 
       // make sure trumpet doesn't take your head off when the song loads:
       mixerA.tglMute(2);
@@ -54,6 +60,12 @@ FalseSelf : Song {
       trumpetCanonInput = IM_HardwareIn.new(0, trumpetCanon.inBus, group, \addToHead);
       while({ try { trumpetCanonInput.isLoaded } != true }, { 0.001.wait; });
 
+      trumpetMelody = FalseSelf_TrumpetMelody.new(mixerA.chanStereo(4), relGroup: group, addAction: \addToHead);
+      while({ try { trumpetMelody.isLoaded } != true }, { 0.001.wait; });
+      trumpetMelodyInput = IM_HardwareIn.new(0, trumpetMelody.inBus, group, \addToHead);
+      while({ try { trumpetMelodyInput.isLoaded } != true }, { 0.001.wait; });
+
+
       //// Mixer B:
 
       melodySynth = FalseSelf_MelodySynth.new(mixerB.chanStereo(0), group, \addToHead);
@@ -69,13 +81,15 @@ FalseSelf : Song {
       orchestra = FalseSelf_Orchestra.new(mixerB.chanStereo(3), relGroup: group, addAction: \addToHead);
       while({ try { orchestra.isLoaded } != true }, { 0.001.wait; });
 
+      freezeGuitar = FalseSelf_FreezeGtr.new(mixerB.chanStereo(4), relGroup: group, addAction: \addToHead);
+      while({ try { freezeGuitar.isLoaded } != true }, { 0.001.wait; });
+
       //// Mixer C:
 
       modular = IM_Mixer_1Ch.new(mixerC.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { modular.isLoaded } != true }, { 0.001.wait; });
       modularInput = IM_HardwareIn.new(2, modular.chanMono, group, \addToHead);
       while({ try { modularInput.isLoaded } != true }, { 0.001.wait; });
-
 
       drones = FalseSelf_CrudeDrones.new(mixerC.chanStereo(1), relGroup: group, addAction: \addToHead);
       while({ try { drones.isLoaded } != true }, { 0.001.wait; });
@@ -89,16 +103,28 @@ FalseSelf : Song {
       midBuzz = FalseSelf_MidBuzz.new(mixerC.chanStereo(4), relGroup: group, addAction: \addToHead);
       while({ try { midBuzz.isLoaded } != true }, { 0.001.wait; });
 
+
       server.sync;
 
       this.prMakeModularRoutine;
       this.prSetInitialParameters;
 
       relBar = 0;
-      clock.schedAbs(clock.beats.ceil, { | beat | bar = clock.bar - relBar; 1 });
+      clock.schedAbs(clock.beats.ceil, { | beat | bar = (clock.bar - relBar) + 1; 1 });
 
       isLoaded = true;
     }
+  }
+
+  prSetInitialPlayingConditions {
+    section1IsPlaying = false;
+    chorus1IsPlaying = false;
+    chorus2IsPlaying = false;
+    canonIsPlaying = false;
+    limboIsPlaying = false;
+    melodyIsPlaying = false;
+    endIsPlaying = false;
+
   }
 
   prMakeModularRoutine {
@@ -283,6 +309,7 @@ FalseSelf : Song {
       //// Beginning: ////
       ///////////////////
 
+      section1IsPlaying = true;
       //////// start FakeGuitar:
       fakeGuitar.section1.playSampleOneShot;
 
@@ -329,6 +356,9 @@ FalseSelf : Song {
       //// Chorus: ////
       ///////////////////
 
+      clock.sched((55*4)-1, { chorus1IsPlaying = true; });
+      clock.sched(272-1, { chorus2IsPlaying = true; });
+
 			// main trumpet:
       clock.sched((55*4)-1, { mainTrumpet.mixer.setVol(-6); });
 			clock.sched((55*4)-1, { mainTrumpet.recordLoop });
@@ -355,6 +385,9 @@ FalseSelf : Song {
       ///////////////////////////
       //// post-chorus/canon ////
       //////////////////////////
+
+      clock.sched(324-1, { canonIsPlaying = true });
+      clock.sched(420-1, { limboIsPlaying = true });
 
       //// trumpet:
       // mute:
@@ -393,6 +426,7 @@ FalseSelf : Song {
 
       //// basses:
       // feedback filter sweep:
+      // CAUSES AWFUL CLICK
       //clock.sched(324-1, { bassSection.feedback.setFilterCutoff(3000); });
       // play sequence:
       clock.sched(324-1, { bassSection.playPostChorus; });
@@ -412,20 +446,66 @@ FalseSelf : Song {
       //// mid buzz:
       clock.sched(324-1, { midBuzz.playSequence(clock) });
       // YOU ARE RESPONSIBLE FOR FADING OUT THE MID BUZZ
-/*
       //// Crude Drones:
       // play:
       clock.sched(324-1, {
         drones.playVoice1Sequence(clock);
-        drones.playVoice2SequencE(clock);
+        drones.playVoice2Sequence(clock);
         drones.playVoice3Sequence(clock);
       });
 
       //// orchestra:
       clock.sched(324-1, { orchestra.playMahlerSample });
+    });
+  }
 
-*/
+  startMelody {
+    clock.playNextBar({
+      ///////////////////////////
+      //// Clock Management: ////
+      //////////////////////////
 
+      clock.tempo = 142.20;
+
+      /////// time signature changes:
+      clock.beatsPerBar_(8);
+      clock.sched(3-1, { clock.beatsPerBar_(12) });
+      clock.sched(4-1, { clock.beatsPerBar_(8) });
+      clock.sched(8-1, { clock.beatsPerBar_(12) });
+      clock.sched(9-1, { clock.beatsPerBar_(8) });
+      clock.sched(12-1, { clock.beatsPerBar_(12) });
+      clock.sched(13-1, { clock.beatsPerBar_(8) });
+      clock.sched(19-1, { clock.beatsPerBar_(12) });
+      clock.sched(20-1, { clock.beatsPerBar_(8) });
+      clock.sched(21-1, { clock.beatsPerBar_(6) });
+      clock.sched(22-1, { clock.beatsPerBar_(8) });
+
+      //////////////////////////
+      //// Trumpet Melody: ////
+      ////////////////////////
+
+      //////// trumpet melody:
+      trumpetMelody.playPattern(clock);
+      clock.sched(108-1, { trumpetMelody.dry.unMute; });
+
+      //////// freeze guitar:
+      // chord progression:
+      clock.sched(88-1, { freezeGuitar.playChordProgression(clock); });
+      // end progression:
+      clock.sched(194-1, { freezeGuitar.playEndProgression(clock); });
+
+      //////// bass:
+      // end melody:
+      clock.sched(108-1, { bassSection.playEnd });
+      // coda:
+      clock.sched(194-1, { bassSection.playCoda });
+
+      ///// fake guitar:
+      clock.sched(48, { mixerA.setSendVol(0, 1, 0); });
+      clock.sched(48, { fakeGuitar.section2.setFilterCutoff(33); });
+      clock.sched(124, { fakeGuitar.section2.playSampleOneShot; });
+      clock.sched(124, { fakeGuitar.section2.sweepFilter(33, 539, 37.1); });
+      clock.sched(388, { fakeGuitar.section2.sweepFilter(539, 33, 5.1) });
     });
   }
 

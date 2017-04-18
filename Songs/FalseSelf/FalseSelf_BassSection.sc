@@ -302,9 +302,9 @@ FalseSelf_BassSection :IM_Module {
   }
 
   playEnd { | clock |
-    satur.playSequence(\postChorus, clock);
-    feedback.playSequence(\postChorus, clock);
-    feedback.playSequence(\postChorusOctave, clock);
+    satur.playSequence(\end, clock);
+    feedback.playSequence(\end, clock);
+    feedback.playSequence(\endOctave, clock);
   }
 
   playCoda { | clock |

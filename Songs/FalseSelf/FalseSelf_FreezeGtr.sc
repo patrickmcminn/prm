@@ -123,25 +123,28 @@ FalseSelf_FreezeGtr : IM_Module {
         [bufferDict[\lowB], bufferDict[\midB], bufferDict[\highDSharp2], bufferDict[\midFSharp]]
       ], 1));
 
-      sampler.addKey(\chordProgression, \amp, 0.75);
+      sampler.addKey(\chordProgression, \amp, 0.6);
 
       sampler.addKey(\voice1, \legato, 1.1);
-      sampler.addKey(\voice1, \buffer, Pseq([bufferDict[\lowGSharp], bufferDict[\midA], bufferDict[\midGsharp]], 1));
+      sampler.addKey(\voice1, \buffer, Pseq([bufferDict[\lowGSharp], bufferDict[\midA], bufferDict[\midGSharp]], 1));
       sampler.addKey(\voice1, \dur, Pseq([190, 52, 77], 1));
       sampler.addKey(\voice1, \releaseTime, 3);
-      sampler.addKey(\voice1, \amp, 0.1);
+      sampler.addKey(\voice1, \amp, 0.3);
+      sampler.addKey(\voice1, \pan, Pwhite(-0.75, 0.75));
 
       sampler.addKey(\voice2, \legato, 1.1);
       sampler.addKey(\voice2, \buffer, Pseq([bufferDict[\midB], bufferDict[\highCSharp2]], 1));
       sampler.addKey(\voice2, \dur, Pseq([208, 132], 1));
       sampler.addKey(\voice2, \releaseTime, 3);
-      sampler.addKey(\voice2, \amp, 0.1);
+      sampler.addKey(\voice2, \amp, 0.3);
+      sampler.addKey(\voice2, \pan, Pwhite(-0.75, 0.75));
 
       sampler.addKey(\voice3, \legato, 1.1);
       sampler.addKey(\voice3, \buffer, Pseq([bufferDict[\highDSharp2], bufferDict[\highE]], 1));
       sampler.addKey(\voice3, \dur, Pseq([116, 202], 1));
       sampler.addKey(\voice3, \releaseTime, 3);
-      sampler.addKey(\voice3, \amp, 0.1);
+      sampler.addKey(\voice3, \amp, 0.3);
+      sampler.addKey(\voice3, \pan, Pwhite(-0.5, 0.5));
 
       sampler.addKey(\voice4, \legato, 1.1);
       sampler.addKey(\voice4, \buffer, Pseq(
@@ -150,7 +153,8 @@ FalseSelf_FreezeGtr : IM_Module {
       ], 1));
       sampler.addKey(\voice4, \dur, Pseq([133, 51, 39, 52, 47], 1));
       sampler.addKey(\voice4, \releaseTime, 3);
-      sampler.addKey(\voice4, \amp, 0.6);
+      sampler.addKey(\voice4, \amp, 0.3);
+      sampler.addKey(\voice4, \pan, Pwhite(-0.75, 0.75));
 
     }.fork;
   }

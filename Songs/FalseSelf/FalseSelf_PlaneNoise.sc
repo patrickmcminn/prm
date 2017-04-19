@@ -38,9 +38,9 @@ FalseSelf_PlaneNoise : IM_Module {
   }
 
   playSample { samplePlayer.playSampleSustaining('planeNoise', 0, 1, 0, 1, 0); isPlaying = true; }
-  releaseSample { samplePlayer.releaseSampleSustaining('planeNoise'); }
+  releaseSample { samplePlayer.releaseSampleSustaining('planeNoise'); isPlaying = false;  }
 
-  setFilterCutoff { | cutoff = 9490 | samplePlayer.setFilterCutoff(cutoff); isPlaying = false; }
+  setFilterCutoff { | cutoff = 9490 | samplePlayer.setFilterCutoff(cutoff); }
 
 
 }

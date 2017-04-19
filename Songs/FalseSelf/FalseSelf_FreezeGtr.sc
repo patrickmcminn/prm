@@ -107,9 +107,10 @@ FalseSelf_FreezeGtr : IM_Module {
       server.sync;
 
       sampler.addKey(\chordProgression, \legato, 1);
-      sampler.addKey(\chordProgression, \dur, Pseq([20, 8, 8, 6, 10, 8, 8, 6, 6, 8, 6, 8], 1));
+     // sampler.addKey(\chordProgression, \dur, Pseq([20, 8, 8, 6, 10, 8, 8, 6, 6, 8, 6, 8], 1));
+      sampler.addKey(\chordProgression, \dur, Pseq([8, 8, 6, 10, 8, 8, 6, 6, 8, 6, 8], 1));
       sampler.addKey(\chordProgression, \buffer, Pseq([
-        [bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
+       // [bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
         [bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
         [bufferDict[\midC], bufferDict[\midG], bufferDict[\highC], bufferDict[\highE]],
         [bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
@@ -123,7 +124,7 @@ FalseSelf_FreezeGtr : IM_Module {
         [bufferDict[\lowB], bufferDict[\midB], bufferDict[\highDSharp2], bufferDict[\midFSharp]]
       ], 1));
 
-      sampler.addKey(\chordProgression, \amp, 0.6);
+      sampler.addKey(\chordProgression, \amp, 0.4);
 
       sampler.addKey(\voice1, \legato, 1.1);
       sampler.addKey(\voice1, \buffer, Pseq([bufferDict[\lowGSharp], bufferDict[\midA], bufferDict[\midGSharp]], 1));

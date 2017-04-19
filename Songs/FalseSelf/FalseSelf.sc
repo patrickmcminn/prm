@@ -16,6 +16,7 @@ FalseSelf : Song {
 	var <trumpetCanon, <trumpetCanonInput, <drones, <sixteenthDrones;
   var <orchestra, <planeNoise, <midBuzz, <flute;
   var <trumpetMelody, <trumpetMelodyInput, <freezeGuitar;
+  var <endTrumpet, <endTrumpetInput;
 
   var <modularRoutine;
 
@@ -64,6 +65,12 @@ FalseSelf : Song {
       while({ try { trumpetMelody.isLoaded } != true }, { 0.001.wait; });
       trumpetMelodyInput = IM_HardwareIn.new(0, trumpetMelody.inBus, group, \addToHead);
       while({ try { trumpetMelodyInput.isLoaded } != true }, { 0.001.wait; });
+
+      endTrumpet = FalseSelf_EndTrumpet.new(mixerA.chanStereo(5), relGroup: group, addAction: \addToHead);
+      while({ try { endTrumpet.isLoaded } != true }, { 0.001.wait; });
+      endTrumpetInput = IM_HardwareIn.new(1, endTrumpet.inBus, group, \addToHead);
+      while({ try { endTrumpetInput.isLoaded } != true }, { 0.001.wait; });
+
 
 
       //// Mixer B:
@@ -156,7 +163,7 @@ FalseSelf : Song {
     mainTrumpet.mixer.setVol(-25);
 
     // melodySynth:
-    mixerB.setVol(0, -12);
+    mixerB.setVol(0, -6);
 
     // basses:
     mixerB.setVol(1, -3);
@@ -201,7 +208,12 @@ FalseSelf : Song {
 
     // trumpet melody:
     mixerA.setSendVol(4, 0, -6);
+    mixerA.tglMute(4);
 
+    // end trumpet:
+    mixerA.setSendVol(5, 0, -6);
+    mixerA.setSendVol(5, 2, 0);
+    endTrumpet.input.mute;
   }
 
   prSetAssignableOutParameters {
@@ -282,6 +294,7 @@ FalseSelf : Song {
     trumpetCanon.free; trumpetCanonInput.free; drones.free; sixteenthDrones.free;
     orchestra.free; planeNoise.free; midBuzz.free; flute.free;
     trumpetMelody.free; trumpetMelodyInput.free; freezeGuitar.free;
+    endTrumpet.free; endTrumpetInput.free;
   }
 
   playModularRoutine { modularRoutine.play; }
@@ -331,10 +344,7 @@ FalseSelf : Song {
       clock.sched((35-1)*4, { mixerC.unMute(0); });
       clock.sched((43-1)*4, { mixerC.mute(0); });
       clock.sched((47-1)*4, { mixerC.unMute(0); });
-      clock.sched((55-1)*4, {
-        mixerC.mute(0);
-        this.stopModularRoutine;
-      });
+      clock.sched((55-1)*4, { this.stopModularRoutine; mixerA.setSendVol(0, 2, -inf); });
 
       //////// basses:
       clock.sched((41-1)*4, {
@@ -417,10 +427,14 @@ FalseSelf : Song {
       clock.sched(416, { trumpetCanon.muteDelays; });
       // high pass sweep:
       clock.sched(344, { trumpetCanon.postEQ.sweepHighPassFilter(30, 1200, 31.5); });
+      clock.sched(428, { trumpetCanon.muteInput });
 
       //// drums:
       // play post chorus:
-      clock.sched(320, { drums.playCanon(clock); });
+      clock.sched(320, {
+        drums.playCanon(clock);
+        drums.mixer.setVol(-6);
+      });
       // sweep filter:
       clock.sched(344, { drums.sweepFilter(30, 500, 36); });
       // send to granulator:
@@ -478,73 +492,73 @@ FalseSelf : Song {
 
       /////// time signature changes:
       clock.beatsPerBar_(8);
-      clock.sched(16, { clock.beatsPerBar_(12) });
-      clock.sched(28, { clock.beatsPerBar_(8) });
-      clock.sched(60, { clock.beatsPerBar_(12) });
+      //clock.sched(16, { clock.beatsPerBar_(12) });
+      //clock.sched(28, { clock.beatsPerBar_(8) });
+      //clock.sched(60, { clock.beatsPerBar_(12) });
+      //clock.sched(72, { clock.beatsPerBar_(8) });
+      //clock.sched(96, { clock.beatsPerBar_(12) });
+      //clock.sched(108, { clock.beatsPerBar_(8) });
+      clock.sched(48, { clock.beatsPerBar_(12) });
+      clock.sched(60, { clock.beatsPerBar_(8) });
+      clock.sched(66, { clock.beatsPerBar_(6) });
       clock.sched(72, { clock.beatsPerBar_(8) });
-      clock.sched(96, { clock.beatsPerBar_(12) });
-      clock.sched(108, { clock.beatsPerBar_(8) });
-      clock.sched(156, { clock.beatsPerBar_(12) });
-      clock.sched(168, { clock.beatsPerBar_(8) });
-      clock.sched(176, { clock.beatsPerBar_(6) });
-      clock.sched(182, { clock.beatsPerBar_(8) });
 
       //////////////////////////
       //// Trumpet Melody: ////
       ////////////////////////
 
       melodyIsPlaying = true;
-      clock.sched(190, { endIsPlaying = true; });
+      clock.sched(82, { endIsPlaying = true; });
 
       //////// trumpet melody:
       trumpetMelody.playPattern(clock);
-      clock.sched(108, { trumpetMelody.dry.unMute; });
+      trumpetMelody.dry.unMute;
+      trumpetMelody.staticShift.mute;
 
       //////// freeze guitar:
       // swell:
-      clock.sched(87, { freezeGuitar.mixer.setVol(-inf); });
-      clock.sched(88, { freezeGuitar.fadeVolume(-inf, 0, 10); });
+      //clock.sched(87, { freezeGuitar.mixer.setVol(-inf); });
+      //clock.sched(88, { freezeGuitar.fadeVolume(-inf, 0, 10); });
       // chord progression:
-      clock.sched(88, { freezeGuitar.playChordProgression(clock); });
+      freezeGuitar.playChordProgression(clock);
       // end progression:
-      clock.sched(190, { freezeGuitar.playEndProgression(clock); });
+      clock.sched(82, { freezeGuitar.playEndProgression(clock); });
 
       //////// bass:
-      clock.sched(107, {
-        bassSection.satur.mixer.setVol(0);
-        bassSection.moog.mixer.setVol(0);
-        bassSection.feedback.mixer.setVol(0);
-      });
+      bassSection.satur.mixer.setVol(0);
+      bassSection.moog.mixer.setVol(0);
+      bassSection.feedback.mixer.setVol(0);
       // end melody:
-      clock.sched(108, { bassSection.playEnd(clock); });
+      bassSection.playEnd(clock);
       // coda:
-      clock.sched(190, { bassSection.playCoda(clock); });
+      clock.sched(82, { bassSection.playCoda(clock); });
 
       ///// fake guitar:
-      clock.sched(48-1, { mixerA.setSendVol(0, 1, 0); });
-      clock.sched(47-1, { fakeGuitar.mixer.setVol(0); });
-      clock.sched(48-1, { fakeGuitar.section2.setFilterCutoff(33); });
-      clock.sched(124, { fakeGuitar.section2.playSampleOneShot; });
-      clock.sched(124, { fakeGuitar.section2.sweepFilter(33, 539, 37.1); });
-      clock.sched(388, { fakeGuitar.section2.sweepFilter(539, 33, 5.1) });
+      clock.sched(16, { mixerA.setSendVol(0, 1, 0); });
+      clock.sched(16, { fakeGuitar.mixer.setVol(1, -9); });
+      clock.sched(16, { fakeGuitar.section2.setFilterCutoff(33); });
+      clock.sched(16, { fakeGuitar.section2.playSampleOneShot; });
+      clock.sched(16, { fakeGuitar.section2.sweepFilter(33, 539, 37.1); });
+      clock.sched(264, { fakeGuitar.section2.sweepFilter(539, 33, 5.1) });
 
+      /*
       //// 16th drones:
       clock.sched(68, {
         sixteenthDrones.playVoice1Sequence(clock);
         sixteenthDrones.playVoice2Sequence(clock);
         sixteenthDrones.playVoice3Sequence(clock);
       });
+      */
 
       //// end drums:
       drums.setHighPassCutoff(60);
-      clock.sched(189, { drums.mixer.setVol(-inf); });
-      clock.sched(190, {
+      clock.sched(82, { drums.mixer.setVol(-inf); });
+      clock.sched(82, {
         drums.playEnding(clock);
         drums.fadeVolume(-inf, 0, 20);
         mixerB.setSendVol(2, 1, -17);
         mixerB.setSendVol(2, 0, -30);
       });
-
     });
   }
 

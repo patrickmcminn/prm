@@ -9,7 +9,7 @@ FalseSelf_TrumpetMelody : IM_Processor {
 
   var server;
   var <isLoaded;
-  var <shift1, <shift2, <dry;
+  var <shift1, <shift2, <staticShift, <dry;
   var <eq;
   var <splitter;
   var shiftAmount1, shiftAmount2;
@@ -22,6 +22,7 @@ FalseSelf_TrumpetMelody : IM_Processor {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
+
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
       eq = Equalizer.newStereo(mixer.chanStereo, group, \addToHead);
@@ -33,10 +34,14 @@ FalseSelf_TrumpetMelody : IM_Processor {
       shift2 = ShiftSequencer.new(eq.inBus, group, \addToHead);
       while({ try { shift2.isLoaded } != true }, { 0.001.wait; });
 
+      staticShift = PitchShifter.newMono(eq.inBus, -12, relGroup: group, addAction: \addToHead);
+      while({ try { staticShift.isLoaded } != true }, { 0.001.wait; });
+
       dry = IM_Mixer_1Ch.new(eq.inBus, relGroup: group, addAction: \addToHead);
       while({ try { dry.isLoaded } != true }, { 0.001.wait; });
 
-      splitter = Splitter.newMono(3, [dry.chanMono, shift1.inBus, shift2.inBus], relGroup: group, addAction: \addToHead);
+      splitter = Splitter.newMono(4, [dry.chanMono, staticShift.inBus, shift1.inBus, shift2.inBus],
+        relGroup: group, addAction: \addToHead);
       while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
       this.prInitParameters;
@@ -44,9 +49,13 @@ FalseSelf_TrumpetMelody : IM_Processor {
 
       server.sync;
 
+      mixer.setPreVol(-3);
+      dry.setVol(-6);
+
       isLoaded = true;
     }
   }
+
 
   prInitParameters {
     mixer.setPreVol(0);
@@ -67,19 +76,19 @@ FalseSelf_TrumpetMelody : IM_Processor {
 
       shift1NoteArray =
       [
-        Pseq([-12], 25),
+        //Pseq([-12], 25),
         -8, -7, -9, -8, -8, -7, -9, -9, -5, -9, -7, -8, -7, -9, -7, -8, -8, -5, -3, -2, 3, -7, -5, -4, -9
       ];
 
       shift2NoteArray =
       [
-        -3, -2, -5, -4, -3, -2, -5, -4, -4, -5, -3, -1, -4, -5, -3, -1, -4, -2, -3, -2, 8, -2, -3, -2, -8,
+        //-3, -2, -5, -4, -3, -2, -5, -4, -4, -5, -3, -1, -4, -5, -3, -1, -4, -2, -3, -2, 8, -2, -3, -2, -8,
         -3, -2, -5, -5, -3, -2, -5, -4, 4, -4, -2, -5, -4, -4, -2, 0, 0, 3, 5, 6, 8, 0, 2, 3, -5
       ] -12;
 
       durArray =
       [
-        2, 4, 2, 10, 2, 4, 4, 8, 8, 2, 2, 4, 6, 2, 2, 2, 8, 2, 4, 2, 8, 2, 4, 4, 10,
+        //2, 4, 2, 10, 2, 4, 4, 8, 8, 2, 2, 4, 6, 2, 2, 2, 8, 2, 4, 2, 8, 2, 4, 4, 10,
         2, 4, 2, 8, 2, 2, 2, 4, 6, 2, 2, 4, 8, 2, 2, 2, 6, 2, 4, 2, 6, 2, 2, 4, 8
       ];
 
@@ -103,6 +112,7 @@ FalseSelf_TrumpetMelody : IM_Processor {
   //////// free:
 
   free {
+    staticShift.free;
     splitter.free;
     dry.free;
     shift1.free;

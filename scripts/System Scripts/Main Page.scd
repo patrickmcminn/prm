@@ -37,6 +37,27 @@ var cortezIsLoaded = false;
   }
 }, page: page);
 
+// Connections:
+~ohm.turnGridBlue(0,1, page: page);
+~ohm.setGridFunc(0, 1,  {
+  if( connectionsIsLoaded == false, {
+    r {
+      ~connections = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
+      while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 1, { ~ohm.setPage('connections'); }, page: page);
+      ~ohm.turnGridGreen(1, 1);
+      connectionsIsLoaded = true;
+    }.play;
+    },
+    {
+      ~connections.free;
+      ~ohm.setGridFunc(1, 1, { });
+      ~ohm.turnGridOff(1, 1);
+      connectionsIsLoaded = false;
+  });
+}, page: page);
+
 /*
 // Nebula Page:
 ~ohm.turnGridCyan(0, 0, page: page);
@@ -60,26 +81,7 @@ var cortezIsLoaded = false;
 }, page: page);
 */
 
-// Connections:
-~ohm.turnGridBlue(0,1, page: page);
-~ohm.setGridFunc(0, 1,  {
-  if( connectionsIsLoaded == false, {
-    r {
-      ~connections = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
-        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
-      while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.setGridFunc(1, 1, { ~ohm.setPage('connections'); }, page: page);
-      ~ohm.turnGridGreen(1, 1);
-      connectionsIsLoaded = true;
-    }.play;
-    },
-    {
-      ~connections.free;
-      ~ohm.setGridFunc(1, 1, { });
-      ~ohm.turnGridOff(1, 1);
-      connectionsIsLoaded = false;
-  });
-}, page: page);
+
 
 // Dauphine Street:
 ~ohm.turnGridMagenta(0, 2, page: page);

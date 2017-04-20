@@ -488,7 +488,7 @@ FalseSelf : Song {
       //// Clock Management: ////
       //////////////////////////
 
-      clock.tempo = 142.20/60;
+      //clock.tempo = 142.20/60;
 
       /////// time signature changes:
       clock.beatsPerBar_(8);

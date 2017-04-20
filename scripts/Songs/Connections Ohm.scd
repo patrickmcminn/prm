@@ -36,13 +36,8 @@ chordsLoaded = false;
 ~ohm.addLeftSlidersBanks(1, page: page);
 
 // page load function:
-~ohm.setPageLoadFunction({
-  ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
-}, page);
+~ohm.addPageLoadFunction(\mainGlobalMixer, { ~ohm.storageDict[\loadGlobalSubmixerFunc].value; }, page);
 
-// bring base on over:
-~ohm.turnControlButtonPurple(2, 0, bank: mainBank, page: page);
-~ohm.setControlButtonFunc(2, 0, { ~base.setPage(page); }, bank: mainBank, page: page);
 
 
 // bank change:
@@ -50,7 +45,7 @@ chordsLoaded = false;
 ~ohm.setCrossfaderButtonFunc(0, r {
   loop {
     ~ohm.setActiveLeftSlidersBank(auxBank, page: page);
-    ~ohm.turnCrossfaderButtonPurple(0).yield;
+    ~ohm.turnCrossfaderButtonMagenta(0).yield;
 
     ~ohm.setActiveLeftSlidersBank(mainBank, page: page);
     ~ohm.turnCrossfaderButtonWhite(0).yield;
@@ -125,7 +120,7 @@ freeAirSputtersFuncs = {
 airSputtersMonitorRoutine = r {
   loop {
     switch ( ~connections.airSputters.sputterNum,
-      1, { ~ohm.turnGridPurple(1, 0, bank: mainBank, page: page); },
+      1, { ~ohm.turnGridMagenta(1, 0, bank: mainBank, page: page); },
       2, { ~ohm.turnGridCyan(1, 0, bank: mainBank, page: page); },
       3, { ~ohm.turnGridYellow(1, 0, bank: mainBank, page: page); },
       4, { ~ohm.turnGridWhite(1, 0, bank: mainBank, page: page); }
@@ -161,7 +156,7 @@ loadDronerFuncs =  {
   var grainRateResetFunc;
 
   grainRateResetFunc = {
-    3.do({ | i | ~ohm.turnGridPurple(i + 1, 2, bank: mainBank, page: page); });
+    3.do({ | i | ~ohm.turnGridMagenta(i + 1, 2, bank: mainBank, page: page); });
   };
 
   // fader:
@@ -263,9 +258,9 @@ freeDronerFuncs =  {
 
 
 //////// Note Record:
-noteRecordColorArray = ['blue', 'cyan', 'purple', 'white', 'green', 'yellow'];
-cascadeRecordColorArray = ['yellow', 'blue', 'cyan', 'purple', 'white'];
-chordRecordColorArray = ['purple', 'green', 'cyan', 'purple', 'white', 'green', 'yellow'];
+noteRecordColorArray = ['blue', 'cyan', 'magenta', 'white', 'green', 'yellow'];
+cascadeRecordColorArray = ['yellow', 'blue', 'cyan', 'magenta', 'white'];
+chordRecordColorArray = ['magenta', 'green', 'cyan', 'magenta', 'white', 'green', 'yellow'];
 
 //// bassline record:
 ~ohm.turnGridBlue(0, 3, bank: mainBank, page: page);
@@ -295,7 +290,7 @@ chordRecordColorArray = ['purple', 'green', 'cyan', 'purple', 'white', 'green', 
 
 
 // chord record:
-~ohm.turnGridPurple(2, 3, bank: mainBank, page: page);
+~ohm.turnGridMagenta(2, 3, bank: mainBank, page: page);
 ~ohm.setGridFunc(2, 3, {
   ~connections.noteRecord.chordRecordRoutine.next;
   ~ohm.turnGridColor(2, 3, chordRecordColorArray[~connections.noteRecord.chordRecordNum]);
@@ -360,7 +355,7 @@ loadBasslineFuncs = {
   }, bank: mainBank, page: page);
 
   // bassline 2:
-  ~ohm.turnGridPurple(2, 5);
+  ~ohm.turnGridMagenta(2, 5);
   ~ohm.setGridFunc(2, 5, {
     if( ~connections.bass.bassline2IsPlaying == false,
       { ~connections.bass.playBassline2(~connections.clock); ~ohm.turnGridGreen(2, 5); },
@@ -489,7 +484,7 @@ loadInletFuncs = {
   }, auxBank, page);
 
   // button:
-  ~ohm.turnGridPurple(1, 7, bank: mainBank, page: page);
+  ~ohm.turnGridMagenta(1, 7, bank: mainBank, page: page);
   ~ohm.setGridFunc(1, 7, {
     if( ~connections.inlet.cascade.isPlaying,
       { ~connections.inlet.cascade.stopSequences; ~ohm.turnGridRed(1, 7); },
@@ -546,7 +541,7 @@ loadChordFuncs = {
   //// buttons:
 
   // chord sum:
-  ~ohm.turnGridPurple(5, 2, bank: mainBank, page: page);
+  ~ohm.turnGridMagenta(5, 2, bank: mainBank, page: page);
   ~ohm.setGridFunc(5, 2, {
     ~connections.chords.recordChords;
     ~ohm.turnGridGreen(5, 2);

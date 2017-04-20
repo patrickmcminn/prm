@@ -42,6 +42,10 @@ FalseSelf_EndTrumpet : IM_Module {
       input = IM_Mixer_1Ch.new(splitter.inBus, relGroup: group, addAction: \addToHead);
       while({ try { input.isLoaded } != true }, { 0.001.wait; });
 
+      delay1.setMix(1);
+      delay2.setMix(1);
+      delay3.setMix(1);
+      delay4.setMix(1);
       /*
       delay1.mixer.setVol(-3);
       delay2.mixer.setVol(-6);

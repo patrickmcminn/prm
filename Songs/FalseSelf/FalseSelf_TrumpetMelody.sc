@@ -49,9 +49,6 @@ FalseSelf_TrumpetMelody : IM_Processor {
 
       server.sync;
 
-      mixer.setPreVol(-3);
-      dry.setVol(-6);
-
       isLoaded = true;
     }
   }
@@ -59,6 +56,7 @@ FalseSelf_TrumpetMelody : IM_Processor {
 
   prInitParameters {
     mixer.setPreVol(0);
+    dry.setVol(-6);
     dry.mute;
     // eq:
     eq.setHighPassCutoff(100);

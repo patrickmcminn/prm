@@ -10,6 +10,7 @@ var page = 'main';
 var connectionsIsLoaded = false;
 var dauphineStreetIsLoaded = false;
 var cortezIsLoaded = false;
+var falseSelfIsLoaded = false;
 
 ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 ~ohm.addPageLoadFunction(\mainGlobalMixer, { ~ohm.storageDict[\loadGlobalSubmixerFunc].value; }, page);
@@ -55,6 +56,28 @@ var cortezIsLoaded = false;
       ~ohm.setGridFunc(1, 1, { });
       ~ohm.turnGridOff(1, 1);
       connectionsIsLoaded = false;
+  });
+}, page: page);
+
+// False Self:
+~ohm.turnGridWhite(0, 2, page: page);
+~ohm.setGridFunc(0, 2, {
+  if( falseSelfIsLoaded == false, {
+    r {
+      ~falseSelf = FalseSelf.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil,
+        ~prm.procGroup, \addToHead);
+      while({ try { ~falseSelf.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 2, { ~ohm.setPage('falseSelf'); }, page: page);
+      ~ohm.turnGridGreen(1, 2);
+      falseSelfIsLoaded = true;
+    }.play;
+    },
+    {
+      ~falseSelf.free;
+      ~ohm.setGridFunc(2, 1, { });
+      ~ohm.turnGridOff(2, 1);
+      falseSelfIsLoaded = false;
   });
 }, page: page);
 

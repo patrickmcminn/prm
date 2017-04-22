@@ -9,6 +9,7 @@ prm
 //"Cortez Ohm.scd".loadRelative;
 "Habit Ohm.scd".loadRelative;
 "False Self Ohm.scd".loadRelative;
+"Light Ohm.scd".loadRelative;
 
 
 // Base:
@@ -17,3 +18,4 @@ prm
 //"Dauphine Street Base.scd".loadRelative;
 "Habit Base.scd".loadRelative;
 "False Self Base.scd".loadRelative;
+"Light Base.scd".loadRelative;

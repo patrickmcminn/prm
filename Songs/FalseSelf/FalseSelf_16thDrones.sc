@@ -90,6 +90,7 @@ FalseSelf_16thDrones : IM_Module {
     filter2.free;
     delay.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   playVoice1Sequence { | clock = 'internal ' | sampler.playSequence('voice1'); }

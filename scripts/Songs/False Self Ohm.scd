@@ -36,7 +36,7 @@ var activeLeftBank = mixerBank1;
     });
     ~ohm.turnControlButtonGreen(2, 0, page: page);
     { ~ohm.turnControlButtonOff(2, 0, page: page); }.defer(0.1);
-    ~falseSelf.bar.postln;
+    //~falseSelf.bar.postln;
     1;
   },page);
 },page: page);
@@ -282,7 +282,7 @@ var activeLeftBank = mixerBank1;
 }, bank: endGridBank, page: page);
 // dry:
 ~ohm.setGridMonitorFunc(2, 2, {
-  if( ~falseSelf.trumpetMelody.dry.mixer.isMuted,
+  if( ~falseSelf.trumpetMelody.dry.isMuted,
     { ~ohm.turnGridRed(2, 2) }, { ~ohm.turnGridGreen(2, 2) })
 }, bank: endGridBank, page: page);
 ~ohm.setGridFunc(2, 2, { ~falseSelf.trumpetMelody.dry.mixer.tglMute;

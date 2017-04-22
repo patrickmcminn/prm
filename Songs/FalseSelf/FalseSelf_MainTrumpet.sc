@@ -36,7 +36,7 @@ FalseSelf_MainTrumpet : IM_Processor {
       eq = Equalizer.newStereo(reverb.inBus, relGroup: group, addAction: \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
-      delay = SimpleDelay.newStereo(reverb.inBus, 0.375, 0.22, 5, relGroup: group, addAction: \addToHead);
+      delay = SimpleDelay.newStereo(eq.inBus, 0.375, 0.22, 5, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       distortion = Distortion.newMono(delay.inBus, 1000, relGroup: group, addAction: \addToHead);
@@ -89,7 +89,7 @@ FalseSelf_MainTrumpet : IM_Processor {
     eq.setHighPassCutoff(173);
     eq.setPeak1Freq(1000);
     eq.setPeak1Gain(3.1);
-    eq.mixer.setPreVol(-15);
+    eq.mixer.setPreVol(-6);
   }
 
   prInitializeDelay {
@@ -100,7 +100,7 @@ FalseSelf_MainTrumpet : IM_Processor {
     distortion.preEQ.setHighPassCutoff(100);
     distortion.postEQ.setHighPassCutoff(100);
     distortion.postEQ.setLowPassCutoff(7500);
-    distortion.mixer.setPreVol(-9);
+    distortion.mixer.setPreVol(0);
   }
 
   //////// public functions:
@@ -113,6 +113,7 @@ FalseSelf_MainTrumpet : IM_Processor {
     reverb.free;
     recordBus.free;
     this.freeProcessor;
+    isLoaded = false;
   }
 
   recordLoop { Synth(\prm_falseSelf_TrumpetRecorder, [\inBus, recordBus, \buffer, buffer], splitter.group, 'addAfter'); }

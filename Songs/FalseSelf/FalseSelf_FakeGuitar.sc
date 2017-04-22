@@ -49,5 +49,13 @@ FalseSelf_FakeGuitar : IM_Module {
   }
 
 
+  free {
+    section1.free;
+    section2.free;
+    this.freeModule;
+    isLoaded = false;
+  }
+
+
 
 }

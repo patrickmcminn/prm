@@ -112,6 +112,7 @@ FalseSelf_BassSection :IM_Module {
     saturFadeBus.free;
     moogFadeBus.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   prMakeGuitarPatterns {

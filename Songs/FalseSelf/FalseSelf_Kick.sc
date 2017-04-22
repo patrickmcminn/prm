@@ -65,7 +65,7 @@ FalseSelf_Kick : IM_Module {
 
   prAddSynthDefs {
     SynthDef(\prm_falseSelf_hpf, {
-      | inBus = 0, outBus = 1, amp = 1, cutoff = 15 |
+      | inBus = 0, outBus = 1, amp = 1, cutoff = 30 |
       var input, filter, sig;
       input = In.ar(inBus);
       filter = RHPF.ar(input, cutoff, 1);
@@ -118,10 +118,10 @@ FalseSelf_Kick : IM_Module {
       [drum0, drum1, drum2]
     ], 6);
     part3 = Pseq([
-      [drum0, drum1, drum2, drum3],
-      [drum0, drum1, drum2, drum3],
-      [drum0, drum1, drum2, drum3],
-      [drum0, drum1, drum2, drum3]
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2]
     ], 4);
     part4 = Pseq([
       [drum0, drum1, drum2, drum3], drum1, drum2, drum0,
@@ -131,13 +131,13 @@ FalseSelf_Kick : IM_Module {
       [drum0, drum1, drum2], drum2, drum1, drum0,
       drum1, drum2, drum1, drum0,
       [drum0, drum1, drum2], drum1, drum2, drum1,
-      [drum0, drum1, drum2, drum3], [drum0, drum1, drum2], [drum0, drum1, drum2], [drum0, drum1, drum2]
+      [drum0, drum1, drum2], [drum0, drum1], [drum0, drum1, drum2], [drum0, drum1, drum2]
     ], 1);
 
 
     drums.addKey(\section1, \dur, Pseq([Pseq([1], 64), Pseq([2], 24), Pseq([1], 16), Pseq([0.25], inf)], inf));
     drums.addKey(\section1, \buffer, Pseq([part1, part2, part3, part4], 1));
-    drums.addKey(\section1, \amp, 0.75);
+    drums.addKey(\section1, \amp, 0.65);
   }
 
   prSequenceChorus1 {

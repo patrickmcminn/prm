@@ -56,15 +56,17 @@ FalseSelf_TrumpetMelody : IM_Processor {
 
   prInitParameters {
     mixer.setPreVol(0);
-    dry.setVol(-6);
+    dry.setVol(0);
     dry.mute;
     // eq:
     eq.setHighPassCutoff(100);
     eq.setPeak1Freq(350);
     eq.setPeak1Gain(-3);
+    eq.setPeak1Freq(150);
+    eq.setPeak1Gain(1.5);
     eq.setPeak1RQ(0.3);
     eq.setPeak2Freq(1200);
-    eq.setPeak2Gain(3);
+    eq.setPeak2Gain(-1);
   }
 
   prMakePatterns {

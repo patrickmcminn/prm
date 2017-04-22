@@ -60,6 +60,7 @@ FalseSelf_MidBuzz :IM_Module {
   free {
     sampler.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   fadeVolume { | start = 0, end = -inf, time = 10 |

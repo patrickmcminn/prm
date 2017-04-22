@@ -77,6 +77,7 @@ FalseSelf_MelodySynth : IM_Module {
   free {
     synth.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   playNote { | note = 220 | synth.playNote(note); }

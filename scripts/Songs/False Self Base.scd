@@ -9,7 +9,7 @@ var page = 'falseSelf';
 var mainGridBank = 0;
 
 var mixerBank1 = 0;
-var mixerBank2 = 0;
+var mixerBank2 = 1;
 var activeFadersBank = mixerBank1;
 
 ~base.makePage(page);
@@ -30,10 +30,12 @@ var activeFadersBank = mixerBank1;
 ~base.setControlButtonFunc(1, {
 	activeFadersBank = mixerBank1;
 	~base.setActiveFadersBank(activeFadersBank);
+  ~base.setActiveTouchButtonsBank(activeFadersBank);
 }, page: page);
 ~base.setControlButtonFunc(2, {
 	activeFadersBank = mixerBank2;
 	~base.setActiveFadersBank(activeFadersBank);
+  ~base.setActiveTouchButtonsBank(activeFadersBank);
 }, page: page);
 
 //////// Mixer:
@@ -105,7 +107,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(5, { ~falseSelf.mixerA.tglMute(1) }, bank: mixerBank1, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(5, {
-	~base.setFaderValue(5, { ~falseSelf.mixerA.vol(1).dbfsCC }, bank: mixerBank1, page: page);
+	~base.setFaderValue(5, ~falseSelf.mixerA.vol(1).dbfsCC );
 }, bank: mixerBank1, page: page);
 ~base.setFaderFunc(5, { | val | ~falseSelf.mixerA.setVol(1, val.ccdbfs);
 }, bank: mixerBank1, page: page);
@@ -119,7 +121,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(6, { ~falseSelf.mixerB.tglMute(0) }, bank: mixerBank1, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(6, {
-	~base.setFaderValue(6, { ~falseSelf.mixerB.vol(0).dbfsCC });
+	~base.setFaderValue(6, ~falseSelf.mixerB.vol(0).dbfsCC);
 }, bank: mixerBank1, page: page);
 ~base.setFaderFunc(6, { | val | ~falseSelf.mixerB.setVol(0, val.ccdbfs);
 }, bank: mixerBank1, page: page);
@@ -133,7 +135,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(7, { ~falseSelf.mixerC.tglMute(0) }, bank: mixerBank1, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(7, {
-	~base.setFaderValue(7, { ~falseSelf.mixerC.vol(0).dbfsCC });
+	~base.setFaderValue(7, ~falseSelf.mixerC.vol(0).dbfsCC );
 }, bank: mixerBank1, page: page);
 ~base.setFaderFunc(7, { | val | ~falseSelf.mixerC.setVol(0, val.ccdbfs);
 }, bank: mixerBank1, page: page);
@@ -142,14 +144,14 @@ var activeFadersBank = mixerBank1;
 ~base.setFaderMode(8, 'magentaFill', bank: mixerBank1, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(8, {
-	if( ~falseSelf.mixerA.isMuted(2), { ~base.turnTouchButtonRed(8) }, { ~base.turnTouchButtonGreen(8) });
+	if( ~falseSelf.mixerA.isMuted(3), { ~base.turnTouchButtonRed(8) }, { ~base.turnTouchButtonGreen(8) });
 }, bank: mixerBank1, page: page);
-~base.setTouchButtonFunc(8, { ~falseSelf.mixerA.tglMute(2) }, bank: mixerBank1, page: page);
+~base.setTouchButtonFunc(8, { ~falseSelf.mixerA.tglMute(3) }, bank: mixerBank1, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(8, {
-	~base.setFaderValue(8, { ~falseSelf.mixerA.vol(2).dbfsCC });
+	~base.setFaderValue(8, ~falseSelf.mixerA.vol(3).dbfsCC );
 }, bank: mixerBank1, page: page);
-~base.setFaderFunc(8, { | val | ~falseSelf.mixerA.setVol(2, val.ccdbfs);
+~base.setFaderFunc(8, { | val | ~falseSelf.mixerA.setVol(3, val.ccdbfs);
 }, bank: mixerBank1, page: page);
 
 //// Plane Noise:
@@ -161,7 +163,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(1, { ~falseSelf.mixerC.tglMute(3) }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(1, {
-	~base.setFaderValue(1, { ~falseSelf.mixerC.vol(3).dbfsCC; });
+	~base.setFaderValue(1, ~falseSelf.mixerC.vol(3).dbfsCC; );
 }, bank: mixerBank2, page: page);
 ~base.setFaderFunc(1, { | val | ~falseSelf.mixerC.setVol(3, val.ccdbfs);
 }, bank: mixerBank2, page: page);
@@ -170,12 +172,12 @@ var activeFadersBank = mixerBank1;
 ~base.setFaderMode(2, 'cyanFill', bank: mixerBank2, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(2, {
-	if( ~falseSelf.mixerC.isMuted(4), { ~base.turnTouchButtonRed(2) }, { ~base.turnTouchButtoGreen(2) });
+	if( ~falseSelf.mixerC.isMuted(4), { ~base.turnTouchButtonRed(2) }, { ~base.turnTouchButtonGreen(2) });
 }, bank: mixerBank2, page: page);
 ~base.setTouchButtonFunc(2, { ~falseSelf.mixerC.tglMute(4) }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(2, {
-	~base.setFaderValue(2, { ~falseSelf.mixerC.vol(4).dbfsCC; });
+	~base.setFaderValue(2, ~falseSelf.mixerC.vol(4).dbfsCC; );
 }, bank: mixerBank2, page: page);
 ~base.setFaderFunc(2, { | val | ~falseSelf.mixerC.setVol(4, val.ccdbfs);
 }, bank: mixerBank2, page: page);
@@ -189,7 +191,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(3, { ~falseSelf.mixerC.tglMute(1) }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(3, {
-	~base.setFaderValue(3, { ~falseSelf.mixerC.vol(1).dbfsCC });
+	~base.setFaderValue(3, ~falseSelf.mixerC.vol(1).dbfsCC );
 }, bank: mixerBank2, page: page);
 ~base.setFaderFunc(3, { | val | ~falseSelf.mixerC.setVol(1, val.ccdbfs);
 }, bank: mixerBank2, page: page);
@@ -203,7 +205,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(4, { ~falseSelf.mixerB.tglMute(3); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(4, {
-	~base.setFaderValue(4, { ~falseSelf.mixerB.vol(3).dbfsCC });
+	~base.setFaderValue(4,  ~falseSelf.mixerB.vol(3).dbfsCC );
 }, bank: mixerBank2, page: page);
 ~base.setFaderFunc(4, { | val | ~falseSelf.mixerB.setVol(3, val.ccdbfs);
 }, bank: mixerBank2, page: page);
@@ -217,7 +219,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(5, { ~falseSelf.mixerC.tglMute(2); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(5, {
-	~base.setFaderValue(5, { ~falseSelf.mixerC.vol(2).dbfsCC });
+	~base.setFaderValue(5, ~falseSelf.mixerC.vol(2).dbfsCC );
 }, bank: mixerBank2, page: page);
 ~base.setFaderFunc(5, { | val | ~falseSelf.mixerC.setVol(2, val.ccdbfs);
 }, bank: mixerBank2, page: page);
@@ -231,7 +233,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(6, { ~falseSelf.mixerA.tglMute(4); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(6, {
-	~base.setFaderValue(6, { ~falseSelf.mixerA.vol(4).dbfsCC });
+	~base.setFaderValue(6, ~falseSelf.mixerA.vol(4).dbfsCC );
 }, bank: mixerBank2, page: page);
 ~base.setFaderFunc(6, { | val | ~falseSelf.mixerA.setVol(4, val.ccdbfs);
 }, bank: mixerBank2, page: page);
@@ -245,7 +247,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(7, { ~falseSelf.mixerB.tglMute(4); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(7, {
-	~base.setFaderValue(7, { ~falseSelf.mixerB.vol(4).dbfsCC });
+	~base.setFaderValue(7,  ~falseSelf.mixerB.vol(4).dbfsCC );
 }, bank: mixerBank2, page: page);
 ~base.setFaderFunc(7, { | val | ~falseSelf.mixerB.setVol(4, val.ccdbfs);
 }, bank: mixerBank2, page: page);
@@ -259,7 +261,7 @@ var activeFadersBank = mixerBank1;
 ~base.setTouchButtonFunc(8, { ~falseSelf.mixerA.tglMute(5); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(8, {
-	~base.setFaderValue(8, { ~falseSelf.mixerA.vol(5).dbfsCC });
+	~base.setFaderValue(8, ~falseSelf.mixerA.vol(5).dbfsCC );
 }, bank: mixerBank2, page: page);
 ~base.setFaderFunc(8, { | val | ~falseSelf.mixerA.setVol(5, val.ccdbfs);
 }, bank: mixerBank2, page: page);

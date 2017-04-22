@@ -10,7 +10,7 @@ Light_Arps : IM_Module {
   var <sampler;
 
   *new { | outBus, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, outBus, relGroup: relGroup, addAction: \addToHead).prInit;
+    ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
   }
 
   prInit {
@@ -31,6 +31,12 @@ Light_Arps : IM_Module {
   }
 
   //////// public functions:
+
+  free {
+    sampler.free;
+    this.freeModule;
+    isLoaded = false;
+  }
 
   playArps {
     sampler.playSampleOneShot(0, 0);

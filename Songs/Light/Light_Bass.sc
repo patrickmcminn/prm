@@ -18,6 +18,8 @@ Light_Bass : IM_Module {
     server.waitForBoot {
       isLoaded = false;
 
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
       bass = Mother32.new(3, mixer.chanStereo(0), moogDevice, moogPort, relGroup: group, addAction: \addToHead);
       while({ try { bass.isLoaded } != true }, { 0.001.wait; });
 

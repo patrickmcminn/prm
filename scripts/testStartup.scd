@@ -54,4 +54,24 @@ MIDIIn.connectAll;
 ~base = Base.new("iConnectAudio4+", "HST3");
 
 
+~lightSend = Light_Sends.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.reverb.inBus,
+        relGroup: ~prm.procGroup, addAction: \addToHead);
+~light = Light.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~lightSend.reverb.inBus, ~lightSend.delays.inBus, ~prm.modularSend.inBus, ~lightSend.multiShift.inBus,
+        ~prm.procGroup, \addToHead);
+
+
+~lightSend.isLoaded;
+
+~lightMain = Light_Main.new(0);
+~lightMain.isLoaded;
+
+~light.isLoaded;
+
+~light.bass.isLoaded;
+
+~light.mixerB.chanStereo
+
+Light_Bass
 

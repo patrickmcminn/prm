@@ -21,8 +21,6 @@ Light : Song {
       isLoaded = false;
       while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
 
-      this.prSetInitialConditions;
-
       server.sync;
 
       // Mixer A:
@@ -38,6 +36,8 @@ Light : Song {
 
       server.sync;
 
+      this.prSetInitialConditions;
+
       isLoaded = true;
     }
   }
@@ -49,9 +49,9 @@ Light : Song {
     // send 3: Modular
     // send 4: Light Sends multishift
 
-    mixerA.masterChan.setVol(-9);
-    mixerB.masterChan.setVol(-9);
-    mixerC.masterChan.setVol(-9);
+    mixerA.masterChan.setVol(-12);
+    mixerB.masterChan.setVol(-12);
+    mixerC.masterChan.setVol(-12);
 
     // main:
     mixerA.setVol(0, -3);

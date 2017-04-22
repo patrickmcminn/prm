@@ -32,10 +32,10 @@ var activeLeftBank = leftBank1;
 
 // switch banks:
 ~ohm.setCrossfaderButtonMonitorFunc(0, {
-  if( activeLeftBank = leftBank1, { ~ohm.turnCrossfaderButtonMagenta(0) }, { ~ohm.turnCrossfaderButtonCyan(0) });
+  if( activeLeftBank == leftBank1, { ~ohm.turnCrossfaderButtonMagenta(0) }, { ~ohm.turnCrossfaderButtonCyan(0) });
 }, page: page);
 ~ohm.setCrossfaderButtonFunc(0, {
-  if( activeLeftBank = leftBank1, { activeLeftBank = leftBank2 }, { activeLeftBank = leftBank1 });
+  if( activeLeftBank == leftBank1, { activeLeftBank = leftBank2 }, { activeLeftBank = leftBank1 });
   ~ohm.setActiveLeftButtonsBank(activeLeftBank);
   ~ohm.setActiveLeftSlidersBank(activeLeftBank);
   ~ohm.setActiveLeftKnobsBank(activeLeftBank);

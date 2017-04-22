@@ -21,6 +21,8 @@ Light_Sends : Song {
     server.waitForBoot {
       isLoaded = false;
 
+      while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
+
       reverb = IM_Reverb.newConvolution(mixerC.chanStereo(0), bufName: reverbBuf,
         relGroup: group, addAction: \addToTail);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });

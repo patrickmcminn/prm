@@ -53,7 +53,7 @@ FalseSelf_TrumpetCanon : IM_Processor {
       processor.delay.setMix(0);
       processor.distortion.setDistortionGain(1.75);
       processor.distortion.postEQ.setLowPassCutoff(7500);
-      processor.distortion.mixer.setPreVol(0);
+      processor.distortion.mixer.setPreVol(-3);
 
       delays.set(\inAmp, inputBus.asMap);
 

@@ -140,7 +140,7 @@ controlButtonResetFunc.value;
 // volume:
 ~base.setFaderFunc(4, { | val |
   ~prm.microphone.setVol(val.ccdbfs(-70, 0));
-  ~base.setFaderValue(val);
+  ~base.setFaderValue(4, val);
 }, bank: mainBank, page: page);
 // verb send:
 ~base.setFaderFunc(5, { | val |

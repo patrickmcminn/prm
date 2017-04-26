@@ -75,6 +75,7 @@ FalseSelf_CrudeDrones :IM_Module {
     delay.free;
     sampler.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   playVoice1Sequence { | clock = 'internal' | sampler.playSequence(\voice1, clock); }

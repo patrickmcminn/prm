@@ -29,6 +29,8 @@ FalseSelf_Orchestra : IM_Module {
       sampler = SamplePlayer.newStereo(mixer.chanStereo, path, relGroup: group, addAction: \addToHead);
       while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
 
+      mixer.setPreVol(3);
+
       isLoaded = true;
     }
   }
@@ -38,6 +40,7 @@ FalseSelf_Orchestra : IM_Module {
   free {
     sampler.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   playMahlerPhrase { sampler.playSampleOneShot(0, 1, 0, 1);}

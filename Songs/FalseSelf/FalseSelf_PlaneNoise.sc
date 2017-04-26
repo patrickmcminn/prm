@@ -27,6 +27,7 @@ FalseSelf_PlaneNoise : IM_Module {
 
       samplePlayer.setFilterCutoff(9490);
       mixer.setPreVol(12);
+      isPlaying = false;
       isLoaded = true;
     };
   }
@@ -35,12 +36,13 @@ FalseSelf_PlaneNoise : IM_Module {
   free {
     samplePlayer.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   playSample { samplePlayer.playSampleSustaining('planeNoise', 0, 1, 0, 1, 0); isPlaying = true; }
-  releaseSample { samplePlayer.releaseSampleSustaining('planeNoise'); }
+  releaseSample { samplePlayer.releaseSampleSustaining('planeNoise'); isPlaying = false;  }
 
-  setFilterCutoff { | cutoff = 9490 | samplePlayer.setFilterCutoff(cutoff); isPlaying = false; }
+  setFilterCutoff { | cutoff = 9490 | samplePlayer.setFilterCutoff(cutoff); }
 
 
 }

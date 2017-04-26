@@ -38,6 +38,7 @@ FalseSelf_BellSection : IM_Module {
     bells.free;
     synth.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   playNote { | freq = 220, synthVol = -3, bellsVol = 0 |

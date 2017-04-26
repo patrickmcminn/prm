@@ -59,6 +59,7 @@ FalseSelf_Bells : IM_Module {
     reverb.free;
     granulator.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   playNote { | freq = 220, vol = 0 |

@@ -36,7 +36,7 @@ var activeLeftBank = mixerBank1;
     });
     ~ohm.turnControlButtonGreen(2, 0, page: page);
     { ~ohm.turnControlButtonOff(2, 0, page: page); }.defer(0.1);
-    ~falseSelf.bar.postln;
+    //~falseSelf.bar.postln;
     1;
   },page);
 },page: page);
@@ -190,9 +190,104 @@ var activeLeftBank = mixerBank1;
     { ~falseSelf.drums.stopEnding }, { ~falseSelf.drums.playEnding(~falseSelf.clock) });
 }, bank: mainGridBank, page: page);
 
-// Basses:
+//// Basses:
+// active:
+~ohm.setGridMonitorFunc(4, 6, {
+  if( ~falseSelf.bassSection.isLoaded, { ~ohm.turnGridCyan(4, 6) }, { ~ohm.turnGridRed(4, 6) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(4, 6, {
+  if( ~falseSelf.bassSection.isLoaded, { ~falseSelf.bassSection.free; });
+}, bank: mainGridBank, page: page);
+///patterns:
+// pre-chorus:
+~ohm.setGridMonitorFunc(5, 6, {
+  if( ~falseSelf.bassSection.preChorusIsPlaying,
+    { ~ohm.turnGridGreen(5, 6) }, { ~ohm.turnGridRed(5, 6) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(5, 6, { if( ~falseSelf.bassSection.preChorusIsPlaying,
+  { ~falseSelf.bassSection.stopPreChorus }, { ~falseSelf.bassSection.playPreChorus });
+}, bank: mainGridBank, page: page);
+// chorus:
+~ohm.setGridMonitorFunc(6, 6, {
+  if( ~falseSelf.bassSection.chorusIsPlaying,
+    { ~ohm.turnGridGreen(6, 6,) }, { ~ohm.turnGridRed(6, 6) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(6, 6, {
+  if( ~falseSelf.bassSection.chorusIsPlaying,
+    { ~falseSelf.bassSection.stopChorus }, { ~falseSelf.bassSection.playChorus });
+}, bank: mainGridBank, page: page);
+// post-Chorus:
+~ohm.setGridMonitorFunc(7, 6, {
+  if( ~falseSelf.bassSection.postChorusIsPlaying,
+    { ~ohm.turnGridGreen(7, 6) }, { ~ohm.turnGridRed(7, 6) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(7, 6, {
+  if( ~falseSelf.bassSection.postChorusIsPlaying,
+    { ~falseSelf.bassSection.stopPostChorus }, { ~falseSelf.bassSection.playPostChorus });
+}, bank: mainGridBank, page: page);
+// chorale:
+~ohm.setGridMonitorFunc(5, 7, {
+  if( ~falseSelf.bassSection.endIsPlaying,
+    { ~ohm.turnGridGreen(5, 7) }, { ~ohm.turnGridRed(5, 7) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(5, 7, {
+  if( ~falseSelf.bassSection.endIsPlaying,
+    { ~falseSelf.bassSection.stopEnd }, { ~falseSelf.bassSection.playEnd });
+}, bank: mainGridBank, page: page);
+// end:
+~ohm.setGridMonitorFunc(6, 7, {
+  if( ~falseSelf.bassSection.codaIsPlaying,
+    { ~ohm.turnGridGreen(6, 7) }, { ~ohm.turnGridRed(6, 7) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(6, 7, {
+  if( ~falseSelf.bassSection.codaIsPlaying,
+    { ~falseSelf.bassSection.stopCoda }, { ~falseSelf.bassSection.playCoda });
+}, bank: mainGridBank, page: page);
 
-// Trumpet Canon:
+//////// End Grid Bank:
+
+//// tempo:
+// monitor:
+~ohm.setGridMonitorFunc(0, 0, {
+  if( ~falseSelf.clock.tempo == 2.37, { ~ohm.turnGridGreen(0, 0); }, { ~ohm.turnGridBlue(0, 0); });
+}, bank: endGridBank, page: page);
+// change:
+~ohm.setGridFunc(0, 0, { ~falseSelf.clock.tempo = 142.2/60; }, bank: endGridBank, page: page);
+
+//// End Sequence:
+// monitor:
+~ohm.setGridMonitorFunc(1, 0, {
+  if( ~falseSelf.melodyIsPlaying == true,
+    { ~ohm.turnGridGreen(1, 0); }, { ~ohm.turnGridMagenta(1, 0) });
+}, bank: endGridBank, page: page);
+// start sequence:
+~ohm.setGridFunc(1, 0, { ~falseSelf.startMelody; }, bank: endGridBank, page: page);
+
+
+//// Trumpet Melody:
+// active:
+~ohm.setGridMonitorFunc(0, 2, {
+  if( ~falseSelf.trumpetMelody.isLoaded,
+    { ~ohm.turnGridCyan(0, 2) }, { ~ohm.turnGridRed(0, 2) });
+}, bank: endGridBank, page: page);
+~ohm.setGridFunc(0, 2, {
+  if( ~falseSelf.trumpetMelody.isLoaded, { ~falseSelf.trumpetMelody.free; });
+}, bank: endGridBank, page: page);
+// pitch shift:
+~ohm.setGridMonitorFunc(1, 2, {
+  if( ~falseSelf.trumpetMelody.staticShift.mixer.isMuted,
+    { ~ohm.turnGridRed(1, 2) }, { ~ohm.turnGridGreen(1, 2) });
+}, bank: endGridBank, page: page);
+~ohm.setGridFunc(1, 2, { ~falseSelf.trumpetMelody.staticShift.mixer.tglMute;
+}, bank: endGridBank, page: page);
+// dry:
+~ohm.setGridMonitorFunc(2, 2, {
+  if( ~falseSelf.trumpetMelody.dry.isMuted,
+    { ~ohm.turnGridRed(2, 2) }, { ~ohm.turnGridGreen(2, 2) })
+}, bank: endGridBank, page: page);
+~ohm.setGridFunc(2, 2, { ~falseSelf.trumpetMelody.dry.mixer.tglMute;
+}, bank: endGridBank, page: page);
+
 
 //// Plane Noise:
 // active:
@@ -326,8 +421,19 @@ var activeLeftBank = mixerBank1;
   { ~falseSelf.freezeGuitar.stopEndProgression }, { ~falseSelf.freezeGuitar.playEndProgression(~falseSelf.clock) })
 }, bank: endGridBank, page: page);
 
-// modulars:
-
+//// end trumpet:
+// active:
+~ohm.setGridMonitorFunc(4, 5, { if( ~falseSelf.endTrumpet.isLoaded,
+  { ~ohm.turnGridMagenta(4, 5) }, { ~ohm.turnGridRed(4, 5) });
+}, bank: endGridBank, page: page);
+~ohm.setGridFunc(4, 5, { if( ~falseSelf.endTrumpet.isLoaded,
+  { ~falseSelf.endTrumpet.free; });
+}, bank: endGridBank, page: page);
+// input is muted:
+~ohm.setGridMonitorFunc(5, 5, { if( ~falseSelf.endTrumpet.input.isMuted,
+  { ~ohm.turnGridRed(5, 5) }, { ~ohm.turnGridGreen(5, 5) });
+}, bank: endGridBank, page: page);
+~ohm.setGridFunc(5, 5, { ~falseSelf.endTrumpet.input.tglMute; }, bank: endGridBank, page: page);
 
 
 //// Bank Change:
@@ -730,8 +836,27 @@ var activeLeftBank = mixerBank1;
   ~falseSelf.mixerB.setSendVol(4, 2, val.ccdbfs(-70, 0));
 }, bank: mixerBank4, page: page);
 
-
-
+//// end trumpet:
+// mute:
+~ohm.setLeftButtonMonitorFunc(3, { if( ~falseSelf.mixerA.isMuted(5),
+  { ~ohm.turnLeftButtonRed(3) }, { ~ohm.turnLeftButtonGreen(3) });
+}, bank: mixerBank4, page: page);
+~ohm.setLeftButtonFunc(3, { ~falseSelf.mixerA.tglMute(5) },
+  bank: mixerBank4, page: page);
+// volume:
+~ohm.setLeftSliderFunc(3, { | val |
+  ~falseSelf.mixerA.setVol(5, val.ccdbfs(-70, 0));
+}, bank: mixerBank4, page: page);
+// sends:
+~ohm.setLeftKnobFunc(3, 2, { | val |
+  ~falseSelf.mixerA.setSendVol(5, 0, val.ccdbfs(-70, 0));
+}, bank: mixerBank4, page: page);
+~ohm.setLeftKnobFunc(3, 1, { | val |
+  ~falseSelf.mixerA.setSendVol(5, 1, val.ccdbfs(-70, 0));
+}, bank: mixerBank4, page: page);
+~ohm.setLeftKnobFunc(3, 0, { | val |
+  ~falseSelf.mixerA.setSendVol(5, 2, val.ccdbfs(-70, 0));
+}, bank: mixerBank4, page: page);
 
 
 

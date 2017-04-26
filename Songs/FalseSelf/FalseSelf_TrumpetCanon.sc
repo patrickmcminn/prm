@@ -12,6 +12,7 @@ FalseSelf_TrumpetCanon : IM_Processor {
   var <submixer, <processor, <postEQ, <delays;
   var <inputIsMuted;
   var <delaysMuted;
+  var <inputBus;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -24,6 +25,8 @@ FalseSelf_TrumpetCanon : IM_Processor {
 
       this.prAddSynthDef;
       buffer = Buffer.alloc(server, server.sampleRate * 30, 1);
+
+      inputBus = Bus.control;
 
       server.sync;
 
@@ -45,14 +48,16 @@ FalseSelf_TrumpetCanon : IM_Processor {
 
       server.sync;
 
-      postEQ.setLowPassCutoff(5350);
+      postEQ.setLowPassCutoff(5500);
       postEQ.setHighPassCutoff(30);
       processor.delay.setMix(0);
-      processor.distortion.setDistortionGain(2);
-      processor.distortion.postEQ.setLowPassCutoff(10000);
-      processor.distortion.mixer.setPreVol(-9);
+      processor.distortion.setDistortionGain(1.75);
+      processor.distortion.postEQ.setLowPassCutoff(7500);
+      processor.distortion.mixer.setPreVol(-3);
 
-      inputIsMuted = true;
+      delays.set(\inAmp, inputBus.asMap);
+
+      inputIsMuted = false;
       delaysMuted = false;
 
       isLoaded = true;
@@ -64,13 +69,13 @@ FalseSelf_TrumpetCanon : IM_Processor {
 
     SynthDef(\prm_FalseSelf_TrumpetCanon, {
       | inBus = 0, outBus1 = 0, outBus2 = 1, outBus3 = 2, outBus4,
-      buffer, inMute = 0, mute = 1, amp1 = 1, amp2 = 1, amp3 = 1 |
+      buffer, inMute = 1, inAmp = 0, mute = 1, amp1 = 1, amp2 = 1, amp3 = 1 |
 
       var input, write, tap1, tap2, tap3;
 
       // mono input:
       input = In.ar(inBus);
-      input = input * inMute;
+      input = input * inMute * inAmp;
       write = DelTapWr.ar(buffer, input);
 
       // delay taps:
@@ -101,6 +106,7 @@ FalseSelf_TrumpetCanon : IM_Processor {
     delays.free;
     buffer.free;
     this.freeProcessor;
+    isLoaded = false;
   }
 
   //////// mutes:
@@ -135,6 +141,10 @@ FalseSelf_TrumpetCanon : IM_Processor {
   }
   tglMuteDelays {
     if( delaysMuted == false, { this.muteDelays }, { this.unMuteDelays });
+  }
+
+  fadeInputAmp { | start = 0, end = 1, time = 0.5 |
+    { Out.kr(inputBus, Line.kr(start, end, time, doneAction: 2)) }.play;
   }
 
 

@@ -115,6 +115,7 @@ AudioSystem {
       modular.setVol(-70);
       moog.setVol(-70);
       microphone.setVol(-70);
+      microphone.setPreVol(3);
 
       subtractive = Subtractive.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus, nil, procGroup,
         \addToHead);

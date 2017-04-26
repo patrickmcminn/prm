@@ -10,6 +10,8 @@ var page = 'main';
 var connectionsIsLoaded = false;
 var dauphineStreetIsLoaded = false;
 var cortezIsLoaded = false;
+var falseSelfIsLoaded = false;
+var lightIsLoaded = false;
 
 ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 ~ohm.addPageLoadFunction(\mainGlobalMixer, { ~ohm.storageDict[\loadGlobalSubmixerFunc].value; }, page);
@@ -37,6 +39,77 @@ var cortezIsLoaded = false;
   }
 }, page: page);
 
+// Connections:
+~ohm.turnGridBlue(0,1, page: page);
+~ohm.setGridFunc(0, 1,  {
+  if( connectionsIsLoaded == false, {
+    r {
+      ~connections = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
+      while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 1, { ~ohm.setPage('connections'); }, page: page);
+      ~ohm.turnGridGreen(1, 1);
+      connectionsIsLoaded = true;
+    }.play;
+    },
+    {
+      ~connections.free;
+      ~ohm.setGridFunc(1, 1, { });
+      ~ohm.turnGridOff(1, 1);
+      connectionsIsLoaded = false;
+  });
+}, page: page);
+
+// False Self:
+~ohm.turnGridWhite(0, 2, page: page);
+~ohm.setGridFunc(0, 2, {
+  if( falseSelfIsLoaded == false, {
+    r {
+      ~falseSelf = FalseSelf.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil,
+        ~prm.procGroup, \addToHead);
+      while({ try { ~falseSelf.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 2, { ~ohm.setPage('falseSelf'); }, page: page);
+      ~ohm.turnGridGreen(1, 2);
+      falseSelfIsLoaded = true;
+    }.play;
+    },
+    {
+      ~falseSelf.free;
+      ~ohm.setGridFunc(1, 2, { });
+      ~ohm.turnGridOff(1, 2);
+      falseSelfIsLoaded = false;
+  });
+}, page: page);
+
+// Light:
+~ohm.turnGridYellow(0, 3, page: page);
+~ohm.setGridFunc(0, 3, {
+  if(lightIsLoaded == false, {
+    r {
+      ~lightSend = Light_Sends.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.reverb.inBus,
+        relGroup: ~prm.procGroup, addAction: \addToHead);
+      while({ try { ~lightSend.isLoaded } != true }, { 0.001.wait; });
+      s.sync;
+      ~light = Light.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~lightSend.reverb.inBus, ~lightSend.delays.inBus, ~prm.modularSend.inBus, ~lightSend.multiShift.inBus,
+        ~prm.procGroup, \addToHead);
+      while({ try { ~light.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 3, { ~ohm.setPage('light'); }, page: page);
+      ~ohm.turnGridGreen(1, 3);
+      lightIsLoaded = true;
+    }.play;
+    },
+    {
+      ~light.free;
+      ~lightSend.free;
+      ~ohm.setGridFunc(1, 3, {  });
+      ~ohm.turnGridOff(1, 3);
+  });
+}, page: page);
+
+
 /*
 // Nebula Page:
 ~ohm.turnGridCyan(0, 0, page: page);
@@ -60,26 +133,7 @@ var cortezIsLoaded = false;
 }, page: page);
 */
 
-// Connections:
-~ohm.turnGridBlue(0,1, page: page);
-~ohm.setGridFunc(0, 1,  {
-  if( connectionsIsLoaded == false, {
-    r {
-      ~connections = Connections.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
-        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
-      while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.setGridFunc(1, 1, { ~ohm.setPage('connections'); }, page: page);
-      ~ohm.turnGridGreen(1, 1);
-      connectionsIsLoaded = true;
-    }.play;
-    },
-    {
-      ~connections.free;
-      ~ohm.setGridFunc(1, 1, { });
-      ~ohm.turnGridOff(1, 1);
-      connectionsIsLoaded = false;
-  });
-}, page: page);
+
 
 // Dauphine Street:
 ~ohm.turnGridMagenta(0, 2, page: page);

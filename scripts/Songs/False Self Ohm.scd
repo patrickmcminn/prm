@@ -273,19 +273,27 @@ var activeLeftBank = mixerBank1;
 ~ohm.setGridFunc(0, 2, {
   if( ~falseSelf.trumpetMelody.isLoaded, { ~falseSelf.trumpetMelody.free; });
 }, bank: endGridBank, page: page);
-// pitch shift:
+// shift 1:
 ~ohm.setGridMonitorFunc(1, 2, {
-  if( ~falseSelf.trumpetMelody.staticShift.mixer.isMuted,
+  if( ~falseSelf.trumpetMelody.shift1.mixer.isMuted,
     { ~ohm.turnGridRed(1, 2) }, { ~ohm.turnGridGreen(1, 2) });
 }, bank: endGridBank, page: page);
-~ohm.setGridFunc(1, 2, { ~falseSelf.trumpetMelody.staticShift.mixer.tglMute;
+~ohm.setGridFunc(1, 2, { ~falseSelf.trumpetMelody.shift1.mixer.tglMute;
 }, bank: endGridBank, page: page);
-// dry:
+// shift 2:
 ~ohm.setGridMonitorFunc(2, 2, {
-  if( ~falseSelf.trumpetMelody.dry.isMuted,
-    { ~ohm.turnGridRed(2, 2) }, { ~ohm.turnGridGreen(2, 2) })
+  if(~falseSelf.trumpetMelody.shift2.mixer.isMuted,
+    { ~ohm.turnGridRed(2, 2) }, { ~ohm.turnGridGreen(2, 2) });
 }, bank: endGridBank, page: page);
-~ohm.setGridFunc(2, 2, { ~falseSelf.trumpetMelody.dry.mixer.tglMute;
+~ohm.setGridFunc(2, 2, { ~falseSelf.trumpetMelody.shift2.mixer.tglMute;
+}, bank: endGridBank, page: page);
+~ohm
+// dry:
+~ohm.setGridMonitorFunc(3, 2, {
+  if( ~falseSelf.trumpetMelody.dry.isMuted,
+    { ~ohm.turnGridRed(3, 2) }, { ~ohm.turnGridGreen(3, 2) })
+}, bank: endGridBank, page: page);
+~ohm.setGridFunc(3, 2, { ~falseSelf.trumpetMelody.dry.mixer.tglMute;
 }, bank: endGridBank, page: page);
 
 

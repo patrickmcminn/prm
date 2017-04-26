@@ -7,15 +7,21 @@ prm
 var page = 'falseSelf';
 
 var mainGridBank = 0;
+var phrase1Bank = 1;
+var phrase2Bank = 2;
+var activeGridBank = mainGridBank;
 
 var mixerBank1 = 0;
 var mixerBank2 = 1;
 var activeFadersBank = mixerBank1;
 
+var phraseResetFunc;
+
 ~base.makePage(page);
 
 ~base.addTouchButtonsBanks(3, page: page);
 ~base.addFadersBanks(3, page: page);
+~base.addGridBanks(2, page: page);
 
 //////// Control Bank Change:
 
@@ -37,6 +43,33 @@ var activeFadersBank = mixerBank1;
 	~base.setActiveFadersBank(activeFadersBank);
   ~base.setActiveTouchButtonsBank(activeFadersBank);
 }, page: page);
+
+//// pitch shifter banks:
+~base.setControlButtonMonitorFunc(3, {
+  ~base.turnControlButtonYellow(3);
+  ~base.turnControlButtonYellow(3, 'right');
+  ~base.turnControlButtonCyan(4);
+  ~base.turnControlButtonCyan(4, 'right');
+  ~base.turnControlButtonWhite(5);
+  ~base.turnControlButtonWhite(5, 'right');
+  ~base.turnControlButtonGreen(activeGridBank + 3, 'right');
+}, page: page);
+
+~base.setControlButtonFunc(3, {
+  activeGridBank = mainGridBank;
+  ~base.setActiveGridBank(activeGridBank);
+}, page: page);
+
+~base.setControlButtonFunc(4, {
+  activeGridBank = phrase1Bank;
+  ~base.setActiveGridBank(activeGridBank);
+}, page: page);
+
+~base.setControlButtonFunc(5, {
+  activeGridBank = phrase2Bank;
+  ~base.setActiveGridBank(activeGridBank);
+}, page: page);
+
 
 //////// Mixer:
 
@@ -311,4 +344,435 @@ var activeFadersBank = mixerBank1;
   ~falseSelf.drums.playDrum2(-12);
   ~falseSelf.drums.playDrum3(-12);
 }, bank: mainGridBank, page: page);
+
+//// shift 1 is -12:
+~base.setGridMonitorFunc(4, 3, {
+  if( ~falseSelf.trumpetMelody.shift1.shiftAmount == -12,
+    { ~base.turnGridWhite(4, 3) }, { ~base.turnGridMagenta(4, 3) });
+}, bank: mainGridBank, page: page);
+~base.setGridFunc(4, 3, { ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12)
+}, bank: mainGridBank, page: page);
+
+////////////////////////////////////
+///// Pitch Shifting Sequence: ////
+//////////////////////////////////
+
+phraseResetFunc = {
+  ~base.turnAllGridMagenta;
+  3.do({ | i | ~base.turnGridOff(i+5, 1); });
+  4.do({ | i | ~base.turnGridOff(i + 4, 0); });
+};
+
+//////// Phrase 1:
+
+// note 1:
+~base.setGridFunc(0, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(0, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-15);
+}, bank: phrase1Bank, page: page);
+
+// note 2:
+~base.setGridFunc(1, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(1, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase1Bank, page: page);
+
+// note 3:
+~base.setGridFunc(2, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(2, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-17);
+}, bank: phrase1Bank, page: page);
+
+// note 4:
+~base.setGridFunc(3, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(3, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-16);
+}, bank: phrase1Bank, page: page);
+
+// note 5:
+~base.setGridFunc(0, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(0, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-15);
+}, bank: phrase1Bank, page: page);
+
+// note 6:
+~base.setGridFunc(1, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(1, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase1Bank, page: page);
+
+// note 7:
+~base.setGridFunc(2, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(2, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-17);
+}, bank: phrase1Bank, page: page);
+
+// note 8:
+~base.setGridFunc(3, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(3, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-16);
+}, bank: phrase1Bank, page: page);
+
+// note 9:
+~base.setGridFunc(0, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(0, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-16);
+}, bank: phrase1Bank, page: page);
+
+
+// note 10:
+~base.setGridFunc(1, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(1, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-17);
+}, bank: phrase1Bank, page: page);
+
+
+// note 11:
+~base.setGridFunc(2, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(2, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-15);
+}, bank: phrase1Bank, page: page);
+
+// note 12:
+~base.setGridFunc(3, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(3, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-13);
+}, bank: phrase1Bank, page: page);
+
+// note 13:
+~base.setGridFunc(0, 0, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(0, 0);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-16);
+}, bank: phrase1Bank, page: page);
+
+// note 14:
+~base.setGridFunc(1, 0, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(1, 0);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-17);
+}, bank: phrase1Bank, page: page);
+
+// note 15:
+~base.setGridFunc(2, 0, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(2, 0);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-15);
+}, bank: phrase1Bank, page: page);
+
+// note 16:
+~base.setGridFunc(3, 0, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(3, 0);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-13);
+}, bank: phrase1Bank, page: page);
+
+// note 17:
+~base.setGridFunc(4, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(4, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-16);
+}, bank: phrase1Bank, page: page);
+
+// note 18:
+~base.setGridFunc(5, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(5, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase1Bank, page: page);
+
+// note 19:
+~base.setGridFunc(6, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(6, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-15);
+}, bank: phrase1Bank, page: page);
+
+// note 20:
+~base.setGridFunc(7, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(7, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase1Bank, page: page);
+
+// note 21:
+~base.setGridFunc(4, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(4, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-4);
+}, bank: phrase1Bank, page: page);
+
+// note 22:
+~base.setGridFunc(5, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(5, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase1Bank, page: page);
+
+// note 23:
+~base.setGridFunc(6, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(6, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-15);
+}, bank: phrase1Bank, page: page);
+
+// note 24:
+~base.setGridFunc(7, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(7, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase1Bank, page: page);
+
+// note 25:
+~base.setGridFunc(4, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(4, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-20);
+}, bank: phrase1Bank, page: page);
+
+//////// Phrase 2:
+
+// note 1:
+~base.setGridFunc(0, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(0, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-8);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-15);
+}, bank: phrase2Bank, page: page);
+
+// note 2:
+~base.setGridFunc(1, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(1, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-7);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase2Bank, page: page);
+
+// note 3:
+~base.setGridFunc(2, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(2, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-9);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-17);
+}, bank: phrase2Bank, page: page);
+
+// note 4:
+~base.setGridFunc(3, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(3, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-8);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-17);
+}, bank: phrase2Bank, page: page);
+
+// note 5:
+~base.setGridFunc(0, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(0, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-8);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-15);
+}, bank: phrase2Bank, page: page);
+
+// note 6:
+~base.setGridFunc(1, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(1, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-7);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase2Bank, page: page);
+
+// note 7:
+~base.setGridFunc(2, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(2, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-9);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-17);
+}, bank: phrase2Bank, page: page);
+
+// note 8:
+~base.setGridFunc(3, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(3, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-9);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-16);
+}, bank: phrase2Bank, page: page);
+
+// note 9:
+~base.setGridFunc(0, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(0, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-5);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-8);
+}, bank: phrase2Bank, page: page);
+
+
+// note 10:
+~base.setGridFunc(1, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(1, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-9);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-16);
+}, bank: phrase2Bank, page: page);
+
+
+// note 11:
+~base.setGridFunc(2, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(2, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-7);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase2Bank, page: page);
+
+// note 12:
+~base.setGridFunc(3, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(3, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-8);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-17);
+}, bank: phrase2Bank, page: page);
+
+// note 13:
+~base.setGridFunc(0, 0, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(0, 0);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-7);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-16);
+}, bank: phrase2Bank, page: page);
+
+// note 14:
+~base.setGridFunc(1, 0, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(1, 0);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-9);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-16);
+}, bank: phrase2Bank, page: page);
+
+// note 15:
+~base.setGridFunc(2, 0, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(2, 0);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-7);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-14);
+}, bank: phrase2Bank, page: page);
+
+// note 16:
+~base.setGridFunc(3, 0, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(3, 0);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-8);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-12);
+}, bank: phrase2Bank, page: page);
+
+// note 17:
+~base.setGridFunc(4, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(4, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-8);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-12);
+}, bank: phrase2Bank, page: page);
+
+// note 18:
+~base.setGridFunc(5, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(5, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-5);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-9);
+}, bank: phrase2Bank, page: page);
+
+// note 19:
+~base.setGridFunc(6, 3, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(6, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-3);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-7);
+}, bank: phrase2Bank, page: page);
+
+// note 20:
+~base.setGridFunc(7, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(7, 3);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-2);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-6);
+}, bank: phrase2Bank, page: page);
+
+// note 21:
+~base.setGridFunc(4, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(4, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(3);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-4);
+}, bank: phrase2Bank, page: page);
+
+// note 22:
+~base.setGridFunc(5, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(5, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-7);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-12);
+}, bank: phrase2Bank, page: page);
+
+// note 23:
+~base.setGridFunc(6, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(6, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-5);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-10);
+}, bank: phrase2Bank, page: page);
+
+// note 24:
+~base.setGridFunc(7, 2, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(7, 2);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-4);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-9);
+}, bank: phrase2Bank, page: page);
+
+// note 25:
+~base.setGridFunc(4, 1, {
+  phraseResetFunc.value;
+  ~base.turnGridWhite(4, 1);
+  ~falseSelf.trumpetMelody.shift1.setShiftAmount(-9);
+  ~falseSelf.trumpetMelody.shift2.setShiftAmount(-17);
+}, bank: phrase2Bank, page: page);
+
+
+
+
+
 

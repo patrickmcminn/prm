@@ -287,13 +287,12 @@ var activeLeftBank = mixerBank1;
 }, bank: endGridBank, page: page);
 ~ohm.setGridFunc(2, 2, { ~falseSelf.trumpetMelody.shift2.mixer.tglMute;
 }, bank: endGridBank, page: page);
-~ohm
 // dry:
 ~ohm.setGridMonitorFunc(3, 2, {
   if( ~falseSelf.trumpetMelody.dry.isMuted,
     { ~ohm.turnGridRed(3, 2) }, { ~ohm.turnGridGreen(3, 2) })
 }, bank: endGridBank, page: page);
-~ohm.setGridFunc(3, 2, { ~falseSelf.trumpetMelody.dry.mixer.tglMute;
+~ohm.setGridFunc(3, 2, { ~falseSelf.trumpetMelody.dry.tglMute;
 }, bank: endGridBank, page: page);
 
 

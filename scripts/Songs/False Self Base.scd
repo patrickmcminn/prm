@@ -363,6 +363,13 @@ phraseResetFunc = {
   4.do({ | i | ~base.turnGridOff(i + 4, 0); });
 };
 
+~base.turnAllGridMagenta(phrase1Bank, page: page);
+~base.turnAllGridMagenta(phrase2Bank, page: page);
+3.do({ | i | ~base.turnGridOff(i+5, 1, phrase1Bank, page); });
+3.do({ | i | ~base.turnGridOff(i+5, 1, phrase2Bank, page); });
+4.do({ | i | ~base.turnGridOff(i + 4, 0, phrase1Bank, page); });
+4.do({ | i | ~base.turnGridOff(i + 4, 0, phrase2Bank, page); });
+
 //////// Phrase 1:
 
 // note 1:
@@ -520,7 +527,7 @@ phraseResetFunc = {
 }, bank: phrase1Bank, page: page);
 
 // note 20:
-~base.setGridFunc(7, 2, {
+~base.setGridFunc(7, 3, {
   phraseResetFunc.value;
   ~base.turnGridWhite(7, 3);
   ~falseSelf.trumpetMelody.shift1.setShiftAmount(-12);
@@ -724,7 +731,7 @@ phraseResetFunc = {
 }, bank: phrase2Bank, page: page);
 
 // note 20:
-~base.setGridFunc(7, 2, {
+~base.setGridFunc(7, 3, {
   phraseResetFunc.value;
   ~base.turnGridWhite(7, 3);
   ~falseSelf.trumpetMelody.shift1.setShiftAmount(-2);

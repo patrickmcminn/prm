@@ -39,5 +39,12 @@ FalseSelf_Flute :IM_Module {
     };
   }
 
+  free {
+    sampler.free;
+    splitter.free;
+    vocoderOutBus.free;
+    this.freeModule;
+    isLoaded = false;
+  }
 
 }

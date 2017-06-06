@@ -356,9 +356,14 @@ SamplePlayer : IM_Module {
   }
 
   sweepFilter { | startFreq = 1000, endFreq = 100, time =  1 |
-    { Out.kr(sweepBus, XLine.kr(startFreq, endFreq, time, doneAction: 2)); }.play(group);
-    samplerDict.do({ | synth | synth.set(\filterCutoff, sweepBus.asMap); });
-    filterCutoff = endFreq;
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, XLine.kr(startFreq, endFreq, time, doneAction: 2)); }.play;
+      samplerDict.do({ | synth | synth.set(\filterCutoff, bus.asMap); });
+      { filterCutoff = endFreq; }.defer(time);
+      { bus.free; }.defer(time);
+    }.fork;
   }
 
   //////// pattern sequencer:

@@ -78,7 +78,7 @@ FeedbackSynth : IM_Module {
 
   sweepFilter { | startFreq = 1000, endFreq = 100, time =  1 |
     sampler.sweepFilter(startFreq, endFreq, time);
-    filterCutoff = endFreq;
+    { filterCutoff = endFreq; }.defer(time);
   }
 
   //////// sequencer:

@@ -8,6 +8,7 @@ FalseSelf_PlaneNoise : IM_Module {
 
   var <isLoaded, server;
   var <samplePlayer;
+  var <isPlaying;
 
   *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
     relGroup = nil, addAction = \addToTail |
@@ -26,6 +27,7 @@ FalseSelf_PlaneNoise : IM_Module {
 
       samplePlayer.setFilterCutoff(9490);
       mixer.setPreVol(12);
+      isPlaying = false;
       isLoaded = true;
     };
   }
@@ -34,10 +36,11 @@ FalseSelf_PlaneNoise : IM_Module {
   free {
     samplePlayer.free;
     this.freeModule;
+    isLoaded = false;
   }
 
-  playSample { samplePlayer.playSampleSustaining('planeNoise', 0, 1, 0, 1, 0); }
-  releaseSample { samplePlayer.releaseSampleSustaining('planeNoise'); }
+  playSample { samplePlayer.playSampleSustaining('planeNoise', 0, 1, 0, 1, 0); isPlaying = true; }
+  releaseSample { samplePlayer.releaseSampleSustaining('planeNoise'); isPlaying = false;  }
 
   setFilterCutoff { | cutoff = 9490 | samplePlayer.setFilterCutoff(cutoff); }
 

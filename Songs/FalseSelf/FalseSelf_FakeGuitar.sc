@@ -36,6 +36,26 @@ FalseSelf_FakeGuitar : IM_Module {
     }
   }
 
+  fadeVolume { | start = 0, end = -inf, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)); }.play;
+      mixer.mapAmp(0, bus);
+      mixer.mapAmp(1, bus);
+      { mixer.setVol(0, end); mixer.setVol(1, end); }.defer(time);
+      { bus.free; }.defer(time);
+    }.fork;
+  }
+
+
+  free {
+    section1.free;
+    section2.free;
+    this.freeModule;
+    isLoaded = false;
+  }
+
 
 
 }

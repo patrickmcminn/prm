@@ -31,7 +31,7 @@ AudioSystem {
   prInit { |numOutputs|
     server = Server.default;
 
-    this.prSetServerOptions(server, 64, 131072, 512, nil);
+    this.prSetServerOptions(server, 64, 131072, 1024, nil);
 
     server.waitForBoot {
       var masterOutArray;
@@ -71,7 +71,7 @@ AudioSystem {
       granulator.delay.setMix(0);
 
       //reverb = Wash.newStereo(systemMixer.inBus(0), relGroup: systemGroup, addAction: \addToHead);
-      reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.4Cathedral'],
+      reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.2EmptyChurch'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
@@ -115,6 +115,7 @@ AudioSystem {
       modular.setVol(-70);
       moog.setVol(-70);
       microphone.setVol(-70);
+      microphone.setPreVol(3);
 
       subtractive = Subtractive.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus, nil, procGroup,
         \addToHead);

@@ -31,10 +31,10 @@ PatternSequencer {
     Pbindef(\name).clear;
   }
 
-  play { | clock = 'internal' |
+  play { | clock = 'internal', quant = nil |
     var playClock;
     if( clock == 'internal', { playClock = internalClock }, { playClock = clock });
-    Pbindef(name).play(playClock);
+    Pbindef(name).play(playClock, quant: quant);
   }
 
   reset { Pbindef(name).reset; }

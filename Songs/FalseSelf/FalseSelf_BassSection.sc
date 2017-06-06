@@ -9,6 +9,9 @@ FalseSelf_BassSection :IM_Module {
 
   var server, <isLoaded;
   var <satur, <feedback, <guitar, <moog;
+  var <saturFadeBus, <feedbackFadeBus, <moogFadeBus;
+  var <preChorusIsPlaying, <chorusIsPlaying, <postChorusIsPlaying;
+  var <endIsPlaying, <codaIsPlaying;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead',
     moogDeviceName = "iConnectAudio4+", moogPortName = "DIN" |
@@ -36,6 +39,9 @@ FalseSelf_BassSection :IM_Module {
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
 
 
+      saturFadeBus = Bus.control;
+      feedbackFadeBus = Bus.control;
+      moogFadeBus = Bus.control;
 
       server.sync;
       moog.makeSequence('preChorus');
@@ -49,6 +55,7 @@ FalseSelf_BassSection :IM_Module {
       satur.makeSequence('chorus');
       satur.makeSequence('postChorus');
       satur.makeSequence('end');
+      satur.makeSequence('coda');
 
       server.sync;
 
@@ -79,9 +86,17 @@ FalseSelf_BassSection :IM_Module {
       guitar.setFilterCutoff(1200);
       feedback.setFilterCutoff(30);
 
+      satur.mixer.setVol(-6);
+
       server.sync;
 
       mixer.setMasterVol(-9);
+
+      preChorusIsPlaying = false;
+      chorusIsPlaying = false;
+      postChorusIsPlaying = false;
+      endIsPlaying = false;
+      codaIsPlaying = false;
 
       isLoaded = true;
     }
@@ -93,7 +108,11 @@ FalseSelf_BassSection :IM_Module {
     feedback.free;
     satur.free;
     moog.free;
+    feedbackFadeBus.free;
+    saturFadeBus.free;
+    moogFadeBus.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   prMakeGuitarPatterns {
@@ -157,10 +176,9 @@ FalseSelf_BassSection :IM_Module {
     /*
     feedback.addKey(\postChorus, \octave, 3);
     feedback.addKey(\postChorus, \legato, 1);
-    feedback.addKey(\postChorus, \note, Pseq([[1, 13, 20]], inf));
+    feedback.addKey(\postChorus, \note, Pseq([1], inf));
     feedback.addKey(\postChorus, \dur, Pseq([4], inf));
     */
-
     /*
     feedback.addKey(\preEnd, \octave, 4);
     feedback.addKey(\preEnd, \legato, 1);
@@ -197,7 +215,7 @@ FalseSelf_BassSection :IM_Module {
     endNote = Pseq([1, 0, 1, -4, -3, 1, -3, -4, -6, -8, -13], 1);
 
 
-    satur.addKey(\preChorus, \dur, 56);
+    satur.addKey(\preChorus, \dur, Pseq([56], 1));
     satur.addKey(\preChorus, \octave, 3);
     satur.addKey(\preChorus, \legato, 1);
     satur.addKey(\preChorus, \note, [1, 13, 25]);
@@ -215,11 +233,15 @@ FalseSelf_BassSection :IM_Module {
     satur.addKey(\postChorus, \releaseTime, 0.5);
     satur.addKey(\postChorus, \attackTime, 0.25);
 
-
     satur.addKey(\end, \octave, [3, 4, 5]);
     satur.addKey(\end, \legato, 1);
     satur.addKey(\end, \dur, endDur);
     satur.addKey(\end, \note, endNote);
+
+    satur.addKey(\coda, \octave, [3, 4, 5]);
+    satur.addKey(\coda, \legato, 1);
+    satur.addKey(\coda, \dur, Pseq([16], inf));
+    satur.addKey(\coda, \note, Pseq([8], inf));
   }
 
   prMakeMoogPatterns {
@@ -255,6 +277,100 @@ FalseSelf_BassSection :IM_Module {
     satur.releaseNote(freq);
     feedback.releaseNote(freq);
     guitar.releaseNote(freq);
+  }
+
+  playPreChorus { | clock |
+    moog.playSequence(\preChorus, clock);
+    satur.playSequence(\preChorus, clock);
+    feedback.playSequence(\preChorus, clock);
+    feedback.playSequence(\preChorusOctave, clock);
+    feedback.playSequence(\preChorusSecondOctave, clock);
+    preChorusIsPlaying = true;
+  }
+
+  stopPreChorus {
+    moog.stopSequence(\preChorus);
+    satur.stopSequence(\preChorus);
+    feedback.stopSequence(\preChorus);
+    feedback.stopSequence(\preChorusOctave);
+    feedback.stopSequence(\preChorusSecondOctave);
+    preChorusIsPlaying = false;
+  }
+
+  playChorus { | clock |
+    moog.playSequence(\chorus, clock);
+    satur.playSequence(\chorus, clock);
+    feedback.playSequence(\chorus, clock);
+    feedback.playSequence(\chorusOctave, clock);
+    feedback.playSequence(\chorusSecondOctave, clock);
+    guitar.playSequence(\chorus, clock);
+    chorusIsPlaying = true;
+  }
+
+  stopChorus {
+    moog.stopSequence(\chorus);
+    satur.stopSequence(\chorus);
+    feedback.stopSequence(\chorus);
+    feedback.stopSequence(\chorusOctave);
+    feedback.stopSequence(\chorusSecondOctave);
+    guitar.stopSequence(\chorus);
+    chorusIsPlaying = false;
+  }
+
+  playPostChorus { | clock |
+    moog.playSequence(\postChorus, clock);
+    satur.playSequence(\postChorus, clock);
+    feedback.playNote(47.midicps);
+   // feedback.playNote(35.midicps);
+    postChorusIsPlaying = true;
+  }
+
+
+  stopPostChorus {
+    moog.stopSequence(\postChorus);
+    satur.stopSequence(\postChorus);
+    feedback.releaseNote(49.midicps);
+    //feedback.releaseNote(35.midicps);
+    postChorusIsPlaying = false;
+  }
+
+  playEnd { | clock |
+    satur.playSequence(\end, clock);
+    feedback.playSequence(\end, clock);
+    feedback.playSequence(\endOctave, clock);
+    endIsPlaying = true;
+  }
+
+  stopEnd {
+    satur.stopSequence(\end);
+    feedback.stopSequence(\end);
+    feedback.stopSequence(\endOctave);
+    endIsPlaying = false;
+  }
+
+  playCoda { | clock |
+    satur.playSequence(\coda, clock);
+    codaIsPlaying = true;
+  }
+
+  stopCoda {
+    satur.stopSequence(\coda);
+    codaIsPlaying = false;
+  }
+
+  fadeSaturSynth { | start = 0, end = 0.5, time = 21 |
+    { Out.kr(saturFadeBus, Line.kr(start, end, time, doneAction: 2)); }.play;
+    satur.mixer.mapAmp(saturFadeBus);
+  }
+
+  fadeFeedbackSynth { | start = 0, end = 1, time = 21 |
+    { Out.kr(feedbackFadeBus, Line.kr(start, end, time, doneAction: 2)); }.play;
+    feedback.mixer.mapAmp(feedbackFadeBus);
+  }
+
+  fadeMoog { | start = 0, end = 1, time = 21 |
+    { Out.kr(moogFadeBus, Line.kr(start, end, time, doneAction: 2)); }.play;
+    moog.mixer.mapAmp(moogFadeBus);
   }
 }
 

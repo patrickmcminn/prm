@@ -55,13 +55,17 @@ FalseSelf_Kick : IM_Module {
       this.prSequenceEnding;
 
       server.sync;
+
+      mixer.setPreVol(3);
+
+
       isLoaded = true;
     }
   }
 
   prAddSynthDefs {
     SynthDef(\prm_falseSelf_hpf, {
-      | inBus = 0, outBus = 1, amp = 1, cutoff = 15 |
+      | inBus = 0, outBus = 1, amp = 1, cutoff = 30 |
       var input, filter, sig;
       input = In.ar(inBus);
       filter = RHPF.ar(input, cutoff, 1);
@@ -114,10 +118,10 @@ FalseSelf_Kick : IM_Module {
       [drum0, drum1, drum2]
     ], 6);
     part3 = Pseq([
-      [drum0, drum1, drum2, drum3],
-      [drum0, drum1, drum2, drum3],
-      [drum0, drum1, drum2, drum3],
-      [drum0, drum1, drum2, drum3]
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2],
+      [drum0, drum1, drum2]
     ], 4);
     part4 = Pseq([
       [drum0, drum1, drum2, drum3], drum1, drum2, drum0,
@@ -127,13 +131,13 @@ FalseSelf_Kick : IM_Module {
       [drum0, drum1, drum2], drum2, drum1, drum0,
       drum1, drum2, drum1, drum0,
       [drum0, drum1, drum2], drum1, drum2, drum1,
-      [drum0, drum1, drum2, drum3], [drum0, drum1, drum2], [drum0, drum1, drum2], [drum0, drum1, drum2]
+      [drum0, drum1, drum2], [drum0, drum1], [drum0, drum1, drum2], [drum0, drum1, drum2]
     ], 1);
 
 
     drums.addKey(\section1, \dur, Pseq([Pseq([1], 64), Pseq([2], 24), Pseq([1], 16), Pseq([0.25], inf)], inf));
     drums.addKey(\section1, \buffer, Pseq([part1, part2, part3, part4], 1));
-    drums.addKey(\section1, \amp, 0.2);
+    drums.addKey(\section1, \amp, 0.65);
   }
 
   prSequenceChorus1 {
@@ -179,6 +183,21 @@ FalseSelf_Kick : IM_Module {
 
     part3 = Pseq([
       Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+      Rest, Rest, Rest, Rest,
+
+      Rest, Rest, Rest, Rest,
       [drum1, drum2], Rest, [drum1, drum2], Rest,
       [drum0, drum1, drum2, drum3], Rest, Rest, Rest,
       Rest, Rest, Rest, Rest,
@@ -198,7 +217,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\chorus1, \dur, 0.25);
     drums.addKey(\chorus1, \buffer, Pseq([part1, part2, part3], 1));
-    drums.addKey(\chorus1, \amp, 0.2);
+    drums.addKey(\chorus1, \amp, 1);
   }
 
   prSequenceChorus2 {
@@ -208,7 +227,7 @@ FalseSelf_Kick : IM_Module {
     var drum2 = drums.bufferArray[2];
     var drum3 = drums.bufferArray[3];
 
-    part1 = Pseq([[drum0, drum1, drum2, drum3], Rest, Rest, Rest], 11*4);
+    part1 = Pseq([[drum0, drum1, drum2], Rest, Rest, Rest], 11*4);
     part2 = Pseq([
       [drum0, drum1, drum2, drum3], drum1, drum2, drum0,
       drum1, drum0, drum2, drum0,
@@ -226,7 +245,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\chorus2, \dur, 0.25);
     drums.addKey(\chorus2, \buffer, Pseq([part1, part2], 1));
-    drums.addKey(\chorus2, \amp, 0.2);
+    drums.addKey(\chorus2, \amp, 1);
   }
 
 
@@ -263,7 +282,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\canon, \dur, 0.25);
     drums.addKey(\canon, \buffer, Pseq([introPart, mainPart], 1));
-    drums.addKey(\canon, \amp, 0.2);
+    drums.addKey(\canon, \amp, 0.8);
   }
 
   prSequenceEnding {
@@ -271,7 +290,7 @@ FalseSelf_Kick : IM_Module {
 
     drums.addKey(\ending, \dur, Pseq([1], inf));
     drums.addKey(\ending, \buffer, Pseq([drum2], inf));
-    drums.addKey(\ending, \amp, 0.15);
+    drums.addKey(\ending, \amp, 0.8);
 
   }
 
@@ -296,20 +315,44 @@ FalseSelf_Kick : IM_Module {
   playDrum2 { | vol = -6 | drums.playSampleOneShot(2, vol); }
   playDrum3 { | vol = -6 | drums.playSampleOneShot(3, vol); }
 
-  playSection1 { drums.playSequence(\section1); }
+  playSection1 { | clock = 'internal', quant = nil | drums.playSequence(\section1, clock, quant); }
   stopSection1 { drums.stopSequence(\section1); }
 
-  playChorus1 { drums.playSequence(\chorus1); }
+  playChorus1 { | clock = 'internal', quant = nil | drums.playSequence(\chorus1, clock, quant); }
   stopChorus1 { drums.stopSequence(\chorus1); }
 
-  playChorus2 { drums.playSequence(\chorus2); }
+  playChorus2 { | clock = 'internal', quant = nil | drums.playSequence(\chorus2, clock, quant); }
   stopChorus2 { drums.stopSequence(\chorus2); }
 
-  playCanon { drums.playSequence(\canon); }
+  playCanon { | clock = 'internal', quant = nil | drums.playSequence(\canon, clock, quant); }
   stopCanon { drums.stopSequence(\canon); }
 
-  playEnding { drums.playSequence(\ending); }
+  playEnding { | clock = 'internal', quant = nil | drums.playSequence(\ending, clock, quant); }
   stopEnding { drums.stopSequence(\ending); }
 
   setSequencerClockTempo { | tempo = 160 | drums.setSequencerClockTempo(tempo); }
+
+  fadeVolume { | start = -inf, end = 0, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
+      mixer.mapAmp(bus);
+      { bus.free }.defer(time);
+      { mixer.setVol(end) }.defer(time);
+    }.fork;
+  }
+
+  sweepFilter { | startFreq = 20, endFreq = 3500, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, XLine.kr(startFreq, endFreq, time, doneAction: 2)); }.play;
+      highPass.set(\cutoff, bus.asMap);
+      { bus.free }.defer(time);
+      { highPassCutoff = endFreq; }.defer(time);
+    }.fork;
+  }
+
+
 }

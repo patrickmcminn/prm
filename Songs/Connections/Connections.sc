@@ -38,6 +38,11 @@ Connections : Song {
       noteRecordInput = IM_HardwareIn.new(0, noteRecord.inBus, group, \addToHead);
       while({ try { noteRecordInput.isLoaded } != true }, { 0.001.wait; });
 
+      server.sync;
+      mixerA.setMasterVol(-9);
+      mixerB.setMasterVol(-9);
+      mixerC.setMasterVol(-9);
+
       isLoaded = true;
     }
   }

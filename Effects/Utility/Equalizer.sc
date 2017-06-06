@@ -15,7 +15,7 @@ Equalizer : IM_Processor {
   var <peak2Freq, <peak2RQ, <peak2Gain;
   var <peak3Freq, <peak3RQ, <peak3Gain;
   var <highFreq, <highRQ, <highGain;
-  var <lowPassCutoff, <lowPassRQ;
+  var <lowPassCutoff, <lowPassRes;
   var <highPassCutoff, <highPassRQ;
 
   *newMono { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
@@ -67,7 +67,7 @@ Equalizer : IM_Processor {
       peak2Freq = 1000, peak2RQ = 1, peak2Gain = 0,
       peak3Freq = 1500, peak3RQ = 1, peak3Gain = 0,
       highFreq = 2500, highRQ = 1, highGain = 0,
-      lowPassCutoff = 20000, lowPassRQ = 1,
+      lowPassCutoff = 20000,
       inBus = 0, outBus = 0
       |
       var input, highPass, lowShelf, peak1, peak2, peak3, highShelf, lowPass, sig;
@@ -78,7 +78,9 @@ Equalizer : IM_Processor {
       peak2 = BPeakEQ.ar(peak1, peak2Freq, peak2RQ, peak2Gain);
       peak3 = BPeakEQ.ar(peak2, peak3Freq, peak3RQ, peak3Gain);
       highShelf = BHiShelf.ar(peak3, highFreq, highRQ, highGain);
-      lowPass = RLPF.ar(highShelf, lowPassCutoff, lowPassRQ);
+      //lowPass = RLPF.ar(highShelf, lowPassCutoff, lowPassRQ);
+      //lowPass = DFM1.ar(highShelf, lowPassCutoff, lowPassRes, noiselevel: 0);
+      lowPass = LPF.ar(highShelf, lowPassCutoff);
       sig = lowPass * amp;
       Out.ar(outBus, sig);
     }, [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]).add;
@@ -92,7 +94,7 @@ Equalizer : IM_Processor {
       peak2Freq = 1000, peak2RQ = 1, peak2Gain = 0,
       peak3Freq = 1500, peak3RQ = 1, peak3Gain = 0,
       highFreq = 2500, highRQ = 1, highGain = 0,
-      lowPassCutoff = 20000, lowPassRQ = 1,
+      lowPassCutoff = 20000, lowPassRes = 0,
       inBus = 0, outBus = 0
       |
       var input, highPass, lowShelf, peak1, peak2, peak3, highShelf, lowPass, sig;
@@ -103,7 +105,9 @@ Equalizer : IM_Processor {
       peak2 = BPeakEQ.ar(peak1, peak2Freq, peak2RQ, peak2Gain);
       peak3 = BPeakEQ.ar(peak2, peak3Freq, peak3RQ, peak3Gain);
       highShelf = BHiShelf.ar(peak3, highFreq, highRQ, highGain);
-      lowPass = RLPF.ar(highShelf, lowPassCutoff, lowPassRQ);
+      //lowPass = RLPF.ar(highShelf, lowPassCutoff, lowPassRQ);
+      //lowPass = DFM1.ar(highShelf, lowPassCutoff, lowPassRes, noiselevel: 0);
+      lowPass = LPF.ar(highShelf, lowPassCutoff);
       sig = lowPass * amp;
       Out.ar(outBus, sig);
     }, [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]).add;
@@ -126,7 +130,7 @@ Equalizer : IM_Processor {
     highRQ = 1;
     highGain = 0;
     lowPassCutoff = 20000;
-    lowPassRQ = 3;
+    //lowPassRes = 0;
     highPassCutoff = 5;
     highPassRQ = 1;
   }
@@ -145,6 +149,16 @@ Equalizer : IM_Processor {
   setHighPassRQ { | rq = 1 |
     highPassRQ = rq;
     synth.set(\highPassRQ, highPassRQ);
+  }
+  sweepHighPassFilter { | start = 20, end = 1500, time = 10 |
+    {
+      var bus = Bus.control;
+      server.sync;
+      { Out.kr(bus, XLine.kr(start, end, time, doneAction: 2)) }.play;
+      synth.set(\highPassCutoff, bus.asMap);
+      { highPassCutoff = end }.defer(time);
+      { bus.free; }.defer(time);
+    }.fork;
   }
 
   setLowFreq { | freq = 250 |
@@ -216,9 +230,11 @@ Equalizer : IM_Processor {
     lowPassCutoff = cutoff;
     synth.set(\lowPassCutoff, lowPassCutoff);
   }
-  setLowPassRQ { | rq = 1.0 |
-    lowPassRQ = rq;
-    synth.set(\lowPassRQ, lowPassRQ);
+  /*
+  setLowPassRes { | res = 0 |
+    lowPassRes = res;
+    synth.set(\lowPassRes, lowPassRes);
   }
+  */
 
 }

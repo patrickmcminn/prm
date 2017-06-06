@@ -67,6 +67,7 @@ Droner : IM_Module {
       eq.setHighFreq(2637);
       eq.setHighGain(-3);
 
+      mixer.setPreVol(6);
       mixer.setVol(3);
 
       isLoaded = true;

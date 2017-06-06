@@ -45,9 +45,9 @@ FalseSelf_16thDrones : IM_Module {
       filter1.setCutoffLFOBottomRatio(0);
       filter1.setCutoffLFOTopRatio(3);
 
-      mixer.setSendVol(2, 0);
-      mixer.setPreVol(3);
-      mixer.setVol(-6);
+      //mixer.setSendVol(2, 0);
+      //mixer.setPreVol(3);
+      //mixer.setVol(-6);
 
       this.prMakeSequences;
 
@@ -90,6 +90,7 @@ FalseSelf_16thDrones : IM_Module {
     filter2.free;
     delay.free;
     this.freeModule;
+    isLoaded = false;
   }
 
   playVoice1Sequence { | clock = 'internal ' | sampler.playSequence('voice1'); }

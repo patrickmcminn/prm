@@ -81,6 +81,7 @@ FalseSelf_TrumpetCanon : IM_Processor {
     submixer.free;
     delays.free;
     this.freeProcessor;
+    isLoaded = false;
   }
 
   //////// mutes:

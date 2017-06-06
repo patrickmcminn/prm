@@ -518,9 +518,10 @@ FalseSelf : Song {
       clock.sched(82+20, { endIsPlaying = true; });
 
       //////// trumpet melody:
-      clock.sched(20, { trumpetMelody.playPattern(clock); });
+      //clock.sched(20, { trumpetMelody.playPattern(clock); });
       clock.sched(20, { trumpetMelody.dry.unMute; });
-      clock.sched(20, { trumpetMelody.staticShift.mixer.mute; });
+      clock.sched(20, { trumpetMelody.shift2.unMute; });
+      //clock.sched(20, { trumpetMelody.staticShift.mixer.mute; });
 
       //////// freeze guitar:
       // swell:

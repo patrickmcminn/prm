@@ -9,7 +9,7 @@ FalseSelf_TrumpetMelody : IM_Processor {
 
   var server;
   var <isLoaded;
-  var <shift1, <shift2, <staticShift, <dry;
+  var <shift1, <shift2, <dry;
   var <eq;
   var <splitter;
   var shiftAmount1, shiftAmount2;
@@ -28,24 +28,21 @@ FalseSelf_TrumpetMelody : IM_Processor {
       eq = Equalizer.newStereo(mixer.chanStereo, group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
-      shift1 = ShiftSequencer.new(eq.inBus, group, \addToHead);
+      shift1 = PitchShifter.newMono(eq.inBus, -12, relGroup: group, addAction: \addToHead);
       while({ try { shift1.isLoaded } != true }, { 0.001.wait; });
 
-      shift2 = ShiftSequencer.new(eq.inBus, group, \addToHead);
+      shift2 = PitchShifter.newMono(eq.inBus, -15, relGroup: group, addAction: \addToHead);
       while({ try { shift2.isLoaded } != true }, { 0.001.wait; });
-
-      staticShift = PitchShifter.newMono(eq.inBus, -12, relGroup: group, addAction: \addToHead);
-      while({ try { staticShift.isLoaded } != true }, { 0.001.wait; });
 
       dry = IM_Mixer_1Ch.new(eq.inBus, relGroup: group, addAction: \addToHead);
       while({ try { dry.isLoaded } != true }, { 0.001.wait; });
 
-      splitter = Splitter.newMono(4, [dry.chanMono, staticShift.inBus, shift1.inBus, shift2.inBus],
+      splitter = Splitter.newMono(4, [dry.chanMono, shift1.inBus, shift2.inBus],
         relGroup: group, addAction: \addToHead);
       while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
       this.prInitParameters;
-      this.prMakePatterns;
+      //this.prMakePatterns;
 
       server.sync;
 
@@ -58,6 +55,7 @@ FalseSelf_TrumpetMelody : IM_Processor {
     mixer.setPreVol(0);
     dry.setVol(0);
     dry.mute;
+    //shift2.mixer.mute;
     // eq:
     eq.setHighPassCutoff(100);
     eq.setPeak1Freq(350);
@@ -69,6 +67,7 @@ FalseSelf_TrumpetMelody : IM_Processor {
     eq.setPeak2Gain(-1);
   }
 
+  // phasing this out in favor of playing it live:
   prMakePatterns {
     {
 
@@ -112,7 +111,6 @@ FalseSelf_TrumpetMelody : IM_Processor {
   //////// free:
 
   free {
-    staticShift.free;
     splitter.free;
     dry.free;
     shift1.free;

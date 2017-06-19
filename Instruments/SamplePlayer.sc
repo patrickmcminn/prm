@@ -244,6 +244,10 @@ SamplePlayer : IM_Module {
     this.freeModule;
   }
 
+  setBuffer { | buf |
+    buffer = buf
+  }
+
   playSampleSustaining { | name, vol = 0, rate = 1, startPos = 0, endPos = 1, pan = 0 |
     var amp = vol.dbamp;
     if( monoOrStereo == 'stereo',

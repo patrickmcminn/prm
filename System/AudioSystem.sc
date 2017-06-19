@@ -12,7 +12,7 @@ AudioSystem {
   var hardwareOut, <systemMixer;
   var <irLibrary;
 
-  var <reverb, <granulator, <modularSend;
+  var <reverb, <granulator, <modularSend, <delay;
 
   var <submixerA, <submixerB, <submixerC;
 
@@ -57,6 +57,9 @@ AudioSystem {
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
+      // delay:
+      delay = SimpleDelay.newStereo(systemMixer.inBus(0), 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
+      while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       // send out to modular system
       modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);

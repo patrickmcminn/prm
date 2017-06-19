@@ -79,7 +79,7 @@ FalseSelf : Song {
       while({ try { melodySynth.isLoaded } != true }, { 0.001.wait; });
 
       bassSection = FalseSelf_BassSection.new(mixerB.chanStereo(1), relGroup: group, addAction: \addToHead,
-        moogDeviceName: "iConnectAudio4+", moogPortName: "DIN");
+        moogDeviceName: "USB Uno MIDI Interface", moogPortName: "USB Uno MIDI Interface");
       while({ try { bassSection.isLoaded } != true }, { 0.001.wait; });
 
       drums = FalseSelf_Kick.new(mixerB.chanStereo(2), relGroup: group, addAction: \addToHead);

@@ -228,6 +228,7 @@ Foundation : Song {
 
       //// levels:
       // moog eq:
+      clock.sched(48, { moog.eq.setHighPassCutoff(120); });
 
       // unmute trumpet!
       clock.sched(46, { mixerC.unMute(1); trumpet.input.unMute; });

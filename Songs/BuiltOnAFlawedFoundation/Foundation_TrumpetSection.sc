@@ -52,10 +52,6 @@ Foundation_TrumpetSection : IM_Module {
       mixer.setPanBal(1, -0.5);
       mixer.setPanBal(1, 0.5);
 
-      mixer.setPreVol(0, 3);
-      mixer.setPreVol(1, 3);
-      mixer.setPreVol(2, 3);
-
 
       this.prCreateSequences;
       server.sync;

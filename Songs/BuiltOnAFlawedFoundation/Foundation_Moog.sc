@@ -68,7 +68,7 @@ Foundation_Moog : IM_Module {
   playEndSection {
     var pattern;
     pattern = Pmul(\sustain, 0.9, endMidiFile.p <> (type: \midi, midiout: midiOut, chan: 0)).play;
-    endSequenceIsPlaying = false;
+    endSequenceIsPlaying = true;
   }
 
 }

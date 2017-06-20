@@ -34,6 +34,8 @@ Foundation_SC : IM_Module {
       tremIsPlaying = false;
       chordsIsPlaying = false;
 
+      mixer.setPreVol(6);
+
       isLoaded = true;
     }
   }

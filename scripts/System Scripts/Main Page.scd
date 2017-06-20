@@ -12,6 +12,7 @@ var dauphineStreetIsLoaded = false;
 var cortezIsLoaded = false;
 var falseSelfIsLoaded = false;
 var lightIsLoaded = false;
+var foundationIsLoaded = false;
 
 ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 ~ohm.addPageLoadFunction(\mainGlobalMixer, { ~ohm.storageDict[\loadGlobalSubmixerFunc].value; }, page);
@@ -106,6 +107,34 @@ var lightIsLoaded = false;
       ~lightSend.free;
       ~ohm.setGridFunc(1, 3, {  });
       ~ohm.turnGridOff(1, 3);
+  });
+}, page: page);
+
+'Built on a Flawed Foundation';
+
+~ohm.turnGridCyan(0, 4, page: page);
+~ohm.setGridFunc(0, 4, {
+  if(foundationIsLoaded == false, {
+    r {
+      ~foundationDelay = SimpleDelay.newStereo(~prm.submixA, 2.5, 0.21, 2.5,
+        relGroup: ~prm.procGroup, addAction: \addToHead);
+      while({ try { ~foundationDelay.isLoaded } != true }, { 0.001.wait; });
+      s.sync;
+      ~foundationDelay.setMix(1);
+      ~foundation = Foundation.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
+        ~prm.procGroup, \addToHead, "USB Uno MIDI Interface", "USB Uno MIDI Interface");
+      while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 4, { ~ohm.setPage('foundation'); }, page: page);
+      ~ohm.turnGridGreen(1, 4);
+      foundationIsLoaded = true;
+    }.play;
+    },
+    {
+      ~foundation.free;
+      ~foundationDelay.free;
+      ~ohm.setGridFunc(1, 4, { });
+      ~ohm.turnGridOff(1, 4);
   });
 }, page: page);
 

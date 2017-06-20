@@ -10,6 +10,7 @@ prm
 "Habit Ohm.scd".loadRelative;
 "False Self Ohm.scd".loadRelative;
 "Light Ohm.scd".loadRelative;
+"Foundation Ohm.scd".loadRelative;
 
 
 // Base:
@@ -19,3 +20,4 @@ prm
 "Habit Base.scd".loadRelative;
 "False Self Base.scd".loadRelative;
 "Light Base.scd".loadRelative;
+"Foundation Base.scd".loadRelative;

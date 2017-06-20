@@ -185,12 +185,14 @@ Foundation : Song {
 
   playMainSequence {
     clock.playNextBar({
+      introIsPlaying = false;
+      arrivalIsPlaying = true;
       relBar = clock.bar;
 
       //////// arrival:
       //// levels:
       // mute clean trumpet input:
-      cleanTrumpet.trumpet.mute;
+      cleanTrumpetInput.mute;
       // trumpet section:
       //mixerC.setVol(3, -3);
       // moog:
@@ -220,6 +222,7 @@ Foundation : Song {
       /////////////////////////////
       //// clock management: /////
       ///////////////////////////
+      clock.sched(48, { arrivalIsPlaying = false; mainIsPlaying = true });
 
       //// meter:
 
@@ -250,6 +253,7 @@ Foundation : Song {
 
 
       //////// this section ends 154 beats after the start of 'arrival' ////////
+      clock.sched(154, { mainIsPlaying = false; endIsPlaying = true; });
    });
   }
 

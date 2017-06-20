@@ -41,6 +41,8 @@ Foundation_CleanTrumpet : IM_Module {
       server.sync;
       this.prInitializeParameters;
 
+      //eq.mixer.setPreVol(6);
+
       isLoaded = true;
     }
   }

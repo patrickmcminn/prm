@@ -53,7 +53,7 @@ FoundationTrumpet : IM_Module {
     granulator.setFeedback(0);
     granulator.setDelayMix(0.25);
 
-    mixer.setPreVol(-18);
+    mixer.setPreVol(-15);
 
   }
 

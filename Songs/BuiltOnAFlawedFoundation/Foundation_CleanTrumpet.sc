@@ -10,7 +10,7 @@ Foundation_CleanTrumpet : IM_Module {
   var <trumpet, <eq, <splitter, <delay1, <delay2, <delay3;
 
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(4, relGroup: relGroup, addAction: addAction).prInit;
+    ^super.new(4, outBus, relGroup: relGroup, addAction: addAction).prInit;
   }
 
   prInit {
@@ -22,10 +22,10 @@ Foundation_CleanTrumpet : IM_Module {
       delay1 = SimpleDelay.newStereo(mixer.chanStereo(1), 2.5, 0.2, 2.5, relGroup: group, addAction: \addToHead);
       while({ try { delay1.isLoaded } != true }, { 0.001.wait; });
 
-      delay2 = SimpleDelay.newStereo(mixer.chanStereo(1), 3.75, 0.2, 3.75, relGroup: group, addAction: \addToHead);
+      delay2 = SimpleDelay.newStereo(mixer.chanStereo(2), 3.75, 0.2, 3.75, relGroup: group, addAction: \addToHead);
       while({ try { delay2.isLoaded } != true }, { 0.001.wait; });
 
-      delay3 = SimpleDelay.newStereo(mixer.chanStereo(1), 3.4375, 0.2, 3.5, relGroup: group, addAction: \addToHead);
+      delay3 = SimpleDelay.newStereo(mixer.chanStereo(3), 3.4375, 0.2, 3.5, relGroup: group, addAction: \addToHead);
       while({ try { delay3.isLoaded } != true }, { 0.001.wait; });
 
       splitter = Splitter.newStereo(4, [mixer.chanStereo(0), delay1.inBus, delay2.inBus, delay3.inBus],
@@ -62,11 +62,11 @@ Foundation_CleanTrumpet : IM_Module {
     delay1.setFilterCutoff(1000);
 
     // mixer:
-    mixer.setVol(1, -3);
+    mixer.setVol(1, -5);
     mixer.setPanBal(1, -0.25);
-    mixer.setVol(2, -3);
+    mixer.setVol(2, -5);
     mixer.setPanBal(2, 0.8);
-    mixer.setVol(3, -3);
+    mixer.setVol(3, -5);
     mixer.setPanBal(3, -0.8);
   }
 

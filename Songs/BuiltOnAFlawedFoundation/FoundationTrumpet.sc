@@ -8,7 +8,7 @@ FoundationTrumpet : IM_Module {
 
   var server, <isLoaded;
 
-  var <hardwareInBus, <multiShift, <granulator, <distortion;
+  var <input, <multiShift, <granulator, <distortion;
 
   *new { | outBus = 0, hardwareInBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(hardwareInBus);
@@ -29,8 +29,8 @@ FoundationTrumpet : IM_Module {
       multiShift = IM_MultiShift.new(granulator.inBus, [-12, 7, 12, 19, 24], 1, group, \addToHead);
       while({ try { multiShift.isLoaded } != true }, { 0.001.wait; });
 
-      hardwareInBus = IM_HardwareIn.new(hardwareInBus, multiShift.inBus, group, \addToHead);
-      while({ try { hardwareInBus.isLoaded } != true }, { 0.001.wait; });
+      input = IM_HardwareIn.new(hardwareInBus, multiShift.inBus, group, \addToHead);
+      while({ try { input.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
 
@@ -53,13 +53,15 @@ FoundationTrumpet : IM_Module {
     granulator.setFeedback(0);
     granulator.setDelayMix(0.25);
 
+    mixer.setPreVol(-18);
+
   }
 
 
   //////// public functions:
 
   free {
-    hardwareInBus.free;
+    input.free;
     multiShift.free;
     granulator.free;
     distortion.free;

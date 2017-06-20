@@ -7,6 +7,7 @@ prm
 Foundation_Warps :IM_Module {
   var server, <isLoaded;
   var <warp1, <warp2, <warp3, <warp4, <warp5;
+  var <warp1IsPlaying, <warp2IsPlaying, <warp3IsPlaying, <warp4IsPlaying, <warp5IsPlaying;
 
   *new { | outBus, relGroup = nil, addAction = 'addToHead' |
     ^super.new(5, outBus, relGroup: relGroup, addAction: addAction).prInit;
@@ -40,11 +41,17 @@ Foundation_Warps :IM_Module {
       mixer.setVol(3, -6);
       mixer.setVol(4, -12);
 
-      warp1.setAttackTime(3);
-      warp2.setAttackTime(3);
-      warp3.setAttackTime(3);
-      warp4.setAttackTime(3);
-      warp5.setAttackTime(3);
+      warp1.setAttackTime(10);
+      warp2.setAttackTime(10);
+      warp3.setAttackTime(10);
+      warp4.setAttackTime(10);
+      warp5.setAttackTime(10);
+
+      warp1IsPlaying = false;
+      warp2IsPlaying = false;
+      warp3IsPlaying = false;
+      warp4IsPlaying = false;
+      warp5IsPlaying = false;
 
       isLoaded = true;
     }
@@ -61,18 +68,44 @@ Foundation_Warps :IM_Module {
     isLoaded = false;
   }
 
-  playWarp1 { warp1.playSampleSustaining(\warp) }
-  releaseWarp1 { warp1.releaseSampleSustaining(\warp) }
-
-  playWarp2 { warp2.playSampleSustaining(\warp) }
-  releaseWarp2 { warp2.releaseSampleSustaining(\warp) }
-
-  playWarp3 { warp3.playSampleSustaining(\warp) }
-  releaseWarp3 { warp3.releaseSampleSustaining(\warp) }
-
-  playWarp4 { warp4.playSampleSustaining(\warp) }
-  releaseWarp4 { warp4.releaseSampleSustaining(\warp) }
-
-  playWarp5 { warp5.playSampleSustaining(\warp) }
-  releaseWarp5 { warp5.releaseSampleSustaining(\warp) }
+  playWarp1 {
+    warp1.playSampleSustaining(\warp);
+    warp1IsPlaying = true;
+  }
+  releaseWarp1 {
+    warp1.releaseSampleSustaining(\warp);
+    warp1IsPlaying = false;
+  }
+  playWarp2 {
+    warp2.playSampleSustaining(\warp);
+    warp2IsPlaying = true;
+  }
+  releaseWarp2 {
+    warp2.releaseSampleSustaining(\warp);
+    warp2IsPlaying = false;
+  }
+  playWarp3 {
+    warp3.playSampleSustaining(\warp);
+    warp3IsPlaying = true;
+  }
+  releaseWarp3 {
+    warp3.releaseSampleSustaining(\warp);
+    warp3IsPlaying = false;
+  }
+  playWarp4 {
+    warp4.playSampleSustaining(\warp);
+    warp4IsPlaying = true;
+  }
+  releaseWarp4 {
+    warp4.releaseSampleSustaining(\warp);
+    warp4IsPlaying = false;
+  }
+  playWarp5 {
+    warp5.playSampleSustaining(\warp);
+    warp5IsPlaying = true;
+  }
+  releaseWarp5 {
+    warp5.releaseSampleSustaining(\warp);
+    warp5IsPlaying = false;
+  }
 }

@@ -9,6 +9,8 @@ Foundation_TrumpetSection : IM_Module {
   var <isLoaded, server;
   var <trumpet1, <trumpet2, <trumpet3;
   var buffer1, buffer2, buffer3;
+  var <arrivalSequenceIsPlaying;
+  var <mainSequenceIsPlaying;
 
   *new { | outBus = 0, lowDBuffer, aBuffer, highDBuffer, relGroup, addAction = 'addToHead' |
     ^super.new(3, outBus, relGroup: relGroup, addAction: addAction).prInit(lowDBuffer, aBuffer, highDBuffer);
@@ -50,25 +52,26 @@ Foundation_TrumpetSection : IM_Module {
       mixer.setPanBal(1, -0.5);
       mixer.setPanBal(1, 0.5);
 
+      mixer.setPreVol(0, 3);
+      mixer.setPreVol(1, 3);
+      mixer.setPreVol(2, 3);
+
 
       this.prCreateSequences;
       server.sync;
 
-      this.prMakeIntroSequences;
       this.prMakeArrivalSequences;
       this.prMakeMainSequences;
       server.sync;
+
+      arrivalSequenceIsPlaying = false;
+      mainSequenceIsPlaying = false;
 
       isLoaded = true;
     }
   }
 
   prCreateSequences {
-    /////// intro:
-    trumpet1.makeSequence(\intro, 'sustaining');
-    trumpet2.makeSequence(\intro, 'sustaining');
-    trumpet3.makeSequence(\intro, 'sustaining');
-
     ////// arrival:
     trumpet1.makeSequence(\arrival, 'sustaining');
     trumpet2.makeSequence(\arrival, 'sustaining');
@@ -80,12 +83,6 @@ Foundation_TrumpetSection : IM_Module {
     trumpet3.makeSequence(\main, 'sustaining');
 
     trumpet1.makeSequence(\test);
-  }
-
-  prMakeIntroSequences {
-    this.prMakeTrumpet1IntroSequence;
-    this.prMakeTrumpet2IntroSequence;
-    this.prMakeTrumpet3IntroSequence;
   }
 
   prMakeArrivalSequences {
@@ -100,7 +97,6 @@ Foundation_TrumpetSection : IM_Module {
     this.prMakeTrumpet3MainSequence;
   }
 
-  prMakeTrumpet1IntroSequence { }
   prMakeTrumpet1ArrivalSequence {
     var noteLoop = [-2, -3, -10, -2, -3, -12];
     trumpet1.addKey(\arrival, \legato, 1);
@@ -129,7 +125,6 @@ Foundation_TrumpetSection : IM_Module {
     //trumpet1.addKey(\main, \rate, Pseq([0, -2, 0, 3, 2].midiratio, inf));
   }
 
-  prMakeTrumpet2IntroSequence { }
 
   prMakeTrumpet2ArrivalSequence {
     var noteLoop = [0, -4, -9, -7];
@@ -153,7 +148,6 @@ Foundation_TrumpetSection : IM_Module {
     trumpet2.addKey(\main, \rate, Pseq([pattern1, pattern2, pattern3, pattern4], 1));
   }
 
-  prMakeTrumpet3IntroSequence { }
 
   prMakeTrumpet3ArrivalSequence {
     var note = [0, 5, 3, 2, 0, 5, 3, 2, -2, 0, 5, 3, 2, 0, 5, 3];
@@ -184,22 +178,18 @@ Foundation_TrumpetSection : IM_Module {
     isLoaded = false;
   }
 
-  playIntroSequence { | clock |
-    trumpet1.playSequence(\intro, clock);
-    trumpet2.playSequence(\intro, clock);
-    trumpet3.playSequence(\intro, clock);
-  }
-
   playArrivalSequence { | clock |
     trumpet1.playSequence(\arrival, clock);
     trumpet2.playSequence(\arrival, clock);
     trumpet3.playSequence(\arrival, clock);
+    arrivalSequenceIsPlaying = true;
   }
 
   playMainSequence { | clock |
     trumpet1.playSequence(\main, clock);
     trumpet2.playSequence(\main, clock);
     trumpet3.playSequence(\main, clock);
+    mainSequenceIsPlaying = true;
   }
 
 }

@@ -8,6 +8,7 @@ Foundation_EndTrumpets :IM_Module {
 
   var server, <isLoaded;
   var <trumpet;
+  var <endSequenceIsPlaying;
 
   *new { |outBus, aBuffer, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(aBuffer);
@@ -37,6 +38,8 @@ Foundation_EndTrumpets :IM_Module {
       server.sync;
 
       this.prMakePatterns;
+
+      endSequenceIsPlaying = false;
 
       isLoaded = true;
     }
@@ -121,12 +124,14 @@ Foundation_EndTrumpets :IM_Module {
     trumpet.playSequence(\trumpet1, clock);
     trumpet.playSequence(\trumpet2, clock);
     trumpet.playSequence(\trumpet3, clock);
+    endSequenceIsPlaying = true;
   }
 
   stopEndSequence {
     trumpet.stopSequence(\trumpet1);
     trumpet.stopSequence(\trumpet2);
     trumpet.stopSequence(\trumpet3);
+    endSequenceIsPlaying = false;
   }
 
 }

@@ -17,6 +17,8 @@ Foundation_ChordSynth : IM_Module {
 
   var <sequencerDict, <sequencerClock;
 
+  var <mainSequenceIsPlaying = false;
+
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
   }
@@ -45,6 +47,8 @@ Foundation_ChordSynth : IM_Module {
       server.sync;
       this.prMakeSequence;
 
+      mixer.setPreVol(-3);
+
       isLoaded = true;
     }
   }
@@ -59,8 +63,8 @@ Foundation_ChordSynth : IM_Module {
       |
       var saw, sawEnv, wavetable, wavetableEnv, lfo, filter, sig;
       lfo = LFDNoise0.ar(lfoFreq).range(0, 1);
-      wavetable = Osc.ar(buffer, freq/2);
-      //wavetable = O.ar(freq+150).range(index.neg, index);
+      wavetable = Saw.ar(freq/2);
+      //wavetable = Osc.ar(freq+150).range(index.neg, index);
       wavetableEnv = EnvGen.kr(Env.adsr(tableAttackTime, tableDecayTime, tableSustainLevel, tableReleaseTime), gate);
       wavetable = wavetable * wavetableEnv;
       wavetable = wavetable * lfo;
@@ -200,6 +204,11 @@ Foundation_ChordSynth : IM_Module {
   setSequencerClockTempo { | bpm = 60 |
     var bps = bpm/60;
     sequencerClock.tempo = bps;
+  }
+
+  playMainSequence { | clock |
+    this.playSequence(\main, clock);
+    mainSequenceIsPlaying = true;
   }
 
 

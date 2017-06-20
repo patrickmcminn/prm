@@ -8,6 +8,7 @@ Foundation_Cellos : IM_Module {
 
   var server, <isLoaded;
   var <subtractive;
+  var <mainSequenceIsPlaying;
 
   *new { | outBus, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
@@ -35,6 +36,10 @@ Foundation_Cellos : IM_Module {
       this.prMakePatterns;
 
       server.sync;
+
+      mixer.setPreVol(3);
+
+      mainSequenceIsPlaying = false;
 
       isLoaded = true;
     }
@@ -137,5 +142,6 @@ Foundation_Cellos : IM_Module {
     subtractive.playSequence(\cello3Main, clock);
     subtractive.playSequence(\cello2Main, clock);
     subtractive.playSequence(\cello1Main, clock);
+    mainSequenceIsPlaying = true;
   }
 }

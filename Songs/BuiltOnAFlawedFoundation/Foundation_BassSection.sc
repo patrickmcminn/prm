@@ -8,6 +8,9 @@ Foundation_BassSection : IM_Module {
 
   var <isLoaded, server;
   var <eq, <satur, <sub;
+  var <arrivalSequenceIsPlaying = false;
+  var <mainSequenceIsPlaying= false;
+
 
   * new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
     ^super.new(2, outBus, relGroup: relGroup, addAction: addAction).prInit;
@@ -46,8 +49,9 @@ Foundation_BassSection : IM_Module {
   }
 
   prInitParameters {
-    sub.mixer.setVol(-6);
-
+    sub.mixer.setVol(-3);
+    mixer.setPreVol(0, 3);
+    mixer.setPreVol(1, 3);
     //// eq:
     eq.setHighPassCutoff(240);
 
@@ -108,12 +112,14 @@ Foundation_BassSection : IM_Module {
   playArrivalSequence { | clock |
     eq.setHighPassCutoff(240);
     satur.playSequence(\arrival, clock);
+    arrivalSequenceIsPlaying = true;
   }
 
   playMainSequence { | clock |
     eq.setHighPassCutoff(20);
     satur.playSequence(\main, clock);
     sub.playSequence(\main, clock);
+    mainSequenceIsPlaying = true;
   }
 
 }

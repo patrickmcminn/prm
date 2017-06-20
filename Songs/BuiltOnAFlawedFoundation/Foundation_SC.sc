@@ -8,6 +8,7 @@ Foundation_SC : IM_Module {
 
   var server, <isLoaded;
   var <sampler;
+  var <tremIsPlaying, <chordsIsPlaying;
 
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
@@ -30,6 +31,9 @@ Foundation_SC : IM_Module {
       sampler.setAttackTime(7);
       sampler.setReleaseTime(7);
 
+      tremIsPlaying = false;
+      chordsIsPlaying = false;
+
       isLoaded = true;
     }
   }
@@ -41,9 +45,21 @@ Foundation_SC : IM_Module {
     isLoaded = false;
   }
 
-  playTremolo { sampler.playSampleSustaining(\trem, 1, -3); }
-  releaseTremolo { sampler.releaseSampleSustaining(\trem) }
+  playTremolo {
+    sampler.playSampleSustaining(\trem, 1, -3);
+    tremIsPlaying = true;
+  }
+  releaseTremolo {
+    sampler.releaseSampleSustaining(\trem);
+    tremIsPlaying = false;
+  }
 
-  playChords { sampler.playSampleSustaining(\chords, 0); }
-  releaseChords { sampler.releaseSampleSustaining(\chords); }
+  playChords {
+    sampler.playSampleSustaining(\chords, 0);
+    chordsIsPlaying = true;
+  }
+  releaseChords {
+    sampler.releaseSampleSustaining(\chords);
+    chordsIsPlaying = false;
+  }
 }

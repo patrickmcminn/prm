@@ -9,6 +9,8 @@ Foundation_Moog : IM_Module {
   var server, <isLoaded;
   var <moog, <eq;
   var mainMidiFile, endMidiFile, midiOut;
+  var <mainSequenceIsPlaying = false;
+  var <endSequenceIsPlaying = false;
 
   *new { | inBus = 3, outBus = 0, moogDeviceName, moogPortName, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(inBus, moogDeviceName, moogPortName);
@@ -41,6 +43,8 @@ Foundation_Moog : IM_Module {
       server.sync;
 
       midiOut = MIDIOut.newByName(moogDeviceName, moogPortName);
+      eq.setHighPassCutoff(1300);
+      eq.setLowPassCutoff(3010);
 
       isLoaded = true;
     }
@@ -58,11 +62,13 @@ Foundation_Moog : IM_Module {
   playMainSection {
     var pattern;
     pattern = Pmul(\sustain, 0.9, mainMidiFile.p <> (type: \midi, midiout: midiOut, chan: 0)).play;
+    mainSequenceIsPlaying = true;
   }
 
   playEndSection {
     var pattern;
     pattern = Pmul(\sustain, 0.9, endMidiFile.p <> (type: \midi, midiout: midiOut, chan: 0)).play;
+    endSequenceIsPlaying = false;
   }
 
 }

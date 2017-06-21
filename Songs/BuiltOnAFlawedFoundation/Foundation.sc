@@ -161,7 +161,7 @@ Foundation : Song {
 
     // end trumpets:
     mixerC.setVol(4, -9);
-    mixerC.setSendVol(4, 0, -6);
+    mixerC.setSendVol(4, 0, -18);
     mixerC.setSendVol(4, 1, -inf);
     mixerC.setSendVol(4, 3, 0);
 

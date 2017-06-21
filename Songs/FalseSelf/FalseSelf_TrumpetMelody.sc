@@ -58,8 +58,8 @@ FalseSelf_TrumpetMelody : IM_Processor {
     //shift2.mixer.mute;
     // eq:
     eq.setHighPassCutoff(100);
-    eq.setPeak1Freq(350);
-    eq.setPeak1Gain(-3);
+    eq.setPeak3Freq(350);
+    eq.setPeak3Gain(-3);
     eq.setPeak1Freq(150);
     eq.setPeak1Gain(1.5);
     eq.setPeak1RQ(0.3);

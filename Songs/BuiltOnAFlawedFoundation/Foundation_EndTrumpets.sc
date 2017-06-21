@@ -31,7 +31,7 @@ Foundation_EndTrumpets :IM_Module {
       trumpet.makeSequence(\trumpet1);
       trumpet.makeSequence(\trumpet2);
       trumpet.makeSequence(\trumpet3);
-      trumpet.setFilterCutoff(12000);
+      //trumpet.setFilterCutoff(12000);
 
       trumpet.setBuffer(aBuffer);
 
@@ -58,12 +58,12 @@ Foundation_EndTrumpets :IM_Module {
       -7.midiratio, -7.midiratio, Rest, -10.midiratio, Rest, -4.midiratio, Rest, -12.midiratio, -12.midiratio,
       Rest, -5.midiratio, Rest, -4.midiratio, Rest, -9.midiratio, Rest
     ], 1);
-    squareDurArray = Pseq([6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 2, 7, 1.5, 2.5, 1.5, 4.5], 1);
+    squareDurArray = Pseq([6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 2, 7, 1.5, 2.5, 1.5, 4.5]/2, 1);
     driftNoteArray = Pseq([
       -7.midiratio, -7.midiratio, Rest, -10.midiratio, Rest, -4.midiratio, Rest, -12.midiratio, -12.midiratio,
       Rest, -5.midiratio, Rest, -4.midiratio, Rest, -9.midiratio, Rest
     ], inf);
-    driftDurArray = Pseq([6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 2, 7, 1.5, 2.5, 1.5, 3.5], inf);
+    driftDurArray = Pseq([6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 2, 7, 1.5, 2.5, 1.5, 3.5]/2, inf);
 
     trumpet.addKey(\trumpet1, \legato, 1);
     trumpet.addKey(\trumpet1, \dur, Pseq([squareDurArray, driftDurArray], 1));
@@ -79,12 +79,12 @@ Foundation_EndTrumpets :IM_Module {
       Rest, -4.midiratio, Rest, -12.midiratio, -12.midiratio, Rest, -5.midiratio, Rest,
       -9.midiratio, Rest, -7.midiratio, 0.midiratio, Rest, -5.midiratio, Rest, -10.midiratio, Rest
     ], 1);
-    squareDurArray = Pseq([4, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 6, 3, 1.5, 2.5, 1.5, 3.5], 1);
+    squareDurArray = Pseq([4, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 6, 3, 1.5, 2.5, 1.5, 3.5]/2, 1);
     driftNoteArray = Pseq([
       Rest, -4.midiratio, Rest, -12.midiratio, -12.midiratio, Rest, -5.midiratio, Rest,
       -9.midiratio, Rest, -7.midiratio, 0.midiratio, Rest, -5.midiratio, Rest, -10.midiratio, Rest
     ], inf);
-    driftDurArray = Pseq([4, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 6, 3, 1.5, 2.5, 1.5, 4], inf);
+    driftDurArray = Pseq([4, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 6, 3, 1.5, 2.5, 1.5, 4]/2, inf);
 
     trumpet.addKey(\trumpet2, \legato, 1);
     trumpet.addKey(\trumpet2, \dur, Pseq([squareDurArray, driftDurArray], 1));
@@ -100,12 +100,12 @@ Foundation_EndTrumpets :IM_Module {
       Rest, -5.midiratio, Rest, -9.midiratio, Rest, -7.midiratio, -7.midiratio, Rest,
       -10.midiratio, Rest, -4.midiratio, Rest, -12.midiratio, -7.midiratio, -12.midiratio
     ], 1);
-    squareDurArray = Pseq([5, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 4.5, 6, 4, 4], 1);
+    squareDurArray = Pseq([5, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 4.5, 6, 4, 4]/2, 1);
     driftNoteArray = Pseq([
       Rest, -5.midiratio, Rest, -9.midiratio, Rest, -7.midiratio, -7.midiratio, Rest,
       -10.midiratio, Rest, -4.midiratio, Rest, -12.midiratio, -7.midiratio, -12.midiratio
     ], inf);
-    driftDurArray = Pseq([5, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 4.5, 6, 4, 2], inf);
+    driftDurArray = Pseq([5, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 4.5, 6, 4, 2]/2, inf);
 
     trumpet.addKey(\trumpet3, \legato, 1);
     trumpet.addKey(\trumpet3, \dur, Pseq([squareDurArray, driftDurArray], 1));

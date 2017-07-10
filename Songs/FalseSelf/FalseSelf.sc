@@ -207,7 +207,7 @@ FalseSelf : Song {
     mixerB.setSendVol(3, 0, -18);
 
     // trumpet melody:
-    mixerA.setSendVol(4, 0, -9);
+    mixerA.setSendVol(4, 0, -12);
     mixerA.tglMute(4);
 
     // end trumpet:

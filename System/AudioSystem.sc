@@ -9,12 +9,13 @@ AudioSystem {
 
   var <isLoaded;
   var <procGroup, systemGroup;
-  var hardwareOut, <systemMixer;
+  var hardwareOut, <systemMixer, <monitorMixer;
   var <irLibrary;
 
   var <reverb, <granulator, <modularSend, <delay;
 
   var <submixerA, <submixerB, <submixerC;
+  var <splitter;
 
   var <modular, modularIn, <microphone, micIn, <moog, <moogIn;
 
@@ -48,17 +49,24 @@ AudioSystem {
 
       // Fix input checking: a numOutputs of 1 will result 0.5 passed to Array.fill
       masterOutArray = Array.fill(numOutputs / 2, { |index| index * 2 });
+      monitorMixer = IM_MasterMixer.new([0, 1], systemGroup);
+      while({ try { monitorMixer.isLoaded } != true }, { 0.001.wait; });
       systemMixer = IM_MasterMixer.new([2, 3], systemGroup);
       // while( { try { systemMixer.inBus(0) } == nil }, { 0.001.wait });
       server.sync;
       while ( { try { systemMixer.isLoaded} != true }, { 0.001.wait } );
 
+
+
       irLibrary = IM_IRLibrary.new("~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses");
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
+      splitter = Splitter.newStereo(2, [systemMixer.inBus, monitorMixer.inBus], relGroup: procGroup, addAction: \addToHead);
+      while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
+
       // delay:
-      delay = SimpleDelay.newStereo(systemMixer.inBus(0), 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
+      delay = SimpleDelay.newStereo(splitter.inBus, 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       // send out to modular system
@@ -67,29 +75,30 @@ AudioSystem {
 
       //granulator = IM_Granulator(systemMixer.inBus(0),
         //relGroup: systemGroup, addAction: \addToHead);
-      granulator = GranularDelay.new(systemMixer.inBus, relGroup: systemGroup, addAction: \addToHead);
+      granulator = GranularDelay.new(splitter.inBus, relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( {  try { granulator.isLoaded } != true }, { 0.001.wait; });
       granulator.granulator.setCrossfade(1);
       granulator.delay.setMix(0);
 
       //reverb = Wash.newStereo(systemMixer.inBus(0), relGroup: systemGroup, addAction: \addToHead);
-      reverb = IM_Reverb.newConvolution(systemMixer.inBus(0), bufName: irLibrary.irDict['3.2EmptyChurch'],
+      reverb = IM_Reverb.newConvolution(splitter.inBus, bufName: irLibrary.irDict['3.2EmptyChurch'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       //reverb.setMix(1);
 
-      submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
+      submixerA = Looper.newStereo(splitter.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerA.isLoaded } != true }, { 0.001.wait; });
-      submixerB = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
+      submixerB = Looper.newStereo(splitter.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerB.isLoaded } != true }, { 0.001.wait; });
-      submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
+      submixerC = Looper.newStereo(splitter.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
+
 
 
       submixerA.mixer.setPreVol(3);
@@ -120,9 +129,11 @@ AudioSystem {
       microphone.setVol(-70);
       microphone.setPreVol(3);
 
+      /*
       subtractive = Subtractive.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus, nil, procGroup,
         \addToHead);
       while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
+      */
 
       songBook = IdentityDictionary.new;
 

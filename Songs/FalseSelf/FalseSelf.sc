@@ -18,6 +18,8 @@ FalseSelf : Song {
   var <trumpetMelody, <trumpetMelodyInput, <freezeGuitar;
   var <endTrumpet, <endTrumpetInput;
 
+  var <metronome;
+
   var <modularRoutine;
 
   var <section1IsPlaying, <chorus1IsPlaying, <chorus2IsPlaying, <canonIsPlaying;
@@ -109,6 +111,9 @@ FalseSelf : Song {
 
       midBuzz = FalseSelf_MidBuzz.new(mixerC.chanStereo(4), relGroup: group, addAction: \addToHead);
       while({ try { midBuzz.isLoaded } != true }, { 0.001.wait; });
+
+      metronome = Metronome.new(0, group, \addToHead);
+      while({ try { metronome.isLoaded } != true }, { 0.001.wait;});
 
 
       server.sync;

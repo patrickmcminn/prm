@@ -36,7 +36,7 @@ Metronome :IM_Module {
 
   prAddSynthDef {
     SynthDef(\prm_metronome, {
-      | outBus = 0, amp = 1, freq = 440 |
+      | outBus = 0, amp = 0.2, freq = 440 |
       var osc, env, sig;
       osc = SinOsc.ar(freq);
       env = EnvGen.kr(Env.perc(0.01, 0.1, 1), 1, doneAction: 2);

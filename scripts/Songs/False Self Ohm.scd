@@ -78,6 +78,19 @@ var activeLeftBank = mixerBank1;
 
 //// countdowns:
 
+//// Metronome:
+~ohm.setGridFunc(7, 1, {
+  ~falseSelf.clock.schedAbs(~falseSelf.clock.beats.ceil, { | beat |
+    //~falseSelf.clock.beatInBar.postln;
+    if( ~falseSelf.clock.beatInBar.round == 0,
+      { ~falseSelf.metronome.playDownbeat },
+      { ~falseSelf.metronome.playBeat }
+    );
+    1;
+  },page);
+}, bank: mainGridBank, page: page);
+
+
 // grid play funcs:
 ~ohm.setGridMonitorFunc(0, 2, { if( ~falseSelf.section1IsPlaying == true,
   { ~ohm.turnGridGreen(0, 2) }, { ~ohm.turnGridBlue(0, 2) });

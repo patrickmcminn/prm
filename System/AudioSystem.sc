@@ -42,6 +42,8 @@ AudioSystem {
 
       server.sync;
 
+      server.latency = 0.05;
+
       hardwareOut = IM_HardwareOut(numOutputs);
       procGroup = Group(server, \addToHead);
       systemGroup = Group(procGroup, \addAfter);
@@ -70,7 +72,7 @@ AudioSystem {
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       // send out to modular system
-      modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
+      modularSend = MonoHardwareSend.new(4, relGroup: systemGroup, addAction: \addToHead);
       while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 
       //granulator = IM_Granulator(systemMixer.inBus(0),

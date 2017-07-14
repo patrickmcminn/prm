@@ -67,6 +67,8 @@ AudioSystem {
       splitter = Splitter.newStereo(2, [systemMixer.inBus, monitorMixer.inBus], relGroup: procGroup, addAction: \addToHead);
       while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
+      server.sync;
+
       // delay:
       delay = SimpleDelay.newStereo(splitter.inBus, 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });

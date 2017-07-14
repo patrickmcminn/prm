@@ -64,7 +64,7 @@ AudioSystem {
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
-      splitter = Splitter.newStereo(2, [systemMixer.inBus, monitorMixer.inBus], relGroup: procGroup, addAction: \addToHead);
+      splitter = Splitter.newStereo(2, [systemMixer.inBus, monitorMixer.inBus], relGroup: systemGroup, addAction: \addToHead);
       while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;

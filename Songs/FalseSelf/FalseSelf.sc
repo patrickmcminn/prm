@@ -300,6 +300,7 @@ FalseSelf : Song {
     orchestra.free; planeNoise.free; midBuzz.free; flute.free;
     trumpetMelody.free; trumpetMelodyInput.free; freezeGuitar.free;
     endTrumpet.free; endTrumpetInput.free;
+    metronome.free;
   }
 
   playModularRoutine { modularRoutine.play; }

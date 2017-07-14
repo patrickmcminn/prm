@@ -31,7 +31,7 @@ Light : Song {
       while({ try { arps.isLoaded } != true }, { 0.001.wait; });
 
       // Mixer B:
-      bass = Light_Bass.new(mixerB.chanStereo(0), "iConnectAudio4+", "DIN", group, \addToHead);
+      bass = Light_Bass.new(mixerB.chanStereo(0), "USB Uno MIDI Interface", "USB Uno MIDI Interface", group, \addToHead);
       while({ try { bass.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;

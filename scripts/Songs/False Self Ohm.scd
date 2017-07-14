@@ -11,6 +11,9 @@ var mixerBank2 = 1;
 var mixerBank3 = 2;
 var mixerBank4 = 3;
 
+var clickBank = 4;
+var clickBankActive = false;
+
 var activeGridBank = mainGridBank;
 
 var mainGridBank = 0;
@@ -23,7 +26,7 @@ var activeLeftBank = mixerBank1;
 ~ohm.addGridBanks(3, page: page);
 ~ohm.addLeftButtonsBanks(3, page: page);
 ~ohm.addLeftSlidersBanks(3, page: page);
-~ohm.addLeftKnobsBanks(3, page: page);
+~ohm.addLeftKnobsBanks(4, page: page);
 
 ~ohm.addPageLoadFunction(\mainGlobalMixer, { ~ohm.storageDict[\loadGlobalSubmixerFunc].value; }, page);
 //////// Metronome:
@@ -79,6 +82,7 @@ var activeLeftBank = mixerBank1;
 //// countdowns:
 
 //// Metronome:
+~ohm.turnGridRed(7, 1, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(7, 1, {
   ~falseSelf.clock.schedAbs(~falseSelf.clock.beats.ceil, { | beat |
     //~falseSelf.clock.beatInBar.postln;
@@ -88,6 +92,7 @@ var activeLeftBank = mixerBank1;
     );
     1;
   },page);
+  ~ohm.turnGridGreen(7, 1);
 }, bank: mainGridBank, page: page);
 
 
@@ -881,6 +886,25 @@ var activeLeftBank = mixerBank1;
 
 
 
+////// headphones/click:
+
+~ohm.setGridMonitorFunc(7, 7, {
+  if( clickBankActive == true, { ~ohm.turnGridGreen(7, 7) }, { ~ohm.turnGridWhite(7, 7) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(7, 7, {
+  if( clickBankActive == true,
+    { ~ohm.setActiveLeftKnobsBank(activeLeftBank); clickBankActive = false; },
+    { ~ohm.setActiveLeftKnobsBank(clickBank); clickBankActive = true; }
+  );
+}, bank: mainGridBank, page: page);
+
+
+~ohm.setLeftKnobFunc(0, 0, { | val |
+  ~falseSelf.metronome.mixer.setVol(val.ccdbfs(-70, 0));
+}, bank: clickBank, page: page);
+~ohm.setLeftKnobFunc(1, 0, { | val |
+  ~prm.monitorMixer.setVol(0, val.ccdbfs(-70, 6));
+}, bank: clickBank, page: page);
 
 
 /*
@@ -894,7 +918,7 @@ var activeLeftBank = mixerBank1;
 ~falseSelf.clock.schedAbs(~falseSelf.clock.beats.ceil, { | beat | beat.postln; 1 });
 
 ~falseSelf.clock.tempo = 160/60
-
+//
 ~falseSelf.clock.schedAbs(~falseSelf.clock.nextBar, { ~falseSelf.clock.beatsPerBar_(4) });
 
 ~falseSelf.startSong;

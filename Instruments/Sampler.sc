@@ -509,7 +509,7 @@ Sampler : IM_Module {
   playSequence { | name, clock = 'internal', quant = 'nil' |
     var playClock;
     if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
-    sequencerDict[name].play(playClock, quant);
+    sequencerDict[name].play(playClock);
   }
 
   resetSequence { | name | sequencerDict[name].reset; }

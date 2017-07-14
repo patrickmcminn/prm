@@ -24,20 +24,23 @@ var foundationIsLoaded = false;
 
 ~ohm.turnGridMagenta(0, 0, page: page);
 ~ohm.setGridFunc(0, 0, r {
-  loop {
-    ~habit = Habit.new(1, 2, 3, "iConnectAudio4+", "DIN",
-      ~prm.submixA, ~prm.submixB, ~prm.submixC,
-      ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
-      relGroup: ~prm.procGroup, addAction: \addToHead);
-    while({ try { ~habit.isLoaded } != true }, { 0.001.wait; });
-    ~ohm.setGridFunc(1, 0, { ~ohm.setPage('habit'); }, page: 'main');
-    ~ohm.turnGridGreen(1, 0).yield;
-
+  if( lightIsLoaded == false, {
+    r {
+      ~habit = Habit.new(1, 2, 3, "USB Uno MIDI Interface", "USB Uno MIDI Interface",
+        ~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+        relGroup: ~prm.procGroup, addAction: \addToHead);
+      while({ try { ~habit.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 0, { ~ohm.setPage('habit'); }, page: 'main');
+      ~ohm.turnGridGreen(1, 0)
+    }.play;
+    },
+    {
     ~habit.free;
     ~habit = nil;
     ~ohm.setGridFunc(1, 0, { });
     ~ohm.turnGridOff(1, 0).yield;
-  }
+  });
 }, page: page);
 
 // Connections:
@@ -209,6 +212,10 @@ var foundationIsLoaded = false;
 */
 
 
+//////// headphones:
+~ohm.setLeftKnobFunc(0, 0, { | val |
+  ~prm.monitorMixer.setVol(0, val.ccdbfs(-70, 6));
+}, page: page);
 
 
 // mic pre/post:

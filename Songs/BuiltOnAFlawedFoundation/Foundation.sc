@@ -146,7 +146,7 @@ Foundation : Song {
     mixerC.setVol(1, -3);
     mixerC.setSendVol(1, 0, -12);
     mixerC.setSendVol(1, 1, -15);
-    mixerC.setSendVol(1, 3, 0);
+    mixerC.setSendVol(1, 3, -6);
 
     // trumpet section:
     mixerC.setVol(2, -3);

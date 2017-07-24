@@ -127,6 +127,7 @@ var waveLossBank = 4;
   // master volume:
   ~ohm.setRightSliderFunc(3, { | val |
     ~prm.systemMixer.setVol(0, val.ccdbfs(-70, 0));
+    ~prm.monitorMixer.setVol(0, val.ccdbfs(-70, 0));
   }, bank: submixerBank);
   //// returns volumes:
 

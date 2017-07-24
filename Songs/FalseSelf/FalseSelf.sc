@@ -186,7 +186,7 @@ FalseSelf : Song {
     mixerC.setSendVol(0, 0, -15);
 
     // Trumpet Canon:
-    mixerA.setVol(3, -9);
+    mixerA.setVol(3, -6);
     mixerA.setSendVol(3, 0, -12);
 
     // plane noise:

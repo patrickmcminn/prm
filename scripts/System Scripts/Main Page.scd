@@ -214,7 +214,7 @@ var foundationIsLoaded = false;
 
 //////// headphones:
 ~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~prm.monitorMixer.setVol(0, val.ccdbfs(-70, 6));
+  ~prm.monitorMixer.setVol(0, val.ccdbfs(-70, 12));
 }, page: page);
 
 

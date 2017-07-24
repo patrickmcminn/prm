@@ -2,7 +2,7 @@ z = Distortion.newStereo(0, 16);
 
 d = SimpleDelay.newStereo(z.inBus, 0.4, 0.7);
 
-x = "/Users/patrickmcminn/Music/Patrick McMinn/_Sketches/mahlampler/sample/mahler.wav"
+x = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/scripts/sketches/samples/mahler.wav"
 y = SamplePlayer.newStereo(d.inBus, x);
 
 
@@ -58,6 +58,7 @@ y.addKey(\ok, \rate, Pseq([Pseq([[0.5, 1, 1.5, 0.75, 6/5]], 8), Pseq([[9/8, 1, 8
 z.setDistortionGain(6);
 );
 
+//// D D F G A ///// C D E //////
 s.meter;
 
 y.addKey(\ok, \startPos, Pwhite(0, 1));

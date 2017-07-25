@@ -178,4 +178,31 @@ Boy_RowFuzz : IM_Module {
     hammond.addKey(\rowFuzzLow, \legato, 1);
   }
 
+  /////// public functions:
+
+  free {
+    delay.free; nebula.free; distortion.free;
+    reverb.free; eq.free; hammond.free;
+    this.freeModule;
+    isLoaded = false;
+  }
+
+  playMainRowFuzz { | clock |
+    hammond.playSequence(\rowFuzzMain, clock);
+    mainRowFuzzIsPlaying = true;
+  }
+  stopMainRowFuzz {
+    hammond.stopSequence(\rowFuzzMain);
+    mainRowFuzzIsPlaying = false;
+  }
+
+  playLowRowFuzz { | clock |
+    hammond.playSequence(\rowFuzzLow, clock);
+    lowRowFuzzIsPlaying = true;
+  }
+  stopLowRowFuzz {
+    hammond.stopSequence(\rowFuzzLow);
+    lowRowFuzzIsPlaying = false;
+  }
+
 }

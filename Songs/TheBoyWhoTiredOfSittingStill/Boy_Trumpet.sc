@@ -34,7 +34,7 @@ Boy_Trumpet : IM_Processor {
 
       server.sync;
 
-      //this.prInitializeParameters;
+      looper.mixer.setVol(-6);
 
       isLoaded = true;
     }

@@ -30,7 +30,7 @@ Boy_Piano : IM_Module {
 
       this.prAddSynthDef;
 
-      reverb = IM_Reverb.new(mixer.chanStereo(0), amp: 1, mix: 0.4, roomSize: 0.8, damp: 0.2,
+      reverb = IM_Reverb.new(mixer.chanStereo(0), amp: 1, mix: 0.3, roomSize: 0.7, damp: 0.2,
         relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
@@ -51,6 +51,8 @@ Boy_Piano : IM_Module {
       server.sync;
 
       this.prMakePatternParameters;
+
+      mixer.setPreVol(6);
 
       isLoaded = true;
     }

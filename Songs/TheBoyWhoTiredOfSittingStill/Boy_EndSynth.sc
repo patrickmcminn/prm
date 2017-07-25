@@ -14,7 +14,7 @@ Boy_EndSynth : IM_Module {
   var <endLoopIsPlaying;
 
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, 0, relGroup: relGroup, addAction: addAction).prInit;
+    ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
   }
 
   prInit {
@@ -59,7 +59,6 @@ Boy_EndSynth : IM_Module {
       server.sync;
 
       this.prMakePatternParameters;
-
 
       isLoaded = true;
     }

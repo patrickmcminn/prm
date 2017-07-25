@@ -88,13 +88,13 @@ TheBoy : Song {
     //// Mixer A:
 
     // Main Bell
-    mixerA.setVol(0, -6);
+    mixerA.setVol(0, -9);
     mixerA.setSendVol(0, 0, -15);
     // row fuzz:
-    mixerA.setVol(1, -3);
+    mixerA.setVol(1, -9);
     mixerA.setSendVol(1, 0, -9);
     // low bells:
-    mixerA.setVol(2, -12);
+    mixerA.setVol(2, -9);
     mixerA.setSendVol(2, 0, -9);
 
     //// Mixer B:
@@ -102,16 +102,16 @@ TheBoy : Song {
     mixerB.setVol(0, -inf);
     mixerB.setSendVol(0, 0, -9);
     // bass section:
-    mixerB.setVol(1, -3);
+    mixerB.setVol(1, -6);
     mixerB.setSendVol(1, 0, -18);
 
     //// Mixer C:
     // trumpet:
-    mixerC.setVol(0, -12);
+    mixerC.setVol(0, -15);
     mixerC.setSendVol(0, 0, -21);
     // noise chords:
     mixerC.setVol(1, -inf);
-    mixerC.setSendVol(1, 0, -12);
+    mixerC.setSendVol(1, 0, -3);
     // end synth:
     mixerC.setVol(2, -inf);
     mixerC.setSendVol(2, 0, -12);
@@ -145,8 +145,8 @@ TheBoy : Song {
     clock.playNextBar {
       trumpet.looper.loop;
       clock.sched(32, {
-        trumpet.loop;
-        trumpet.stopLoop;
+        trumpet.looper.loop;
+        trumpet.looper.stopLoop;
         this.playLull;
       });
     }
@@ -161,7 +161,7 @@ TheBoy : Song {
       section3IsPlaying = false;
       outroIsPlaying = false;
 
-      piano.stopSection;
+      piano.stopSection1;
       noiseChords.stopSection1;
       rowFuzz.stopMainRowFuzz;
       rowFuzz.playLowRowFuzz(clock);

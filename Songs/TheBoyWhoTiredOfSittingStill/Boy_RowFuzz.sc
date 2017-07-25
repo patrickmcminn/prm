@@ -131,7 +131,7 @@ Boy_RowFuzz : IM_Module {
 
     eq.setHighFreq(2500);
     eq.setHighGain(15);
-    eq.setLowPassCutoff(4500);
+    eq.setLowPassCutoff(3000);
     eq.setHighPassCutoff(100);
   }
 

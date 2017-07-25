@@ -39,6 +39,10 @@ Boy_BassSection :IM_Module {
       satur.makeSequence(\section3);
 
       server.sync;
+
+      moog.mixer.setVol(-3);
+      satur.mixer.setVol(-3);
+
       this.prMakePatternParameters;
 
       isLoaded = true;
@@ -46,25 +50,34 @@ Boy_BassSection :IM_Module {
   }
 
   prMakePatternParameters {
+    server.sync;
     moog.addKey(\section2, \root, 7);
     moog.addKey(\section2, \note, Pseq([12, 9, 12, 9, 7, 5, 12, 7], inf));
     moog.addKey(\section2, \dur, Pseq([4, 3.5, 4.5, 3.5, 4, 4.5, 4, 4], inf));
-    moog.addKey(\section2, \octave, 3);
+    moog.addKey(\section2, \octave, 1);
+    moog.addKey(\section2, \legato, 1);
 
     moog.addKey(\section3, \root, 7);
-    moog.addKey(\section3, \octave, 3);
+    moog.addKey(\section3, \octave, 1);
     moog.addKey(\section3, \note, Pseq([12, 9], inf));
     moog.addKey(\section3, \dur, Pseq([4, 3.5, 4.5, 3.5], inf));
+    moog.addKey(\section3, \legato, 1);
 
     satur.addKey(\section2, \root, 7);
     satur.addKey(\section2, \note, Pseq([12, 9, 12, 9, 7, 5, 12, 7], inf));
     satur.addKey(\section2, \dur, Pseq([4, 3.5, 4.5, 3.5, 4, 4.5, 4, 4], inf));
-    satur.addKey(\section2, \octave, 3);
+    satur.addKey(\section2, \legato, 1);
+    satur.addKey(\section2, \releaseTime, 0.3);
+    satur.addKey(\section2, \attackTime, 0.1);
+    satur.addKey(\section2, \octave, 1);
 
     satur.addKey(\section3, \root, 7);
-    satur.addKey(\section3, \octave, 3);
     satur.addKey(\section3, \note, Pseq([12, 9], inf));
     satur.addKey(\section3, \dur, Pseq([4, 3.5, 4.5, 3.5], inf));
+    satur.addKey(\section3, \legato, 1);
+    satur.addKey(\section3, \releaseTime, 0.3);
+    satur.addKey(\section3, \attackTime, 0.1);
+    satur.addKey(\section3, \octave, 1);
 
   }
 

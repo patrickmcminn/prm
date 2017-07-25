@@ -13,6 +13,7 @@ var cortezIsLoaded = false;
 var falseSelfIsLoaded = false;
 var lightIsLoaded = false;
 var foundationIsLoaded = false;
+var theBoyIsLoaded = false;
 
 ~ohm.storageDict[\loadGlobalSubmixerFunc].value;
 ~ohm.addPageLoadFunction(\mainGlobalMixer, { ~ohm.storageDict[\loadGlobalSubmixerFunc].value; }, page);
@@ -138,8 +139,44 @@ var foundationIsLoaded = false;
       ~foundationDelay.free;
       ~ohm.setGridFunc(1, 4, { });
       ~ohm.turnGridOff(1, 4);
+      foundationIsLoaded = false;
   });
 }, page: page);
+
+
+'The Boy'
+
+~ohm.turnGridBlue(0, 5, page: page);
+~ohm.setGridFunc(0, 5, {
+  if(theBoyIsLoaded == false, {
+    r {
+      ~theBoy = TheBoy.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil,
+         ~prm.procGroup, \addToHead, "USB Uno MIDI Interface", "USB Uno MIDI Interface");
+      while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 5, { ~ohm.setPage('theBoy'); }, page: page);
+      ~ohm.turnGridGreen(1, 5);
+      theBoyIsLoaded = true;
+    }.play;
+    },
+    {
+      ~theBoy.free;
+      ~ohm.setGridFunc(1, 5, { });
+      ~ohm.turnGridOff(1, 5);
+      theBoyIsLoaded = false;
+  });
+}, page: page);
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*

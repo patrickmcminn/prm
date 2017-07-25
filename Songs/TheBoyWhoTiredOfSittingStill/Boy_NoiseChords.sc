@@ -41,6 +41,7 @@ Boy_NoiseChords : IM_Module {
 
       distortion.postEQ.setLowPassCutoff(4500);
       distortion.mixer.setVol(-15);
+      distortion.postEQ.setHighPassCutoff(450);
 
       section1IsPlaying = false;
       section2IsPlaying = false;

@@ -9,10 +9,12 @@ MidBells : IM_Module {
 
   var <isLoaded;
   var server;
-  var sampler;
-  var sequencerDict;
+  var <sampler;
 
   var <attackTime, <decayTime, <sustainLevel, <releaseTime;
+
+  var <sequencerDict, <sequencerClock, <tempo;
+
 
   *new {
     |
@@ -42,6 +44,10 @@ MidBells : IM_Module {
       sampleArray = (path ++ "*").pathMatch;
       sampler = Sampler.newStereo(mixer.chanStereo(0), sampleArray, relGroup: group, addAction: \addToHead);
       while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
+
+      sequencerDict = IdentityDictionary.new;
+      sequencerClock = TempoClock.new;
+
       server.sync;
       isLoaded = true;
     };
@@ -192,6 +198,42 @@ MidBells : IM_Module {
   setReleaseTime { | release = 0.05 |
     releaseTime = release;
     sampler.setReleaseTime(releaseTime);
+  }
+
+//////// sequencer:
+
+  makeSequence { | name |
+    fork {
+      sampler.makeSequence(name, 'oneShot');
+      server.sync;
+      sampler.addKey(name, \attackTime, Pfunc({ attackTime }));
+      sampler.addKey(name, \decayTime, Pfunc({ decayTime }));
+      sampler.addKey(name, \sustainLevel, Pfunc({ sustainLevel }));
+      sampler.addKey(name, \releaseTime, Pfunc({ releaseTime }));
+      //sampler.addKey(name, \freq, Pfunc{ | ev | ev.use(ev[\freq]) });
+      //sampler.addKey(name, \buffer, Pfunc({ | ev | sampler.bufferArray[ev[\freq].cpsmidi -60] }));
+      //sampler.addKey(name, \printer, Pfunc({ | ev | ev[\freq].cpsmidi.postln; }) );
+    };
+  }
+
+  addKey {  | name, key, action |
+    sampler.addKey(name, key, action);
+  }
+
+  playSequence { | name, clock = 'internal', quant = 'nil' |
+    sampler.playSequence(name, clock, quant);
+  }
+
+
+  resetSequence { | name | sampler.resetSequence(name); }
+  stopSequence { | name | sampler.stopSequence(name); }
+  pauseSequence { | name | sampler.pauseSequence(name); }
+  resumeSequence { | name | sampler.resumeSequence(name); }
+  isSequencePlaying { | name |^sampler.isSequencePlaying }
+  setSequenceQuant { | name, quant = 0 | sampler.setSequenceQuant(name, quant); }
+
+  setSequencerClockTempo { | bpm = 60 |
+    sampler.setSequencerClockTempo(bpm);
   }
 
 }

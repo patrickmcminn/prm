@@ -26,7 +26,7 @@ Distortion : IM_Module {
     outBus, distortionGain = 10, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
     feedback = false, relGroup = nil, addAction = 'addToHead'
     |
-    ^super.new(2,  outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitStereo(distortionGain);
+    ^super.new(1,  outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitStereo(distortionGain);
   }
 
   prInitMono { | distortionGain = 10 |

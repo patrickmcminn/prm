@@ -11,6 +11,7 @@ prm
 "False Self Ohm.scd".loadRelative;
 "Light Ohm.scd".loadRelative;
 "Foundation Ohm.scd".loadRelative;
+"Boy Ohm.scd".loadRelative;
 
 
 // Base:
@@ -21,3 +22,4 @@ prm
 "False Self Base.scd".loadRelative;
 "Light Base.scd".loadRelative;
 "Foundation Base.scd".loadRelative;
+"Boy Base.scd".loadRelative;

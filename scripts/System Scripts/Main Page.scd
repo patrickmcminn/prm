@@ -144,7 +144,7 @@ var theBoyIsLoaded = false;
 }, page: page);
 
 
-'The Boy'
+'The Boy';
 
 ~ohm.turnGridBlue(0, 5, page: page);
 ~ohm.setGridFunc(0, 5, {
@@ -153,8 +153,8 @@ var theBoyIsLoaded = false;
       ~theBoy = TheBoy.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil,
          ~prm.procGroup, \addToHead, "USB Uno MIDI Interface", "USB Uno MIDI Interface");
-      while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.setGridFunc(1, 5, { ~ohm.setPage('theBoy'); }, page: page);
+      while({ try { ~theBoy.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 5, { ~ohm.setPage('boy'); }, page: page);
       ~ohm.turnGridGreen(1, 5);
       theBoyIsLoaded = true;
     }.play;

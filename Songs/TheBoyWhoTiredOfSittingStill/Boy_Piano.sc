@@ -90,6 +90,9 @@ Boy_Piano : IM_Module {
     eq.setLowFreq(250);
     eq.setLowGain(2);
     eq.setLowPassCutoff(150);
+    section1IsPlaying = false;
+    section2IsPlaying = false;
+    section3IsPlaying = false;
   }
 
   prMakePatternParameters {

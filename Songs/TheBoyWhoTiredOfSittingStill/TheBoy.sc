@@ -116,6 +116,13 @@ TheBoy : Song {
     mixerC.setVol(2, -inf);
     mixerC.setSendVol(2, 0, -12);
 
+    introIsPlaying = true;
+    section1IsPlaying = false;
+    lullIsPlaying = false;
+    section2IsPlaying = false;
+    section3IsPlaying = false;
+    outroIsPlaying = false;
+
   }
 
   //////// public functions:
@@ -197,6 +204,8 @@ TheBoy : Song {
       section2IsPlaying = false;
       section3IsPlaying = true;
       outroIsPlaying = false;
+
+      trumpet.looper.stopLoop
 
       piano.stopSection2;
       noiseChords.stopSection2;

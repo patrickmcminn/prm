@@ -10,6 +10,8 @@ TrumpetNebula : IM_Processor {
   var <inputIsMuted;
   var <isLoaded;
 
+  var <pitchShiftAmount;
+
   *newMono {
     | outBus, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil, relGroup = nil, addAction = 'addToTail' |
     ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup: relGroup, addAction: addAction).prInitMono;
@@ -37,6 +39,7 @@ TrumpetNebula : IM_Processor {
       server.sync;
       while( { mixer.isLoaded == false }, { 0.0001.wait; });
       inputIsMuted = false;
+      pitchShiftAmount = 0;
       synth = Synth(\prm_trumpetDefault, [\inBus, inBus, \outBus, mixer.chanStereo(0)], group, \addToHead);
       isLoaded = true;
     };
@@ -50,6 +53,7 @@ TrumpetNebula : IM_Processor {
       server.sync;
       while( { mixer.isLoaded == false }, { 0.0001.wait; });
       inputIsMuted = false;
+      pitchShiftAmount = 0;
       synth = Synth(\prm_trumpetDefault_Stereo, [\inBus, inBus, \outBus, mixer.chanStereo(0)], group, \addToHead);
       isLoaded = true;
     };
@@ -233,7 +237,9 @@ TrumpetNebula : IM_Processor {
   setReverbRoom { | room = 0.7 | synth.set(\reverbRoom, room); }
   setReverbDamp { | damp = 0.1 | synth.set(\reverbDamp, damp); }
 
-  setPitchShiftAmount { | pitchShift = 0 | synth.set(\pitchShift, pitchShift) }
+  setPitchShiftAmount { | shift = 0 |
+    pitchShiftAmount = shift;
+    synth.set(\pitchShift, pitchShiftAmount) }
 
   setNebulaDepth { | depth = 25 | synth.set(\nebulaDepth, depth); }
   setNebulaActivity { | activity = 50 | synth.set(\nebulaActivity, activity); }

@@ -205,7 +205,7 @@ TheBoy : Song {
       section3IsPlaying = true;
       outroIsPlaying = false;
 
-      trumpet.looper.stopLoop
+      trumpet.looper.stopLoop;
 
       piano.stopSection2;
       noiseChords.stopSection2;

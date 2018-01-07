@@ -81,7 +81,7 @@ FalseSelf : Song {
       while({ try { melodySynth.isLoaded } != true }, { 0.001.wait; });
 
       bassSection = FalseSelf_BassSection.new(mixerB.chanStereo(1), relGroup: group, addAction: \addToHead,
-        moogDeviceName: "USB Uno MIDI Interface", moogPortName: "USB Uno MIDI Interface");
+        moogDeviceName: "UMC1820", moogPortName: "UMC1820");
       while({ try { bassSection.isLoaded } != true }, { 0.001.wait; });
 
       drums = FalseSelf_Kick.new(mixerB.chanStereo(2), relGroup: group, addAction: \addToHead);
@@ -154,12 +154,12 @@ FalseSelf : Song {
   }
 
   prSetInitialMixerLevels {
-    mixerA.setMasterVol(-9);
-    mixerB.setMasterVol(-9);
-    mixerC.setMasterVol(-9);
+    mixerA.setMasterVol(-6);
+    mixerB.setMasterVol(-6);
+    mixerC.setMasterVol(-6);
 
     // fake guitar:
-    mixerA.setVol(0, -3);
+    mixerA.setVol(0, 0);
 
     // bells:
     mixerA.setVol(1, -6);

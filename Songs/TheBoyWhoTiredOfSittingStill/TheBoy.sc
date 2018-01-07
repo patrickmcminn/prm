@@ -86,6 +86,7 @@ TheBoy : Song {
 
   prSetInitialParameters {
     //// Mixer A:
+    3.do({ | i | mixerA.setPreVol(i, -6); });
 
     // Main Bell
     mixerA.setVol(0, -9);
@@ -98,6 +99,7 @@ TheBoy : Song {
     mixerA.setSendVol(2, 0, -9);
 
     //// Mixer B:
+    2.do({ | i | mixerB.setPreVol(i, -6); });
     // piano:
     mixerB.setVol(0, -inf);
     mixerB.setSendVol(0, 0, -9);
@@ -106,6 +108,7 @@ TheBoy : Song {
     mixerB.setSendVol(1, 0, -18);
 
     //// Mixer C:
+    3.do({ | i | mixerC.setPreVol(i, -6); });
     // trumpet:
     mixerC.setVol(0, -15);
     mixerC.setSendVol(0, 0, -21);

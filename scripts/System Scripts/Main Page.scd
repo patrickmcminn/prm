@@ -27,7 +27,7 @@ var theBoyIsLoaded = false;
 ~ohm.setGridFunc(0, 0, r {
   if( lightIsLoaded == false, {
     r {
-      ~habit = Habit.new(1, 2, 3, "USB Uno MIDI Interface", "USB Uno MIDI Interface",
+      ~habit = Habit.new(1, 2, 3, "UMC1820", "UMC1820",
         ~prm.submixA, ~prm.submixB, ~prm.submixC,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
         relGroup: ~prm.procGroup, addAction: \addToHead);
@@ -127,7 +127,7 @@ var theBoyIsLoaded = false;
       ~foundationDelay.setMix(1);
       ~foundation = Foundation.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
-        ~prm.procGroup, \addToHead, "USB Uno MIDI Interface", "USB Uno MIDI Interface");
+        ~prm.procGroup, \addToHead, "UMC1820", "UMC1820");
       while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
       ~ohm.setGridFunc(1, 4, { ~ohm.setPage('foundation'); }, page: page);
       ~ohm.turnGridGreen(1, 4);
@@ -152,7 +152,7 @@ var theBoyIsLoaded = false;
     r {
       ~theBoy = TheBoy.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil,
-         ~prm.procGroup, \addToHead, "USB Uno MIDI Interface", "USB Uno MIDI Interface");
+         ~prm.procGroup, \addToHead, "UMC1820", "UMC1820");
       while({ try { ~theBoy.isLoaded } != true }, { 0.001.wait; });
       ~ohm.setGridFunc(1, 5, { ~ohm.setPage('boy'); }, page: page);
       ~ohm.turnGridGreen(1, 5);

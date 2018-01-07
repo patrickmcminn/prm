@@ -652,4 +652,21 @@ Subtractive : IM_Module {
       this.releaseNote(freq);
     });
   }
+
+  playNamedNote {  | name, freq = 220, vol = -12 |
+    synthDict[name] = Subtractive_Voice.new(freq, vol, this, synthGroup, \addToTail);
+  }
+
+  releaseNamedNote { | name |
+    synthDict[name].release;
+  }
+
+  mapNamedNoteFreq { | name, freqBus |
+    synthDict[name].synth.map(\freq, freqBus);
+  }
+
+  setNamedNoteFreq { | name, freq |
+    synthDict[name].synth.set(\freq, freq);
+  }
+
 }

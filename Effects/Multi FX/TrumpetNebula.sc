@@ -41,6 +41,9 @@ TrumpetNebula : IM_Processor {
       inputIsMuted = false;
       pitchShiftAmount = 0;
       synth = Synth(\prm_trumpetDefault, [\inBus, inBus, \outBus, mixer.chanStereo(0)], group, \addToHead);
+
+      mixer.setPreVol(-9);
+
       isLoaded = true;
     };
   }
@@ -55,6 +58,9 @@ TrumpetNebula : IM_Processor {
       inputIsMuted = false;
       pitchShiftAmount = 0;
       synth = Synth(\prm_trumpetDefault_Stereo, [\inBus, inBus, \outBus, mixer.chanStereo(0)], group, \addToHead);
+
+      mixer.setPreVol(-9);
+
       isLoaded = true;
     };
   }

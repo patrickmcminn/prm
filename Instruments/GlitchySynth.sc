@@ -210,6 +210,8 @@ GlitchySynth : IM_Module {
       //sequencerDict[name].addKey(\sustainLevel, Pfunc({ sustainLevel }));
       //sequencerDict[name].addKey(\release, Pfunc({ releaseTime }));
       sequencerDict[name].addKey(\amp, 1);
+      sequencerDict[name].addKey(\attack, Pfunc({ attackTime} ));
+      sequencerDict[name].addKey(\release, Pfunc({ releaseTime} ));
 
     };
   }

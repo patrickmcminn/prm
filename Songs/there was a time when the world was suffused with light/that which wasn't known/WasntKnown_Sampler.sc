@@ -9,6 +9,8 @@ WasntKnown_Sampler : IM_Module {
   var server, <isLoaded;
   var <sampler, <eq, <splitter, <filter;
 
+  var <startPos, <endPos;
+
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
     ^super.new(2, outBus, relGroup: relGroup, addAction: addAction).prInit;
   }
@@ -37,6 +39,14 @@ WasntKnown_Sampler : IM_Module {
 
       server.sync;
 
+      startPos = 0;
+      endPos = 1;
+
+      eq.setHighPassCutoff(1670);
+      eq.setHighFreq(3110);
+      eq.setHighGain(5.71);
+      eq.setHighRQ(0.3268);
+
       isLoaded = true;
     }
   }
@@ -52,31 +62,49 @@ WasntKnown_Sampler : IM_Module {
 
   //////// public functions:
 
-  playSample1 { | vol | sampler.playSampleSustaining('sample1', 0, vol); }
+  resetToDefault {
+    eq.setHighPassCutoff(1670);
+    eq.setHighFreq(3110);
+    eq.setHighGain(5.71);
+    eq.setHighRQ(0.3268);
+    this.setFilterCutoff(20000);
+    startPos = 0;
+    endPos = 1;
+  }
+
+  playSample1 { | vol = 0 | sampler.playSampleSustaining('sample1', 0, vol, 1, startPos, endPos); }
   releaseSample1 { sampler.releaseSampleSustaining('sample1'); }
 
-  playSample2 { | vol | sampler.playSampleSustaining('sample2', 1, vol); }
+  playSample2 { | vol = 0 | sampler.playSampleSustaining('sample2', 1, vol, 1, startPos, endPos); }
   releaseSample2 { sampler.releaseSampleSustaining('sample2'); }
 
-  playSample3 { | vol | sampler.playSampleSustaining('sample3', 2, vol); }
+  playSample3 { | vol = 0 | sampler.playSampleSustaining('sample3', 2, vol, 1, startPos, endPos); }
   releaseSample3 { sampler.releaseSampleSustaining('sample3'); }
 
-  playSample4 { | vol | sampler.playSampleSustaining('sample4', 3, vol); }
+  playSample4 { | vol = 0 | sampler.playSampleSustaining('sample4', 3, vol, 1, startPos, endPos); }
   releaseSample4 { sampler.releaseSampleSustaining('sample4'); }
 
-  playSample5 { | vol | sampler.playSampleSustaining('sample5', 4, vol); }
+  playSample5 { | vol = 0 | sampler.playSampleSustaining('sample5', 4, vol, 1, startPos, endPos); }
   releaseSample5 { sampler.releaseSampleSustaining('sample5'); }
 
-  playSample6 { | vol | sampler.playSampleSustaining('sample6', 5, vol); }
+  playSample6 { | vol = 0 | sampler.playSampleSustaining('sample6', 5, vol, 1, startPos, endPos); }
   releaseSample6 { sampler.releaseSampleSustaining('sample6'); }
 
-  playSample7 { | vol | sampler.playSampleSustaining('sample7', 6, vol); }
+  playSample7 { | vol = 0 | sampler.playSampleSustaining('sample7', 6, vol, 1, startPos, endPos); }
   releaseSample7 { sampler.releaseSampleSustaining('sample7'); }
 
-  playSample8 { | vol | sampler.playSampleSustaining('sample8', 7, vol); }
+  playSample8 { | vol = 0 | sampler.playSampleSustaining('sample8', 7, vol, 1, startPos, endPos); }
   releaseSample8 { sampler.releaseSampleSustaining('sample8'); }
 
-  playSample9 {| vol | sampler.playSampleSustaining('sample9', 8, vol); }
+  playSample9 {| vol = 0 | sampler.playSampleSustaining('sample9', 8, vol, 1, startPos, endPos); }
   releaseSample9 { sampler.releaseSampleSustaining('sample9'); }
+
+  setStartPos { | pos = 0 | startPos = pos; }
+  setEndPos { | pos = 1 | endPos = pos; }
+
+  setAttackTime { | attack = 0.05 | sampler.setAttackTime(attack) }
+  setReleaseTime { | release = 0.05 | sampler.setReleaseTime(release) }
+
+  setFilterCutoff { | cutoff = 20000 | filter.setCutoff(cutoff); }
 
 }

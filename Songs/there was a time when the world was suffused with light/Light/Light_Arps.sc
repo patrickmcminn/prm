@@ -20,7 +20,7 @@ Light_Arps : IM_Module {
       isLoaded = false;
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
-      path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/Light/Samples/Arp/";
+      path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/there was a time when the world was suffused with light/Light/Samples/Arp/";
       sampleArray = (path ++ "*").pathMatch;
 
       sampler = Sampler.newStereo(mixer.chanStereo(0), sampleArray, relGroup: group, addAction: \addToHead);

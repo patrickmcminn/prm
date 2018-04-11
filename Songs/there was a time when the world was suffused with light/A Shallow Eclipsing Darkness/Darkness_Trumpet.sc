@@ -31,6 +31,7 @@ SPLIT:
 
 */
 
+/*
 
 Darkness_Trumpet : IM_Processor { | outBus = 0, modularOut = 3, modularIn = 3, relGroup, addAction = 'addToHead' |
 
@@ -41,3 +42,4 @@ Darkness_Trumpet : IM_Processor { | outBus = 0, modularOut = 3, modularIn = 3, r
   LowPassFilter
 
 }
+*/

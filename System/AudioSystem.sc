@@ -51,8 +51,12 @@ AudioSystem {
 
       // Fix input checking: a numOutputs of 1 will result 0.5 passed to Array.fill
       masterOutArray = Array.fill(numOutputs / 2, { |index| index * 2 });
-      monitorMixer = IM_MasterMixer.new([0, 1], systemGroup);
-      while({ try { monitorMixer.isLoaded } != true }, { 0.001.wait; });
+
+      // trying to create copies for a headphone mix.
+      // taking it out. no good!
+      //monitorMixer = IM_MasterMixer.new([0, 1], systemGroup);
+      //while({ try { monitorMixer.isLoaded } != true }, { 0.001.wait; });
+
       systemMixer = IM_MasterMixer.new([2, 3], systemGroup);
       // while( { try { systemMixer.inBus(0) } == nil }, { 0.001.wait });
       server.sync;
@@ -64,42 +68,45 @@ AudioSystem {
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
+      // taking splitter out, monitor mix no longer needed/wanted from hardware.
+      /*
       splitter = Splitter.newStereo(2, [systemMixer.inBus, monitorMixer.inBus], relGroup: systemGroup, addAction: \addToHead);
       while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
+      */
 
       server.sync;
 
       // delay:
-      delay = SimpleDelay.newStereo(splitter.inBus, 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
+      delay = SimpleDelay.newStereo(systemMixer.inBus, 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       // send out to modular system
-      modularSend = MonoHardwareSend.new(4, relGroup: systemGroup, addAction: \addToHead);
+      modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
       while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 
       //granulator = IM_Granulator(systemMixer.inBus(0),
         //relGroup: systemGroup, addAction: \addToHead);
-      granulator = GranularDelay.new(splitter.inBus, relGroup: systemGroup, addAction: \addToHead);
+      granulator = GranularDelay.new(systemMixer.inBus, relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( {  try { granulator.isLoaded } != true }, { 0.001.wait; });
       granulator.granulator.setCrossfade(1);
       granulator.delay.setMix(0);
 
       //reverb = Wash.newStereo(systemMixer.inBus(0), relGroup: systemGroup, addAction: \addToHead);
-      reverb = IM_Reverb.newConvolution(splitter.inBus, bufName: irLibrary.irDict['3.2EmptyChurch'],
+      reverb = IM_Reverb.newConvolution(systemMixer.inBus, bufName: irLibrary.irDict['3.2EmptyChurch'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       //reverb.setMix(1);
 
-      submixerA = Looper.newStereo(splitter.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
+      submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerA.isLoaded } != true }, { 0.001.wait; });
-      submixerB = Looper.newStereo(splitter.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
+      submixerB = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerB.isLoaded } != true }, { 0.001.wait; });
-      submixerC = Looper.newStereo(splitter.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
+      submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
 

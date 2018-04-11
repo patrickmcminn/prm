@@ -57,7 +57,7 @@ AudioSystem {
       //monitorMixer = IM_MasterMixer.new([0, 1], systemGroup);
       //while({ try { monitorMixer.isLoaded } != true }, { 0.001.wait; });
 
-      systemMixer = IM_MasterMixer.new([2, 3], systemGroup);
+      systemMixer = IM_MasterMixer.new([0, 1], systemGroup);
       // while( { try { systemMixer.inBus(0) } == nil }, { 0.001.wait });
       server.sync;
       while ( { try { systemMixer.isLoaded} != true }, { 0.001.wait } );

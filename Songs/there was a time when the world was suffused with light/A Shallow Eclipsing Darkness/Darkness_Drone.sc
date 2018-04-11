@@ -122,4 +122,13 @@ Darkness_Drone : IM_Module {
     synth.addKey(\c, \legato, 1);
   }
 
+  //////// public functions:
+
+  free {
+    synth.free;
+    eq.free;
+    this.freeModule;
+    isLoaded = false;
+  }
+
 }

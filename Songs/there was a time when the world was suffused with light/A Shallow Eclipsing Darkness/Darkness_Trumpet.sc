@@ -19,6 +19,8 @@ in FROM modular
 
 EQ
 
+MultiHarmonizer
+
 SPLIT:
 
 
@@ -31,15 +33,44 @@ SPLIT:
 
 */
 
-/*
 
-Darkness_Trumpet : IM_Processor { | outBus = 0, modularOut = 3, modularIn = 3, relGroup, addAction = 'addToHead' |
+Darkness_Trumpet : IM_Processor {
 
-  *new {
-    ^super.new(1, 1, outBus, relGroup: relGroup, addAction: addAction).prInit;
+  var <isLoaded;
+  var server;
+  var <input, <distortion, <microLooper, <modularOut, <modularIn;
+  var <eq, <multiHarmonizer, <splitter, <lowPassFilter, <delay, <pitchShift;
+
+  *new {  | outBus = 0, modularOut = 2, modularIn = 2, relGroup, addAction = 'addToHead' |
+    ^super.new(1, 2, outBus, relGroup: relGroup, addAction: addAction).prInit(modularOut, modularIn);
   }
 
-  LowPassFilter
+  prInit { | modularOut = 2, modularIn = 2 |
+    server = Server.default;
+    server.waitForBoot {
+      isLoaded = false;
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
+      //// second trumpet line. to be muted in initial state
+      pitchShift = PitchShifter.newStereo(mixer.chanStereo(1), 12, relGroup: group, addAction: \addToHead);
+      while({ try { pitchShift.isLoaded } != true }, { 0.001.wait; });
+
+      delay = SimpleDelay.newStereo(pitchShift.inBus, 5, 0.1, 5, relGroup: group, addAction: \addToHead);
+      while({ try { delay.isLoaded } != true }, { 0.001.wait; });
+
+      ///// main trumpet line (only effect post split)
+      lowPassFilter = LowPassFilter.newStereo(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
+      while({ try { lowPassFilter.isLoaded } != true }, { 0.001.wait; });
+
+      // splitter ( to get to the two trumpet lines ):
+      splitter = Splitter.newStereo(2, [lowPassFilter.inBus, delay.inBus], relGroup: group, addAction: \addToHead);
+      while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
+
+      multiHarmonizer;
+
+
+      isLoaded = true;
+    }
+  }
 
 }
-*/

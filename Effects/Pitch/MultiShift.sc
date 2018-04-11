@@ -9,12 +9,13 @@ MultiShift {
   var server;
   var shiftBus, faderBus;
   var inputSynth, shiftSynthArray, faderSynth;
+  var <pitchShiftIsMuted;
 
-  *new { | inBus = 0, outBus = 0, amp = 1, dryAmp = 1, pan = 0, shiftArray = 0, group = nil, addAction = 'addToTail' |
+  *new { | inBus = 0, outBus = 0, amp = 1, dryAmp = 1, pan = 0, shiftArray = 0, group = nil, addAction = 'addToHead' |
     ^super.new.prInit(inBus, outBus, amp, dryAmp, pan, shiftArray, group, addAction);
   }
 
-  prInit { | inBus = 0, outBus = 0, amp = 1, dryAmp = 1, pan = 0, shiftArray = 0, group = nil, addAction = 'addTdoTail' |
+  prInit { | inBus = 0, outBus = 0, amp = 1, dryAmp = 1, pan = 0, shiftArray = 0, group = nil, addAction = 'addToHead' |
     server = Server.default;
     server.waitForBoot {
       this.prAddSynthDefs;
@@ -134,5 +135,10 @@ MultiShift {
     this.prFreeBusses;
   }
 
+  tglMutePitchShift { }
+
+  mutePitchShift { }
+
+  unMutePitchShift { }
 
 }

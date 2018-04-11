@@ -1,5 +1,6 @@
 MIDIIn.connectAll;
 
+Server.killAll;
 
 ~prm = AudioSystem.new(2);
 x = IM_Mixer_1Ch.new(~prm.submixA, ~prm.reverb.inBus);
@@ -8,6 +9,8 @@ x = IM_Mixer_1Ch.new(~prm.submixA, ~prm.reverb.inBus);
 x.setSendVol(0, -12);
 
 ~bass.moog.playSequence(\darkness);
+
+x.setVol(-9);
 
 
 s.meter

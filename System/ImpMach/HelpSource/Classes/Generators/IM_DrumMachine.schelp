@@ -1,0 +1,533 @@
+TITLE:: IM_DrumMachine
+summary:: (put short description here)
+categories:: Undocumented classes
+related:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: outBus
+(describe argument here)
+
+ARGUMENT:: send0Bus
+(describe argument here)
+
+ARGUMENT:: send1Bus
+(describe argument here)
+
+ARGUMENT:: send2Bus
+(describe argument here)
+
+ARGUMENT:: send3Bus
+(describe argument here)
+
+ARGUMENT:: relGroup
+(describe argument here)
+
+ARGUMENT:: addAction
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: prInit
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voice1Seq
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: timingJitter
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: getBPM
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: free
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setLpFreq
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: lpFreq
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setReleaseTime
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: releaseTimeMS
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voice0Seq
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setHpFreq
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: hpFreq
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voice3Seq
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: prAddSynthDef
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: stopSeq
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: playSamplePreset
+(describe method here)
+
+ARGUMENT:: sampleNum
+(describe argument here)
+
+ARGUMENT:: vol
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setPreset
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: rate
+(describe argument here)
+
+ARGUMENT:: startTimeMS
+(describe argument here)
+
+ARGUMENT:: attackTimeMS
+(describe argument here)
+
+ARGUMENT:: releaseTimeMS
+(describe argument here)
+
+ARGUMENT:: hpFreq
+(describe argument here)
+
+ARGUMENT:: bitDepth
+(describe argument here)
+
+ARGUMENT:: bitRate
+(describe argument here)
+
+ARGUMENT:: lpFreq
+(describe argument here)
+
+ARGUMENT:: lpRes
+(describe argument here)
+
+ARGUMENT:: preDistAmp
+(describe argument here)
+
+ARGUMENT:: postDistVol
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: playSeq
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setBitDepth
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: bitDepth
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: prLoadSamples
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setPreDistAmp
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: preDistAmp
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: volLow
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setPostDistVol
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: postDistVol
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: volHigh
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setLpRes
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: lpRes
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setBPM
+(describe method here)
+
+ARGUMENT:: bpm
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: prInitPresets
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setVolRange
+(describe method here)
+
+ARGUMENT:: dbLow
+(describe argument here)
+
+ARGUMENT:: dbHigh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setStartTime
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: startTimeMS
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setBitRate
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: bitRate
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setAttackTime
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: attackTimeMS
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: voice2Seq
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setRate
+(describe method here)
+
+ARGUMENT:: voiceNum
+(describe argument here)
+
+ARGUMENT:: rate
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: playSample
+(describe method here)
+
+ARGUMENT:: sampleNum
+(describe argument here)
+
+ARGUMENT:: vol
+(describe argument here)
+
+ARGUMENT:: rate
+(describe argument here)
+
+ARGUMENT:: startTimeMS
+(describe argument here)
+
+ARGUMENT:: attackTimeMS
+(describe argument here)
+
+ARGUMENT:: releaseTimeMS
+(describe argument here)
+
+ARGUMENT:: hpFreq
+(describe argument here)
+
+ARGUMENT:: bitDepth
+(describe argument here)
+
+ARGUMENT:: bitRate
+(describe argument here)
+
+ARGUMENT:: lpFreq
+(describe argument here)
+
+ARGUMENT:: lpRes
+(describe argument here)
+
+ARGUMENT:: preDistAmp
+(describe argument here)
+
+ARGUMENT:: postDistVol
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+x = IM_DrumMachine.new
+x.getBPM
+x.setRate(0, 3);
+x.playSeq("1.12");
+x.setStartTime(2, 10)
+x.setAttackTime(2, 90);
+x.setPreDistAmp(3, 200);
+x.setAttackTime(3, 500);
+x.setReleaseTime(2, 2000);
+x.setPostDistVol(2, -8);
+x.setRate(2, 1.3)
+x.setTempo(120/60);
+x.playSamplePreset(2)
+x.setReleaseTime(2, 2000);
+
+x.clock.tempo * 60
+
+x.playSeq;
+x.stopSeq;
+x.resumeSeq
+x.stopSeq;
+x.setPreDistAmp(0, 40);
+x.volLow_(-18);
+x.voice0Seq = "f..3...1f.f3..c5";
+x.voice1Seq = "....f...";
+x.setStartTime(2, 10);
+
+r {
+  x.voice2Seq = "621.....";
+  5.wait;
+  x.voice2Seq = ".";
+  3.wait;
+}.loop.play;
+
+x.setPreDistAmp(2, 1000);
+x.setHpFreq(2, 8000)
+x.setBitDepth(2, 2)
+x.setBitRate(2, 12000);
+x.setAttackTime(2, 250);
+x.setStartTime(0, 40);
+
+x.playSeq
+x.getBPM
+x.setBPM(90);
+
+x.setVolRange(-30, -12)
+
+x.playSeq("fc..9.6.|...ffec", "|...c...|..c.ef", "c..8...c...f.a94...8...c.a9f.8f", "10030c020");
+x.setPreDistAmp(0, 20);
+x.stopSeq;
+x.setTempo(180/60)
+
+x.setBitRate(2, 21000);
+x.setLpFreq(2, 10000);
+x.setHpFreq(2, 7000);
+x.setLpRes(0.7);
+x.setPreDistAmp(2, 20);
+x.setPostDistVol(2, -12);
+//change this to milliseconds
+x.setStartTime(2, 0.03);
+
+x.setBitDepth(1, 7);
+x.setPreDistAmp(1, 3);
+x.setPreDistAmp(0, 6);
+x.setRate(0, 1.3);
+
+x.playSeq("0", "1010");
+x.playSeq("9000000000700300", "0000700300005000", "312031201111", "1110111011113011")
+x.mixer.unMute;
+x.playSeq("9xxx9xxx1xxx2", "9---1---2---3" "9|||1|||2|||3", "9///2///1///3", "9...2...3...1",
+  "9,,,2,,,3,,,4", "9```4```5```6")
+
+x.setPostDistVol(2, -2.5);
+x.setRate(0, 1.1);
+x.setRate(1, 1.4);
+x.setRate(2, 1.8);
+x.setBitRate(2, 19000);
+x.setHpFreq(2, 2400);
+x.setLpFreq(1, 12000);
+x.setLpRes(1, 0.1);
+
+x.mixer.fadeOut;
+
+x = IM_DrumMachine.new;
+y = IM_DrumMachine.new;
+
+
+x.playSeq("1001", "0301");
+y.playSeq(voice2: "3210");
+y.setTempo(200/60);
+
+x.resumeSeq;
+y.stopSeq;
+x.free;
+y.free;
+s.quit;
+
+
+  x = IM_StepSequencer.new;
+x.playSeq;
+x.seq = "4...2...1...ca";
+x.valLow = 0
+x.valHigh = 9
+x.timingJitter = 0.1
+
+y = { SinOsc.ar(x.controlBus.kr(1).range(880, 1200).lag, 0, -18.dbamp); }.play;
+y.free
+
+
+a = IM_DrumMachine.new
+a.playSeq;
+a.voice2Seq = "f11112ff"
+a.voice1Seq = "....f..."
+a.free
+
+
+x = IM_DrumMachine.new
+x.playSeq
+x.voice2Seq = "9.f.cccc";
+x.voice1Seq = "....f...123";
+x.voice0Seq = "c...cf";
+x.setRate(0, 1.7);
+x.setPreDistAmp(0, 200);
+x.setAttackTime(2, 100);
+x.setPreDistAmp(2, 20);
+x.setPostDistVol(0, -3);
+x.setPostDistVol(2, -6);
+x.voice3Seq = "c...f..."
+
+x.setBPM(140);
+
+
+x = IM_DrumMachine.new;
+
+x.playSeq;
+x.voice2Seq = "f.484..."
+x.voice1Seq = "|...f..."
+x.voice3Seq = "12345cf"
+
+
+x.voice1Seq = "."
+
+r {
+  x.voice2Seq = "f.484...";
+  1.wait;
+  x.voice2Seq = "f123.";
+  1.wait;
+  x.voice2Seq = ".";
+  1.wait;
+}.loop.play;
+
+var string = "";
+200.do { |index| var tempVal = string = string ++ 20.rand; };
+string.postln;
+x.seq = string;
+
+x.setBitRate(3, 12000);
+x.setPreDistAmp(3, 100);
+x.setPostDistVol(3, -10);
+x.setAttackTime(3, 200);
+
+x.setVolRange(-18, -3);
+x.mixer.setVol(0, 0);
+
+x.setRate(2, 0.5)
+x.setStartTime(0.1);
+x.setAttackTime(3, 200)
+x.setAttackTime(3, 150);
+
+x.setRate(3, 0.525)
+
+x.stopSeq;
+
+
+x.setBPM(320);
+
+x.stopSeq;
+::

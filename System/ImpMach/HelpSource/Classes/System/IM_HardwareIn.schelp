@@ -1,0 +1,45 @@
+TITLE:: IM_HardwareIn
+summary:: Routes single hardware audio input to a specified bus.
+categories:: Imp Mach>System
+related:: Classes/IM_AudioSystem
+
+DESCRIPTION::
+An IM_HardwareIn routes sound coming from the current audio interface. It patches one channel of incoming sound to a specified output bus and is the preferred way to get external audio into the IM system.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Create an object to store a patch from a single input on the current audio interface to a given output bus.
+
+ARGUMENT:: inBus
+The index of the hardware input to be patched.
+
+ARGUMENT:: outBus
+The bus to patch the input to.
+
+ARGUMENT:: group
+The group in which to store the internal patch synth. Will usually be at the head of the server.
+
+ARGUMENT:: addAction
+Add action determining internal patch synth's placement relative to the group.
+
+returns:: IM_HardwareIn
+
+
+INSTANCEMETHODS::
+
+METHOD:: free
+Frees the current instance and all associated memory.
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+// Simple patch of hardware input to hardware output (hardwired on bus 1)
+// Beware feedback!
+x = IM_HardwareIn.new(0, 1);
+x.free;
+::

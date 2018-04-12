@@ -1,0 +1,60 @@
+TITLE:: IM_AudioSystem
+summary:: Base class for the Imp Mach system. Handles all plumbing, including outputs, main mixer, and send effects.
+categories:: Imp Mach>System
+related:: Classes/IM_Mixer, Classes/IM_SendEffectsUnit, Classes/IM_MasterMixer
+
+DESCRIPTION::
+(put long description here)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: numChans
+The number of channels to use when creating the main mixer (channels can later be added and removed).
+
+ARGUMENT:: numOutputs
+The number of hardware outputs on the audio interface being used. A stereo master channel strip will automatically be created for every pair of outputs.
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: mixer
+Access to the main mixer. When created, a song or sound module should add a channel to the main mixer and output to its inBus.
+
+returns:: (describe returnvalue here)
+
+METHOD:: effects
+Provides access to the effects that are connected to the main mixer sends. By default these effects are delay, reverb, and granulation. Also includes a mixer for controlling the output levels of the effects.
+
+returns:: (describe returnvalue here)
+
+METHOD:: masterMixer
+Access to a mixer full of channel strips connected directly to pairs of hardware outputs. All audio exits the system by passing through one of these channels on its way to the outputs.
+
+returns:: (describe returnvalue here)
+
+METHOD:: inGroup
+Unused right now. A group intended for holding always running input channels or feedback for the system.
+
+returns:: (describe returnvalue here)
+
+METHOD:: procGroup
+Access to the processing group for songs and other sound modules.
+
+returns:: (describe returnvalue here)
+
+METHOD:: free
+Frees all memory associated with this object.
+
+returns:: (describe returnvalue here)
+
+EXAMPLES::
+
+code::
+(some example code)
+::

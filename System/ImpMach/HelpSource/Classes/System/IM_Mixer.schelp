@@ -1,0 +1,242 @@
+TITLE:: IM_Mixer
+summary:: A multi-purpose mixer with an expandable/contractable number of channels.
+categories:: Imp Mach>System
+related:: Classes/IM_ChannelStrip
+
+DESCRIPTION::
+Each channel strip in the mixer has four sends and can be used in either mono or stereo mode.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new mixer.
+
+ARGUMENT:: numChans
+The number of channels with which to initialize the mixer.
+
+ARGUMENT:: outBus
+The bus to which the mixer outputs its mixdown.
+
+ARGUMENT:: send0Bus
+The bus to which the first send outputs.
+
+ARGUMENT:: send1Bus
+The bus to which the second send outputs.
+
+ARGUMENT:: send2Bus
+The bus to which the third send outputs.
+
+ARGUMENT:: send3Bus
+The bus to which the fourth send outputs.
+
+ARGUMENT:: feedback
+A boolean indicating whether the mixer's channel inputs should allow feeding back of signals (adds some latency if set to true).
+
+ARGUMENT:: relGroup
+The group relative to which the mixer should be created. Used in conjunction with the addAction argument.
+
+ARGUMENT:: addAction
+A modifier used in conjuntion with the relGroup to determine where the mixer internals are placed on the server.
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: addStrip
+Add another channel strip to the mixer.
+
+returns:: (describe returnvalue here)
+
+METHOD:: chanStereo
+Set a channel strip to stereo mode and return the input bus to the channel.
+
+ARGUMENT:: index
+The index of the mixer channel to affect.
+
+returns:: (describe returnvalue here)
+
+METHOD:: setPreVol
+Sets the preamplification trim on a given channel. Occurs before the sends, mute, and main volume. Proper gain staging should make setting this unnecessary.
+
+ARGUMENT:: index
+The index of the mixer channel to affect.
+
+ARGUMENT:: db
+The decibel level to which the preamplification will be set. Specified in dbfs (0 passes a unity gain signal).
+
+returns:: (describe returnvalue here)
+
+METHOD:: fade
+Fade the main volume of a given channel over a specified duration. The rate is exponential to work well with the decibel scale.
+
+ARGUMENT:: index
+The index of the mixer channel to affect.
+
+ARGUMENT:: dbTarget
+The decibel level at which the fade will end. Specified in dbfs (0 will pass unity, anything below -120 will be inaudible, set to -999 to mute the channel).
+
+ARGUMENT:: dur
+The duration of the fade, expressed in seconds.
+
+returns:: (describe returnvalue here)
+
+METHOD:: setSendPre
+Sets the sends to output before the main fader.
+
+ARGUMENT:: index
+The index of the mixer channel to affect.
+
+returns:: (describe returnvalue here)
+
+METHOD:: muteAll
+Mute all channels in the mixer.
+
+returns:: (describe returnvalue here)
+
+METHOD:: free
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setPanBal
+Set the pan or the balance of a given channel strip. If the strip has been set to mono, pan will be altered, if set to stereo, balance will be changed.
+
+ARGUMENT:: index
+The index of the mixer channel to affect.
+
+ARGUMENT:: panBal
+A value from -1 (hard left) to 1 (hard right).
+
+returns:: (describe returnvalue here)
+
+METHOD:: setVol
+Set the main volume of a given channel strip.
+
+ARGUMENT:: index
+The index of the mixer channel to affect.
+
+ARGUMENT:: db
+A decibel level to which the main volume of the strip will be set. Expressed in dbfs.
+
+returns:: (describe returnvalue here)
+
+METHOD:: setAllOutBusses
+(describe method here)
+
+ARGUMENT:: outBus
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: mute
+Mute a given channel in the mixer.
+
+ARGUMENT:: index
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: fadeOut
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+ARGUMENT:: dur
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: chanMono
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: chan
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: unMuteAll
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: removeStrip
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: group
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setSendPost
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setSendVol
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+ARGUMENT:: sendNum
+(describe argument here)
+
+ARGUMENT:: db
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: isFeedback
+Returns a boolean specifying whether the mixer channels are capable of feedback or not.
+
+returns:: (describe returnvalue here)
+
+METHOD:: tglMute
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: unMute
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: solo
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::

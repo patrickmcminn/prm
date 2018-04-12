@@ -1,0 +1,208 @@
+TITLE:: IM_Elephant_Chimes
+summary:: This class handles everything to do with the chimes in the song Elephant Music.
+categories:: Imp Mach>Songs
+related:: Classes/IM_AudioSystem
+
+DESCRIPTION::
+This class handles the chime sounds for Elephant Music. It takes care of loading all necessary samples and synths to create the sound. The chime sounds are output through a fader on the backend, which can be muted/unmuted and have its volume changed. The class has provisions for playing individual chime sounds, or triggering a pattern to play the intro portion of the song. This pattern can be retriggered with altered arguments to change the quality of the introduction as it plays, and the underlying tempo can be sped up or slowed down on the fly.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Loads chime samples and synths, also creates an output fader all chime sounds.
+
+ARGUMENT:: outBus
+The index of the bus all chime sounds will output to.
+
+ARGUMENT:: relGroup
+The internals of this class will be placed relative to the relGroup. Used for managing order of execution (e.g. ensuring the chimes are calculated before they are mixed or passed through a reverb).
+
+ARGUMENT:: addAction
+Takes a symbol, either /addBefore, /addAfter, /addToHead, /addToTail. Used in conjunction with relGroup to determine order of execution.
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: playTunedChimeOctDown
+(describe method here)
+
+ARGUMENT:: chimeNum
+(describe argument here)
+
+ARGUMENT:: attackTime
+(describe argument here)
+
+ARGUMENT:: sustainTime
+(describe argument here)
+
+ARGUMENT:: releaseTime
+(describe argument here)
+
+ARGUMENT:: vol
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setIntroTempo
+(describe method here)
+
+ARGUMENT:: tempo
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: unMute
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: playChime
+(describe method here)
+
+ARGUMENT:: chimeNum
+(describe argument here)
+
+ARGUMENT:: resoFreq
+(describe argument here)
+
+ARGUMENT:: attackTime
+(describe argument here)
+
+ARGUMENT:: sustainTime
+(describe argument here)
+
+ARGUMENT:: releaseTime
+(describe argument here)
+
+ARGUMENT:: vol
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pauseIntro
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: resumeIntro
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: returnChimeFreq
+(describe method here)
+
+ARGUMENT:: chimeNum
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: setVol
+(describe method here)
+
+ARGUMENT:: vol
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: mute
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: faderSynth
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: free
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: playIntro
+(describe method here)
+
+ARGUMENT:: vol
+(describe argument here)
+
+ARGUMENT:: attackTime
+(describe argument here)
+
+ARGUMENT:: sustainTime
+(describe argument here)
+
+ARGUMENT:: releaseTime
+(describe argument here)
+
+ARGUMENT:: volJitter
+(describe argument here)
+
+ARGUMENT:: attackJitter
+(describe argument here)
+
+ARGUMENT:: sustainJitter
+(describe argument here)
+
+ARGUMENT:: releaseJitter
+(describe argument here)
+
+ARGUMENT:: timingJitter
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: playTunedChime
+(describe method here)
+
+ARGUMENT:: chimeNum
+(describe argument here)
+
+ARGUMENT:: attackTime
+(describe argument here)
+
+ARGUMENT:: sustainTime
+(describe argument here)
+
+ARGUMENT:: releaseTime
+(describe argument here)
+
+ARGUMENT:: vol
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: playWoodblock
+(describe method here)
+
+ARGUMENT:: vol
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: group
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+x = IM_Elephant_Chimes.new;
+
+// Trigger each following line in turn, after waiting a bit
+x.playIntro;
+x.playIntro(attackTime: 10, attackJitter: 0.5);
+x.setIntroTempo(20);
+x.playIntro(volJitter: 20, attackJitter: 0.1, releaseJitter: 10, timingJitter: 2);
+x.setIntroTempo(1);
+
+x.pauseIntro;
+x.resumeIntro;
+
+x.free;
+::

@@ -84,6 +84,9 @@ Darkness_Trumpet : IM_Processor {
     distortion.postEQ.setHighPassCutoff(100);
     distortion.postEQ.setLowPassCutoff(4570);
 
+    // delay:
+    delay.setMix(1);
+
 
   }
 

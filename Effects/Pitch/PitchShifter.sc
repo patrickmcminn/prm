@@ -68,7 +68,7 @@ PitchShifter : IM_Processor {
       | inBus, outBus, shiftAmount = -12, amp = 1 |
       var input, shifter, sig;
       input = In.ar(inBus, 1);
-      shifter = PitchShift.ar(input, 0.2, shiftAmount.midiratio, 0, 0);
+      shifter = PitchShift.ar(input, 0.1, shiftAmount.midiratio, 0, 0.05);
       sig = shifter * amp;
       Out.ar(outBus, sig);
     }).add;
@@ -77,7 +77,7 @@ PitchShifter : IM_Processor {
       | inBus, outBus, shiftAmount = -12, amp = 1 |
       var input, shifter, sig;
       input = In.ar(inBus, 2);
-      shifter = PitchShift.ar(input, 0.1, shiftAmount.midiratio, 0, 0);
+      shifter = PitchShift.ar(input, 0.1, shiftAmount.midiratio, 0, 0.05);
       sig = shifter * amp;
       Out.ar(outBus, sig);
     }).add;

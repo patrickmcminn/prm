@@ -18,7 +18,7 @@ Meaning_Main : IM_Module {
   var <note1IsPlaying, <note2IsPlaying, <note3IsPlaying, <note4IsPlaying;
 
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, relGroup: relGroup, addAction: addAction).prInit;
+    ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
   }
 
   prInit {
@@ -53,7 +53,7 @@ Meaning_Main : IM_Module {
       splitter = Splitter.newStereo(2, [lowEQ.inBus, highEQ.inBus], relGroup: group, addAction: \addToHead);
       while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
-      sampler = Sampler.newStereo(splitter.inBus, sampleArray, relGroup: group, addAction: \addToHead);
+      sampler = Sampler.newStereo(mixer.chanStereo(0), sampleArray, relGroup: group, addAction: \addToHead);
       while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
 
       this.prInitializeParameters;

@@ -15,7 +15,7 @@ Meaning_Hiss : IM_Module {
   var <isPlaying;
 
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, relGroup: relGroup, addAction: addAction).prInit;
+    ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
   }
 
   prInit {

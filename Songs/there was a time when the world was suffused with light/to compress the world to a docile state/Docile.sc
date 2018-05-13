@@ -41,7 +41,7 @@ Docile : IM_Module {
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      main = Docile_Main.new(mixer.chanStereo(0), group, \addToHead);
+      main = Docile_Main.new(mixer.chanStereo(0), 2, group, \addToHead);
       while({ try { main.isLoaded } != true }, { 0.001.wait; });
 
       kick = Sampler.newStereo(mixer.chanStereo(1), kicksArray, relGroup: group, addAction: \addToHead);
@@ -60,7 +60,6 @@ Docile : IM_Module {
       this.prInitializeParameters;
 
       server.sync;
-
       this.prMakeKickSequences;
       this.prMakeNoisiesSequences;
 
@@ -70,7 +69,7 @@ Docile : IM_Module {
 
   prInitializeParameters {
 
-    clock.beatsPerBar = 2;
+    clock.schedAbs(clock.nextBar, { clock.beatsPerBar_(2) });
 
     // intitial playing parameters:
 
@@ -135,6 +134,7 @@ Docile : IM_Module {
     blue = noisies.sampler.bufferArray[7];
 
     noisies.sampler.addKey(\full, \dur, 1/6);
+    noisies.sampler.addKey(\full, \amp, 1);
     noisies.sampler.addKey(\full, \buffer, Pseq(
       [
         [brown, blip], Rest, brown, Rest, [brown, purple], Rest,
@@ -162,8 +162,8 @@ Docile : IM_Module {
     heartbeat = kick.bufferArray[4];
     blip = kick.bufferArray[5];
 
-    kick.addKey(\test, \dur, 0.25);
-    kick.addKey(\test, \buffer, kick.bufferArray[0]);
+//    kick.addKey(\test, \dur, 0.25);
+  //  kick.addKey(\test, \buffer, kick.bufferArray[0]);
 
     kick.addKey(\section1, \dur, 2);
     kick.addKey(\section1, \buffer, Pseq([[six06, eight08, dmx], [dmx, eight08]], inf));
@@ -352,7 +352,7 @@ Docile : IM_Module {
   playKickSection7 {
     clock.playNextBar({
       kick.playSequence(\section7, clock);
-      kickSection1IsPlaying = true;
+      kickSection7IsPlaying = true;
     });
   }
   stopKickSection7 {
@@ -387,16 +387,27 @@ Docile : IM_Module {
     );
   }
 
+  stopAllKicks {
+    this.stopKickSection1;
+    this.stopKickSection2;
+    this.stopKickSection3;
+    this.stopKickSection4;
+    this.stopKickSection5;
+    this.stopKickSection6;
+    this.stopKickSection7;
+    this.stopKickSection8;
+  }
+
   //////// NOISIES:
   playNoisiesLoop {
     clock.playNextBar({
-      noisies.sampler.playSequence(\loop, clock);
+      noisies.sampler.playSequence(\full, clock);
       noisiesFullLoopIsPlaying = true;
     });
   }
   stopNoisiesLoop {
     clock.playNextBar({
-      noisies.sampler.stopSequence(\loop);
+      noisies.sampler.stopSequence(\full);
       noisiesFullLoopIsPlaying = false;
     });
   }

@@ -11,11 +11,13 @@ GrainFreeze2 : IM_Processor {
 
   var isStereo;
 
-  var <buffer, freezeDict;
+  var <buffer, <freezeDict;
 
   var <attackTime, <decayTime, <sustainLevel, <releaseTime;
 
   var <lowPassCutoff, <highPassCutoff, <distortion;
+
+  var <freezeGroup;
 
 
   *newMono { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
@@ -40,6 +42,7 @@ GrainFreeze2 : IM_Processor {
       server.sync;
 
       freezeDict = IdentityDictionary.new;
+      freezeGroup = Group.new(group, \addToHead);
 
       this.prInitializeParameters;
 
@@ -63,6 +66,7 @@ GrainFreeze2 : IM_Processor {
       freezeDict = IdentityDictionary.new;
 
       this.prInitializeParameters;
+      freezeGroup = Group.new(group, \addToHead);
 
       isLoaded = true;
     }
@@ -89,7 +93,7 @@ GrainFreeze2 : IM_Processor {
       hpf = HPF.ar(lpf, highPassCutoff);
 
       // Envelope
-      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime), gate, amp, doneAction: 2);
+      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime), gate + Impulse.kr(0), amp, doneAction: 2);
       sig = hpf * env;
 
       // Output
@@ -116,7 +120,7 @@ GrainFreeze2 : IM_Processor {
       hpf = HPF.ar(lpf, highPassCutoff);
 
       // Envelope
-      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime), gate, amp, doneAction: 2);
+      env = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime), gate + Impulse.kr(0), amp, doneAction: 2);
       sig = hpf * env;
 
       // Output
@@ -156,6 +160,7 @@ GrainFreeze2 : IM_Processor {
 
   free {
     freezeDict.do({ | synth | synth.free; });
+    freezeGroup.free;
     buffer.free;
     this.freeProcessor;
     isLoaded = false;
@@ -177,7 +182,7 @@ GrainFreeze2 : IM_Processor {
           \buffer, buffer, \outBus, mixer.chanStereo(0), \rate, note.midiratio, \amp, vol.dbamp,
           \attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel, \releaseTime, releaseTime,
           \lowPassCutoff, lowPassCutoff, \highPassCutoff, highPassCutoff, \distortion, distortion],
-          group, \addToHead);
+          freezeGroup, \addToHead);
       },
       {
         freezeDict[name] = Synth(\prm_grainFreeze2_freeze_mono, [
@@ -186,7 +191,7 @@ GrainFreeze2 : IM_Processor {
 
           \lowPassCutoff, lowPassCutoff, \highPassCutoff, highPassCutoff, \distortion, distortion
           ],
-          group, \addToHead);
+          freezeGroup, \addToHead);
       }
     );
   }

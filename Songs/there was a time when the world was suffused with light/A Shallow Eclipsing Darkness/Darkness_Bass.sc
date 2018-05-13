@@ -34,21 +34,28 @@ Darkness_Bass : IM_Module {
 
       server.sync;
 
+      this.prSetInitialParameters;
       this.prMakePatternParameters;
 
       isLoaded = true;
     }
   }
 
+  prSetInitialParameters {
+    eq.setLowFreq(120);
+    eq.setLowGain(6);
+
+  }
+
   prMakePatternParameters {
     var p1, p2, p3, p4, p5, p6, p7, p8;
-    p1 = Pseq([7, 5, 7, 0], 1);
-    p2 = Pseq([7, 5, 7], 1);
-    p3 = Pseq([7, 5, 7, 0, 7, 5], 1);
-    p4 = Pseq([7, 0], 1);
-    p5 = Pseq([7, 5, 10, 12, 0], 1);
-    p6 = Pseq([7, 5], 1);
-    p7 = Pseq([10, 12, 0], 1);
+    p1 = Pseq([7, 5, 7, 0]+1, 1);
+    p2 = Pseq([7, 5, 7]+1, 1);
+    p3 = Pseq([7, 5, 7, 0, 7, 5]+1, 1);
+    p4 = Pseq([7, 0]+1, 1);
+    p5 = Pseq([7, 5, 10, 12, 0]+1, 1);
+    p6 = Pseq([7, 5]+1, 1);
+    p7 = Pseq([10, 12, 0]+1, 1);
     p8 = Pseq([\r], 1);
 
     moog.addKey(\darkness, \note, Prand([

@@ -72,7 +72,7 @@ Equalizer : IM_Processor {
       |
       var input, highPass, lowShelf, peak1, peak2, peak3, highShelf, lowPass, sig;
       input = In.ar(inBus, 1);
-      highPass = RHPF.ar(input, highPassCutoff.lag(0.1), highPassRQ);
+      highPass = RHPF.ar(input, highPassCutoff.lag(0.3), highPassRQ);
       lowShelf = BLowShelf.ar(highPass, lowFreq, lowRQ, lowGain);
       peak1 = BPeakEQ.ar(lowShelf, peak1Freq, peak1RQ, peak1Gain);
       peak2 = BPeakEQ.ar(peak1, peak2Freq, peak2RQ, peak2Gain);
@@ -99,7 +99,7 @@ Equalizer : IM_Processor {
       |
       var input, highPass, lowShelf, peak1, peak2, peak3, highShelf, lowPass, sig;
       input = In.ar(inBus, 2);
-      highPass = RHPF.ar(input, highPassCutoff.lag(0.1), highPassRQ);
+      highPass = RHPF.ar(input, highPassCutoff.lag(0.3), highPassRQ);
       lowShelf = BLowShelf.ar(highPass, lowFreq, lowRQ, lowGain);
       peak1 = BPeakEQ.ar(lowShelf, peak1Freq, peak1RQ, peak1Gain);
       peak2 = BPeakEQ.ar(peak1, peak2Freq, peak2RQ, peak2Gain);

@@ -4,6 +4,7 @@
 IM_ChannelStrip {
   var <inBus;
   var <synth, <isMuted, <isFeedback;
+  var <send0IsMuted, <send1IsMuted, <send2IsMuted, <send3IsMuted;
   var <isLoaded;
   var <vol, <panBal, <send0Vol, <send1Vol, <send2Vol, <send3Vol, <preOrPost;
 
@@ -28,6 +29,11 @@ IM_ChannelStrip {
     send1Vol = -70;
     send2Vol = -70;
     send3Vol = -70;
+
+    send0IsMuted = false;
+    send1IsMuted = false;
+    send2IsMuted = false;
+    send3IsMuted = false;
 
     server.waitForBoot {
       this.prAddSynthDefs;
@@ -64,6 +70,7 @@ IM_ChannelStrip {
       preOrPost = 1, panBal = 0, monoOrStereo = 1,
       send0Bus, send0Amp = 0, send1Bus, send1Amp = 0,
       send2Bus, send2Amp = 0, send3Bus, send3Amp = 0,
+      send0Mute = 1, send1Mute = 1, send2Mute = 1, send3Mute = 1,
       ampLagTime = 0.05|
 
       var sig, input, monoOrStereoSig, monoInput, stereoInput, sendSig, lagTime = 0.05;
@@ -85,10 +92,10 @@ IM_ChannelStrip {
       sendSig = (monoOrStereoSig * (1 - preOrPost)) + (sig * preOrPost);
 
       // Fx sends
-      Out.ar(send0Bus, sendSig * send0Amp.lag(lagTime) );
-      Out.ar(send1Bus, sendSig * send1Amp.lag(lagTime) );
-      Out.ar(send2Bus, sendSig * send2Amp.lag(lagTime) );
-      Out.ar(send3Bus, sendSig * send3Amp.lag(lagTime) );
+      Out.ar(send0Bus, sendSig * send0Amp.lag(lagTime) * send0Mute);
+      Out.ar(send1Bus, sendSig * send1Amp.lag(lagTime) * send1Mute);
+      Out.ar(send2Bus, sendSig * send2Amp.lag(lagTime) * send2Mute);
+      Out.ar(send3Bus, sendSig * send3Amp.lag(lagTime) * send3Mute);
 
       Out.ar(outBus, sig);
     }).add;
@@ -97,6 +104,7 @@ IM_ChannelStrip {
       preOrPost = 1, panBal = 0, monoOrStereo = 1,
       send0Bus, send0Amp = 0, send1Bus, send1Amp = 0,
       send2Bus, send2Amp = 0, send3Bus, send3Amp = 0,
+      send0Mute = 1, send1Mute = 1, send2Mute = 1, send3Mute = 1,
       ampLagTime = 0.05|
 
       var sig, input, monoOrStereoSig, monoInput, stereoInput, sendSig, lagTime = 0.05;
@@ -116,10 +124,10 @@ IM_ChannelStrip {
       sendSig = (monoOrStereoSig * (1 - preOrPost)) + (sig * preOrPost);
 
       // Fx sends
-      Out.ar(send0Bus, sendSig * send0Amp.lag(lagTime) );
-      Out.ar(send1Bus, sendSig * send1Amp.lag(lagTime) );
-      Out.ar(send2Bus, sendSig * send2Amp.lag(lagTime) );
-      Out.ar(send3Bus, sendSig * send3Amp.lag(lagTime) );
+      Out.ar(send0Bus, sendSig * send0Amp.lag(lagTime) * send0Mute);
+      Out.ar(send1Bus, sendSig * send1Amp.lag(lagTime) * send1Mute);
+      Out.ar(send2Bus, sendSig * send2Amp.lag(lagTime) * send2Mute);
+      Out.ar(send3Bus, sendSig * send3Amp.lag(lagTime) * send3Mute);
 
       Out.ar(outBus, sig);
     }).add;
@@ -163,6 +171,22 @@ IM_ChannelStrip {
       1, { send1Vol = db },
       2, { send2Vol = db },
       3, { send3Vol = db });
+  }
+
+  muteSend { | sendNum = 0 |
+    switch(sendNum,
+      0, { synth.set(\send0Mute, 0) },
+      1, { synth.set(\send1Mute, 0) },
+      2, { synth.set(\send2Mute, 0) },
+      3, { synth.set(\send3Mute, 0) });
+  }
+
+  unMuteSend { | sendNum = 0 |
+    switch(sendNum,
+      0, { synth.set(\send0Mute, 1) },
+      1, { synth.set(\send1Mute, 1) },
+      2, { synth.set(\send2Mute, 1) },
+      3, { synth.set(\send3Mute, 1) });
   }
 
   mapSend0Amp { | bus | synth.set(\send0Amp, bus.asMap); }

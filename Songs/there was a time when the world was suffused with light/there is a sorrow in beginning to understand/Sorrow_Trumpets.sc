@@ -14,7 +14,7 @@ Sorrow_Trumpets : IM_Module {
   var splitter, <trumpet2, <trumpet3;
 
   *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(3, relGroup: relGroup, addAction: addAction).prInit;
+    ^super.new(3, outBus, relGroup: relGroup, addAction: addAction).prInit;
   }
 
   prInit {
@@ -60,6 +60,11 @@ Sorrow_Trumpets : IM_Module {
     trumpet3.free;
     trumpet2.free;
     splitter.free;
+  }
+
+  recordBuffer {
+    trumpet2.recordBuffer;
+    trumpet3.recordBuffer;
   }
 
 }

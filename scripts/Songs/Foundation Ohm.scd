@@ -456,6 +456,7 @@ var mixerBank3 = 2;
 
 //// Granulator:
 // feedback:
+/*
 ~ohm.setLeftKnobFunc(0, 1, { | val |
   var fb = val.linlin(0, 127, 0, 1);
   ~prm.granulator.setFeedback(fb);
@@ -465,7 +466,7 @@ var mixerBank3 = 2;
   var rate = val.linlin(0, 127, 24, 64);
   ~prm.granulator.setTrigRate(rate);
 }, bank: mixerBank1, page: page);
-
+*/
 
 //// distorted trumpet granulator send:
 ~ohm.setLeftKnobFunc(3, 2, { | val |

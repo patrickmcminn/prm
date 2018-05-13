@@ -13,7 +13,7 @@ Darkness_Returns : IM_Module {
   var <delay, <granulator;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
-    ^super.new(2, send0Bus, send1Bus, send2Bus, send3Bus, relGroup: relGroup, addAction: addAction).prInit;
+    ^super.new(2, outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup: relGroup, addAction: addAction).prInit;
   }
 
   prInit {

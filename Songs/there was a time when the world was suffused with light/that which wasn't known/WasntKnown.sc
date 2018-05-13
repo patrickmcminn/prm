@@ -31,6 +31,7 @@ WasntKnown : Song {
       server.sync;
 
       mixerA.setSendVol(0, 0, -6);
+      mixerA.setPreVol(0, 0, -9);
       mixerA.setVol(0, -6);
 
       isLoaded = true;

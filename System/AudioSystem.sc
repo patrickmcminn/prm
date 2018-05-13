@@ -25,6 +25,8 @@ AudioSystem {
 
   var <server;
 
+  var <masterEQ;
+
   *new { | numOutputs = 2 |
     ^super.new.prInit(numOutputs);
   }
@@ -62,6 +64,8 @@ AudioSystem {
       server.sync;
       while ( { try { systemMixer.isLoaded} != true }, { 0.001.wait } );
 
+      masterEQ = Equalizer.newStereo(systemMixer.inBus(0), systemGroup, \addToHead);
+      while({ try { masterEQ.isLoaded } != true }, { 0.001.wait; });
 
 
       irLibrary = IM_IRLibrary.new("~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses");
@@ -77,7 +81,7 @@ AudioSystem {
       server.sync;
 
       // delay:
-      delay = SimpleDelay.newStereo(systemMixer.inBus, 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
+      delay = SimpleDelay.newStereo(masterEQ.inBus, 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       // send out to modular system
@@ -86,35 +90,36 @@ AudioSystem {
 
       //granulator = IM_Granulator(systemMixer.inBus(0),
         //relGroup: systemGroup, addAction: \addToHead);
-      granulator = GranularDelay.new(systemMixer.inBus, relGroup: systemGroup, addAction: \addToHead);
+      granulator = GranularDelay.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( {  try { granulator.isLoaded } != true }, { 0.001.wait; });
       granulator.granulator.setCrossfade(1);
       granulator.delay.setMix(0);
 
       //reverb = Wash.newStereo(systemMixer.inBus(0), relGroup: systemGroup, addAction: \addToHead);
-      reverb = IM_Reverb.newConvolution(systemMixer.inBus, bufName: irLibrary.irDict['3.2EmptyChurch'],
+      reverb = IM_Reverb.newConvolution(masterEQ.inBus, bufName: irLibrary.irDict['3.2EmptyChurch'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       //reverb.setMix(1);
 
-      submixerA = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
+      submixerA = Looper.newStereo(masterEQ.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerA.isLoaded } != true }, { 0.001.wait; });
-      submixerB = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
+      submixerB = Looper.newStereo(masterEQ.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerB.isLoaded } != true }, { 0.001.wait; });
-      submixerC = Looper.newStereo(systemMixer.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
+      submixerC = Looper.newStereo(masterEQ.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
         procGroup, \addToHead);
       while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
 
 
-
+      /*
       submixerA.mixer.setPreVol(3);
       submixerB.mixer.setPreVol(3);
       submixerC.mixer.setPreVol(3);
+      */
 
       modular = IM_Mixer_1Ch.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus,
         nil, false, procGroup, \addToHead);
@@ -147,7 +152,6 @@ AudioSystem {
       */
 
       songBook = IdentityDictionary.new;
-
 
       isLoaded = true;
 
@@ -182,6 +186,7 @@ AudioSystem {
       reverb.free;
       granulator.free;
       modularSend.free;
+      masterEQ.free;
       systemMixer.free;
 
       while( { systemMixer.group != nil }, { 0.001.wait } );

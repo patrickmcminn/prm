@@ -24,7 +24,7 @@ Light_Sends : Song {
       while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
 
       reverb = IM_Reverb.newConvolution(mixerC.chanStereo(0), bufName: reverbBuf,
-        relGroup: group, addAction: \addToTail);
+        relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       delays = Light_Delays.new(mixerC.chanStereo(1), group, \addToHead);

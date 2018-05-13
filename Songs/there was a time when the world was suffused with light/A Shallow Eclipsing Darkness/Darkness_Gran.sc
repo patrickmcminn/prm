@@ -31,8 +31,10 @@ Darkness_Gran : IM_Processor {
       granulator = GranularDelay.new(eq.inBus, group, \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
+      /*
       input = IM_Mixer_1Ch.new(granulator.inBus, relGroup: group, addAction: \addToHead);
       while({ try { input.isLoaded } != true }, { 0.001.wait; });
+      */
 
       server.sync;
 
@@ -54,6 +56,6 @@ Darkness_Gran : IM_Processor {
 
   //////// public functions:
 
-  inBus { ^input.chanStereo(0) }
+  inBus { ^granulator.inBus }
 
 }

@@ -15,7 +15,7 @@ Docile_Moog : IM_Module {
 
   var <synth, <granulator;
 
-  var arpIsPlaying, arpRevIsPlaying;
+  var <arpIsPlaying, <arpRevIsPlaying;
 
   *new { | inBus = 3, outBus = 0, moogDeviceName, moogPortName, relGroup = nil, addAction = 'addToHead' |
      ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(inBus, moogDeviceName, moogPortName);
@@ -58,16 +58,22 @@ Docile_Moog : IM_Module {
       server.sync;
 
       this.prInitializeParameters;
+
+      server.sync;
+      isLoaded = true;
     }
   }
 
   prInitializeParameters {
-    granulator.setGranulatorCrossfade(0.9);
-    granulator.setDelayMix(0.9);
+    granulator.setGranulatorCrossfade(0);
+    granulator.setDelayMix(0.7);
     granulator.setDelayTime(0.635);
-    granulator.setFeedback(0.8);
+    granulator.setFeedback(0.3);
     granulator.setGrainDur(0.477962, 0.477962);
-    granulator.setTrigRate(60);
+    granulator.setTrigRate(35);
+    granulator.setGrainEnvelope('rexpodec');
+
+    granulator.mixer.setPreVol(-18);
   }
 
   //////// public functions:

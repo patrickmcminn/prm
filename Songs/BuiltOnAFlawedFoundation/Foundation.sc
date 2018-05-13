@@ -138,6 +138,7 @@ Foundation : Song {
 
     // Clean Trumpet:
     mixerC.setVol(0, -12);
+    mixerC.setPreVol(0, 6);
     mixerC.setSendVol(0, 0, -6);
     mixerC.setSendVol(0, 1, -9);
 

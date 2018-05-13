@@ -41,7 +41,8 @@ r {
 s.meter;
 s.makeWindow
 AudioSystem
-
+~ohm.setPage('main');
+~ohm.setPage('darkness');
 
 ~ohm.setPage('habit');
 ~base.setPage('habit');

@@ -64,16 +64,19 @@ Meaning : IM_Module {
     //////// Mixer:
 
     // hiss:
+    mainMixer.setPreVol(0, -6);
     mainMixer.setVol(0,0);
     mainMixer.setSendVol(0, 0, -20);
     mainMixer.setSendVol(0, 1, 0);
 
     // main:
+    mainMixer.setPreVol(1, -3);
     mainMixer.setVol(1, 0);
     mainMixer.setSendVol(1, 0, 0);
     mainMixer.setSendVol(1, 1, -12);
 
     // synth:
+    mainMixer.setPreVol(2, -6);
     mainMixer.setVol(2, -17);
     mainMixer.setSendVol(2, 0, -15);
     mainMixer.setSendVol(2, 1, -3);

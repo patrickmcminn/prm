@@ -50,7 +50,7 @@ Foundation_CleanTrumpet : IM_Module {
   prInitializeParameters {
     // eq:
     eq.setHighPassCutoff(250);
-    eq.setLowPassCutoff(3910);
+    eq.setLowPassCutoff(15000);
 
     // delays:
     delay1.setMix(1);

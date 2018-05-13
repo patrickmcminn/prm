@@ -53,7 +53,7 @@ Darkness_Trumpet : IM_Processor {
       // needs to be adapted for dry/wet. Might be cool to add later.
       //microLooper = GlitchLooper.newStereo
 
-      distortion = Distortion.newStereo(modularOut.inBus, 3, relGroup: group, addAction: \addToHead);
+      distortion = Distortion.newStereo(modularOut.inBus, 25, relGroup: group, addAction: \addToHead);
       while({ try { distortion.isLoaded } != true }, { 0.001.wait; });
 
       input = IM_Mixer_1Ch.new(distortion.inBus, relGroup: group, addAction: \addToHead);
@@ -80,12 +80,20 @@ Darkness_Trumpet : IM_Processor {
 
     // distortion:
     distortion.preEQ.setHighPassCutoff(200);
-    distortion.preEQ.setLowPassCutoff(5350);
+    distortion.preEQ.setLowPassCutoff(20000);
     distortion.postEQ.setHighPassCutoff(100);
-    distortion.postEQ.setLowPassCutoff(4570);
+    distortion.postEQ.setLowPassCutoff(7500);
+    distortion.mixer.setPreVol(-6);
 
     // delay:
     delay.setMix(1);
+
+    // mixer:
+    mixer.setPreVol(0, 6);
+    mixer.setPreVol(1, 6);
+
+    // low pass:
+    lowPassFilter.lfo.setFrequency(7);
 
 
   }

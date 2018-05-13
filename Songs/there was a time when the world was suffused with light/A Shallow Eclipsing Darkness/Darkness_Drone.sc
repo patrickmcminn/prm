@@ -47,6 +47,7 @@ Darkness_Drone : IM_Module {
       server.sync;
 
       this.prMakePatterns;
+      mixer.setPreVol(-12);
 
       isLoaded = true;
     }

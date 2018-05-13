@@ -22,12 +22,12 @@ var theBoyIsLoaded = false;
 
 
 'Habit Fills Up What Remains';
-
+/*
 ~ohm.turnGridMagenta(0, 0, page: page);
 ~ohm.setGridFunc(0, 0, r {
   if( lightIsLoaded == false, {
     r {
-      ~habit = Habit.new(1, 2, 3, "UMC1820", "UMC1820",
+      ~habit = Habit.new(1, 2, 3, "UMC404HD 192k", "UMC404HD 192k",
         ~prm.submixA, ~prm.submixB, ~prm.submixC,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
         relGroup: ~prm.procGroup, addAction: \addToHead);
@@ -43,6 +43,7 @@ var theBoyIsLoaded = false;
     ~ohm.turnGridOff(1, 0).yield;
   });
 }, page: page);
+*/
 
 // Connections:
 ~ohm.turnGridBlue(0,1, page: page);
@@ -64,7 +65,7 @@ var theBoyIsLoaded = false;
       connectionsIsLoaded = false;
   });
 }, page: page);
-
+/*
 // False Self:
 ~ohm.turnGridWhite(0, 2, page: page);
 ~ohm.setGridFunc(0, 2, {
@@ -86,7 +87,8 @@ var theBoyIsLoaded = false;
       falseSelfIsLoaded = false;
   });
 }, page: page);
-
+*/
+/*
 // Light:
 ~ohm.turnGridYellow(0, 3, page: page);
 ~ohm.setGridFunc(0, 3, {
@@ -113,6 +115,7 @@ var theBoyIsLoaded = false;
       ~ohm.turnGridOff(1, 3);
   });
 }, page: page);
+*/
 
 'Built on a Flawed Foundation';
 
@@ -127,7 +130,7 @@ var theBoyIsLoaded = false;
       ~foundationDelay.setMix(1);
       ~foundation = Foundation.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
-        ~prm.procGroup, \addToHead, "UMC1820", "UMC1820");
+        ~prm.procGroup, \addToHead, "UMC404HD 192k", "UMC404HD 192k");
       while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
       ~ohm.setGridFunc(1, 4, { ~ohm.setPage('foundation'); }, page: page);
       ~ohm.turnGridGreen(1, 4);
@@ -143,7 +146,7 @@ var theBoyIsLoaded = false;
   });
 }, page: page);
 
-
+/*
 'The Boy';
 
 ~ohm.turnGridBlue(0, 5, page: page);
@@ -152,7 +155,7 @@ var theBoyIsLoaded = false;
     r {
       ~theBoy = TheBoy.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, nil,
-         ~prm.procGroup, \addToHead, "UMC1820", "UMC1820");
+         ~prm.procGroup, \addToHead, "UMC404HD 192k", "UMC404HD 192k");
       while({ try { ~theBoy.isLoaded } != true }, { 0.001.wait; });
       ~ohm.setGridFunc(1, 5, { ~ohm.setPage('boy'); }, page: page);
       ~ohm.turnGridGreen(1, 5);
@@ -167,10 +170,13 @@ var theBoyIsLoaded = false;
   });
 }, page: page);
 
+*/
 
 
+'there was a time when the world was suffused with light page:';
 
-
+~ohm.turnGridWhite(7, 0, page: page);
+~ohm.setGridFunc(7, 0, { ~ohm.setPage('light album'); }, page: page);
 
 
 
@@ -248,11 +254,11 @@ var theBoyIsLoaded = false;
 }, page: page);
 */
 
-
+/*
 //////// headphones:
 ~ohm.setLeftKnobFunc(0, 0, { | val |
   ~prm.monitorMixer.setVol(0, val.ccdbfs(-70, 12));
-}, page: page);
+}, page: page);*/
 
 
 // mic pre/post:

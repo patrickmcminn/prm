@@ -74,7 +74,7 @@ IM_MultiShift : IM_Processor {
       input = In.ar(inBus);
       interval = exp(0.057762265 * shift);
       pitchShift = PitchShift.ar(input, windowSize, interval, pitchDispersion, timeDispersion);
-      sig = pitchShift * amp * 1.5;
+      sig = pitchShift * amp * 0.75;
       sig = sig * mute;
       Out.ar(outBus, sig);
     }).add;
@@ -85,7 +85,7 @@ IM_MultiShift : IM_Processor {
       input = In.ar(inBus, 2);
       interval = exp(0.057762265 * shift);
       pitchShift = PitchShift.ar(input, windowSize, interval, pitchDispersion, timeDispersion);
-      sig = pitchShift * amp * 1.5;
+      sig = pitchShift * amp * 0.9;
       sig = sig * mute;
       Out.ar(outBus, sig);
     }).add;

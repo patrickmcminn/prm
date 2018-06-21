@@ -11,7 +11,7 @@ APC40Mk2 {
   var trackSelectFuncArray, trackActivatorFuncArray, crossfadeSelectFuncArray;
   var soloFuncArray, recordEnableFuncArray,  deviceFuncArray, controlFuncArray;
   var controlFuncArray;
-  var slidersFuncArray, knobsFuncArray;
+  var mixerFaderArray, mixerEncoderArray, deviceEncoderArray;
   var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
   var <gridColorArray, <gridLaunchColorArray, <gridStopColorArray;
   var <selectColorArray, <mixerColorArray;
@@ -270,8 +270,24 @@ APC40Mk2 {
   prFreeControlFuncArray { controlFuncArray.do({ | f | f.free; }); }
 
   prMakeControlResponders {
-
+    this.prMakeMixerFaderArray;
+    this.prMakeMixerEncoderArray;
+    this.prMakeDeviceEncoderArray;
   }
+
+  prFreeControlResponders {
+    this.prFreeMixerFaderArray;
+    this.prFreeMixerEncoderArray;
+    this.prFreeDeviceEncoderArray;
+  }
+
+  prMakeMixerFaderArray {
+    mixerFaderArray = Array.fill(9, { nil });
+    8.do({ | num | mixerFaderArray[num] = MIDIFunc({ }, 7, num, \control, midiInPort.uid).fix; });
+    mixerFaderArray[8] = MIDIFunc({ }, 14, 0, \control, midiInPort.uid).fix;
+  }
+
+  prFreeMixerFaderArray { mixerFaderArray.do({ | f | f.free; }); }
 
   prMakeColorArrays {
     // grid color arrays:

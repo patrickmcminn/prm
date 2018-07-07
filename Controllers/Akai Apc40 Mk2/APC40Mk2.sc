@@ -7,16 +7,20 @@ prm
 APC40Mk2 {
 
   var midiInPort, midiOutPort;
+
   var gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
-  var trackSelectFuncArray, trackActivatorFuncArray, crossfadeSelectFuncArray;
+  var trackSelectFuncArray, trackActivatorFuncArray, crossfaderSelectFuncArray;
   var soloFuncArray, recordEnableFuncArray,  deviceFuncArray, controlFuncArray;
-  var controlFuncArray;
   var mixerFaderArray, mixerEncoderArray, deviceEncoderArray;
+
   var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
-  var <gridColorArray, <gridLaunchColorArray, <gridStopColorArray;
+  var <gridColorArray, <sceneLaunchColorArray, <clipStopColorArray;
+
   var <selectColorArray, <mixerColorArray;
-  var <activeGridBank, <activeMixerBank, <activeMixerEncoderBank;
-  var <activeDeviceEncoderBank, <activeControlButtonsBank;
+
+  var <activeGridBank, <activeSceneLaunchBank, <activeClipStopBank;
+  var <activeMixerBank,  <activeMixerEncoderBank;
+  var <activeDeviceEncodersBank, <activeDeviceButtonsBank, <activeControlButtonsBank;
 
   *new { | deviceName = "APC40 mkII", portName = "APC40 mkII" |
     ^super.new.prInit(deviceName, portName);
@@ -55,7 +59,7 @@ APC40Mk2 {
     this.prMakeSceneLaunchFuncArray;
     this.prMakeClipStopFuncArray;
     this.prMakeTrackSelectFuncArray;
-    this.prMakeCrossfadeSelectFuncArray;
+    this.prMakeCrossfaderSelectFuncArray;
     this.prMakeSoloFuncArray;
     this.prMakeRecordEnableFuncArray;
     this.prMakeDeviceFuncArray;
@@ -67,7 +71,7 @@ APC40Mk2 {
     this.prFreeSceneLauncFuncArray;
     this.prFreeClipStopFuncArray;
     this.prFreeTrackSelectFuncArray;
-    this.prFreeCrossfadeSelectFuncArray;
+    this.prFreeCrossfaderSelectFuncArray;
     this.prFreeSoloFuncArray;
     this.prFreeRecordEnableFuncArray;
     this.prFreeDeviceFuncArray;
@@ -148,19 +152,19 @@ APC40Mk2 {
 
   prFreeTrackActivatorFuncArray { trackActivatorFuncArray.do({ | f | f.free; }); }
 
-  prMakeCrossfadeSelectFuncArray {
+  prMakeCrossfaderSelectFuncArray {
     // slot 0 is for note on funcs:
     // slot 1 is for note off funcs:
-    crossfadeSelectFuncArray = Array.fill2D(2, 8, { nil });
+    crossfaderSelectFuncArray = Array.fill2D(2, 8, { nil });
     8.do({ | num |
-      crossfadeSelectFuncArray[0][num] = MIDIFunc({ }, 66, num, \noteOn, midiInPort.uid).fix;
+      crossfaderSelectFuncArray[0][num] = MIDIFunc({ }, 66, num, \noteOn, midiInPort.uid).fix;
     });
     8.do({ | num |
-      crossfadeSelectFuncArray[1][num] = MIDIFunc({ }, 66, num, \noteOff, midiInPort.uid).fix;
+      crossfaderSelectFuncArray[1][num] = MIDIFunc({ }, 66, num, \noteOff, midiInPort.uid).fix;
     });
   }
 
-  prFreeCrossfadeSelectFuncArray { crossfadeSelectFuncArray.do({ | f | f.free; }); }
+  prFreeCrossfaderSelectFuncArray { crossfaderSelectFuncArray.do({ | f | f.free; }); }
 
   prMakeSoloFuncArray {
     // slot 0 is for note on funcs:
@@ -284,16 +288,37 @@ APC40Mk2 {
   prMakeMixerFaderArray {
     mixerFaderArray = Array.fill(9, { nil });
     8.do({ | num | mixerFaderArray[num] = MIDIFunc({ }, 7, num, \control, midiInPort.uid).fix; });
+    //// master mixer:
     mixerFaderArray[8] = MIDIFunc({ }, 14, 0, \control, midiInPort.uid).fix;
   }
 
   prFreeMixerFaderArray { mixerFaderArray.do({ | f | f.free; }); }
 
+  prMakeMixerEncoderArray {
+    mixerEncoderArray = Array.fill(9, { nil });
+    8.do({ | num | mixerEncoderArray[num] = MIDIFunc({ }, num + 48, 0, \control, midiInPort.uid).fix; });
+    //// cue level:
+    mixerEncoderArray[8] = MIDIFunc({ }, 47, 0, \control, midiInPort.uid).fix;
+  }
+
+  prFreeMixerEncoderArray { mixerEncoderArray.do({ | f | f.free; }); }
+
+  prMakeDeviceEncoderArray {
+    deviceEncoderArray = Array.fill(10, { nil });
+    8.do({ | num | deviceEncoderArray[num] = MIDIFun({ }, num + 16, 0, \control, midiInPort.uid).fix; });
+    //// tempo:
+    deviceEncoderArray[8] = MIDIFunc({ }, 13, 0, \control, midiInPort.uid).fix;
+    //// crossfader:
+    deviceEncoderArray[9] = MIDIFunc({ }, 15, 0, \control, midiInPort.uid).fix;
+  }
+
+  prFreeDeviceEncoderArray { deviceEncoderArray.do({ | f | f.free; }); }
+
   prMakeColorArrays {
     // grid color arrays:
     gridColorArray = Array.fill(40, { | num | num });
-    gridLaunchColorArray = Array.fill(5, { | num | num });
-    gridStopColorArray = Array.fill(9, { | num | num });
+    sceneLaunchColorArray = Array.fill(5, { | num | num });
+    clipStopColorArray = Array.fill(9, { | num | num });
 
     // mixer color arrays:
     selectColorArray = Array.fill(9, { | num | num });
@@ -303,6 +328,7 @@ APC40Mk2 {
 
   }
 
+  ////// pages:
   prMakePageDictionary {
     pageDict = IdentityDictionary.new;
     this.makePage('main');
@@ -310,56 +336,67 @@ APC40Mk2 {
     this.setPage('main');
   }
 
-  /////// Setting Functions:
-/*
-  prSetGridFunc { | num = 0, type = 'noteOn', func = nil |
-    switch(type,
-      { \noteOn }, { noteOnGridFuncArray[num].prFunc_(func); },
-      { \noteOff }, { noteOffGridFuncArray[num].prFunc_(func); }
-    );
+  makePage { | name = 'newPage' |
+    pageDict[name] = APC40Mk2_Page.new;
   }
 
-  setFunc { | num = 0, type = \noteOn, func = nil |
-    switch(type,
-      { \noteOn }, { noteOnFuncArray[num].prFunc_(func); },
-      { \noteOff }, { noteOffFuncArray[num].prFunc_(func); },
-      { \control }, { controlFuncArray[num].prFunc_(func); }
-    );
+  setPage { | name = 'page' |
+    // stops routines that update control surface values on active page:
+    activePage.stopActiveBankMonitorRoutines;
+    activePage.offLoadFunctionDict.do({ | func | func.value; });
+
+    previousPage = activePageKey;
+
+    activePageKey = name;
+    activePage = pageDict[activePageKey];
+
+    //////// note functions:
+    //// grid:
+    this.prSetAllGridFuncs;
+    //// scene launch:
+    this.prSetAllSceneLaunchFuncs;
+    //// clip stop:
+    this.prSetAllClipStopFuncs;
+    //// Track Select:
+    this.prSetAllTrackSelectFuncs;
+    //// TrackActivate:
+    this.prSetAllTrackActivatorFuncs;
+    //// Crossfade Select:
+    this.prSetAllCrossfaderSelectFuncs;
+    //// Solo:
+    this.prSetAllSoloFuncs;
+    //// Record Enable:
+    this.prSetAllRecordEnableFuncs;
+    //// device buttons:
+    this.prSetAllDeviceButtonFuncs;
+    //// Control Buttons:
+    this.prSetAllControlButtonFuncs;
+
+
+    //////// cc functions:
+    //// mixer faders:
+    this.prSetAllFaderFuncs;
+    //// mixer encoders:
+    this.prSetAllMixerEncoderFuncs;
+    //// device encoders:
+    this.prSetAllDeviceEncoderFuncs;
+
+    // starts routines that update control surface values on active page:
+    activePage.startActiveBankMonitorRoutines;
+    activePage.loadFunctionDict.do({ | func | func.value; });
   }
 
-  clearFunc { | num = 0, type = \noteOn |
-    switch(type,
-      { \noteOn }, { noteOnFuncArray[num].prFunc_(
-        { | val, num, chn, src | (midiInPort.device + "noteOn" + num + "has no function assigned").postln; }) },
-      { \noteOff }, { noteOffFuncArray[num].prFunc_(
-         { | val, num, chn, src | (midiInPort.device + "noteOn" + num + "has no function assigned").postln; }) },
-      { \control }, { controlFuncArray[num].prFunc_({}); }
-    );
+  addPageLoadFunction { | name, func, page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    pageDict[page].addLoadFunction(name, func);
   }
 
-  setNoteOnFunc { | num, func |
-    this.setFunc(num, \noteOn, func);
+  addPageOffLoadFunction { | name func, page = 'active' |
+    if( page == 'active', { page = activePageKey; });
+    pageDict[page].addOffLoadFunction(name, func);
   }
 
-  clearNoteOnFunc { | num |
-    this.clearFunc(num, \noteOn);
-  }
+  setToPreviousPage { this.setPage(previousPage); }
 
-  setNoteOffFunc { | num, func |
-    this.setFunc(num, \noteOff, func);
-  }
-
-  clearNoteOffFunc { | num |
-    this.clearFunc(num, \noteOff);
-  }
-
-  setCCFunc { | num, func |
-    this.setFunc(num, \control, func);
-  }
-
-  clearCCFunc { | num |
-    this.clearFunc(num, \control);
-  }
-  */
 
 }

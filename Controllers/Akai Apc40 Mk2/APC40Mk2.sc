@@ -14,8 +14,8 @@ APC40Mk2 {
   var mixerFaderArray, mixerEncoderArray, deviceEncoderArray;
 
   var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
-  var <gridColorArray, <sceneLaunchColorArray, <clipStopColorArray;
 
+  var <gridColorArray, <sceneLaunchColorArray, <clipStopColorArray;
   var <selectColorArray, <mixerColorArray;
 
   var <activeGridBank, <activeSceneLaunchBank, <activeClipStopBank;
@@ -59,6 +59,7 @@ APC40Mk2 {
     this.prMakeSceneLaunchFuncArray;
     this.prMakeClipStopFuncArray;
     this.prMakeTrackSelectFuncArray;
+    this.prMakeTrackActivatorFuncArray;
     this.prMakeCrossfaderSelectFuncArray;
     this.prMakeSoloFuncArray;
     this.prMakeRecordEnableFuncArray;
@@ -71,6 +72,7 @@ APC40Mk2 {
     this.prFreeSceneLauncFuncArray;
     this.prFreeClipStopFuncArray;
     this.prFreeTrackSelectFuncArray;
+    this.prFreeTrackActivatorFuncArray;
     this.prFreeCrossfaderSelectFuncArray;
     this.prFreeSoloFuncArray;
     this.prFreeRecordEnableFuncArray;
@@ -323,8 +325,6 @@ APC40Mk2 {
     // mixer color arrays:
     selectColorArray = Array.fill(9, { | num | num });
     mixerColorArray = Array.fill(8, { Array.fill(4, { | num | num }); });
-
-    // control color arrays:
 
   }
 

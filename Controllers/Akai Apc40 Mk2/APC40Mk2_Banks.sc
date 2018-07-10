@@ -55,6 +55,7 @@ prm
     pageDict[page].setActiveGridBank(bank);
     this.prSetAllGridFuncs;
     this.prSetAllGridColors;
+
   }
 
   setActiveSceneLaunchBank { | bank = 0, page = 'active' |
@@ -81,11 +82,7 @@ prm
     this.prSetAllSoloFuncs;
     this.prSetAllRecordEnableFuncs;
 
-    this.prSetAllTrackSelectColors;
-    this.prSetAllTrackActivatorColors;
-    this.prSetAllCrossfaderSelectColors;
-    this.prSetAllSoloColors;
-    this.prSetAllRecordEnableColors;
+    this.prSetAllMixerColors;
   }
 
   setActiveMixerEncoderBank { | bank = 0, page = 'active' |

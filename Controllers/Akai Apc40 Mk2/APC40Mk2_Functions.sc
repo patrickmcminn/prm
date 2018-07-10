@@ -318,9 +318,64 @@ prm
 
 
   ////////////////////////////////
-  ////// Grid Monitor Funcs: //////
+  //////  Monitor Funcs: //////
   ////////////////////////////////
 
+  setGridMonitorFunc { | name, func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeGridBnk });
+    pageDict[page].setGridMonitorFunc(name, func, bank);
+    activePage.gridMonitorFuncArray[activePage.activeGridBnk][name].reset.play;
+  }
+
+  setSceneLaunchMonitorFunc { | name, func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeSceneLaunchBnk });
+    pageDict[page].setSceneLaunchMonitorFunc(name, func, bank);
+    activePage.sceneLaunchBankMonitorFuncArray[activePage.activeSceneLauncBnk][name].reset.play;
+  }
+
+  setClipStopMonitorFunc { | name, func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeClipStopBnk });
+    pageDict[page].setClipStopMonitorFunc(name, func, bank);
+    activePage.clipStopBankMonitorFuncArray[activePage.activeClipStopBank][name].reset.play;
+  }
+
+  setMixerMonitorFunc { | name, func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeMixerBnk });
+    pageDict[page].setMixerMonitorFunc(name, func, bank);
+    activePage.mixerBankMonitorFuncArray[activePage.activeMixerBnk][name].reset.play;
+  }
+
+  setDeviceButtonsMonitorFunc { | name, func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeDeviceButtonsBnk });
+    pageDict[page].setDeviceButtonsMonitorFunc(name, func, bank);
+    activePage.deviceButtonsBankMonitorFuncArray[activePage.activeDeviceButtonsBnk][name].reset.play;
+  }
+
+  setControlButtonsMonitorFunc { | name, func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeControlButtonsBnk });
+    pageDict[page].setControlButtonsMonitorFunc(name, func, bank);
+    activePage.controlButtonsBankMonitorFuncArray[activePage.activeControlButtonsBnk][name].reset.play;
+  }
+
+  setMixerEncodersMonitorFunc { | name, func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeMixerEncoderBnk });
+    pageDict[page].setMixerEncodersMonitorFunc(name, func, bank);
+    activePage.mixerEncoderBankMonitorFuncArray[activePage.activeMixerEncoderBnk][name].reset.play;
+  }
+
+  setDeviceEncodersMonitorFunc { | name, func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    if( bank == 'active', { bank = pageDict[page].activeDeviceEncoderBnk });
+    pageDict[page].setDeviceEncodersMonitorFunc(name, func, bank);
+    activePage.deviceEncoderBankMonitorFuncArray[activePage.activeDeviceEncoderBnk][name].reset.play;
+  }
 
 }
 

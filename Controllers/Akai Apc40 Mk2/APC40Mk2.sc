@@ -8,10 +8,10 @@ APC40Mk2 {
 
   var midiInPort, midiOutPort;
 
-  var gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
+  var <gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
   var trackSelectFuncArray, trackActivatorFuncArray, crossfaderSelectFuncArray;
   var soloFuncArray, recordEnableFuncArray,  deviceFuncArray, controlFuncArray;
-  var mixerFaderArray, mixerEncoderArray, deviceEncoderArray;
+  var mixerFaderArray, <mixerEncoderArray, deviceEncoderArray;
 
   var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
 
@@ -29,7 +29,7 @@ APC40Mk2 {
   prInit { | deviceName = "APC40 mkII", portName = "APC40 mkII" |
     this.prInitMIDI(deviceName, portName);
     this.prMakeResponders;
-    //this.prMakeColorArray;
+    this.prMakeColorArrays;
     this.prMakePageDictionary;
     storageDict = IdentityDictionary.new(know: true);
   }
@@ -41,7 +41,7 @@ APC40Mk2 {
     midiOutPort.latency = 0;
 
     /////// set to control mode:
-    midiOutPort.sysex(Int8Array[0xf0, 0x47, 0x01, 0x29, 0x06, 0x60, 0x00, 0x04, 0x42, 0x01, 0x01, 0x01, 0xf7]);
+    midiOutPort.sysex(Int8Array[0xf0, 0x47, 0x01, 0x29,0x60, 0x00, 0x04, 0x42, 0x01, 0x01, 0x01, 0xf7]);
   }
 
   prMakeResponders {
@@ -307,7 +307,7 @@ APC40Mk2 {
 
   prMakeDeviceEncoderArray {
     deviceEncoderArray = Array.fill(10, { nil });
-    8.do({ | num | deviceEncoderArray[num] = MIDIFun({ }, num + 16, 0, \control, midiInPort.uid).fix; });
+    8.do({ | num | deviceEncoderArray[num] = MIDIFunc({ }, num + 16, 0, \control, midiInPort.uid).fix; });
     //// tempo:
     deviceEncoderArray[8] = MIDIFunc({ }, 13, 0, \control, midiInPort.uid).fix;
     //// crossfader:
@@ -349,7 +349,6 @@ APC40Mk2 {
 
     activePageKey = name;
     activePage = pageDict[activePageKey];
-
     //////// note functions:
     //// grid:
     this.prSetAllGridFuncs;
@@ -372,18 +371,19 @@ APC40Mk2 {
     //// Control Buttons:
     this.prSetAllControlButtonFuncs;
 
-
     //////// cc functions:
     //// mixer faders:
     this.prSetAllFaderFuncs;
     //// mixer encoders:
     this.prSetAllMixerEncoderFuncs;
+
     //// device encoders:
     this.prSetAllDeviceEncoderFuncs;
 
     // starts routines that update control surface values on active page:
     activePage.startActiveBankMonitorRoutines;
     activePage.loadFunctionDict.do({ | func | func.value; });
+
   }
 
   addPageLoadFunction { | name, func, page = 'active' |

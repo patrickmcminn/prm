@@ -6,7 +6,7 @@ prm
 
 APC40Mk2_Page {
 
-  var gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
+  var <gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
   var trackSelectFuncArray, trackActivatorFuncArray, crossfaderSelectFuncArray;
   var soloFuncArray, recordEnableFuncArray,  deviceFuncArray, controlFuncArray;
   var mixerFaderArray, mixerEncoderArray, deviceEncoderArray;
@@ -50,16 +50,16 @@ APC40Mk2_Page {
   }
 
   prMakeNoteResponders {
-    gridFuncArray = Array.fill2D(2, 40, { nil });
-    sceneLaunchFuncArray = Array.fill2D(2, 5, { nil });
-    clipStopFuncArray = Array.fill2D(2, 9, { nil });
-    trackSelectFuncArray = Array.fill2D(2, 9, { nil });
-    trackActivatorFuncArray = Array.fill2D(2, 8, { nil });
-    crossfaderSelectFuncArray = Array.fill2D(2, 8, { nil });
-    soloFuncArray = Array.fill2D(2, 8, { nil });
-    recordEnableFuncArray = Array.fill2D(2, 8, { nil });
-    deviceFuncArray = Array.fill2D(2, 14, { nil });
-    controlFuncArray = Array.fill2D(2, 10, { nil });
+    gridFuncArray = Array.fill2D(2, 40, { { }; });
+    sceneLaunchFuncArray = Array.fill2D(2, 5, { { }; });
+    clipStopFuncArray = Array.fill2D(2, 9, { { }; });
+    trackSelectFuncArray = Array.fill2D(2, 9, { { }; });
+    trackActivatorFuncArray = Array.fill2D(2, 8, { { }; });
+    crossfaderSelectFuncArray = Array.fill2D(2, 8, { { }; });
+    soloFuncArray = Array.fill2D(2, 8, { { }; });
+    recordEnableFuncArray = Array.fill2D(2, 8, { { }; });
+    deviceFuncArray = Array.fill2D(2, 14, { { }; });
+    controlFuncArray = Array.fill2D(2, 10, { { }; });
   }
 
   prFreeNoteResponders {
@@ -76,9 +76,9 @@ APC40Mk2_Page {
   }
 
   prMakeControlResponders {
-    mixerFaderArray = Array.fill(9, { nil });
-    mixerEncoderArray = Array.fill(9, { nil });
-    deviceEncoderArray = Array.fill(10, { nil });
+    mixerFaderArray = Array.fill(9, { { }; });
+    mixerEncoderArray = Array.fill(9, { { }; });
+    deviceEncoderArray = Array.fill(10, { { }; });
   }
 
   prFreeControlResponders {
@@ -119,12 +119,72 @@ APC40Mk2_Page {
   //// Function Setting: ////
   //////////////////////////////////
 
+  ////////////////////////////////
+  ///// Function Reporting: /////
+  //////////////////////////////
+
+  getGridFunc { | num, type |
+    switch(type,
+      \noteOn, { ^gridFuncArray[0][num] },
+      \noteOff, { ^gridFuncArray[1][num] });
+  }
+  getSceneLaunchFunc { | num, type |
+    switch(type,
+      \noteOn, { ^sceneLaunchFuncArray[0][num] },
+      \noteOff, { ^sceneLaunchFuncArray[1][num] });
+  }
+  getClipStopFunc { | num, type |
+    switch(type,
+      \noteOn, { ^clipStopFuncArray[0][num] },
+      \noteOff, { ^clipStopFuncArray[1][num] });
+  }
+  getTrackSelectFunc { | num, type |
+    switch(type,
+      \noteOn, { ^trackSelectFuncArray[0][num] },
+      \noteOff, { ^trackSelectFuncArray[1][num] });
+  }
+  getTrackActivatorFunc { | num, type |
+    switch(type,
+      \noteOn, { ^trackActivatorFuncArray[0][num] },
+      \noteOff, { ^trackActivatorFuncArray[1][num] });
+  }
+  getCrossfaderSelectFunc { | num, type |
+    switch(type,
+      \noteOn, { ^crossfaderSelectFuncArray[0][num] },
+      \noteOff, { ^crossfaderSelectFuncArray[1][num] });
+  }
+  getSoloFunc { | num, type |
+    switch(type,
+      \noteOn, { ^soloFuncArray[0][num] },
+      \noteOff, { ^soloFuncArray[1][num] });
+  }
+  getRecordEnableFunc { | num, type |
+    switch(type,
+      \noteOn, { ^recordEnableFuncArray[0][num] },
+      \noteOff, { ^recordEnableFuncArray[1][num] });
+  }
+  getDeviceButtonFunc { | num, type |
+    switch(type,
+      \noteOn, {^deviceFuncArray[0][num] },
+      \noteOff, { ^deviceFuncArray[1][num] });
+  }
+  getControlButtonFunc { | num, type |
+    switch(type,
+      \noteOn, { ^controlFuncArray[0][num] },
+      \noteOff, { ^controlFuncArray[1][num] });
+  }
+  getFaderFunc { | num | ^mixerFaderArray[num] }
+  getMixerEncoderFunc { | num | ^mixerEncoderArray[num] }
+  getMixerEncoderValue { | num | ^mixerEncoderValueArray[num] }
+  getDeviceEncoderFunc{ | num | ^deviceEncoderArray[num] }
+  getDeviceEncoderValue { | num | ^deviceEncoderValueArray[num] }
+
   /////// note funcs:
 
   prSetGridFunc { | num = 0, type = 'noteOn', func = nil |
     switch(type,
-      \noteOn, { gridFuncArray[0][num].prFunc_(func) },
-      \noteOff,{ gridFuncArray[1][num].prFunc_(func) }
+      \noteOn, { gridFuncArray[0][num] = func },
+      \noteOff,{ gridFuncArray[1][num] = func }
     );
   }
 
@@ -147,15 +207,15 @@ APC40Mk2_Page {
 
   prSetSceneLaunchFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { sceneLaunchFuncArray[0][num].prFunc_(func) },
-      \noteOff, { sceneLaunchFuncArray[1][num].prFunc_(func) }
+      \noteOn, { sceneLaunchFuncArray[0][num] = func },
+      \noteOff, { sceneLaunchFuncArray[1][num] = func }
     );
   }
 
   setSceneLaunchFunc { | num = 0, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
-    if( bank == activeGridBnk, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeGridBnk }, { bankSelect = bank });
+    if( bank == activeSceneLaunchBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeSceneLaunchBnk }, { bankSelect = bank });
     if( num >5, { "out of range!"}, {
       switch(type,
         \noteOn, {
@@ -170,15 +230,15 @@ APC40Mk2_Page {
 
   prSetClipStopFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { clipStopFuncArray[0][num].prFunc_(func) },
-      \noteOff, { clipStopFuncArray[1][num].prFunc_(func) }
+      \noteOn, { clipStopFuncArray[0][num] = func},
+      \noteOff, { clipStopFuncArray[1][num] = func }
     );
   }
 
-  setClipStopFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
+  setClipStopFunc { | num = 0, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
-    if( bank == activeGridBnk, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeGridBnk }, { bankSelect = bank });
+    if( bank == activeClipStopBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeClipStopBnk }, { bankSelect = bank });
     if( num >10, { "out of range!"}, {
       switch(type,
         \noteOn, {
@@ -193,75 +253,183 @@ APC40Mk2_Page {
 
   prSetTrackSelectFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { trackSelectFuncArray[0][num].prFunc_(func) },
-      \noteOff, { trackSelectFuncArray[1][num].prFunc_(func) });
+      \noteOn, { trackSelectFuncArray[0][num] = func },
+      \noteOff, { trackSelectFuncArray[1][num] = func });
   }
 
-  /*
-  setTrackSelectFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
-  var bankSelect;
-  if( bank == activeGridBnk, { bank = 'active' });
-  if( bank == 'active', { bankSelect = activeGridBnk }, { bankSelect = bank });
-  if( num >9, { "out of range!"}, {
-  switch(type,
-  \noteOn, {
-  trackSelectBankArray[bankSelect][num][0] = func;
-  if( bank == 'active', { this.prSetTrackSelectFunc(num, type, func); }); },
-  \noteOff, {
-  trackSelectBankArray[bankSelect][num][1] = func;
-  if( bank == 'active', { this.prSetTrackSelectFunc(num, type, func); }); }
-  );
-  });
+  setTrackSelectFunc { | num = 0, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
+    if( bank == activeMixerBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
+    if( num > 9, { "out of range!" }, {
+      switch(type,
+        \noteOn, {
+          mixerBankArray[bankSelect][1][num][0] = func;
+          if( bank == 'active', { this.prSetTrackSelectFunc(num, 'noteOn', func); }); },
+        \noteOff, {
+          mixerBankArray[bankSelect][1][num][1] = func;
+          if( bank == 'active', { this.prSetTrackSelectFunc(num, 'noteOff', func);}); }
+      );
+    });
   }
-  */
 
   prSetTrackActivatorFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { trackActivatorFuncArray[0][num].prFunc_(func) },
-      \noteOff, { trackActivatorFuncArray[1][num].prFunc_(func) });
+      \noteOn, { trackActivatorFuncArray[0][num] = func },
+      \noteOff, { trackActivatorFuncArray[1][num] = func });
+  }
+  setTrackActivatorFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
+    if( bank == activeMixerBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
+    if( num > 9, { "out of range!" }, {
+      switch(type,
+        \noteOn, {
+          mixerBankArray[bankSelect][2][num][0] = func;
+          if( bank == 'active', { this.prSetTrackActivatorFunc(num, 'noteOn', func); }); },
+        \noteOff, {
+          mixerBankArray[bankSelect][2][num][1] = func;
+          if( bank == 'active', { this.prSetTrackActivatorFunc(num, 'noteOff', func); }); }
+      );
+    });
   }
 
   prSetCrossfaderSelectFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { crossfaderSelectFuncArray[0][num].prFunc_(nil) },
-      \noteOff, { crossfaderSelectFuncArray[1][num].prFunc_(nil) });
+      \noteOn, { crossfaderSelectFuncArray[0][num] = func },
+      \noteOff, { crossfaderSelectFuncArray[1][num] = func });
+  }
+  setCrossfaderSelectFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
+    if( bank == activeMixerBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
+    if( num > 9, { "out of range!" }, {
+      switch(type,
+        \noteOn, {
+          mixerBankArray[bankSelect][3][num][0] = func;
+          if( bank == 'active', { this.prSetCrossfaderSelectFunc(num, 'noteOn', func); }); },
+        \noteOff, {
+          mixerBankArray[bankSelect][3][num][1] = func;
+          if( bank == 'active', { this.prSetCrossfaderSelectFunc(num, 'noteOff', func); }); }
+      );
+    });
   }
 
   prSetSoloFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { soloFuncArray[0][num].prFunc_(func) },
-      \noteOff, { soloFuncArray[1][num].prFunc_(func) });
+      \noteOn, { soloFuncArray[0][num] = func },
+      \noteOff, { soloFuncArray[1][num] = func });
+  }
+  setSoloFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
+    if( bank == activeMixerBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
+    if( num > 9, { "out of range!" }, {
+      switch(type,
+        \noteOn, {
+          mixerBankArray[bankSelect][4][num][0] = func;
+          if( bank == 'active', { this.prSetSoloFunc(num, 'noteOn', func); }); },
+        \noteOff, {
+          mixerBankArray[bankSelect][4][num][1] = func;
+          if( bank == 'active', { this.prSetSoloFunc(num, 'noteOff', func); }); }
+      );
+    });
   }
 
   prSetRecordEnableFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { recordEnableFuncArray[0][num].prFunc_(func) },
-      \noteOff, { recordEnableFuncArray[1][num].prFunc_(func) });
+      \noteOn, { recordEnableFuncArray[0][num] = func },
+      \noteOff, { recordEnableFuncArray[1][num] = func });
+  }
+  setRecordEnableFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
+    if( bank == activeMixerBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
+    if( num > 9, { "out of range!" }, {
+      switch(type,
+        \noteOn, {
+          mixerBankArray[bankSelect][5][num][0] = func;
+          if( bank == 'active', { this.prSetRecordEnableFunc(num, 'noteOn', func); }); },
+        \noteOff, {
+          mixerBankArray[bankSelect][5][num][1] = func;
+          if( bank == 'active', { this.prSetRecordEnableFunc(num, 'noteOff', func); }); }
+      );
+    });
   }
 
   prSetDeviceButtonFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { deviceFuncArray[0][num].prFunc_(func) },
-      \noteOff, { deviceFuncArray[1][num].prFunc_(func) });
+      \noteOn, { deviceFuncArray[0][num] = func },
+      \noteOff, { deviceFuncArray[1][num] = func });
+  }
+  setDeviceButtonFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
+    if( bank == activeMixerBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeDeviceButtonsBnk }, { bankSelect = bank });
+    switch(type,
+      \noteOn, {
+        deviceButtonsBankArray[bankSelect][num][0] = func;
+        if( bank == 'active', { this.prSetDeviceButtonFunc(num, 'noteOn', func); }); },
+      \noteOff, {
+        deviceButtonsBankArray[bankSelect][num][1] = func;
+        if( bank == 'active', { this.prSetDeviceButtonFunc(num, 'noteOff', func); }); }
+    );
   }
 
   prSetControlButtonFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { controlFuncArray[0][num].prFunc_(func) },
-      \noteOff, { controlFuncArray[1][num].prFunc_(func) });
+      \noteOn, { controlFuncArray[0][num] = func },
+      \noteOff, { controlFuncArray[1][num] = func });
+  }
+  setControlButtonFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
+    var bankSelect;
+    if( bank == activeMixerBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeControlButtonsBnk }, { bankSelect = bank });
+    switch(type,
+      \noteOn, {
+        controlButtonsBankArray[bankSelect][num][0] = func;
+        if( bank == 'active', { this.prSetControlButtonFunc(num, 'noteOn', func); }); },
+      \noteOff, {
+        controlButtonsBankArray[bankSelect][num][1] = func;
+        if( bank == 'active', { this.prSetControlButtonFunc(num, 'noteOff', func); }); }
+    );
   }
 
   //////// control funcs:
   prSetFaderFunc { | num, func = nil|
-    mixerFaderArray[num].prFunc_(nil);
+    mixerFaderArray[num] = func;
+  }
+  setFaderFunc { | num = 1, func, bank = 'active' |
+    var bankSelect;
+    var index = num-1;
+    if( bank == activeMixerBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
+    mixerBankArray[bankSelect][0][index][0] = func;
+    if( bank == 'active', { this.prSetFaderFunc(index, func) });
   }
 
   prSetMixerEncoderFunc { | num, func = nil |
-    mixerEncoderArray[num].prFunc_(func);
+    mixerEncoderArray[num] = func;
+  }
+  setMixerEncoderFunc { | num = 1, func, bank = 'active' |
+    var bankSelect;
+    var index = num-1;
+    if( bank == activeMixerEncoderBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeMixerEncoderBnk }, { bankSelect = bank });
+    mixerEncoderBankArray[bankSelect][index][0] = func;
+    if( bank == 'active', { this.prSetMixerEncoderFunc(index, func); });
   }
 
   prSetDeviceEncoderFunc { | num, func = nil |
-    deviceEncoderArray[num].prFunc_(func);
+    deviceEncoderArray[num] = func;
+  }
+  setDeviceEncoderFunc { | num = 1, func, bank = 'active' |
+    var bankSelect;
+    var index = num-1;
+    if( bank == activeMixerEncoderBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeDeviceEncoderBnk }, { bankSelect = bank });
+    deviceEncoderBankArray[bankSelect][index][0] = func;
+    if( bank == 'active', { this.prSetDeviceEncoderFunc(index, func); });
   }
 
   /////////////////////////////////

@@ -15,8 +15,8 @@ prm
   }
   prSetGridFunc { | num = 0, type = 'noteOn' |
     switch(type,
-      \noteOn, { gridFuncArray[0][num].prFunc_(activePage.getGridFunc(0, num)) },
-      \noteOff,{ gridFuncArray[1][num].prFunc_(activePage.getGridFunc(1, num)) }
+      { 'noteOn' }, { gridFuncArray[0][num].prFunc_(activePage.getGridFunc(num, 'noteOn')) },
+      { 'noteOff' },{ gridFuncArray[1][num].prFunc_(activePage.getGridFunc(num, 'noteOff')) }
     );
   }
   setGridFunc { | column = 0, row = 0, func, type = 'noteOn', bank = 'active', page = 'active' |
@@ -32,8 +32,8 @@ prm
   }
   prSetSceneLaunchFunc { | num, type |
     switch(type,
-      \noteOn, { sceneLaunchFuncArray[0][num].prFunc_(activePage.getSceneLaunchFunc(0, num)) },
-      \noteOff, { sceneLaunchFuncArray[1][num].prFunc_(activePage.getSceneLaunchFunc(1, num)) }
+      \noteOn, { sceneLaunchFuncArray[0][num].prFunc_(activePage.getSceneLaunchFunc(num, 'noteOn')) },
+      \noteOff, { sceneLaunchFuncArray[1][num].prFunc_(activePage.getSceneLaunchFunc(num, 'noteOff')) }
     );
   }
   setSceneLaunchFunc { | num = 0, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
@@ -50,8 +50,8 @@ prm
   }
   prSetClipStopFunc { | num, type |
     switch(type,
-      \noteOn, { clipStopFuncArray[0][num].prFunc_(activePage.getClipStopFunc(0, num)) },
-      \noteOff, { clipStopFuncArray[1][num].prFunc_(activePage.getClipStopFunc(1, num)) }
+      \noteOn, { clipStopFuncArray[0][num].prFunc_(activePage.getClipStopFunc(num, 'noteOn')) },
+      \noteOff, { clipStopFuncArray[1][num].prFunc_(activePage.getClipStopFunc(num, 'noteOff')) }
     );
   }
 
@@ -61,7 +61,6 @@ prm
       if( page == 'active', { page = activePageKey });
       pageDict[page].setClipStopFunc(number, func, type, bank);
       this.prSetClipStopFunc(number, type);
-
       },
       { "out of range!".postln; });
   }
@@ -72,12 +71,12 @@ prm
   }
   prSetTrackSelectFunc { | num, type |
     switch(type,
-      \noteOn, { trackSelectFuncArray[0][num].prFunc_(activePage.getTrackSelectFunc(0, num)) },
-      \noteOff, { trackSelectFuncArray[1][num].prFunc_(activePage.getTrackSelectFunc(1, num)) });
+      \noteOn, { trackSelectFuncArray[0][num].prFunc_(activePage.getTrackSelectFunc(num, 'noteOn')) },
+      \noteOff, { trackSelectFuncArray[1][num].prFunc_(activePage.getTrackSelectFunc(num, 'noteOff')) });
   }
   setTrackSelectFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     var number = num - 1;
-    if( num < 9, {
+    if( num < 10, {
       if( page == 'active', { page = activePageKey });
       pageDict[page].setTrackSelectFunc(number, func, type, bank);
       this.prSetTrackSelectFunc(number, type);
@@ -86,16 +85,16 @@ prm
 
   ////// track activator:
   prSetAllTrackActivatorFuncs {
-    9.do({ | func | this.prSetTrackActivatorFunc(func, 'noteOn'); this.prSetTrackActivatorFunc(func, 'noteOff'); });
+    8.do({ | func | this.prSetTrackActivatorFunc(func, 'noteOn'); this.prSetTrackActivatorFunc(func, 'noteOff'); });
   }
   prSetTrackActivatorFunc { | num, type |
     switch(type,
-      \noteOn, { trackActivatorFuncArray[0][num].prFunc_(activePage.getTrackActivatorFunc(0, num)) },
-      \noteOff, { trackActivatorFuncArray[1][num].prFunc_(activePage.getTrackActivatorFunc(1, num)) });
+      \noteOn, { trackActivatorFuncArray[0][num].prFunc_(activePage.getTrackActivatorFunc(num, 'noteOn')) },
+      \noteOff, { trackActivatorFuncArray[1][num].prFunc_(activePage.getTrackActivatorFunc(num, 'noteOff')) });
   }
   setTrackActivatorFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     var number = num-1;
-    if( num < 8, {
+    if( num < 9, {
       if( page == 'active', { page = activePageKey });
       pageDict[page].setTrackActivatorFunc(number, func, type, bank);
       this.prSetTrackActivatorFunc(number, type);
@@ -108,12 +107,12 @@ prm
   }
   prSetCrossfaderSelectFunc { | num, type |
     switch(type,
-      \noteOn, { crossfaderSelectFuncArray[0][num].prFunc_(activePage.getCrossfaderSelectFunc(0, num)) },
-      \noteOff, { crossfaderSelectFuncArray[1][num].prFunc_(activePage.getCrossfaderSelectFunc(1, num )) });
+      \noteOn, { crossfaderSelectFuncArray[0][num].prFunc_(activePage.getCrossfaderSelectFunc(num, 'noteOn')) },
+      \noteOff, { crossfaderSelectFuncArray[1][num].prFunc_(activePage.getCrossfaderSelectFunc(num, 'noteOff' )) });
   }
   setCrossfaderSelectFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     var number = num - 1;
-    if( num < 8, {
+    if( num < 9, {
       if( page == 'active', { page = activePageKey });
       pageDict[page].setCrossfaderSelectFunc(number, func, type, bank);
       this.prSetCrossfaderSelectFunc(number, type);
@@ -126,16 +125,16 @@ prm
   }
   prSetSoloFunc { | num, type |
     switch(type,
-      \noteOn, { soloFuncArray[0][num].prFunc_(activePage.getSoloFunc(0, num)) },
-      \noteOff, { soloFuncArray[1][num].prFunc_(activePage.getSoloFunc(1, num)) });
+      \noteOn, { soloFuncArray[0][num].prFunc_(activePage.getSoloFunc(num, 'noteOn')) },
+      \noteOff, { soloFuncArray[1][num].prFunc_(activePage.getSoloFunc(num, 'noteOff')) });
   }
   setSoloFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     var number = num - 1;
-    if( num < 8, {
+    if( num < 9, {
       if( page == 'active', { page = activePageKey });
       pageDict[page].setSoloFunc(number, func, type, bank);
       this.prSetSoloFunc(number, type);
-    }, { "out of range!" });
+    }, { "out of range!".postln });
   }
 
   ////// record enable funcs:
@@ -144,16 +143,16 @@ prm
   }
   prSetRecordEnableFunc { | num, type |
     switch(type,
-      \noteOn, { recordEnableFuncArray[0][num].prFunc_(activePage.getRecordEnableFunc(0, num)) },
-      \noteOff, { recordEnableFuncArray[1][num].prFunc_(activePage.getRecordEnableFunc(1, num)) });
+      \noteOn, { recordEnableFuncArray[0][num].prFunc_(activePage.getRecordEnableFunc(num, 'noteOn')) },
+      \noteOff, { recordEnableFuncArray[1][num].prFunc_(activePage.getRecordEnableFunc(num, 'noteOff')) });
   }
   setRecordEnableFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     var number = num - 1;
-    if( num < 8, {
+    if( num < 9, {
       if( page == 'active', { page = activePageKey });
       pageDict[page].setRecordEnableFunc(number, func, type, bank);
       this.prSetRecordEnableFunc(number, type);
-    }, { "out of range!" });
+    }, { "out of range!".postln });
   }
 
   ////// device buttons:
@@ -162,16 +161,16 @@ prm
   }
   prSetDeviceButtonFunc { | num, type |
     switch(type,
-      \noteOn, { deviceFuncArray[0][num].prFunc_(activePage.getDeviceButtonFunc(0, num)) },
-      \noteOff, { deviceFuncArray[1][num].prFunc_(activePage.getDeviceButtonFunc(1, num)) });
+      \noteOn, { deviceFuncArray[0][num].prFunc_(activePage.getDeviceButtonFunc(num, 'noteOn')) },
+      \noteOff, { deviceFuncArray[1][num].prFunc_(activePage.getDeviceButtonFunc(num, 'noteOff')) });
   }
   setDeviceButtonFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     var number = num - 1;
-    if( num < 8, {
+    if( num < 9, {
       if( page == 'active', { page = activePageKey });
       pageDict[page].setDeviceButtonFunc(number, func, type, bank);
       this.prSetDeviceButtonFunc(number, type);
-    }, { "out of range!" });
+    }, { "out of range!.postln" });
   }
   setBankSelectFunc { | direction = 'up', func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     var number;
@@ -197,13 +196,13 @@ prm
   }
 
   ////// control button funcs:
-  prSetAllControlButtonsFuncs {
+  prSetAllControlButtonFuncs {
     10.do({ | func | this.prSetControlButtonFunc(func, 'noteOn'); this.prSetControlButtonFunc(func, 'noteOff'); });
   }
   prSetControlButtonFunc { | num, type |
     switch(type,
-      \noteOn, { controlFuncArray[0][num].prFunc_(activePage.getControlButtonFunc(0, num)) },
-      \noteOff, { controlFuncArray[1][num].prFunc_(activePage.getControlButtonFunc(1, num)) });
+      \noteOn, { controlFuncArray[0][num].prFunc_(activePage.getControlButtonFunc(num, 'noteOn')) },
+      \noteOff, { controlFuncArray[1][num].prFunc_(activePage.getControlButtonFunc(num, 'noteOff')) });
   }
   setPanButtonFunc { | func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });

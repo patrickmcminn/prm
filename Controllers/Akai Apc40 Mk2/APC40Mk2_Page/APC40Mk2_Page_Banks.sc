@@ -119,7 +119,7 @@ slot 5 - record enable
     // color
     */
     numBanks.do({
-      mixerBankArray = mixerBankArray.add(Array.fill3D(6, 8, 3, nil));
+      mixerBankArray = mixerBankArray.add(Array.fill3D(6, 9, 3, nil));
       mixerBankArray[mixerBankArray.size-1].do({ | plane |
         plane.do({ | item |
             item[0] = { };
@@ -144,7 +144,7 @@ slot 5 - record enable
 
   addDeviceEncoderBanks { | numBanks = 1 |
     numBanks.do({
-      deviceEncoderBankArray = deviceEncoderBankArray.add(Array.fill2D(9, 2, nil));
+      deviceEncoderBankArray = deviceEncoderBankArray.add(Array.fill2D(10, 2, nil));
       deviceEncoderBankArray[deviceEncoderBankArray.size-1].do({ | item, index |
         item[0] = { };
         item[1] = 0;

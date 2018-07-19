@@ -195,7 +195,6 @@ prm
     this.prSetDeviceButtonFunc(13, type);
   }
 
-  ////// control button funcs:
   prSetAllControlButtonFuncs {
     10.do({ | func | this.prSetControlButtonFunc(func, 'noteOn'); this.prSetControlButtonFunc(func, 'noteOff'); });
   }
@@ -256,8 +255,9 @@ prm
   }
 
   ///////////////////////////////
-  ////// Control Funtions: //////
+  ////// Control Functions: //////
   ///////////////////////////////
+
 
   prSetAllFaderFuncs {
     9.do({ | func | this.prSetFaderFunc(func); });

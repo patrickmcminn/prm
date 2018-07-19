@@ -13,13 +13,13 @@ prm
   ///////////////  BASIC COLOR FUNCTIONS ///////////////
 
   prTurnButtonColor { | num, colorVal | midiOutPort.noteOn(0, num, colorVal); }
-  prTurnStopClipButtonColor { | num, color = 0 | midiOutPort.noteOn(num-1, 52, color); }
-  prTurnTrackSelectButtonColor { | num, color = 0 | midiOutPort.noteOn(num-1, 51, color); }
-  prTurnTrackActivatorButtonColor { | num, color = 0 | midiOutPort.noteOn(num-1, 50, color); }
-  prTurnCrossfadeSelectButtonColor { | num, color = 0 | midiOutPort.noteOn(num-1, 66, color); }
-  prTurnSoloButtonColor { | num = 1, color = 0 | midiOutPort.noteOn(num-1, 49, color); }
-  prTurnRecordEnableButtonColor { | num = 1, color = 0 | midiOutPort.noteOn(num-1, 48, color); }
-  prTurnDeviceButtonColor { | num = 1, color = 0 | midiOutPort.noteOn(0, num+57, color); }
+  prTurnClipStopButtonColor { | num, color = 0 | midiOutPort.noteOn(num, 52, color); }
+  prTurnTrackSelectButtonColor { | num, color = 0 | midiOutPort.noteOn(num, 51, color); }
+  prTurnTrackActivatorButtonColor { | num, color = 0 | midiOutPort.noteOn(num, 50, color); }
+  prTurnCrossfadeSelectButtonColor { | num, color = 0 | midiOutPort.noteOn(num, 66, color); }
+  prTurnSoloButtonColor { | num = 0, color = 0 | midiOutPort.noteOn(num, 49, color); }
+  prTurnRecordEnableButtonColor { | num = 0, color = 0 | midiOutPort.noteOn(num, 48, color); }
+  prTurnDeviceButtonColor { | num = 0, color = 0 | midiOutPort.noteOn(0, num+58, color); }
   prTurnBankButtonColor { | color | midiOutPort.noteOn(0, 103, color); }
   prTurnPanButtonColor { | color | midiOutPort.noteOn(0, 87, color); }
   prTurnSendsButtonColor { | color | midiOutPort.noteOn(0, 88, color); }
@@ -37,8 +37,8 @@ prm
   prSetAllSceneLaunchColors {
     5.do({ | num | this.prTurnButtonColor(82+num, activePage.sceneLaunchColorArray[num]); });
   }
-  prSetAllStopClipColors {
-    9.do({ | num | this.prTurnStopClipButtonColor(num, activePage.clipStopColorArray[num]) });
+  prSetAllClipStopColors {
+    9.do({ | num | this.prTurnClipStopButtonColor(num, activePage.clipStopColorArray[num]) });
   }
   prSetAllMixerColors {
     9.do({ | num | this.prTurnTrackSelectButtonColor(num, activePage.selectColorArray[num]) });
@@ -83,7 +83,7 @@ prm
     var num = ((row * 8) + column);
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      colorVal != activePage.getGridColor(num),
+      colorVal != activePage.getGridButtonColor(num),
       { this.prTurnButtonColor(num, colorVal); }); });
     pageDict[page].turnGridColor(column, row, colorVal, bank);
   }
@@ -236,49 +236,55 @@ prm
   ////////////////////////////////
 
 
-  turnStopClipButtonOn { | button = 1, bank = 'active', page = 'active' |
+  turnClipStopButtonOn { | button = 1, bank = 'active', page = 'active' |
+    var index = button - 1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getStopClipButtonColor(button) != 1,
-      { this.prTurnStopClipButtonColor(button, 1) }); });
-    pageDict[page].turnStopClipButtonOn(button, bank);
+      activePage.getClipStopButtonColor(index) != 1,
+      { this.prTurnClipStopButtonColor(index, 1) }); });
+    pageDict[page].turnClipStopButtonOn(index, bank);
   }
-  turnStopClipButtonOff { | button = 1, bank = 'active', page = 'active' |
+  turnClipStopButtonOff { | button = 1, bank = 'active', page = 'active' |
+    var index = button -1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getStopClipButtonColor(button) != 0,
-      { this.prTurnStopClipButtonColor(button, 0) }); });
-    pageDict[page].turnStopClipButtonOff(button, bank);
+      activePage.getClipStopButtonColor(index) != 0,
+      { this.prTurnClipStopButtonColor(index, 0) }); });
+    pageDict[page].turnClipStopButtonOff(index, bank);
   }
 
   turnTrackSelectButtonOn { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getTrackSelectButtonColor(button) != 1,
-      { this.prTurnTrackSelectButtonColor(button, 1) }); });
-    pageDict[page].turnTrackSelectButtonOn(button, bank);
+      activePage.getTrackSelectButtonColor(index) != 1,
+      { this.prTurnTrackSelectButtonColor(index, 1) }); });
+    pageDict[page].turnTrackSelectButtonOn(index, bank);
   }
   turnTrackSelectButtonOff { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getTrackSelectButtonColor(button) != 0,
-      { this.prTurnTrackSelectButtonColor(button, 0) }); });
-    pageDict[page].turnTrackSelectButtonOff(button, bank);
+      activePage.getTrackSelectButtonColor(index) != 0,
+      { this.prTurnTrackSelectButtonColor(index, 0) }); });
+    pageDict[page].turnTrackSelectButtonOff(index, bank);
   }
 
   turnTrackActivatorButtonOn { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getTrackActivatorButtonColor(button) != 1,
-      { this.prTurnTrackActivatorButtonColor(button, 1) }); });
-    pageDict[page].turnTrackActivatorButtonOn(button, bank);
+      activePage.getTrackActivatorButtonColor(index) != 1,
+      { this.prTurnTrackActivatorButtonColor(index, 1) }); });
+    pageDict[page].turnTrackActivatorButtonOn(index, bank);
   }
   turnTrackActivatorButtonOff { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getTrackActivatorButtonColor(button) != 0,
-      { this.prTurnTrackActivatorButtonColor(button, 0) }); });
-    pageDict[page].turnTrackActivatorButtonOff(button, bank);
+      activePage.getTrackActivatorButtonColor(index) != 0,
+      { this.prTurnTrackActivatorButtonColor(index, 0) }); });
+    pageDict[page].turnTrackActivatorButtonOff(index, bank);
   }
 
   turnCrossfadeSelectButtonOn { | button = 1, bank = 'active', page = 'active' |
@@ -289,69 +295,77 @@ prm
     pageDict[page].turnCrossfadeSelectButtonOn(button, bank);
   }
   turnCrossfadeSelectButtonOff { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getCrossfadeSelectButtonColor(button) != 0,
-      { this.prTurnCrossfadeSelectButtonColor(button, 0) }); });
-    pageDict[page].turnCrossfadeSelectButtonOff(button, bank);
+      activePage.getCrossfadeSelectButtonColor(index) != 0,
+      { this.prTurnCrossfadeSelectButtonColor(index, 0) }); });
+    pageDict[page].turnCrossfadeSelectButtonOff(index, bank);
   }
 
   turnSoloButtonOn { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getSoloButtonColor(button) != 1,
-      { this.prTurnSoloButtonColor(button, 1) }); });
-    pageDict[page].turnSoloButtonOn(button, bank);
+      activePage.getSoloButtonColor(index) != 1,
+      { this.prTurnSoloButtonColor(index, 1) }); });
+    pageDict[page].turnSoloButtonOn(index, bank);
   }
   turnSoloButtonOff { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getSoloButtonColor(button) != 0,
-      { this.prTurnSoloButtonColor(button, 0) }); });
-    pageDict[page].turnSoloButtonOff(button, bank);
+      activePage.getSoloButtonColor(index) != 0,
+      { this.prTurnSoloButtonColor(index, 0) }); });
+    pageDict[page].turnSoloButtonOff(index, bank);
   }
 
   turnRecordEnableButtonOn { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getRecordEnableButtonColor(button) != 1,
-      { this.prTurnRecordButtonColor(button, 1) }); });
-    pageDict[page].turnRecordEnableButtonOn(button, bank);
+      activePage.getRecordEnableButtonColor(index) != 1,
+      { this.prTurnRecordEnableButtonColor(index, 1) }); });
+    pageDict[page].turnRecordEnableButtonOn(index, bank);
   }
   turnRecordEnableButtonOff { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getRecordEnableButtonColor(button) != 0,
-      { this.prTurnRecordButtonColor(button, 0) }); });
-    pageDict[page].turnRecordEnableButtonOff(button, bank);
+      activePage.getRecordEnableButtonColor(index) != 0,
+      { this.prTurnRecordButtonColor(index, 0) }); });
+    pageDict[page].turnRecordEnableButtonOff(index, bank);
   }
 
+
   turnDeviceButtonOn { | button = 1, bank = 'active', page = 'active' |
+    var index = button - 1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getDeviceButtonColor(button) != 1,
-      { this.prTurnDeviceButtonColor(button, 1) }); });
-    pageDict[page].turnDeviceButtonOn(button, bank);
+      activePage.getDeviceButtonColor(index) != 1,
+      { this.prTurnDeviceButtonColor(index, 1) }); });
+    pageDict[page].turnDeviceButtonOn(index, bank);
   }
   turnDeviceButtonOff { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getDeviceButtonColor(button) != 0,
-      { this.prTurnDeviceButtonColor(button, 0) }); });
-    pageDict[page].turnDeviceButtonOff(button, bank);
+      activePage.getDeviceButtonColor(index) != 0,
+      { this.prTurnDeviceButtonColor(index, 0) }); });
+    pageDict[page].turnDeviceButtonOff(index, bank);
   }
 
   turnBankButtonOn { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getBankButtonColor != 1,
+      activePage.getDeviceButtonColor(13) != 1,
       { this.prTurnBankButtonColor(1) }); });
     pageDict[page].turnDeviceButtonColor(13, 1, bank);
   }
   turnBankButtonOff { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getBankButtonColor != 0,
+      activePage.getDeviceButtonColor(13) != 0,
       { this.prTurnBankButtonColor(0) }); });
     pageDict[page].turnDeviceButtonColor(13, 0, bank);
   }
@@ -359,14 +373,14 @@ prm
   turnPanButtonOn { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getPanButtonColor != 1,
+      activePage.getControlButtonColor(0) != 1,
       { this.prTurnPanButtonColor(1) }); });
     pageDict[page].turnControlButtonColor(0, 1, bank);
   }
   turnPanButtonOff { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getPanButtonColor != 0,
+      activePage.getControlButtonColor(0) != 0,
       { this.prTurnPanButtonColor(0) }); });
     pageDict[page].turnControlButtonColor(0, 0, bank);
   }
@@ -374,14 +388,14 @@ prm
   turnSendsButtonOn { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getSendsButtonColor != 1,
+      activePage.getControlButtonColor(1) != 1,
       { this.prTurnSendsButtonColor(1) }); });
     pageDict[page].turnControlButtonColor(1, 1, bank);
   }
   turnSendsButtonOff { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getSendsButtonColor != 0,
+      activePage.getControlButtonColor(1) != 0,
       { this.prTurnSendsButtonColor(0) }); });
     pageDict[page].turnControlButtonColor(1, 0, bank);
   }
@@ -389,14 +403,14 @@ prm
   turnUserButtonOn { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getUserButtonColor != 1,
+      activePage.getControlButtonColor(2) != 1,
       { this.prTurnUserButtonColor(1) }); });
     pageDict[page].turnControlButtonColor(2, 1, bank);
   }
   turnUserButtonOff { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getUserButtonColor != 0,
+      activePage.getControlButtonColor(2) != 0,
       { this.prTurnUserButtonColor(0) }); });
     pageDict[page].turnControlButtonColor(2, 0, bank);
   }
@@ -404,14 +418,14 @@ prm
   turnMetronomeButtonOn { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getMetronomeButtonColor != 1,
+      activePage.getControlButtonColor(6) != 1,
       { this.prTurnMetronomeButtonColor(1) }); });
     pageDict[page].turnControlButtonColor(6, 1, bank);
   }
   turnMetronomeButtonOff { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getMetronomeButtonColor != 0,
+      activePage.getControlButtonColor(6) != 0,
       { this.prTurnMetronomeButtonColor(0) }); });
     pageDict[page].turnControlButtonColor(6, 0, bank);
   }
@@ -419,14 +433,14 @@ prm
   turnPlayButtonOn { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getPlayButtonColor != 1,
+      activePage.getControlButtonColor(3) != 1,
       { this.prTurnPlayButtonColor(1) }); });
     pageDict[page].turnControlButtonColor(3, 1, bank);
   }
   turnPlayButtonOff { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getPlayButtonColor != 0,
+      activePage.getControlButtonColor(3) != 0,
       { this.prTurnPlayButtonColor(0) }); });
     pageDict[page].turnControlButtonColor(3, 0, bank);
   }
@@ -434,14 +448,14 @@ prm
   turnRecordButtonOn { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getRecordButtonColor != 1,
+      activePage.getControlButtonColor(4) != 1,
       { this.prTurnRecordButtonColor(1) }); });
     pageDict[page].turnControlButtonColor(4, 1, bank);
   }
   turnRecordButtonOff { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getRecordButtonColor != 0,
+      activePage.getControlButtonColor(4) != 0,
       { this.prTurnRecordButtonColor(0) }); });
     pageDict[page].turnControlButtonColor(4, 0, bank);
   }
@@ -449,14 +463,14 @@ prm
   turnSessionButtonOn { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getSessionButtonColor != 1,
+      activePage.getControlButtonColor(5) != 1,
       { this.prTurnSessionButtonColor(1) }); });
     pageDict[page].turnControlButtonColor(5, 1, bank);
   }
   turnSessionButtonOff { | bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
-      activePage.getSessionButtonColor != 0,
+      activePage.ggetControlButtonColor(5) != 0,
       { this.prTurnSessionButtonColor(0) }); });
     pageDict[page].turnControlButtonColor(5, 0, bank);
   }

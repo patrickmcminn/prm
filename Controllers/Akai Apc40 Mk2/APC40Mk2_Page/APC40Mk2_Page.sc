@@ -401,11 +401,10 @@ APC40Mk2_Page {
   }
   setFaderFunc { | num = 1, func, bank = 'active' |
     var bankSelect;
-    var index = num-1;
     if( bank == activeMixerBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
-    mixerBankArray[bankSelect][0][index][0] = func;
-    if( bank == 'active', { this.prSetFaderFunc(index, func) });
+    mixerBankArray[bankSelect][0][num][0] = func;
+    if( bank == 'active', { this.prSetFaderFunc(num, func) });
   }
 
   prSetMixerEncoderFunc { | num, func = nil |
@@ -413,11 +412,10 @@ APC40Mk2_Page {
   }
   setMixerEncoderFunc { | num = 1, func, bank = 'active' |
     var bankSelect;
-    var index = num-1;
     if( bank == activeMixerEncoderBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeMixerEncoderBnk }, { bankSelect = bank });
-    mixerEncoderBankArray[bankSelect][index][0] = func;
-    if( bank == 'active', { this.prSetMixerEncoderFunc(index, func); });
+    mixerEncoderBankArray[bankSelect][num][0] = func;
+    if( bank == 'active', { this.prSetMixerEncoderFunc(num, func); });
   }
 
   prSetDeviceEncoderFunc { | num, func = nil |
@@ -425,11 +423,10 @@ APC40Mk2_Page {
   }
   setDeviceEncoderFunc { | num = 1, func, bank = 'active' |
     var bankSelect;
-    var index = num-1;
     if( bank == activeMixerEncoderBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeDeviceEncoderBnk }, { bankSelect = bank });
-    deviceEncoderBankArray[bankSelect][index][0] = func;
-    if( bank == 'active', { this.prSetDeviceEncoderFunc(index, func); });
+    deviceEncoderBankArray[bankSelect][num][0] = func;
+    if( bank == 'active', { this.prSetDeviceEncoderFunc(num, func); });
   }
 
   /////////////////////////////////

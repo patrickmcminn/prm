@@ -9,22 +9,22 @@ APC40Mk2_Page {
   var <gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
   var trackSelectFuncArray, trackActivatorFuncArray, crossfaderSelectFuncArray;
   var soloFuncArray, recordEnableFuncArray,  deviceFuncArray, controlFuncArray;
-  var mixerFaderArray, mixerEncoderArray, deviceEncoderArray;
+  var mixerFadersArray, mixerEncodersArray, deviceEncodersArray;
 
   var <gridColorArray, <sceneLaunchColorArray, <clipStopColorArray;
   var <selectColorArray, <trackActivatorColorArray, <crossfadeSelectColorArray;
   var <soloColorArray, <recordEnableColorArray, <deviceColorArray, <controlColorArray;
-  var <mixerEncoderValueArray, <deviceEncoderValueArray;
+  var <mixerEncodersValueArray, <deviceEncodersValueArray;
 
   var <gridBankArray, <sceneLaunchBankArray, <clipStopBankArray, <mixerBankArray;
-  var <mixerEncoderBankArray, <deviceEncoderBankArray, <deviceButtonsBankArray, <controlButtonsBankArray;
+  var <mixerEncodersBankArray, <deviceEncodersBankArray, <deviceButtonsBankArray, <controlButtonsBankArray;
 
   var <gridBankMonitorFuncArray, <sceneLaunchBankMonitorFuncArray, <clipStopBankMonitorFuncArray;
-  var <mixerBankMonitorFuncArray, <mixerEncoderBankMonitorFuncArray, <deviceEncoderBankMonitorFuncArray;
+  var <mixerBankMonitorFuncArray, <mixerEncodersBankMonitorFuncArray, <deviceEncodersBankMonitorFuncArray;
   var <deviceButtonsBankMonitorFuncArray, <controlButtonsBankMonitorFuncArray;
 
   var <activeGridBnk, <activeSceneLaunchBnk, <activeClipStopBnk, <activeMixerBnk;
-  var <activeMixerEncoderBnk, <activeDeviceEncoderBnk, <activeDeviceButtonsBnk, <activeControlButtonsBnk;
+  var <activeMixerEncodersBnk, <activeDeviceEncodersBnk, <activeDeviceButtonsBnk, <activeControlButtonsBnk;
 
   var <loadFunctionDict, <offLoadFunctionDict;
 
@@ -76,15 +76,15 @@ APC40Mk2_Page {
   }
 
   prMakeControlResponders {
-    mixerFaderArray = Array.fill(9, { { }; });
-    mixerEncoderArray = Array.fill(9, { { }; });
-    deviceEncoderArray = Array.fill(10, { { }; });
+    mixerFadersArray = Array.fill(9, { { }; });
+    mixerEncodersArray = Array.fill(9, { { }; });
+    deviceEncodersArray = Array.fill(10, { { }; });
   }
 
   prFreeControlResponders {
-    mixerFaderArray.do({ | f | f.free; });
-    mixerEncoderArray.do({ | f | f.free; });
-    deviceEncoderArray.do({ | f | f.free; });
+    mixerFadersArray.do({ | f | f.free; });
+    mixerEncodersArray.do({ | f | f.free; });
+    deviceEncodersArray.do({ | f | f.free; });
   }
 
   prMakeColorArrays {
@@ -106,13 +106,13 @@ APC40Mk2_Page {
   }
 
   prMakeValueArrays {
-    mixerEncoderValueArray = Array.fill(8, { nil });
-    deviceEncoderValueArray = Array.fill(8, { nil });
+    mixerEncodersValueArray = Array.fill(9, { 0 });
+    deviceEncodersValueArray = Array.fill(9, { 0 });
   }
 
   prFreeValueArrays {
-    mixerEncoderValueArray.do({ |f | f.free; });
-    deviceEncoderValueArray.do({ | f | f.free; });
+    mixerEncodersValueArray.do({ |f | f.free; });
+    deviceEncodersValueArray.do({ | f | f.free; });
   }
 
   ////////////////////////////////////
@@ -173,11 +173,11 @@ APC40Mk2_Page {
       \noteOn, { ^controlFuncArray[0][num] },
       \noteOff, { ^controlFuncArray[1][num] });
   }
-  getFaderFunc { | num | ^mixerFaderArray[num] }
-  getMixerEncoderFunc { | num | ^mixerEncoderArray[num] }
-  getMixerEncoderValue { | num | ^mixerEncoderValueArray[num] }
-  getDeviceEncoderFunc{ | num | ^deviceEncoderArray[num] }
-  getDeviceEncoderValue { | num | ^deviceEncoderValueArray[num] }
+  getFaderFunc { | num | ^mixerFadersArray[num] }
+  getMixerEncoderFunc { | num | ^mixerEncodersArray[num] }
+  getMixerEncoderValue { | num | ^mixerEncodersValueArray[num] }
+  getDeviceEncoderFunc{ | num | ^deviceEncodersArray[num] }
+  getDeviceEncoderValue { | num | ^deviceEncodersValueArray[num] }
 
   /////// note funcs:
 
@@ -397,7 +397,7 @@ APC40Mk2_Page {
 
   //////// control funcs:
   prSetFaderFunc { | num, func = nil|
-    mixerFaderArray[num] = func;
+    mixerFadersArray[num] = func;
   }
   setFaderFunc { | num = 1, func, bank = 'active' |
     var bankSelect;
@@ -408,24 +408,24 @@ APC40Mk2_Page {
   }
 
   prSetMixerEncoderFunc { | num, func = nil |
-    mixerEncoderArray[num] = func;
+    mixerEncodersArray[num] = func;
   }
   setMixerEncoderFunc { | num = 1, func, bank = 'active' |
     var bankSelect;
-    if( bank == activeMixerEncoderBnk, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeMixerEncoderBnk }, { bankSelect = bank });
-    mixerEncoderBankArray[bankSelect][num][0] = func;
+    if( bank == activeMixerEncodersBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeMixerEncodersBnk }, { bankSelect = bank });
+    mixerEncodersBankArray[bankSelect][num][0] = func;
     if( bank == 'active', { this.prSetMixerEncoderFunc(num, func); });
   }
 
   prSetDeviceEncoderFunc { | num, func = nil |
-    deviceEncoderArray[num] = func;
+    deviceEncodersArray[num] = func;
   }
   setDeviceEncoderFunc { | num = 1, func, bank = 'active' |
     var bankSelect;
-    if( bank == activeMixerEncoderBnk, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeDeviceEncoderBnk }, { bankSelect = bank });
-    deviceEncoderBankArray[bankSelect][num][0] = func;
+    if( bank == activeMixerEncodersBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeDeviceEncodersBnk }, { bankSelect = bank });
+    deviceEncodersBankArray[bankSelect][num][0] = func;
     if( bank == 'active', { this.prSetDeviceEncoderFunc(num, func); });
   }
 
@@ -448,7 +448,7 @@ APC40Mk2_Page {
 
   setSceneLaunchMonitorFunc { | name, func, bank = 'active' |
     var bankSelect;
-    if( bank == activeGridBnk, { bank = 'active' });
+    if( bank == activeSceneLaunchBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeSceneLaunchBnk }, { bankSelect = bank });
     if(
       sceneLaunchBankMonitorFuncArray[bankSelect][name].isNil == false,
@@ -463,7 +463,7 @@ APC40Mk2_Page {
 
   setClipStopMonitorFunc { | name, func, bank = 'active' |
     var bankSelect;
-    if( bank == activeGridBnk, { bank = 'active' });
+    if( bank == activeClipStopBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeClipStopBnk }, { bankSelect = bank });
     if( clipStopBankMonitorFuncArray[bankSelect][name].isNil == false, { clipStopBankMonitorFuncArray[bankSelect][name].stop });
     clipStopBankMonitorFuncArray[bankSelect][name] = r {
@@ -476,7 +476,7 @@ APC40Mk2_Page {
 
   setMixerMonitorFunc { | name, func, bank = 'active' |
     var bankSelect;
-    if( bank == activeGridBnk, { bank = 'active' });
+    if( bank == activeMixerBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
     if( mixerBankMonitorFuncArray[bankSelect][name].isNil == false, { mixerBankMonitorFuncArray[bankSelect][name].stop; });
     mixerBankMonitorFuncArray[bankSelect][name] = r {
@@ -489,7 +489,7 @@ APC40Mk2_Page {
 
   setDeviceButtonsMonitorFunc { | name, func, bank = 'active' |
     var bankSelect;
-    if( bank == activeGridBnk, { bank = 'active' });
+    if( bank == activeDeviceButtonsBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeDeviceButtonsBnk }, { bankSelect = bank });
     if( deviceButtonsBankMonitorFuncArray[bankSelect][name].isNil == false,
       { deviceButtonsBankMonitorFuncArray[bankSelect][name].stop; });
@@ -503,7 +503,7 @@ APC40Mk2_Page {
 
   setControlButtonsMonitorFunc { | name, func, bank = 'active' |
     var bankSelect;
-    if( bank == activeGridBnk, { bank = 'active' });
+    if( bank == activeControlButtonsBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeControlButtonsBnk }, { bankSelect = bank });
     if( controlButtonsBankMonitorFuncArray[bankSelect][name].isNil == false,
       { controlButtonsBankMonitorFuncArray[bankSelect][name].stop });
@@ -517,11 +517,11 @@ APC40Mk2_Page {
 
   setMixerEncodersMonitorFunc  { | name, func, bank = 'active' |
     var bankSelect;
-    if( bank == activeGridBnk, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeMixerEncoderBnk }, { bankSelect = bank });
-    if( mixerEncoderBankMonitorFuncArray[bankSelect][name].isNil == false,
-      { mixerEncoderBankMonitorFuncArray[bankSelect][name].stop; });
-    mixerEncoderBankMonitorFuncArray[bankSelect][name] = r {
+    if( bank == activeMixerEncodersBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeMixerEncodersBnk }, { bankSelect = bank });
+    if( mixerEncodersBankMonitorFuncArray[bankSelect][name].isNil == false,
+      { mixerEncodersBankMonitorFuncArray[bankSelect][name].stop; });
+    mixerEncodersBankMonitorFuncArray[bankSelect][name] = r {
       loop {
         func.value;
         0.05.wait;
@@ -531,11 +531,11 @@ APC40Mk2_Page {
 
   setDeviceEncodersMonitorFunc { | name, func, bank = 'active' |
     var bankSelect;
-    if( bank == activeGridBnk, { bank = 'active' });
-    if( bank == 'active', { bankSelect = activeDeviceEncoderBnk }, { bankSelect = bank });
-    if ( deviceEncoderBankMonitorFuncArray[bankSelect][name].isNil == false,
-      { deviceEncoderBankMonitorFuncArray[bankSelect][name].stop; });
-    deviceEncoderBankMonitorFuncArray[bankSelect][name] = r {
+    if( bank == activeDeviceEncodersBnk, { bank = 'active' });
+    if( bank == 'active', { bankSelect = activeDeviceEncodersBnk }, { bankSelect = bank });
+    if ( deviceEncodersBankMonitorFuncArray[bankSelect][name].isNil == false,
+      { deviceEncodersBankMonitorFuncArray[bankSelect][name].stop; });
+    deviceEncodersBankMonitorFuncArray[bankSelect][name] = r {
       loop {
         func.value;
         0.05.wait;

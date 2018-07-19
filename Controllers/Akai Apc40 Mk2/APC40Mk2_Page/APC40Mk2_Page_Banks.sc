@@ -34,15 +34,15 @@ slot 5 - record enable
 
   prMakeBanks { | numBanks = 1 |
     activeGridBnk = 0; activeSceneLaunchBnk = 0; activeClipStopBnk = 0;
-    activeMixerBnk = 0; activeMixerEncoderBnk = 0; activeDeviceEncoderBnk = 0;
+    activeMixerBnk = 0; activeMixerEncodersBnk = 0; activeDeviceEncodersBnk = 0;
     activeDeviceButtonsBnk = 0; activeControlButtonsBnk = 0;
 
     gridBankMonitorFuncArray = Array.new;
     sceneLaunchBankMonitorFuncArray = Array.new;
     clipStopBankMonitorFuncArray = Array.new;
     mixerBankMonitorFuncArray = Array.new;
-    mixerEncoderBankMonitorFuncArray = Array.new;
-    deviceEncoderBankMonitorFuncArray = Array.new;
+    mixerEncodersBankMonitorFuncArray = Array.new;
+    deviceEncodersBankMonitorFuncArray = Array.new;
     deviceButtonsBankMonitorFuncArray = Array.new;
     controlButtonsBankMonitorFuncArray = Array.new;
 
@@ -55,10 +55,10 @@ slot 5 - record enable
     mixerBankArray = Array.new;
     this.addMixerBanks(numBanks);
 
-    mixerEncoderBankArray = Array.new;
-    this.addMixerEncoderBanks(numBanks);
-    deviceEncoderBankArray = Array.new;
-    this.addDeviceEncoderBanks(numBanks);
+    mixerEncodersBankArray = Array.new;
+    this.addMixerEncodersBanks(numBanks);
+    deviceEncodersBankArray = Array.new;
+    this.addDeviceEncodersBanks(numBanks);
     deviceButtonsBankArray = Array.new;
     this.addDeviceButtonsBanks(numBanks);
     controlButtonsBankArray = Array.new;
@@ -131,25 +131,25 @@ slot 5 - record enable
     });
   }
 
-  addMixerEncoderBanks { | numBanks = 1 |
+  addMixerEncodersBanks { | numBanks = 1 |
     numBanks.do({
-      mixerEncoderBankArray = mixerEncoderBankArray.add(Array.fill2D(9, 2, nil));
-      mixerEncoderBankArray[mixerEncoderBankArray.size-1].do({ | item, index |
+      mixerEncodersBankArray = mixerEncodersBankArray.add(Array.fill2D(9, 2, nil));
+      mixerEncodersBankArray[mixerEncodersBankArray.size-1].do({ | item, index |
         item[0] = { };
         item[1] = 0;
       });
-      mixerEncoderBankMonitorFuncArray = mixerEncoderBankMonitorFuncArray.add(IdentityDictionary.new);
+      mixerEncodersBankMonitorFuncArray = mixerEncodersBankMonitorFuncArray.add(IdentityDictionary.new);
     });
   }
 
-  addDeviceEncoderBanks { | numBanks = 1 |
+  addDeviceEncodersBanks { | numBanks = 1 |
     numBanks.do({
-      deviceEncoderBankArray = deviceEncoderBankArray.add(Array.fill2D(10, 2, nil));
-      deviceEncoderBankArray[deviceEncoderBankArray.size-1].do({ | item, index |
+      deviceEncodersBankArray = deviceEncodersBankArray.add(Array.fill2D(10, 2, nil));
+      deviceEncodersBankArray[deviceEncodersBankArray.size-1].do({ | item, index |
         item[0] = { };
         item[1] = 0;
       });
-      deviceEncoderBankMonitorFuncArray = deviceEncoderBankMonitorFuncArray.add(IdentityDictionary.new);
+      deviceEncodersBankMonitorFuncArray = deviceEncodersBankMonitorFuncArray.add(IdentityDictionary.new);
     });
   }
 
@@ -242,23 +242,23 @@ slot 5 - record enable
   }
 
   setActiveMixerEncoderBank { | bank = 0 |
-    mixerEncoderBankMonitorFuncArray[activeMixerEncoderBnk].do({ | r | r.stop; });
-    activeMixerEncoderBnk = bank;
+    mixerEncodersBankMonitorFuncArray[activeMixerEncodersBnk].do({ | r | r.stop; });
+    activeMixerEncodersBnk = bank;
     9.do({ | index |
-      this.prSetMixerEncoderFunc(index, mixerEncoderBankArray[activeMixerEncoderBnk][index][0]);
-      this.prSetMixerEncoderValue(index, mixerEncoderBankArray[activeMixerEncoderBnk][index][1]);
+      this.prSetMixerEncoderFunc(index, mixerEncodersBankArray[activeMixerEncodersBnk][index][0]);
+      this.prSetMixerEncoderValue(index, mixerEncodersBankArray[activeMixerEncodersBnk][index][1]);
     });
-    mixerEncoderBankMonitorFuncArray[activeMixerEncoderBnk].do({ | r | r.reset.play; });
+    mixerEncodersBankMonitorFuncArray[activeMixerEncodersBnk].do({ | r | r.reset.play; });
   }
 
-  setActiveDeviceEncoderBank { | bank = 0 |
-    deviceEncoderBankMonitorFuncArray[activeDeviceEncoderBnk].do({ | r | r.stop; });
-    activeDeviceEncoderBnk = bank;
+  setActiveDeviceEncodersBank { | bank = 0 |
+    deviceEncodersBankMonitorFuncArray[activeDeviceEncodersBnk].do({ | r | r.stop; });
+    activeDeviceEncodersBnk = bank;
     9.do({ | index |
-      this.prSetDeviceEncoderFunc(index, deviceEncoderBankArray[activeDeviceEncoderBnk][index][0]);
-      this.prSetDeviceEncoderValue(index, deviceEncoderBankArray[activeDeviceEncoderBnk][index][0]);
+      this.prSetDeviceEncoderFunc(index, deviceEncodersBankArray[activeDeviceEncodersBnk][index][0]);
+      this.prSetDeviceEncoderValue(index, deviceEncodersBankArray[activeDeviceEncodersBnk][index][0]);
     });
-    deviceEncoderBankMonitorFuncArray[activeDeviceEncoderBnk].do({ | r | r.reset.play; });
+    deviceEncodersBankMonitorFuncArray[activeDeviceEncodersBnk].do({ | r | r.reset.play; });
   }
 
   setActiveDeviceButtonsBank { | bank = 0 |
@@ -289,8 +289,8 @@ slot 5 - record enable
     sceneLaunchBankMonitorFuncArray[activeSceneLaunchBnk].do({ | r | r.stop; });
     clipStopBankMonitorFuncArray[activeClipStopBnk].do({ | r | r.stop; });
     mixerBankMonitorFuncArray[activeMixerBnk].do({ | r | r.stop; });
-    mixerEncoderBankMonitorFuncArray[activeMixerEncoderBnk].do({ | r | r.stop; });
-    deviceEncoderBankMonitorFuncArray[activeDeviceEncoderBnk].do({ | r | r.stop; });
+    mixerEncodersBankMonitorFuncArray[activeMixerEncodersBnk].do({ | r | r.stop; });
+    deviceEncodersBankMonitorFuncArray[activeDeviceEncodersBnk].do({ | r | r.stop; });
     deviceButtonsBankMonitorFuncArray[activeDeviceButtonsBnk].do({ | r | r.stop; });
     controlButtonsBankMonitorFuncArray[activeControlButtonsBnk].do({ |r | r.stop; });
   }
@@ -300,8 +300,8 @@ slot 5 - record enable
     sceneLaunchBankMonitorFuncArray[activeSceneLaunchBnk].do({ | r | r.reset.play; });
     clipStopBankMonitorFuncArray[activeClipStopBnk].do({ | r | r.reset.play; });
     mixerBankMonitorFuncArray[activeMixerBnk].do({ | r | r.reset.play; });
-    mixerEncoderBankMonitorFuncArray[activeMixerEncoderBnk].do({ | r | r.reset.play; });
-    deviceEncoderBankMonitorFuncArray[activeDeviceEncoderBnk].do({ | r |r.reset.play; });
+    mixerEncodersBankMonitorFuncArray[activeMixerEncodersBnk].do({ | r | r.reset.play; });
+    deviceEncodersBankMonitorFuncArray[activeDeviceEncodersBnk].do({ | r |r.reset.play; });
     deviceButtonsBankMonitorFuncArray[activeDeviceButtonsBnk].do({ | r | r.reset.play;});
     controlButtonsBankMonitorFuncArray[activeControlButtonsBnk].do({ |r |r.reset.play; });
   }
@@ -319,8 +319,8 @@ slot 5 - record enable
       { 'sceneLaunch' }, { ^sceneLaunchBankArray.size; },
       { 'clipStop' }, { ^clipStopBankArray.size; },
       { 'mixer' }, { ^mixerBankArray.size; },
-      { 'mixerEncoder' }, { ^mixerEncoderBankArray.size },
-      { 'deviceEncoder' }, { ^deviceEncoderBankArray.size },
+      { 'mixerEncoders' }, { ^mixerEncodersBankArray.size },
+      { 'deviceEncoders' }, { ^deviceEncodersBankArray.size },
       { 'deviceButtons' }, { ^deviceButtonsBankArray.size },
       { 'controlButtons' }, { ^controlButtonsBankArray.size }
     );
@@ -330,8 +330,8 @@ slot 5 - record enable
   numSceneLaunchBanks { this.numBanks('sceneLaunch'); }
   numClipStopBanks { this.numBanks('clipStop'); }
   numMixerBanks { this.numBanks('mixer') }
-  numMixerEncoderBanks { this.numBanks('mixerEncoder'); }
-  numDeviceEncoderBanks { this.numBanks('deviceEncoder') }
+  numMixerEncodersBanks { this.numBanks('mixerEncoders'); }
+  numDeviceEncodersBanks { this.numBanks('deviceEncoders') }
   numDeviceButtonsBanks { this.numBanks('deviceButtons') }
   numControlButtonsBanks { this.numBanks('controlButtons') }
 

@@ -64,12 +64,17 @@ prm
 
   //////// Values:
 
-  prSetMixerEncoderValue { | num = 1, val = 127 |
-    midiOutPort.control(0, num+47, val);
+  prSetAllMixerEncoderValues {
+    8.do({ | num | this.prSetMixerEncoderValue(num, activePage.mixerEncodersValueArray[num]); });
   }
-
-  prSetDeviceEncoderValue {| num = 1, val = 127 |
-    midiOutPort.control(0, num+15, val);
+  prSetMixerEncoderValue { | num = 0, val = 127 |
+    midiOutPort.control(0, num+48, val);
+  }
+  prSetAllDeviceEncoderValues {
+    8.do({ | num | this.prSetDeviceEncoderValue(num, activePage.deviceEncodersValueArray[num]); });
+  }
+  prSetDeviceEncoderValue {| num = 0, val = 127 |
+    midiOutPort.control(0, num+16, val);
   }
 
   ////////////////////////////////////
@@ -481,27 +486,29 @@ prm
 
   //// Mixer Encoders:
   setMixerEncoderValue { | encoder = 1, value = 127, bank = 'active', page = 'active' |
+    var index = encoder-1;
     if( encoder > 8, { "out of range!".postln; },
       {
         if( page == 'active', { page = activePageKey });
         if( page == activePageKey, { if(
-          value != activePage.mixerEncoderValueArray[encoder-1],
-          { this.prSetMixerEncoderValue(encoder, value) });
+          value != activePage.mixerEncodersValueArray[index],
+          { this.prSetMixerEncoderValue(index, value) });
         });
-        pageDict[page].setMixerEncoderValue(encoder, value, bank);
+        pageDict[page].setMixerEncoderValue(index, value, bank);
       }
     );
   }
 
   setDeviceEncoderValue { | encoder = 1, value = 127, bank = 'active', page = 'active' |
+    var index = encoder-1;
     if( encoder > 8, { "out of range!".postln; },
       {
         if( page == 'active', { page = activePageKey });
         if( page == activePageKey, { if(
-          value != activePage.deviceEncoderValueArray[encoder-1],
-          { this.prSetDeviceEncoderValue(encoder, value) });
+          value != activePage.deviceEncodersValueArray[index],
+          { this.prSetDeviceEncoderValue(index, value) });
         });
-        pageDict[page].setDeviceEncoderValue(encoder, value, bank);
+        pageDict[page].setDeviceEncoderValue(index, value, bank);
       }
     );
   }

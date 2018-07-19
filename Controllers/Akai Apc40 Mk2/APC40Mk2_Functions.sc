@@ -263,7 +263,7 @@ prm
     9.do({ | func | this.prSetFaderFunc(func); });
   }
   prSetFaderFunc { | num |
-    mixerFaderArray[num].prFunc_(activePage.getFaderFunc(num));
+    mixerFadersArray[num].prFunc_(activePage.getFaderFunc(num));
   }
   setFaderFunc { | fader = 1, func = nil, bank = 'active', page = 'active' |
     var faderIndex = fader-1;
@@ -276,7 +276,7 @@ prm
     9.do({ | func | this.prSetMixerEncoderFunc(func); });
   }
   prSetMixerEncoderFunc { | num |
-    mixerEncoderArray[num].prFunc_(activePage.getMixerEncoderFunc(num));
+    mixerEncodersArray[num].prFunc_(activePage.getMixerEncoderFunc(num));
   }
   setMixerEncoderFunc { | encoder = 1, func = nil, bank = 'active', page = 'active' |
     var encoderIndex = encoder-1;
@@ -294,7 +294,7 @@ prm
     10.do({ | func | this.prSetDeviceEncoderFunc(func); });
   }
   prSetDeviceEncoderFunc { | num |
-    deviceEncoderArray[num].prFunc_(activePage.getDeviceEncoderFunc(num));
+    deviceEncodersArray[num].prFunc_(activePage.getDeviceEncoderFunc(num));
   }
   setDeviceEncoderFunc{ | encoder = 1, func = nil, bank = 'active', page = 'active' |
     var encoderIndex = encoder-1;
@@ -324,7 +324,7 @@ prm
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeGridBnk });
     pageDict[page].setGridMonitorFunc(name, func, bank);
-    activePage.gridMonitorFuncArray[activePage.activeGridBnk][name].reset.play;
+    activePage.gridBankMonitorFuncArray[activePage.activeGridBnk][name].reset.play;
   }
 
   setSceneLaunchMonitorFunc { | name, func, bank = 'active', page = 'active' |
@@ -364,16 +364,16 @@ prm
 
   setMixerEncodersMonitorFunc { | name, func, bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
-    if( bank == 'active', { bank = pageDict[page].activeMixerEncoderBnk });
+    if( bank == 'active', { bank = pageDict[page].activeMixerEncodersBnk });
     pageDict[page].setMixerEncodersMonitorFunc(name, func, bank);
-    activePage.mixerEncoderBankMonitorFuncArray[activePage.activeMixerEncoderBnk][name].reset.play;
+    activePage.mixerEncodersBankMonitorFuncArray[activePage.activeMixerEncodersBnk][name].reset.play;
   }
 
   setDeviceEncodersMonitorFunc { | name, func, bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
-    if( bank == 'active', { bank = pageDict[page].activeDeviceEncoderBnk });
+    if( bank == 'active', { bank = pageDict[page].activeDeviceEncodersBnk });
     pageDict[page].setDeviceEncodersMonitorFunc(name, func, bank);
-    activePage.deviceEncoderBankMonitorFuncArray[activePage.activeDeviceEncoderBnk][name].reset.play;
+    activePage.deviceEncodersBankMonitorFuncArray[activePage.activeDeviceEncodersBnk][name].reset.play;
   }
 
 }

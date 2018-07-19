@@ -116,19 +116,17 @@ prm
   turnControlButtonOff { | num, bank | this.turnControlButtonColor(num, 0, bank); }
 
   /////// values:
-  prSetMixerEncoderValue { | num, val | mixerEncoderValueArray[num] = val; }
-  setMixerEncoderValue { | button = 1, val = 0, bank = 'active' |
-    var index = button-1;
-    if( bank == 'active', { bank = activeMixerEncoderBnk });
-    mixerEncoderBankArray[bank][1][index] = val;
-    this.prSetMixerEncoderValue(index, val);
+  prSetMixerEncoderValue { | num, val | mixerEncodersValueArray[num] = val; }
+  setMixerEncoderValue { | encoder = 0, val = 0, bank = 'active' |
+    if( bank == 'active', { bank = activeMixerEncodersBnk });
+    mixerEncodersBankArray[bank][encoder][1] = val;
+    this.prSetMixerEncoderValue(encoder, val);
   }
 
-  prSetDeviceEncoderValue { | num, val | deviceEncoderValueArray[num] = val }
-  setDeviceEncoderValue { | button = 1, val = 0, bank = 'active' |
-    var index = button-1;
-    if( bank == 'active', { bank = activeDeviceEncoderBnk });
-    deviceEncoderBankArray[bank][1][index] = val;
-    this.prSetDeviceEncoderValue(index, val);
+  prSetDeviceEncoderValue { | num, val | deviceEncodersValueArray[num] = val }
+  setDeviceEncoderValue { | encoder = 0, val = 0, bank = 'active' |
+    if( bank == 'active', { bank = activeDeviceEncodersBnk });
+    deviceEncodersBankArray[bank][encoder][1] = val;
+    this.prSetDeviceEncoderValue(encoder, val);
   }
 }

@@ -74,7 +74,7 @@ prm
 
   setActiveMixerBank { | bank = 0, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].setActiveMixerBank;
+    pageDict[page].setActiveMixerBank(bank);
     this.prSetAllFaderFuncs;
     this.prSetAllTrackSelectFuncs;
     this.prSetAllTrackActivatorFuncs;
@@ -85,30 +85,30 @@ prm
     this.prSetAllMixerColors;
   }
 
-  setActiveMixerEncoderBank { | bank = 0, page = 'active' |
+  setActiveMixerEncodersBank { | bank = 0, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].setActiveMixerEncoderBank;
+    pageDict[page].setActiveMixerEncodersBank(bank);
     this.prSetAllMixerEncoderFuncs;
     this.prSetAllMixerEncoderValues;
   }
 
   setActiveDeviceButtonsBank { | bank = 0, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].setActiveDeviceButtonsBank;
+    pageDict[page].setActiveDeviceButtonsBank(bank);
     this.prSetAllDeviceButtonFuncs;
     this.prSetAllDeviceButtonColors;
   }
 
   setActiveDeviceEncodersBank { | bank = 0, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].setActiveDeviceEncodersBank;
+    pageDict[page].setActiveDeviceEncodersBank(bank);
     this.prSetAllDeviceEncoderFuncs;
     this.prSetAllDeviceEncoderValues;
   }
 
   setActiveControlBank { | bank = 0, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].setActiveControlBank;
+    pageDict[page].setActiveControlBank(bank);
     this.prSetAllControlButtonsFuncs;
     this.prSetAllControlButtonColors;
   }

@@ -8,10 +8,10 @@ APC40Mk2 {
 
   var midiInPort, midiOutPort;
 
-  var <gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
+  var gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
   var trackSelectFuncArray, trackActivatorFuncArray, crossfaderSelectFuncArray;
   var soloFuncArray, recordEnableFuncArray,  deviceFuncArray, controlFuncArray;
-  var mixerFaderArray, <mixerEncoderArray, deviceEncoderArray;
+  var mixerFadersArray, mixerEncodersArray, deviceEncodersArray;
 
   var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
 
@@ -19,7 +19,7 @@ APC40Mk2 {
   var <selectColorArray, <mixerColorArray;
 
   var <activeGridBank, <activeSceneLaunchBank, <activeClipStopBank;
-  var <activeMixerBank,  <activeMixerEncoderBank;
+  var <activeMixerBank,  <activeMixerEncodersBank;
   var <activeDeviceEncodersBank, <activeDeviceButtonsBank, <activeControlButtonsBank;
 
   *new { | deviceName = "APC40 mkII", portName = "APC40 mkII" |
@@ -276,45 +276,45 @@ APC40Mk2 {
   prFreeControlFuncArray { controlFuncArray.do({ | f | f.free; }); }
 
   prMakeControlResponders {
-    this.prMakeMixerFaderArray;
-    this.prMakeMixerEncoderArray;
-    this.prMakeDeviceEncoderArray;
+    this.prMakeMixerFadersArray;
+    this.prMakeMixerEncodersArray;
+    this.prMakeDeviceEncodersArray;
   }
 
   prFreeControlResponders {
-    this.prFreeMixerFaderArray;
-    this.prFreeMixerEncoderArray;
-    this.prFreeDeviceEncoderArray;
+    this.prFreeMixerFadersArray;
+    this.prFreeMixerEncodersArray;
+    this.prFreeDeviceEncodersArray;
   }
 
-  prMakeMixerFaderArray {
-    mixerFaderArray = Array.fill(9, { nil });
-    8.do({ | num | mixerFaderArray[num] = MIDIFunc({ }, 7, num, \control, midiInPort.uid).fix; });
+  prMakeMixerFadersArray {
+    mixerFadersArray = Array.fill(9, { nil });
+    8.do({ | num | mixerFadersArray[num] = MIDIFunc({ }, 7, num, \control, midiInPort.uid).fix; });
     //// master mixer:
-    mixerFaderArray[8] = MIDIFunc({ }, 14, 0, \control, midiInPort.uid).fix;
+    mixerFadersArray[8] = MIDIFunc({ }, 14, 0, \control, midiInPort.uid).fix;
   }
 
-  prFreeMixerFaderArray { mixerFaderArray.do({ | f | f.free; }); }
+  prFreeMixerFadersArray { mixerFadersArray.do({ | f | f.free; }); }
 
-  prMakeMixerEncoderArray {
-    mixerEncoderArray = Array.fill(9, { nil });
-    8.do({ | num | mixerEncoderArray[num] = MIDIFunc({ }, num + 48, 0, \control, midiInPort.uid).fix; });
+  prMakeMixerEncodersArray {
+    mixerEncodersArray = Array.fill(9, { nil });
+    8.do({ | num | mixerEncodersArray[num] = MIDIFunc({ }, num + 48, 0, \control, midiInPort.uid).fix; });
     //// cue level:
-    mixerEncoderArray[8] = MIDIFunc({ }, 47, 0, \control, midiInPort.uid).fix;
+    mixerEncodersArray[8] = MIDIFunc({ }, 47, 0, \control, midiInPort.uid).fix;
   }
 
-  prFreeMixerEncoderArray { mixerEncoderArray.do({ | f | f.free; }); }
+  prFreeMixerEncodersArray { mixerEncodersArray.do({ | f | f.free; }); }
 
-  prMakeDeviceEncoderArray {
-    deviceEncoderArray = Array.fill(10, { nil });
-    8.do({ | num | deviceEncoderArray[num] = MIDIFunc({ }, num + 16, 0, \control, midiInPort.uid).fix; });
+  prMakeDeviceEncodersArray {
+    deviceEncodersArray = Array.fill(10, { nil });
+    8.do({ | num | deviceEncodersArray[num] = MIDIFunc({ }, num + 16, 0, \control, midiInPort.uid).fix; });
     //// tempo:
-    deviceEncoderArray[8] = MIDIFunc({ }, 13, 0, \control, midiInPort.uid).fix;
+    deviceEncodersArray[8] = MIDIFunc({ }, 13, 0, \control, midiInPort.uid).fix;
     //// crossfader:
-    deviceEncoderArray[9] = MIDIFunc({ }, 15, 0, \control, midiInPort.uid).fix;
+    deviceEncodersArray[9] = MIDIFunc({ }, 15, 0, \control, midiInPort.uid).fix;
   }
 
-  prFreeDeviceEncoderArray { deviceEncoderArray.do({ | f | f.free; }); }
+  prFreeDeviceEncodersArray { deviceEncodersArray.do({ | f | f.free; }); }
 
   prMakeColorArrays {
     // grid color arrays:
@@ -379,6 +379,16 @@ APC40Mk2 {
 
     //// device encoders:
     this.prSetAllDeviceEncoderFuncs;
+
+    this.prSetAllGridColors;
+    this.prSetAllSceneLaunchColors;
+    this.prSetAllClipStopColors;
+    this.prSetAllMixerColors;
+    this.prSetAllDeviceColors;
+    this.prSetAllControlColors;
+
+    this.prSetAllMixerEncoderValues;
+    this.prSetAllDeviceEncoderValues;
 
     // starts routines that update control surface values on active page:
     activePage.startActiveBankMonitorRoutines;

@@ -10,7 +10,7 @@ APC40Mk2 {
 
   var gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
   var trackSelectFuncArray, trackActivatorFuncArray, crossfaderSelectFuncArray;
-  var soloFuncArray, recordEnableFuncArray,  deviceFuncArray, controlFuncArray;
+  var soloButtonFuncArray, recordEnableButtonFuncArray,  deviceFuncArray, controlFuncArray;
   var mixerFadersArray, mixerEncodersArray, deviceEncodersArray;
 
   var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
@@ -61,8 +61,8 @@ APC40Mk2 {
     this.prMakeTrackSelectFuncArray;
     this.prMakeTrackActivatorFuncArray;
     this.prMakeCrossfaderSelectFuncArray;
-    this.prMakeSoloFuncArray;
-    this.prMakeRecordEnableFuncArray;
+    this.prMakeSoloButtonFuncArray;
+    this.prMakeRecordEnableButtonFuncArray;
     this.prMakeDeviceFuncArray;
     this.prMakeControlFuncArray;
   }
@@ -74,8 +74,8 @@ APC40Mk2 {
     this.prFreeTrackSelectFuncArray;
     this.prFreeTrackActivatorFuncArray;
     this.prFreeCrossfaderSelectFuncArray;
-    this.prFreeSoloFuncArray;
-    this.prFreeRecordEnableFuncArray;
+    this.prFreeSoloButtonFuncArray;
+    this.prFreeRecordEnableButtonFuncArray;
     this.prFreeDeviceFuncArray;
     this.prFreeControlFuncArray;
   }
@@ -168,33 +168,33 @@ APC40Mk2 {
 
   prFreeCrossfaderSelectFuncArray { crossfaderSelectFuncArray.do({ | f | f.free; }); }
 
-  prMakeSoloFuncArray {
+  prMakeSoloButtonFuncArray {
     // slot 0 is for note on funcs:
     // slot 1 is for note off funcs:
-    soloFuncArray = Array.fill2D(2, 8, { nil });
+    soloButtonFuncArray = Array.fill2D(2, 8, { nil });
     8.do({ | num |
-      soloFuncArray[0][num] = MIDIFunc({ }, 49, num, \noteOn, midiInPort.uid).fix;
+      soloButtonFuncArray[0][num] = MIDIFunc({ }, 49, num, \noteOn, midiInPort.uid).fix;
     });
     8.do({ | num |
-      soloFuncArray[1][num] = MIDIFunc({ }, 49, num, \noteOff, midiInPort.uid).fix;
+      soloButtonFuncArray[1][num] = MIDIFunc({ }, 49, num, \noteOff, midiInPort.uid).fix;
     });
   }
 
-  prFreeSoloFuncArray { soloFuncArray.do({ | f | f.free; }); }
+  prFreeSoloButtonFuncArray { soloButtonFuncArray.do({ | f | f.free; }); }
 
-  prMakeRecordEnableFuncArray {
+  prMakeRecordEnableButtonFuncArray {
     // slot 0 is for note on funcs:
     // slot 1 is for note off funcs:
-    recordEnableFuncArray = Array.fill2D(2, 8, { nil });
+    recordEnableButtonFuncArray = Array.fill2D(2, 8, { nil });
     8.do({ | num |
-      recordEnableFuncArray[0][num] = MIDIFunc({ }, 48, num, \noteOn, midiInPort.uid).fix;
+      recordEnableButtonFuncArray[0][num] = MIDIFunc({ }, 48, num, \noteOn, midiInPort.uid).fix;
     });
     8.do({ | num |
-      recordEnableFuncArray[1][num] = MIDIFunc({ }, 48, num, \noteOff, midiInPort.uid).fix;
+      recordEnableButtonFuncArray[1][num] = MIDIFunc({ }, 48, num, \noteOff, midiInPort.uid).fix;
     });
   }
 
-  prFreeRecordEnableFuncArray { recordEnableFuncArray.do({ | f | f.free; }); }
+  prFreeRecordEnableButtonFuncArray { recordEnableButtonFuncArray.do({ | f | f.free; }); }
 
   prMakeDeviceFuncArray {
     ////// buttons in array:
@@ -363,9 +363,9 @@ APC40Mk2 {
     //// Crossfade Select:
     this.prSetAllCrossfaderSelectFuncs;
     //// Solo:
-    this.prSetAllSoloFuncs;
+    this.prSetAllSoloButtonFuncs;
     //// Record Enable:
-    this.prSetAllRecordEnableFuncs;
+    this.prSetAllRecordEnableButtonFuncs;
     //// device buttons:
     this.prSetAllDeviceButtonFuncs;
     //// Control Buttons:
@@ -384,8 +384,8 @@ APC40Mk2 {
     this.prSetAllSceneLaunchColors;
     this.prSetAllClipStopColors;
     this.prSetAllMixerColors;
-    this.prSetAllDeviceColors;
-    this.prSetAllControlColors;
+    this.prSetAllDeviceButtonColors;
+    this.prSetAllControlButtonColors;
 
     this.prSetAllMixerEncoderValues;
     this.prSetAllDeviceEncoderValues;

@@ -12,7 +12,7 @@ prm
 
   getTrackSelectButtonColor { | num | ^selectColorArray[num] }
   getTrackActivatorButtonColor { | num | ^trackActivatorColorArray[num] }
-  getCrossfadeSelectButtonColor { | num | ^crossfadeSelectColorArray[num] }
+  getCrossfaderSelectButtonColor { | num | ^crossfaderSelectColorArray[num] }
   getSoloButtonColor { | num | ^soloColorArray[num] }
   getRecordEnableButtonColor { | num | ^recordEnableColorArray[num] }
 
@@ -58,7 +58,7 @@ prm
     this.prTurnTrackSelectButtonColor(num, mixerBankArray[activeMixerBnk][1][num][2]);
   }
   turnTrackSelectButtonOn { | num, bank | this.turnTrackSelectButtonColor(num, 1, bank); }
-  turnTrackSelectButtonOff { | num, bank | this.turnTrackSelectButtonOff(num, 0, bank); }
+  turnTrackSelectButtonOff { | num, bank | this.turnTrackSelectButtonColor(num, 0, bank); }
 
   prTurnTrackActivatorButtonColor { | num, colorVal | trackActivatorColorArray[num] = colorVal }
 
@@ -70,14 +70,14 @@ prm
   turnTrackActivatorButtonOn { | num, bank | this.turnTrackActivatorButtonColor(num, 1, bank); }
   turnTrackActivatorButtonOff { | num, bank | this.turnTrackActivatorButtonColor(num, 0, bank); }
 
-  prTurnCrossfadeSelectButtonColor { | num, colorVal | crossfadeSelectColorArray[num] = colorVal }
-  turnCrossfadeSelectButtonColor { | num = 1, colorVal = 0, bank = 'active' |
+  prTurnCrossfaderSelectButtonColor { | num, colorVal | crossfaderSelectColorArray[num] = colorVal }
+  turnCrossfaderSelectButtonColor { | num = 1, colorVal = 0, bank = 'active' |
     if( bank == 'active', { bank = activeGridBnk });
     mixerBankArray[bank][3][num][2] = colorVal;
-    this.prTurnCrossfadeSelectButtonColor(num, mixerBankArray[activeMixerBnk][3][num][2]);
+    this.prTurnCrossfaderSelectButtonColor(num, mixerBankArray[activeMixerBnk][3][num][2]);
   }
-  turnCrossfadeSelectButtonOn { | num, bank | this.turnCrossfadeSelectButtonColor(num, 1, bank) }
-  turnCrossfadeSelectButtonOff { | num, bank | this.turnCrossfadeSelectButtonColor(num, 0, bank) }
+  turnCrossfaderSelectButtonOn { | num, bank | this.turnCrossfaderSelectButtonColor(num, 1, bank) }
+  turnCrossfaderSelectButtonOff { | num, bank | this.turnCrossfaderSelectButtonColor(num, 0, bank) }
 
   prTurnSoloButtonColor { | num, colorVal | soloColorArray[num] = colorVal }
   turnSoloButtonColor { | num = 1, colorVal = 0, bank = 'active' |

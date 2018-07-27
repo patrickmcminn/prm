@@ -120,38 +120,40 @@ prm
   }
 
   /////// solo funcs:
-  prSetAllSoloFuncs {
-    8.do({ | func | this.prSetSoloFunc(func, 'noteOn'); this.prSetSoloFunc(func, 'noteOff'); });
+  prSetAllSoloButtonFuncs {
+    8.do({ | func | this.prSetSoloButtonFunc(func, 'noteOn'); this.prSetSoloButtonFunc(func, 'noteOff'); });
   }
-  prSetSoloFunc { | num, type |
+  prSetSoloButtonFunc { | num, type |
     switch(type,
-      \noteOn, { soloFuncArray[0][num].prFunc_(activePage.getSoloFunc(num, 'noteOn')) },
-      \noteOff, { soloFuncArray[1][num].prFunc_(activePage.getSoloFunc(num, 'noteOff')) });
+      \noteOn, { soloButtonFuncArray[0][num].prFunc_(activePage.getSoloButtonFunc(num, 'noteOn')) },
+      \noteOff, { soloButtonFuncArray[1][num].prFunc_(activePage.getSoloButtonFunc(num, 'noteOff')) });
   }
-  setSoloFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
+  setSoloButtonFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     var number = num - 1;
     if( num < 9, {
       if( page == 'active', { page = activePageKey });
-      pageDict[page].setSoloFunc(number, func, type, bank);
-      this.prSetSoloFunc(number, type);
+      pageDict[page].setSoloButtonFunc(number, func, type, bank);
+      this.prSetSoloButtonFunc(number, type);
     }, { "out of range!".postln });
   }
 
   ////// record enable funcs:
-  prSetAllRecordEnableFuncs {
-    8.do({ | func | this.prSetRecordEnableFunc(func, 'noteOn'); this.prSetRecordEnableFunc(func, 'noteOff'); });
+  prSetAllRecordEnableButtonFuncs {
+    8.do({ | func | this.prSetRecordEnableButtonFunc(func, 'noteOn');
+      this.prSetRecordEnableButtonFunc(func, 'noteOff'); });
   }
-  prSetRecordEnableFunc { | num, type |
+  prSetRecordEnableButtonFunc { | num, type |
     switch(type,
-      \noteOn, { recordEnableFuncArray[0][num].prFunc_(activePage.getRecordEnableFunc(num, 'noteOn')) },
-      \noteOff, { recordEnableFuncArray[1][num].prFunc_(activePage.getRecordEnableFunc(num, 'noteOff')) });
+      \noteOn, { recordEnableButtonFuncArray[0][num].prFunc_(activePage.getRecordEnableButtonFunc(num, 'noteOn')) },
+      \noteOff, { recordEnableButtonFuncArray[1][num].prFunc_(activePage.getRecordEnableButtonFunc(num, 'noteOff'))
+    });
   }
-  setRecordEnableFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
+  setRecordEnableButtonFunc { | num = 1, func = nil, type = 'noteOn', bank = 'active', page = 'active' |
     var number = num - 1;
     if( num < 9, {
       if( page == 'active', { page = activePageKey });
-      pageDict[page].setRecordEnableFunc(number, func, type, bank);
-      this.prSetRecordEnableFunc(number, type);
+      pageDict[page].setRecordEnableButtonFunc(number, func, type, bank);
+      this.prSetRecordEnableButtonFunc(number, type);
     }, { "out of range!".postln });
   }
 
@@ -271,6 +273,9 @@ prm
     pageDict[page].setFaderFunc(faderIndex, func, bank);
     this.prSetFaderFunc(faderIndex);
   }
+  setMasterFaderFunc { | func = nil, bank = 'active', page = 'active' |
+    this.setFaderFunc(9, func, bank, page);
+  }
 
   prSetAllMixerEncoderFuncs {
     9.do({ | func | this.prSetMixerEncoderFunc(func); });
@@ -331,14 +336,14 @@ prm
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeSceneLaunchBnk });
     pageDict[page].setSceneLaunchMonitorFunc(name, func, bank);
-    activePage.sceneLaunchBankMonitorFuncArray[activePage.activeSceneLauncBnk][name].reset.play;
+    activePage.sceneLaunchBankMonitorFuncArray[activePage.activeSceneLaunchBnk][name].reset.play;
   }
 
   setClipStopMonitorFunc { | name, func, bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     if( bank == 'active', { bank = pageDict[page].activeClipStopBnk });
     pageDict[page].setClipStopMonitorFunc(name, func, bank);
-    activePage.clipStopBankMonitorFuncArray[activePage.activeClipStopBank][name].reset.play;
+    activePage.clipStopBankMonitorFuncArray[activePage.activeClipStopBnk][name].reset.play;
   }
 
   setMixerMonitorFunc { | name, func, bank = 'active', page = 'active' |

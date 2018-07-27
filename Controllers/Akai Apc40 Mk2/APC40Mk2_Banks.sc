@@ -28,24 +28,24 @@ prm
     pageDict[page].addMixerBanks(numBanks);
   }
 
-  addMixerEncoderBanks { | numBanks = 1, page = 'active' |
+  addMixerEncodersBanks { | numBanks = 1, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].addMixerEncoderBanks(numBanks);
+    pageDict[page].addMixerEncodersBanks(numBanks);
   }
 
   addDeviceButtonsBanks { | numBanks = 1, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].addDeviceBanks(numBanks);
+    pageDict[page].addDeviceButtonsBanks(numBanks);
   }
 
   addDeviceEncodersBanks { | numBanks = 1, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].addDeviceBanks(numBanks);
+    pageDict[page].addDeviceEncodersBanks(numBanks);
   }
 
-  addControlBanks { | numBanks = 1, page = 'active' |
+  addControlButtonsBanks { | numBanks = 1, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].addDeviceBanks(numBanks);
+    pageDict[page].addControlButtonsBanks(numBanks);
   }
 
   ///// setting banks:
@@ -79,8 +79,8 @@ prm
     this.prSetAllTrackSelectFuncs;
     this.prSetAllTrackActivatorFuncs;
     this.prSetAllCrossfaderSelectFuncs;
-    this.prSetAllSoloFuncs;
-    this.prSetAllRecordEnableFuncs;
+    this.prSetAllSoloButtonFuncs;
+    this.prSetAllRecordEnableButtonFuncs;
 
     this.prSetAllMixerColors;
   }
@@ -106,10 +106,10 @@ prm
     this.prSetAllDeviceEncoderValues;
   }
 
-  setActiveControlBank { | bank = 0, page = 'active' |
+  setActiveControlButtonsBank { | bank = 0, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].setActiveControlBank(bank);
-    this.prSetAllControlButtonsFuncs;
+    pageDict[page].setActiveControlButtonsBank(bank);
+    this.prSetAllControlButtonFuncs;
     this.prSetAllControlButtonColors;
   }
 

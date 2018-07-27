@@ -194,9 +194,9 @@ slot 5 - record enable
     sceneLaunchBankMonitorFuncArray[activeSceneLaunchBnk].do({ | r | r.stop; });
     activeSceneLaunchBnk = bank;
     5.do({ | index |
-      this.prSetSceneLaunchFunc(index, 'noteOn', gridBankArray[activeSceneLaunchBnk][index][0]);
-      this.prSetSceneLaunchFunc(index, 'noteOff', gridBankArray[activeSceneLaunchBnk][index][1]);
-      this.prSetSceneLaunchColor(index, gridBankArray[activeSceneLaunchBnk][index][2]);
+      this.prSetSceneLaunchFunc(index, 'noteOn', sceneLaunchBankArray[activeSceneLaunchBnk][index][0]);
+      this.prSetSceneLaunchFunc(index, 'noteOff', sceneLaunchBankArray[activeSceneLaunchBnk][index][1]);
+      this.prTurnSceneLaunchButtonColor(index, sceneLaunchBankArray[activeSceneLaunchBnk][index][2]);
     });
     sceneLaunchBankMonitorFuncArray[activeSceneLaunchBnk].do({ | r | r.reset.play; });
   }
@@ -207,7 +207,7 @@ slot 5 - record enable
     9.do({ | index |
       this.prSetClipStopFunc(index, 'noteOn', clipStopBankArray[activeClipStopBnk][index][0]);
       this.prSetClipStopFunc(index, 'noteOff', clipStopBankArray[activeClipStopBnk][index][1]);
-      this.prSetClipStopColor(index, clipStopBankArray[activeClipStopBnk][index][2]);
+      this.prTurnClipStopButtonColor(index, clipStopBankArray[activeClipStopBnk][index][2]);
     });
     clipStopBankMonitorFuncArray[activeClipStopBnk].do({ | r | r.reset.play; });
   }
@@ -220,28 +220,28 @@ slot 5 - record enable
 
       this.prSetTrackSelectFunc(index, 'noteOn', mixerBankArray[activeMixerBnk][1][index][0]);
       this.prSetTrackSelectFunc(index, 'noteOff', mixerBankArray[activeMixerBnk][1][index][1]);
-      this.prSetTrackSelectColor(index, mixerBankArray[activeMixerBnk][1][index][2]);
+      this.prTurnTrackSelectButtonColor(index, mixerBankArray[activeMixerBnk][1][index][2]);
 
       this.prSetTrackActivatorFunc(index, 'noteOn', mixerBankArray[activeMixerBnk][2][index][0]);
       this.prSetTrackActivatorFunc(index, 'noteOff', mixerBankArray[activeMixerBnk][2][index][1]);
-      this.prSetTrackActivatorColor(index, mixerBankArray[activeMixerBnk][2][index][2]);
+      this.prTurnTrackActivatorButtonColor(index, mixerBankArray[activeMixerBnk][2][index][2]);
 
       this.prSetCrossfaderSelectFunc(index, 'noteOn', mixerBankArray[activeMixerBnk][3][index][0]);
       this.prSetCrossfaderSelectFunc(index, 'noteOff', mixerBankArray[activeMixerBnk][3][index][1]);
-      this.setCrossfaderSelectButtonColor(index, mixerBankArray[activeMixerBnk][3][index][2]);
+      this.prTurnCrossfaderSelectButtonColor(index, mixerBankArray[activeMixerBnk][3][index][2]);
 
-      this.prSetSoloFunc(index, 'noteOn', mixerBankArray[activeMixerBnk][4][index][0]);
-      this.prSetSoloFunc(index, 'noteOff', mixerBankArray[activeMixerBnk][4][index][1]);
-      this.prSetSoloButtonColor(index, mixerBankArray[activeMixerBnk][4][index][2]);
+      this.prSetSoloButtonFunc(index, 'noteOn', mixerBankArray[activeMixerBnk][4][index][0]);
+      this.prSetSoloButtonFunc(index, 'noteOff', mixerBankArray[activeMixerBnk][4][index][1]);
+      this.prTurnSoloButtonColor(index, mixerBankArray[activeMixerBnk][4][index][2]);
 
-      this.prSetRecordEnableFunc(index, 'noteOn', mixerBankArray[activeMixerBnk][5][index][0]);
-      this.prSetRecordEnableFunc(index, 'noteOff', mixerBankArray[activeMixerBnk][5][index][1]);
-      this.prSetRecordEnableButtonColor(index, mixerBankArray[activeMixerBnk][5][index][2]);
+      this.prSetRecordEnableButtonFunc(index, 'noteOn', mixerBankArray[activeMixerBnk][5][index][0]);
+      this.prSetRecordEnableButtonFunc(index, 'noteOff', mixerBankArray[activeMixerBnk][5][index][1]);
+      this.prTurnRecordEnableButtonColor(index, mixerBankArray[activeMixerBnk][5][index][2]);
     });
     mixerBankMonitorFuncArray[activeMixerBnk].do({ | r | r.reset.play; });
   }
 
-  setActiveMixerEncoderBank { | bank = 0 |
+  setActiveMixerEncodersBank { | bank = 0 |
     mixerEncodersBankMonitorFuncArray[activeMixerEncodersBnk].do({ | r | r.stop; });
     activeMixerEncodersBnk = bank;
     9.do({ | index |
@@ -256,7 +256,7 @@ slot 5 - record enable
     activeDeviceEncodersBnk = bank;
     9.do({ | index |
       this.prSetDeviceEncoderFunc(index, deviceEncodersBankArray[activeDeviceEncodersBnk][index][0]);
-      this.prSetDeviceEncoderValue(index, deviceEncodersBankArray[activeDeviceEncodersBnk][index][0]);
+      this.prSetDeviceEncoderValue(index, deviceEncodersBankArray[activeDeviceEncodersBnk][index][1]);
     });
     deviceEncodersBankMonitorFuncArray[activeDeviceEncodersBnk].do({ | r | r.reset.play; });
   }
@@ -267,7 +267,7 @@ slot 5 - record enable
     14.do({ | index |
       this.prSetDeviceButtonFunc(index, 'noteOn', deviceButtonsBankArray[activeDeviceButtonsBnk][index][0]);
       this.prSetDeviceButtonFunc(index, 'noteOff', deviceButtonsBankArray[activeDeviceButtonsBnk][index][1]);
-      this.prSetDeviceButtonColor(index, deviceButtonsBankArray[activeDeviceButtonsBnk][index][2]);
+      this.prTurnDeviceButtonColor(index, deviceButtonsBankArray[activeDeviceButtonsBnk][index][2]);
     });
     deviceButtonsBankMonitorFuncArray[activeDeviceButtonsBnk].do({ | r | r.reset.play; });
   }
@@ -278,7 +278,7 @@ slot 5 - record enable
     10.do({ | index |
       this.prSetControlButtonFunc(index, 'noteOn', controlButtonsBankArray[activeControlButtonsBnk][index][0]);
       this.prSetControlButtonFunc(index, 'noteOff', controlButtonsBankArray[activeControlButtonsBnk][index][1]);
-      this.prSetControlButtonColor(index, controlButtonsBankArray[activeControlButtonsBnk][index][2]);
+      this.prTurnControlButtonColor(index, controlButtonsBankArray[activeControlButtonsBnk][index][2]);
     });
     controlButtonsBankMonitorFuncArray[activeControlButtonsBnk].do({ | r | r.reset.play; });
   }

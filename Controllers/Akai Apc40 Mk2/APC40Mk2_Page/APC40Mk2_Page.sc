@@ -8,11 +8,11 @@ APC40Mk2_Page {
 
   var <gridFuncArray, sceneLaunchFuncArray, clipStopFuncArray;
   var trackSelectFuncArray, trackActivatorFuncArray, crossfaderSelectFuncArray;
-  var soloFuncArray, recordEnableFuncArray,  deviceFuncArray, controlFuncArray;
+  var soloButtonFuncArray, recordEnableButtonFuncArray,  deviceFuncArray, controlFuncArray;
   var mixerFadersArray, mixerEncodersArray, deviceEncodersArray;
 
   var <gridColorArray, <sceneLaunchColorArray, <clipStopColorArray;
-  var <selectColorArray, <trackActivatorColorArray, <crossfadeSelectColorArray;
+  var <selectColorArray, <trackActivatorColorArray, <crossfaderSelectColorArray;
   var <soloColorArray, <recordEnableColorArray, <deviceColorArray, <controlColorArray;
   var <mixerEncodersValueArray, <deviceEncodersValueArray;
 
@@ -56,8 +56,8 @@ APC40Mk2_Page {
     trackSelectFuncArray = Array.fill2D(2, 9, { { }; });
     trackActivatorFuncArray = Array.fill2D(2, 8, { { }; });
     crossfaderSelectFuncArray = Array.fill2D(2, 8, { { }; });
-    soloFuncArray = Array.fill2D(2, 8, { { }; });
-    recordEnableFuncArray = Array.fill2D(2, 8, { { }; });
+    soloButtonFuncArray = Array.fill2D(2, 8, { { }; });
+    recordEnableButtonFuncArray = Array.fill2D(2, 8, { { }; });
     deviceFuncArray = Array.fill2D(2, 14, { { }; });
     controlFuncArray = Array.fill2D(2, 10, { { }; });
   }
@@ -69,8 +69,8 @@ APC40Mk2_Page {
     trackSelectFuncArray.do({ | f | f.free; });
     trackActivatorFuncArray.do({ | f | f.free; });
     crossfaderSelectFuncArray.do({ | f | f.free; });
-    soloFuncArray.do({ | f | f.free; });
-    recordEnableFuncArray.do({ | f | f.free; });
+    soloButtonFuncArray.do({ | f | f.free; });
+    recordEnableButtonFuncArray.do({ | f | f.free; });
     deviceFuncArray.do({ | f | f.free; });
     controlFuncArray.do({ | f | f.free; });
   }
@@ -96,7 +96,7 @@ APC40Mk2_Page {
     // mixer color arrays:
     selectColorArray = Array.fill(9, { 0 });
     trackActivatorColorArray = Array.fill(9, {  0 });
-    crossfadeSelectColorArray = Array.fill(9, { 0 });
+    crossfaderSelectColorArray = Array.fill(9, { 0 });
     soloColorArray = Array.fill(9, { 0 });
     recordEnableColorArray = Array.fill(9, { 0 });
 
@@ -153,15 +153,15 @@ APC40Mk2_Page {
       \noteOn, { ^crossfaderSelectFuncArray[0][num] },
       \noteOff, { ^crossfaderSelectFuncArray[1][num] });
   }
-  getSoloFunc { | num, type |
+  getSoloButtonFunc { | num, type |
     switch(type,
-      \noteOn, { ^soloFuncArray[0][num] },
-      \noteOff, { ^soloFuncArray[1][num] });
+      \noteOn, { ^soloButtonFuncArray[0][num] },
+      \noteOff, { ^soloButtonFuncArray[1][num] });
   }
-  getRecordEnableFunc { | num, type |
+  getRecordEnableButtonFunc { | num, type |
     switch(type,
-      \noteOn, { ^recordEnableFuncArray[0][num] },
-      \noteOff, { ^recordEnableFuncArray[1][num] });
+      \noteOn, { ^recordEnableButtonFuncArray[0][num] },
+      \noteOff, { ^recordEnableButtonFuncArray[1][num] });
   }
   getDeviceButtonFunc { | num, type |
     switch(type,
@@ -315,12 +315,12 @@ APC40Mk2_Page {
     });
   }
 
-  prSetSoloFunc { | num, type, func = nil |
+  prSetSoloButtonFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { soloFuncArray[0][num] = func },
-      \noteOff, { soloFuncArray[1][num] = func });
+      \noteOn, { soloButtonFuncArray[0][num] = func },
+      \noteOff, { soloButtonFuncArray[1][num] = func });
   }
-  setSoloFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
+  setSoloButtonFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
     if( bank == activeMixerBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
@@ -328,20 +328,20 @@ APC40Mk2_Page {
       switch(type,
         \noteOn, {
           mixerBankArray[bankSelect][4][num][0] = func;
-          if( bank == 'active', { this.prSetSoloFunc(num, 'noteOn', func); }); },
+          if( bank == 'active', { this.prSetSoloButtonFunc(num, 'noteOn', func); }); },
         \noteOff, {
           mixerBankArray[bankSelect][4][num][1] = func;
-          if( bank == 'active', { this.prSetSoloFunc(num, 'noteOff', func); }); }
+          if( bank == 'active', { this.prSetSoloButtonFunc(num, 'noteOff', func); }); }
       );
     });
   }
 
-  prSetRecordEnableFunc { | num, type, func = nil |
+  prSetRecordEnableButtonFunc { | num, type, func = nil |
     switch(type,
-      \noteOn, { recordEnableFuncArray[0][num] = func },
-      \noteOff, { recordEnableFuncArray[1][num] = func });
+      \noteOn, { recordEnableButtonFuncArray[0][num] = func },
+      \noteOff, { recordEnableButtonFuncArray[1][num] = func });
   }
-  setRecordEnableFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
+  setRecordEnableButtonFunc { | num = 1, func, type = 'noteOn', bank = 'active' |
     var bankSelect;
     if( bank == activeMixerBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeMixerBnk }, { bankSelect = bank });
@@ -349,10 +349,10 @@ APC40Mk2_Page {
       switch(type,
         \noteOn, {
           mixerBankArray[bankSelect][5][num][0] = func;
-          if( bank == 'active', { this.prSetRecordEnableFunc(num, 'noteOn', func); }); },
+          if( bank == 'active', { this.prSetRecordEnableButtonFunc(num, 'noteOn', func); }); },
         \noteOff, {
           mixerBankArray[bankSelect][5][num][1] = func;
-          if( bank == 'active', { this.prSetRecordEnableFunc(num, 'noteOff', func); }); }
+          if( bank == 'active', { this.prSetRecordEnableButtonFunc(num, 'noteOff', func); }); }
       );
     });
   }

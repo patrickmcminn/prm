@@ -18,9 +18,9 @@ APC40Mk2 {
   var <gridColorArray, <sceneLaunchColorArray, <clipStopColorArray;
   var <selectColorArray, <mixerColorArray;
 
-  var <activeGridBank, <activeSceneLaunchBank, <activeClipStopBank;
-  var <activeMixerBank,  <activeMixerEncodersBank;
-  var <activeDeviceEncodersBank, <activeDeviceButtonsBank, <activeControlButtonsBank;
+  var <activeGridBank = 0, <activeSceneLaunchBank =0, <activeClipStopBank=0;
+  var <activeMixerBank=0,  <activeMixerEncodersBank=0;
+  var <activeDeviceEncodersBank=0, <activeDeviceButtonsBank=0, <activeControlButtonsBank=0;
 
   *new { | deviceName = "APC40 mkII", portName = "APC40 mkII" |
     ^super.new.prInit(deviceName, portName);
@@ -36,6 +36,8 @@ APC40Mk2 {
 
   prInitMIDI { | deviceName = "APC40 mkII", portName = "APC40 mkII" |
     MIDIIn.connectAll;
+    //MIDIClient.init;
+    //MIDIIn.connect(portName, deviceName);
     midiInPort = MIDIIn.findPort(deviceName, portName);
     midiOutPort = MIDIOut.newByName(deviceName, portName);
     midiOutPort.latency = 0;
@@ -393,6 +395,8 @@ APC40Mk2 {
     // starts routines that update control surface values on active page:
     activePage.startActiveBankMonitorRoutines;
     activePage.loadFunctionDict.do({ | func | func.value; });
+
+
 
   }
 

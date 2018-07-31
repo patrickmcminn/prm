@@ -55,6 +55,7 @@ prm
     pageDict[page].setActiveGridBank(bank);
     this.prSetAllGridFuncs;
     this.prSetAllGridColors;
+    activeGridBank = activePage.activeGridBnk;
 
   }
 
@@ -63,6 +64,7 @@ prm
     pageDict[page].setActiveSceneLaunchBank(bank);
     this.prSetAllSceneLaunchFuncs;
     this.prSetAllSceneLaunchColors;
+    activeSceneLaunchBank = activePage.activeSceneLauncBnk;
   }
 
   setActiveClipStopBank { | bank = 0, page = 'active' |
@@ -70,6 +72,7 @@ prm
     pageDict[page].setActiveClipStopBank(bank);
     this.prSetAllClipStopFuncs;
     this.prSetAllClipStopColors;
+    activeClipStopBank = activePage.activeClipStopBnk;
   }
 
   setActiveMixerBank { | bank = 0, page = 'active' |
@@ -83,6 +86,7 @@ prm
     this.prSetAllRecordEnableButtonFuncs;
 
     this.prSetAllMixerColors;
+    activeMixerBank = activePage.activeMixerBnk;
   }
 
   setActiveMixerEncodersBank { | bank = 0, page = 'active' |
@@ -90,6 +94,7 @@ prm
     pageDict[page].setActiveMixerEncodersBank(bank);
     this.prSetAllMixerEncoderFuncs;
     this.prSetAllMixerEncoderValues;
+    activeMixerEncodersBank = activePage.activeMixerEncodersBnk;
   }
 
   setActiveDeviceButtonsBank { | bank = 0, page = 'active' |
@@ -97,6 +102,7 @@ prm
     pageDict[page].setActiveDeviceButtonsBank(bank);
     this.prSetAllDeviceButtonFuncs;
     this.prSetAllDeviceButtonColors;
+    activeDeviceButtonsBank = activePage.activeDeviceButtonsBnk;
   }
 
   setActiveDeviceEncodersBank { | bank = 0, page = 'active' |
@@ -104,6 +110,7 @@ prm
     pageDict[page].setActiveDeviceEncodersBank(bank);
     this.prSetAllDeviceEncoderFuncs;
     this.prSetAllDeviceEncoderValues;
+    activeDeviceEncodersBank = activePage.activeDeviceEncodersBnk;
   }
 
   setActiveControlButtonsBank { | bank = 0, page = 'active' |
@@ -111,6 +118,7 @@ prm
     pageDict[page].setActiveControlButtonsBank(bank);
     this.prSetAllControlButtonFuncs;
     this.prSetAllControlButtonColors;
+    activeControlButtonsBank = activePage.activeControlButtonsBnk;
   }
 
 }

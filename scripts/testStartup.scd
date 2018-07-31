@@ -26,10 +26,9 @@ r {
   while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
   try { ~ohm = OhmRGB.new; };
+  try { ~apc = APC40Mk2.new; };
   try { ~base = Base.new; };
 
-  //~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
-  //~base = Base.new("iConnectAudio4+", "HST3");
 
   "/Global Functions/Load Global Functions.scd".loadRelative;
   "/System Scripts/Load System Scripts.scd".loadRelative;

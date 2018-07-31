@@ -83,6 +83,7 @@ AudioSystem {
       // delay:
       delay = SimpleDelay.newStereo(masterEQ.inBus, 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
+      delay.setMix(1);
 
       // send out to modular system
       modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);

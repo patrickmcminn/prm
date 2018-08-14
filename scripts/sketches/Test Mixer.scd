@@ -7,7 +7,7 @@ Server.killAll;
 ~prm = AudioSystem.new(2);
 
 
-~apc = APC40Mk2.new("mio10", "HST 1");
+~apc = APC40Mk2.new("mio10", "HST 2");
 ~apc.setPage('mix');
 
 
@@ -26,7 +26,7 @@ Server.killAll;
 
 )
 ~prm.delay.setMix(1);
-~prm.delay.setDelayTime((60/160)*2)
+~prm.delay.setDelayTime((60/66)*2)
 ~plaits = IM_HardwareIn.new(2, ~mix.chanMono(0), ~prm.procGroup, \addToHead);
 ~moog = IM_HardwareIn.new(3, ~mix.chanMono(1), ~prm.procGroup, \addToHead)
 (

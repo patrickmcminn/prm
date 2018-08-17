@@ -208,7 +208,7 @@ Foundation : Song {
       distTrumpets.playArrivalSequence(clock);
 
       // distorted trumpet kick:
-      clock.sched(42, { mixerC.setVol(3, -4); });
+      clock.sched(42, { mixer.setVol(2, -4); });
 
 
 

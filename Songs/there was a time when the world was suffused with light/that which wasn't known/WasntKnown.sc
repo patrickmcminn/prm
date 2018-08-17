@@ -13,9 +13,8 @@ WasntKnown : Song {
   var <sampler;
 
   *new {
-     | mixAOutBus, mixBOutBus, mixCOutBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
-    ^super.new(mixAOutBus, 1, mixBOutBus, 1, mixCOutBus, 1, send0Bus, send1Bus, send2Bus, send3Bus, false,
-      relGroup, addAction).prInit;
+     | outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
+    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
   }
 
   prInit {
@@ -23,16 +22,16 @@ WasntKnown : Song {
     server.waitForBoot {
       isLoaded = false;
 
-      while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      sampler = WasntKnown_Sampler.new(mixerA.chanStereo(0), group, \addToHead);
+      sampler = WasntKnown_Sampler.new(mixer.chanStereo(0), group, \addToHead);
       while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
 
-      mixerA.setSendVol(0, 0, -6);
-      mixerA.setPreVol(0, 0, -9);
-      mixerA.setVol(0, -6);
+      mixer.setSendVol(0, 0, -6);
+      mixer.setPreVol(0, 0, -9);
+      mixer.setVol(0, -6);
 
       isLoaded = true;
     }

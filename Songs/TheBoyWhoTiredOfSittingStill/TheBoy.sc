@@ -18,10 +18,10 @@ TheBoy : Song {
 
   *new {
     |
-    mixAOutBus, mixBOutBus, mixCOutBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead',
+    outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead',
     moogDeviceName = "USB Uno MIDI Interface", moogPortName = "USB Uno MIDI Interface"
     |
-    ^super.new(mixAOutBus, 3, mixBOutBus, 2, mixCOutBus, 3, send0Bus, send1Bus, send2Bus, send3Bus, false,
+    ^super.new(8, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
       relGroup, addAction).prInit(moogDeviceName, moogPortName);
   }
 
@@ -30,49 +30,49 @@ TheBoy : Song {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
-      while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
       clock = TempoClock.new(82/60);
-      mixerC.mute(0);
+
 
       //// Mixer A:
 
       // main bell:
-      mainBell = Boy_MainBell.new(mixerA.chanStereo(0), group, \addToHead);
+      mainBell = Boy_MainBell.new(mixer.chanStereo(0), group, \addToHead);
       while({ try { mainBell.isLoaded } != true }, { 0.001.wait; });
 
       // row fuzz:
-      rowFuzz = Boy_RowFuzz.new(mixerA.chanStereo(1), group, \addToHead);
+      rowFuzz = Boy_RowFuzz.new(mixer.chanStereo(1), group, \addToHead);
       while({ try { rowFuzz.isLoaded } != true }, { 0.001.wait; });
 
-      // low bells:
-      lowBells = Boy_LowBells.new(mixerA.chanStereo(2), group, \addToHead);
-      while({ try { lowBells.isLoaded } != true }, { 0.001.wait; });
-
-      //// Mixer B:
-
       // piano:
-      piano = Boy_Piano.new(mixerB.chanStereo(0), group, \addToHead);
+      piano = Boy_Piano.new(mixer.chanStereo(2), group, \addToHead);
       while({ try { piano.isLoaded } != true }, { 0.001.wait; });
 
       // bass section:
-      bassSection = Boy_BassSection.new(3, mixerB.chanStereo(1), "USB Uno MIDI Interface", "USB Uno MIDI Interface");
+      bassSection = Boy_BassSection.new(3, mixer.chanStereo(3), "USB Uno MIDI Interface", "USB Uno MIDI Interface");
       while({ try { bassSection.isLoaded } != true }, { 0.001.wait; });
 
-      //// Mixer C:
+      // noise chords:
+      noiseChords = Boy_NoiseChords.new(mixer.chanStereo(4), group, \addToHead);
+      while({ try { noiseChords.isLoaded } != true }, { 0.001.wait; });
 
       // trumpet:
-      trumpet = Boy_Trumpet.new(mixerC.chanStereo(0), group, \addToHead);
+      mixer.mute(4);
+      trumpet = Boy_Trumpet.new(mixer.chanStereo(5), group, \addToHead);
       while({ try { trumpet.isLoaded } != true }, { 0.001.wait; });
       trumpetInput = IM_HardwareIn.new(0, trumpet.inBus, group, \addToHead);
       while({ try { trumpetInput.isLoaded } != true }, { 0.001.wait; });
 
-      // noise chords:
-      noiseChords = Boy_NoiseChords.new(mixerC.chanStereo(1), group, \addToHead);
-      while({ try { noiseChords.isLoaded } != true }, { 0.001.wait; });
+
+      // low bells:
+      lowBells = Boy_LowBells.new(mixer.chanStereo(6), group, \addToHead);
+      while({ try { lowBells.isLoaded } != true }, { 0.001.wait; });
+
+
 
       // end synth:
-      endSynth = Boy_EndSynth.new(mixerC.chanStereo(2), group, \addToHead);
+      endSynth = Boy_EndSynth.new(mixer.chanStereo(7), group, \addToHead);
       while({ try { endSynth.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
@@ -85,39 +85,33 @@ TheBoy : Song {
   }
 
   prSetInitialParameters {
-    //// Mixer A:
-    3.do({ | i | mixerA.setPreVol(i, -6); });
 
     // Main Bell
-    mixerA.setVol(0, -9);
-    mixerA.setSendVol(0, 0, -15);
+    mixer.setVol(0, -12);
+    mixer.setSendVol(0, 0, -1);
     // row fuzz:
-    mixerA.setVol(1, -9);
-    mixerA.setSendVol(1, 0, -9);
+    mixer.setVol(1, -12);
+    mixer.setSendVol(1, 0, -9);
     // low bells:
-    mixerA.setVol(2, -9);
-    mixerA.setSendVol(2, 0, -9);
+    mixer.setVol(6, -12);
+    mixer.setSendVol(6, 0, -9);
 
-    //// Mixer B:
-    2.do({ | i | mixerB.setPreVol(i, -6); });
     // piano:
-    mixerB.setVol(0, -inf);
-    mixerB.setSendVol(0, 0, -9);
+    mixer.setVol(2, -12);
+    mixer.setSendVol(2, 0, -9);
     // bass section:
-    mixerB.setVol(1, -6);
-    mixerB.setSendVol(1, 0, -18);
+    mixer.setVol(3, -12);
+    mixer.setSendVol(3, 0, -18);
 
-    //// Mixer C:
-    3.do({ | i | mixerC.setPreVol(i, -6); });
     // trumpet:
-    mixerC.setVol(0, -15);
-    mixerC.setSendVol(0, 0, -21);
+    mixer.setVol(5, -21);
+    mixer.setSendVol(5, 0, -21);
     // noise chords:
-    mixerC.setVol(1, -inf);
-    mixerC.setSendVol(1, 0, -3);
+    mixer.setVol(4, -inf);
+    mixer.setSendVol(4, 0, -3);
     // end synth:
-    mixerC.setVol(2, -inf);
-    mixerC.setSendVol(2, 0, -12);
+    mixer.setVol(7, -inf);
+    mixer.setSendVol(7, 0, -12);
 
     introIsPlaying = true;
     section1IsPlaying = false;

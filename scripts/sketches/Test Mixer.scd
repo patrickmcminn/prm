@@ -16,7 +16,8 @@ var delayBank = 3;
   while({ try { ~prm.isLoaded } != true }, { 0.001.wait; });
 
 
-  ~apc = APC40Mk2.new("mio10", "HST 2");
+  //~apc = APC40Mk2.new("mio10", "HST 2");
+  ~apc = APC40Mk2.new;
 
   ~mix = IM_Mixer.new(8, ~prm.submixA,
     ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
@@ -28,6 +29,7 @@ var delayBank = 3;
   while({ try { ~in1.isLoaded } != true }, { 0.001.wait; });
   ~in2 = IM_HardwareIn.new(3, ~mix.chanMono(1), ~prm.procGroup, \addToHead);
   while({ try { ~in2.isLoaded } != true }, { 0.001.wait; });
+  ~tpt = IM_HardwareIn.new(1, ~mix.chanMono(2), ~prm.procGroup, \addToHead);
 
   s.sync;
 

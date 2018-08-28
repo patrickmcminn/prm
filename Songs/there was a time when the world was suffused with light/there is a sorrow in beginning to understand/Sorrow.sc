@@ -6,7 +6,7 @@ prm
 there is a sorrow in beginning to understand
 */
 
-Sorrow :IM_Module {
+Sorrow : Song {
 
   var <isLoaded;
   var server;

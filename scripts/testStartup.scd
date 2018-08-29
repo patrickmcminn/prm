@@ -27,6 +27,7 @@ r {
 
   try { ~ohm = OhmRGB.new; };
   try { ~apc = APC40Mk2.new; };
+  //try { ~apc = APC40Mk2.new("mio10", "HST 2"); };
   try { ~base = Base.new; };
 
 

@@ -4,4 +4,5 @@ Load Global Functions.scd
 */
 
 //"Global Submixer Functions.scd".loadRelative;
+"APC Master Func.scd".loadRelative;
 

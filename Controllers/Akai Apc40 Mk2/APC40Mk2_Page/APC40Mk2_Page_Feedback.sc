@@ -76,7 +76,9 @@ prm
     mixerBankArray[bank][3][num][2] = colorVal;
     this.prTurnCrossfaderSelectButtonColor(num, mixerBankArray[activeMixerBnk][3][num][2]);
   }
-  turnCrossfaderSelectButtonOn { | num, bank | this.turnCrossfaderSelectButtonColor(num, 1, bank) }
+
+  turnCrossfaderSelectButtonOrange { | num, bank | this.turnCrossfaderSelectButtonColor(num, 2, bank) }
+  turnCrossfaderSelectButtonYellow { | num, bank | this.turnCrossfaderSelectButtonColor(num, 1, bank) }
   turnCrossfaderSelectButtonOff { | num, bank | this.turnCrossfaderSelectButtonColor(num, 0, bank) }
 
   prTurnSoloButtonColor { | num, colorVal | soloColorArray[num] = colorVal }

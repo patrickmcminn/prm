@@ -306,13 +306,21 @@ prm
     pageDict[page].turnTrackActivatorButtonOff(index, bank);
   }
 
-  turnCrossfaderSelectButtonOn { | button = 1, bank = 'active', page = 'active' |
+  turnCrossfaderSelectButtonYellow { | button = 1, bank = 'active', page = 'active' |
     var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
       activePage.getCrossfaderSelectButtonColor(index) != 1,
       { this.prTurnCrossfaderSelectButtonColor(index, 1) }); });
-    pageDict[page].turnCrossfaderSelectButtonOn(index, bank);
+    pageDict[page].turnCrossfaderSelectButtonYellow(index, bank);
+  }
+  turnCrossfaderSelectButtonOrange { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
+    if( page == 'active', { page = activePageKey });
+    if( page == activePageKey, { if(
+      activePage.getCrossfaderSelectButtonColor(index) != 2,
+      { this.prTurnCrossfaderSelectButtonColor(index, 2) }); });
+    pageDict[page].turnCrossfaderSelectButtonOrange(index, bank);
   }
   turnCrossfaderSelectButtonOff { | button = 1, bank = 'active', page = 'active' |
     var index = button-1;

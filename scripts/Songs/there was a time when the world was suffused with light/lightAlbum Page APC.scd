@@ -137,28 +137,28 @@ var dissolutionIsLoaded = false;
 }, page: page);
 */
 
-/*
+
 'there is a sorrow in beginning to understand';
-~ohm.turnGridBlue(4, 0, page: page);
-~ohm.setGridFunc(4, 0, {
+~apc.turnGridBlue(2, 1, page: page);
+~apc.setGridFunc(2, 1, {
   if( sorrowIsLoaded == false, {
     r{
-      ~sorrow = Sorrow.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+      ~sorrow = Sorrow.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
         relGroup: ~prm.procGroup, addAction: \addToHead);
       while({ try { ~sorrow.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.turnGridGreen(5, 0);
-      ~ohm.setGridFunc(5, 0, { ~ohm.setPage('sorrow'); }, page: page);
+      ~apc.turnGridGreen(3, 1);
+      ~apc.setGridFunc(3, 1, { ~apc.setPage('sorrow'); }, page: page);
       sorrowIsLoaded = true;
     }.play;
     },
     {
       ~sorrow.free;
-      ~ohm.setGridFunc(5, 0, {});
-      ~ohm.turnGridOff(5, 0);
+      ~apc.setGridFunc(3, 1, {});
+      ~apc.turnGridOff(3, 1);
       sorrowIsLoaded = false;
   });
 }, page: page);
-*/
+
 
 /*
 'an objective truth';

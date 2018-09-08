@@ -25,6 +25,7 @@ page to load into the language all of the songs for this tape
 "Darkness Base.scd".loadRelative;
 //"Darkness Ohm.scd".loadRelative;
 
+"Sorrow APC.scd".loadRelative;
 "Sorrow Base.scd".loadRelative;
 //"Sorrow Ohm.scd".loadRelative;
 

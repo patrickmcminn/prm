@@ -6,7 +6,6 @@ prm
 
 Song {
 
-  var isLoaded;
   var server;
   var <group;
   var <mixer;
@@ -28,7 +27,7 @@ Song {
     |
     server = Server.default;
     server.waitForBoot {
-      isLoaded = false;
+      //isLoaded = false;
       group = Group.new(relGroup, addAction);
       server.sync;
 
@@ -36,7 +35,7 @@ Song {
         relGroup, addAction);
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      isLoaded = true;
+      //isLoaded = true;
     }
   }
 

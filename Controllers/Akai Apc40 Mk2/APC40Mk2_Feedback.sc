@@ -95,6 +95,10 @@ prm
     pageDict[page].turnGridColor(column, row, colorVal, bank);
   }
 
+  turnGridOff { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 0, bank, page);
+  }
+
   turnGridWhite { | column = 0, row = 0, brightness = 2, bank = 'active', page = 'active' |
     var colorVal = 1 + brightness;
     if( brightness > 2, { "brightness out of range".postln; },
@@ -170,6 +174,10 @@ prm
       colorVal != activePage.getSceneLaunchButtonColor(num),
       { this.prTurnButtonColor(num, colorVal); }); });
     pageDict[page].turnSceneLaunchButtonColor(button, colorVal, bank);
+  }
+
+  turnSceneLaunchButtonOff { | button = 0, bank = 'active', page = 'active' |
+    this.turnSceneLaunchButtonColor(button, 0, bank, page);
   }
 
   turnSceneLaunchButtonWhite { | button = 0, brightness = 2, bank = 'active', page = 'active' |

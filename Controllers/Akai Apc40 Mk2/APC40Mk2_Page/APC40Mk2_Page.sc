@@ -115,6 +115,15 @@ APC40Mk2_Page {
     deviceEncodersValueArray.do({ | f | f.free; });
   }
 
+  addLoadFunction { | name, func |
+    loadFunctionDict[name] = func;
+  }
+
+  addOffLoadFunction { | name, func |
+    offLoadFunctionDict[name] = func;
+  }
+
+
   ////////////////////////////////////
   //// Function Setting: ////
   //////////////////////////////////

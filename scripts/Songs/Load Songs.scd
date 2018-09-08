@@ -4,6 +4,8 @@ Load Songs.scd
 prm
 */
 
+
+/*
 // Ohm:
 "Connections Ohm.scd".loadRelative;
 //"Cortez Ohm.scd".loadRelative;
@@ -12,6 +14,7 @@ prm
 //"Light Ohm.scd".loadRelative;
 "Foundation Ohm.scd".loadRelative;
 "Boy Ohm.scd".loadRelative;
+*/
 
 
 // Base:

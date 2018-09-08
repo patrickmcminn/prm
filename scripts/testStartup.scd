@@ -30,7 +30,7 @@ r {
     ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
     false, ~prm.procGroup, \addToHead);
   while({ try { ~convMix.isLoaded } != true }, { 0.001.wait; });
-  ~convMix.do({ | chan | ~convMix.mute(chan); });
+  4.do({ | chan | ~convMix.mute(chan); });
 
   try { ~ohm = OhmRGB.new; };
   try { ~apc = APC40Mk2.new; };

@@ -13,6 +13,7 @@ var send1 = 1;
 var send2 = 2;
 var send3 = 3;
 
+
 ~apc.makePage(page);
 ~apc.addPageLoadFunction(\masterFunc, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 
@@ -78,8 +79,9 @@ var send3 = 3;
     ~apc.setMixerEncoderValue(i+1,  ~meaning.mainMixer.sendVol(i, 2).dbfsCC); }, bank: send2, page: page);
   ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
     ~apc.setMixerEncoderValue(i+1,  ~meaning.mainMixer.sendVol(i, 3).dbfsCC); }, bank: send3, page: page);
+});
 
-  //// send bank changes:
+//// send bank changes:
   ~apc.setDeviceButtonsMonitorFunc(\sends, {
     if( ~apc.activeMixerEncodersBank == send0,
       { ~apc.turnDeviceButtonOn(1) }, { ~apc.turnDeviceButtonOff(1) });
@@ -95,11 +97,6 @@ var send3 = 3;
   ~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1);  }, page: page);
   ~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2); }, page: page);
   ~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); }, page: page);
-
-  //~apc.setMixerEncodersMonitorFunc(\mixer0send, {
-    //~apc.setMixerEncoderValue(1, ~meaning.mainMixer.sendVol(0, 0).dbfsCC) }, page: page);
-});
-
 
 
 ~apc.setMixerEncodersMonitorFunc(\test, {

@@ -18,6 +18,34 @@ var send3 = 3;
 ~apc.addMixerEncodersBanks(3);
 
 /////// Grid Functions:
+'Built on a Flawed Foundation';
+
+~ohm.turnGridCyan(0, 4, page: page);
+~ohm.setGridFunc(0, 4, {
+  if(foundationIsLoaded == false, {
+    r {
+      ~foundationDelay = SimpleDelay.newStereo(~prm.audioIn, 2.5, 0.21, 2.5,
+        relGroup: ~prm.procGroup, addAction: \addToHead);
+      while({ try { ~foundationDelay.isLoaded } != true }, { 0.001.wait; });
+      s.sync;
+      ~foundationDelay.setMix(1);
+      ~foundation = Foundation.new(~prm.audioIn,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
+        ~prm.procGroup, \addToHead, ~moogDevice, ~moogPort);
+      while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
+      ~ohm.setGridFunc(1, 4, { ~ohm.setPage('foundation'); }, page: page);
+      ~ohm.turnGridGreen(1, 4);
+      foundationIsLoaded = true;
+    }.play;
+    },
+    {
+      ~foundation.free;
+      ~foundationDelay.free;
+      ~ohm.setGridFunc(1, 4, { });
+      ~ohm.turnGridOff(1, 4);
+      foundationIsLoaded = false;
+  });
+}, page: page);
 
 
 //////// There Was a Time when the World was Suffused with Light ////////

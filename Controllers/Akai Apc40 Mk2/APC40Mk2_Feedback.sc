@@ -47,7 +47,7 @@ prm
     8.do({ | num | this.prTurnTrackActivatorButtonColor(num, activePage.trackActivatorColorArray[num]) });
     8.do({ | num | this.prTurnCrossfaderSelectButtonColor(num, activePage.crossfaderSelectColorArray[num]) });
     8.do({ | num | this.prTurnSoloButtonColor(num, activePage.soloColorArray[num]) });
-    8.do({ | num | this.prTurnRecordButtonColor(num, activePage.recordEnableColorArray[num]) });
+    8.do({ | num | this.prTurnRecordEnableButtonColor(num, activePage.recordEnableColorArray[num]) });
   }
   prSetAllDeviceButtonColors {
     8.do({ | num | this.prTurnDeviceButtonColor(num, activePage.deviceColorArray[num]) });

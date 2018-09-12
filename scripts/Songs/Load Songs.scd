@@ -4,6 +4,8 @@ Load Songs.scd
 prm
 */
 
+"Foundation APC.scd".loadRelative;
+"Foundation Base.scd".loadRelative;
 
 /*
 // Ohm:
@@ -24,7 +26,7 @@ prm
 "Habit Base.scd".loadRelative;
 "False Self Base.scd".loadRelative;
 //"Light Base.scd".loadRelative;
-"Foundation Base.scd".loadRelative;
+
 "Boy Base.scd".loadRelative;
 
 

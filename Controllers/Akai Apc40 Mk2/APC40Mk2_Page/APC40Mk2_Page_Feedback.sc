@@ -35,7 +35,7 @@ prm
   prTurnSceneLaunchButtonColor { | num, colorVal = 0 | sceneLaunchColorArray[num] = colorVal; }
 
   turnSceneLaunchButtonColor { | num = 0, colorVal = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeGridBnk });
+    if( bank == 'active', { bank = activeSceneLaunchBnk });
     sceneLaunchBankArray[bank][num][2] = colorVal;
     this.prTurnSceneLaunchButtonColor(num, sceneLaunchBankArray[activeSceneLaunchBnk][num][2]);
   }
@@ -43,7 +43,7 @@ prm
   prTurnClipStopButtonColor { | num, colorVal | clipStopColorArray[num] = colorVal; }
 
   turnClipStopButtonColor { | num = 1, colorVal = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeGridBnk });
+    if( bank == 'active', { bank = activeClipStopBnk });
     clipStopBankArray[bank][num][2] = colorVal;
     this.prTurnClipStopButtonColor(num, clipStopBankArray[activeClipStopBnk][num][2]);
   }
@@ -53,7 +53,7 @@ prm
   prTurnTrackSelectButtonColor { | num, colorVal | selectColorArray[num] = colorVal }
 
   turnTrackSelectButtonColor { | num = 1, colorVal = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeGridBnk });
+    if( bank == 'active', { bank = activeMixerBnk });
     mixerBankArray[bank][1][num][2] = colorVal;
     this.prTurnTrackSelectButtonColor(num, mixerBankArray[activeMixerBnk][1][num][2]);
   }
@@ -63,7 +63,7 @@ prm
   prTurnTrackActivatorButtonColor { | num, colorVal | trackActivatorColorArray[num] = colorVal }
 
   turnTrackActivatorButtonColor { | num = 1, colorVal = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeGridBnk });
+    if( bank == 'active', { bank = activeMixerBnk });
     mixerBankArray[bank][2][num][2] = colorVal;
     this.prTurnTrackActivatorButtonColor(num, mixerBankArray[activeMixerBnk][2][num][2]);
   }
@@ -72,7 +72,7 @@ prm
 
   prTurnCrossfaderSelectButtonColor { | num, colorVal | crossfaderSelectColorArray[num] = colorVal }
   turnCrossfaderSelectButtonColor { | num = 1, colorVal = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeGridBnk });
+    if( bank == 'active', { bank = activeMixerBnk });
     mixerBankArray[bank][3][num][2] = colorVal;
     this.prTurnCrossfaderSelectButtonColor(num, mixerBankArray[activeMixerBnk][3][num][2]);
   }
@@ -83,7 +83,7 @@ prm
 
   prTurnSoloButtonColor { | num, colorVal | soloColorArray[num] = colorVal }
   turnSoloButtonColor { | num = 1, colorVal = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeGridBnk });
+    if( bank == 'active', { bank = activeMixerBnk });
     mixerBankArray[bank][4][num][2] = colorVal;
     this.prTurnSoloButtonColor(num, mixerBankArray[activeMixerBnk][4][num][2]);
   }
@@ -92,7 +92,7 @@ prm
 
   prTurnRecordEnableButtonColor { | num, colorVal | recordEnableColorArray[num] = colorVal; }
   turnRecordEnableButtonColor { | num = 0, colorVal = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeGridBnk });
+    if( bank == 'active', { bank = activeMixerBnk });
     mixerBankArray[bank][5][num][2] = colorVal;
     this.prTurnRecordEnableButtonColor(num, mixerBankArray[activeMixerBnk][5][num][2]);
   }
@@ -101,7 +101,7 @@ prm
 
   prTurnDeviceButtonColor { | num, colorVal | deviceColorArray[num] = colorVal }
   turnDeviceButtonColor { | num = 0, colorVal = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeGridBnk });
+    if( bank == 'active', { bank = activeDeviceButtonsBnk });
     deviceButtonsBankArray[bank][num][2] = colorVal;
     this.prTurnDeviceButtonColor(num, deviceButtonsBankArray[activeDeviceButtonsBnk][num][2]);
   }
@@ -110,7 +110,7 @@ prm
 
   prTurnControlButtonColor { | num, colorVal | controlColorArray[num] = colorVal }
   turnControlButtonColor { | num = 0, colorVal = 0, bank = 'active' |
-    if( bank == 'active', { bank = activeGridBnk });
+    if( bank == 'active', { bank = activeControlButtonsBnk });
     controlButtonsBankArray[bank][num][2] = colorVal;
     this.prTurnControlButtonColor(num, controlButtonsBankArray[activeControlButtonsBnk][num][2]);
   }

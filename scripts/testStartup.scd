@@ -23,6 +23,12 @@ base = "HST3";*/
 r {
   ~prm = AudioSystem.new(2);
 
+  ~moogDevice = "UMC404HD 192k";
+  ~moogPort = "UMC404HD 192k";
+
+  ~moogDevice = "UMC1820";
+  ~moogPort = "UMC1820";
+
   while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
   // convenience mixer
@@ -33,8 +39,8 @@ r {
   4.do({ | chan | ~convMix.mute(chan); });
 
   try { ~ohm = OhmRGB.new; };
-  try { ~apc = APC40Mk2.new; };
-  //try { ~apc = APC40Mk2.new("mio10", "HST 2"); };
+  //try { ~apc = APC40Mk2.new; };
+  try { ~apc = APC40Mk2.new("mio10", "HST 2"); };
   try { ~base = Base.new; };
 
 
@@ -55,7 +61,7 @@ AudioSystem
 ~base.setPage('habit');
 
 Server.killAll;
-
+~prm.isLoaded;
 
 MIDIIn.connectAll;
 ~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
@@ -83,3 +89,4 @@ MIDIIn.connectAll;
 
 Light_Bass
 
+Server.killAll;

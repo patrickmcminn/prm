@@ -12,7 +12,7 @@ GlitchySynth : IM_Module {
   var <sequencerDict, <sequencerClock, <tempo;
 
   *new { | outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
-    relGroup = nil, addAction = 'addToTail' |
+    relGroup = nil, addAction = 'addToHead' |
     ^super.new(2, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
   }
 

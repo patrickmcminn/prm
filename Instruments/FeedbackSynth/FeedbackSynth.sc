@@ -12,7 +12,7 @@ FeedbackSynth : IM_Module {
   var <attackTime, <decayTime, <sustainLevel, <releaseTime;
   var <filterCutoff;
 
-  *new { | outBus = 0, send0Bus = 0, send1Bus = 0, send2Bus = 0, send3Bus = 0, relGroup = nil, addAction = 'addToTail' |
+  *new { | outBus = 0, send0Bus = 0, send1Bus = 0, send2Bus = 0, send3Bus = 0, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
   }
 

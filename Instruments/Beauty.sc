@@ -27,7 +27,7 @@ Beauty : IM_Module {
   *newMono {
     |
     outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
-    relGroup = nil, addAction = 'addToTail'
+    relGroup = nil, addAction = 'addToHead'
     |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono;
   }
@@ -35,7 +35,7 @@ Beauty : IM_Module {
   *newStereo {
     |
     outBus = 0, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
-    relGroup = nil, addAction = 'addToTail'
+    relGroup = nil, addAction = 'addToHead'
     |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitStereo;
   }
@@ -55,7 +55,7 @@ Beauty : IM_Module {
 
       server.sync;
 
-      synth = Synth(\prm_beauty_mono, [\inBus, inputBus], group, \addToHead);
+      synth = Synth(\prm_beauty_mono, [\inBus, inputBus, \outBus, mixer.chanStereo], group, \addToHead);
       while({ try { synth != nil } != true }, { 0.001.wait; });
       input = IM_Mixer_1Ch.new(inputBus, relGroup: group, addAction: \addToHead);
       while({ try { input.isLoaded } != true }, { 0.001.wait; });
@@ -79,7 +79,7 @@ Beauty : IM_Module {
 
       server.sync;
 
-      synth = Synth(\prm_beauty_stereo, [\inBus, inputBus], group, \addToHead);
+      synth = Synth(\prm_beauty_stereo, [\inBus, inputBus, \outBus, mixer.chanStereo], group, \addToHead);
       while({ try { synth != nil } != true }, { 0.001.wait; });
       input = IM_Mixer_1Ch.new(inputBus, relGroup: group, addAction: \addToHead);
       while({ try { input.isLoaded } != true }, { 0.001.wait; });
@@ -320,6 +320,13 @@ Beauty : IM_Module {
     });
   }
 
+  setPans { | pan1 = -1, pan2 = -0.5, pan3 = 0.5, pan4 = 1 |
+    this.setPan1(pan1);
+    this.setPan2(pan2);
+    this.setPan3(pan3);
+    this.setPan4(pan4);
+  }
+
   setPan1 { | pan = 0 |
     pan1 = pan;
     synth.set(\pan1, pan1);
@@ -337,6 +344,11 @@ Beauty : IM_Module {
     synth.set(\pan1, pan4);
   }
 
+  setLowPassCutoffs { | left = 13000, right = 15000 |
+    this.setLowPassCutoffLeft(left);
+    this.setLowPassCutoffRight(right);
+  }
+
   setLowPassCutoffLeft { | cutoff = 13000 |
     lowPassCutoffLeft = cutoff;
     synth.set(\lowPassCutoffLeft, lowPassCutoffLeft);
@@ -345,6 +357,12 @@ Beauty : IM_Module {
     lowPassCutoffRight = cutoff;
     synth.set(\lowPassCutoffRight, lowPassCutoffRight);
   }
+
+  setResonances { | left = 0, right = 0 |
+    this.setResonanceLeft(left);
+    this.setResonanceRight(right);
+  }
+
   setResonanceLeft { | res = 0 |
     resonanceLeft = res;
     synth.set(\lowPassResLeft, resonanceLeft);
@@ -352,6 +370,11 @@ Beauty : IM_Module {
   setResonanceRight { | res = 0 |
     resonanceRight = res;
     synth.set(\lowPassResRight, resonanceRight);
+  }
+
+  setHighPassCutoffs { | left = 80, right = 100 |
+    this.setHighPassCutoffLeft(left);
+    this.setHighPassCutoffRight(right);
   }
 
   setHighPassCutoffLeft { | cutoff = 80 |
@@ -363,6 +386,11 @@ Beauty : IM_Module {
     synth.set(\highPassCutoffRight, cutoff);
   }
 
+  setAverages { | left = 8000, right = 14000 |
+    this.setAverageLeft(left);
+    this.setAverageRight(right);
+  }
+
   setAverageLeft { | average = 8000 |
     averageLeft = average;
     synth.set(\averageLeft, averageLeft);
@@ -370,6 +398,11 @@ Beauty : IM_Module {
   setAverageRight { | average = 14000 |
     averageRight = average;
     synth.set(\averageRight, averageRight);
+  }
+
+  setSmooths { | left = 300, right = 400 |
+    this.setSmoothLeft(left);
+    this.setSmoothRight(right);
   }
 
   setSmoothLeft { | smooth = 300 |
@@ -385,6 +418,4 @@ Beauty : IM_Module {
     divisor = div;
     synth.set(\divisor, divisor);
   }
-
-
 }

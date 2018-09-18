@@ -44,7 +44,7 @@ z.addNote((63-12).midicps);
 ~choke.setSendVol(1, 1, -15);
 ~beaut = Beauty.newMono(~choke.chanStereo(1));
 
-~beaut.mixer.setVol(-12);
+~beaut.mixer.setVol(0);
 ~beaut.setLowPassCutoffs(1500, 1600);
 ~beaut.setLowPassCutoffs(3500, 4500);
 ~beaut.setLowPassCutoffLeft(3500);
@@ -93,8 +93,8 @@ z.addNote((63-12).midicps);
 ~triad.setOsc2DetuneCents(-20);
 
 
-~triad.playNote(51.midicps);
-~triad.playNote(55.midicps);
+~triad.playNote(65.midicps);
+~triad.playNote(61.midicps);
 ~triad.playNote(58.midicps);
 //~triad.mixer.setVol(-9);
 
@@ -107,8 +107,8 @@ z.addNote((63-12).midicps);
 ~glitchy.playNote(85.midicps, 0.6);
 ~glitchy.releaseNote(85.midicps);
 ~glitchy.setFilterCutoff(2300)
-~glitchy.playNote(61.midicps);
-~glitchy.releaseNote(61.midicps);
+~glitchy.playNote(55.midicps);
+~glitchy.releaseNote(55.midicps);
 
 ~glitchy.playNote(65.midicps);
 
@@ -123,6 +123,57 @@ z.addNote((63-12).midicps);
 
 s.makeWindow;
 
+
+~path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/ChokePurge/samples/Feedback4.wav"
+~buf = Buffer.read(s, ~path);
+(
+{
+var in, chain;
+  //in = Saw.ar(55).dup;
+  in = PlayBuf.ar(2, ~buf, loop: 1);
+  chain = FFT({LocalBuf(2048, 1)}.dup, in);
+  chain = PV_BrickWall(chain, LFNoise2.kr([4, 4.1]).range(-1, 0.8));
+  IFFT(chain) // inverse FFT
+}.play;
+)
+
+(
+{
+var in, chain;
+  //in = Saw.ar(55).dup;
+  in = PlayBuf.ar(2, ~buf, loop: 1);
+  chain = FFT({LocalBuf(2048, 1)}.dup, in);
+  chain = PV_BinScramble(chain, 0.5, 0.3, Impulse.kr(1));
+  IFFT(chain) // inverse FFT
+}.play;
+)
+
+(
+{
+  var in, chain;
+  //in = Saw.ar(55).dup;
+  in = PlayBuf.ar(2, ~buf, loop: 1);
+  chain = FFT({LocalBuf(2048, 1)}.dup, in);
+  chain = PV_BinShift(chain, LFNoise2.kr(1).range(0.25, 4), 0, 1);
+  //chain = PV_BinScramble(chain, 0.5, 0.3, Impulse.kr(1));
+  IFFT(chain) // inverse FFT
+}.play;
+)
+
+(
+{
+  var in1, in2, chain1, chain2, chain;
+  in1 = PlayBuf.ar(2, ~buf, loop: 1);
+  in2 = PlayBuf.ar(2, ~buf, 0.5, loop: 1);
+  chain1 = FFT(LocalBuf(2048), in1);
+  chain2 = FFT(LocalBuf(2048), in2);
+  chain = PV_RandWipe(chain1, chain2, LFNoise1.kr(0.25).range(0.2, 0.8), Impulse.kr(0.5));
+  IFFT(chain).dup;
+}.play;
+)
+
+
+s.makeWindow;
 
 
 

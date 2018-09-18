@@ -209,6 +209,7 @@ IM_ChannelStrip {
   setOutBus { |out = 0| synth.set(\outBus, out) }
 
   mapAmp { | bus | synth.set(\amp, bus.asMap); }
+  mapPan { | bus | synth.set(\panBal, bus.asMap); }
 
   // set {}    // set all parameters of a channel strip (convenience that calls other functions)
 

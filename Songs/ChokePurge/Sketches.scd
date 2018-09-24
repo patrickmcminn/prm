@@ -1,3 +1,5 @@
+Server.killAll;
+
 ~prm = AudioSystem.new(2);
 
 ~prm.reverb.setHighPassFreq(150);
@@ -9,6 +11,41 @@
   relGroup: ~prm.procGroup, addAction: \addToHead);
 );
 
+~choke.isLoaded;
+
+
+
+//// tpt excursion:
+~path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/ChokePurge/samples/Trumpet Bb.wav";
+
+~choke.setSendVol(0,0, -3);
+~choke.setSendVol(0,0, -inf);
+
+~tpt = SamplePlayer.newStereo(~choke.chanStereo(0), ~path);
+
+~tpt.sequencerClock.tempo = 66/60;
+
+~tpt.makeSequence(\a);
+~tpt.addKey(\a, \rate,
+  Pxrand([1, 1, 1, 3.midiratio, 3.midiratio, 2.midiratio, 2.midiratio, 2.midiratio, -5.midiratio, -7.midiratio, -4.midiratio, -2.midiratio, -2.midiratio], inf));
+~tpt.addKey(\a, \dur, Prand([1, 1.5, 3, 0.75, 4], inf));
+~tpt.addKey(\a, \dur, Prand([1, 1.5, 3, 0.75, 4]/4, inf));
+~tpt.addKey(\a, \legato, 1);
+~tpt.addKey(\a, \startPos, 0.1);
+
+~tpt.setAttackTime(3);
+~tpt.setReleaseTime(3);
+~tpt.setSample
+
+~tpt.playSequence(\a);
+~tpt.stopSequence(\a);
+
+~tpt.playSampleSustaining(\ok);
+~tpt.releaseSampleSustaining(\ok);
+
+s.makeWindow
+
+s.meter
 
 // ~path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/ChokePurge/samples/feedback 4.aif";
 
@@ -50,14 +87,22 @@ z.addNote((63-12).midicps);
 ~beaut.setLowPassCutoffLeft(3500);
 ~beaut.setLowPassCutoffRight(4500);
 
+~beaut.setHighPassCutoffs(250, 150);
+
 ~beautyChange = r {
   loop {
+    ~beaut.setAverages(10000.rand, 15000.rand);
+    ~beaut.setSmooths(500.rand, 500.rand);
     ~beaut.setDelayTimes(rrand(0.001, 0.1), rrand(0.001, 0.1), rrand(0.001, 0.1), rrand(0.001, 0.1));
     ~beaut.setPans(rrand(-1, 1), rrand(-1, 1), rrand(-1, 1), rrand(-1, 1));
-    1.wait;
+    ~beaut.setLowPassCutoffs(4000.rand + 200, 4000.rand + 300);
+    ~beaut.setResonances(0.5.rand, 0.5.rand);
+    ~beaut.setHighPassCutoffs(350.rand, 350.rand);
+    ((60/66))*2.wait;
   }
 };
-~beautyChange.play
+~beautyChange.reset.play
+~beautyChange.stop
 
 ~choke.setVol(2, -12);
 ~choke.setSendVol(2, 0, -21);
@@ -105,12 +150,32 @@ z.addNote((63-12).midicps);
 ~glitchy.setBitDepth(4)
 ~glitchy.isLoaded;
 ~glitchy.playNote(85.midicps, 0.6);
+~glitchy.playNote(87.midicps, 0.6);
+~glitchy.playNote(89.midicps, 0.6);
 ~glitchy.releaseNote(85.midicps);
 ~glitchy.setFilterCutoff(2300)
 ~glitchy.playNote(55.midicps);
 ~glitchy.releaseNote(55.midicps);
+~glitchy.setReleaseTime(1.5);
+~glitchy.setAttackTime(0.3)
 
 ~glitchy.playNote(65.midicps);
+
+
+~glitchy.sequencerClock;
+~glitchy.sequencerClock.tempo = 66/60;
+
+~glitchy.makeSequence(\viola)
+~glitchy.addKey(\viola, \dur, Pseq([2, 0.5, 1, 0.5, 0.5, 0.5, 1.5, 0.5, 4], inf));
+~glitchy.addKey(\viola, \note, Pseq([-2, -9, -7, Rest, -2, -9, -7, Rest, 1], inf));
+~glitchy.addKey(\viola, \amp, Pseq([0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.01], inf));
+~glitchy.addKey(\viola, \legato, 1);
+
+s.makeWindow
+
+~glitchy.playSequence(\viola);
+~glitchy.stopSequence(\viola);
+
 
 ~choke.setVol(5, -9);
 ~bass = SaturSynth.new(~choke.chanStereo(5));

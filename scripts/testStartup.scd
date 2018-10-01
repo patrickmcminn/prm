@@ -20,30 +20,21 @@ base = "HST3";*/
 
 //s.boot;
 
+//////////////////
+//// Studio: ////
+////////////////
+
 r {
   ~prm = AudioSystem.new(2);
-
-  ~moogDevice = "UMC404HD 192k";
-  ~moogPort = "UMC404HD 192k";
 
   ~moogDevice = "UMC1820";
   ~moogPort = "UMC1820";
 
   while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
-  // convenience mixer
-  ~convMix = IM_Mixer.new(4, ~prm.audioIn,
-    ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
-    false, ~prm.procGroup, \addToHead);
-  while({ try { ~convMix.isLoaded } != true }, { 0.001.wait; });
-  4.do({ | chan | ~convMix.mute(chan); });
-
   //try { ~ohm = OhmRGB.new; };
-  try { ~apc = APC40Mk2.new; };
   try { ~apc = APC40Mk2.new("mio10", "HST 2"); };
-  try { ~base = Base.new; };
   try { ~base = Base.new("mio10", "HST 3"); };
-
 
   "/Global Functions/Load Global Functions.scd".loadRelative;
   "/System Scripts/Load System Scripts.scd".loadRelative;
@@ -51,43 +42,24 @@ r {
 
 }.play;
 
+//////////////////
+//// Live: //////
+////////////////
 
-s.meter;
-s.makeWindow
-AudioSystem
-~ohm.setPage('main');
-~ohm.setPage('darkness');
+r {
+  ~prm = AudioSystem.new(2);
 
-~ohm.setPage('habit');
-~base.setPage('habit');
+  ~moogDevice = "UMC404HD 192k";
+  ~moogPort = "UMC404HD 192k";
 
-Server.killAll;
-~prm.isLoaded;
+  while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
-MIDIIn.connectAll;
-~ohm = OhmRGB.new("iConnectAudio4+", "HST1");
-~base = Base.new("iConnectAudio4+", "HST3");
+  //try { ~ohm = OhmRGB.new; };
+  try { ~apc = APC40Mk2.new; };
+  try { ~base = Base.new; };
 
+  "/Global Functions/Load Global Functions.scd".loadRelative;
+  "/System Scripts/Load System Scripts.scd".loadRelative;
+  "/Songs/Load Songs.scd".loadRelative;
 
-~lightSend = Light_Sends.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
-        ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.reverb.inBus,
-        relGroup: ~prm.procGroup, addAction: \addToHead);
-~light = Light.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
-        ~lightSend.reverb.inBus, ~lightSend.delays.inBus, ~prm.modularSend.inBus, ~lightSend.multiShift.inBus,
-        ~prm.procGroup, \addToHead);
-
-
-~lightSend.isLoaded;
-
-~lightMain = Light_Main.new(0);
-~lightMain.isLoaded;
-
-~light.isLoaded;
-
-~light.bass.isLoaded;
-
-~light.mixerB.chanStereo
-
-Light_Bass
-
-Server.killAll;
+}.play;

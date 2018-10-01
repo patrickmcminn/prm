@@ -42,111 +42,59 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
   ~base.setActiveTouchButtonsBank(activeFadersBank)
 }, page: page);
 
-//////// faders:
 
-////// Moog:
+//////////////////////////
+//////// faders: ////////
+////////////////////////
 
-//// Mute:
-~base.setTouchButtonMonitorFunc(1, {
-  if( ~habit.moog.mixer.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1); });
-}, bank: mainMixBank, page: page);
-~base.setTouchButtonFunc(1, { ~habit.moog.mixer.tglMute; }, bank: mainMixBank, page: page);
-//// Fader:
-~base.setFaderMode(1, 'magentaFill', bank: mainMixBank, page: page);
-~base.setFaderMonitorFunc(1, { ~base.setFaderValue(1, ~habit.moog.mixer.vol.dbfsCC); },
-  bank: mainMixBank, page: page);
-~base.setFaderFunc(1, { | val | ~habit.moog.mixer.setVol(val.ccdbfs(-140, 0)); },
-  bank: mainMixBank, page: page);
+/////// main mixer:
 
-////// Modular:
-
-//// Mute:
-~base.setTouchButtonMonitorFunc(2, {
-  if( ~habit.modular.isMuted, { ~base.turnTouchButtonRed(2); }, { ~base.turnTouchButtonGreen(2); });
-}, bank: mainMixBank, page: page);
-~base.setTouchButtonFunc(2, { ~habit.modular.tglMute; }, bank: mainMixBank, page: page);
-//// Fader:
+~base.setFaderMode(1, 'whiteFill', bank: mainMixBank, page: page);
 ~base.setFaderMode(2, 'magentaFill', bank: mainMixBank, page: page);
-~base.setFaderMonitorFunc(2, { ~base.setFaderValue(2, ~habit.modular.vol.dbfsCC); },
-  bank: mainMixBank, page: page);
-~base.setFaderFunc(2, { | val | ~habit.modular.setVol(val.ccdbfs(-140, 0)); },
-  bank: mainMixBank, page: page);
-
-//////// Live Trumpet:
+~base.setFaderMode(3, 'magentaFill', bank: mainMixBank, page: page);
+~base.setFaderMode(4, 'whiteFill', bank: mainMixBank, page: page);
 
 //// Mute:
-~base.setTouchButtonMonitorFunc(3, {
-  if( ~habit.trumpet.mixer.isMuted, { ~base.turnTouchButtonRed(3); }, { ~base.turnTouchButtonGreen(3); }); },
-  bank: mainMixBank, page: page);
-~base.setTouchButtonFunc(3, { ~habit.trumpet.mixer.tglMute; }, bank: mainMixBank, page: page);
+4.do({ | i |
+  ~base.setTouchButtonMonitorFunc(i+1, {
+    if( ~habit.songMixer.isMuted(i),
+      { ~base.turnTouchButtonRed(i+1) }, { ~base.turnTouchButtonGreen(i+1) });
+  }, bank: mainMixBank, page: page);
+});
+4.do({ | i |
+  ~base.setFaderMonitorFunc(i+1, {
+    ~base.setFaderValue(i+1, ~habit.songMixer.vol(i).dbfsCC);
+  }, bank: mainMixBank, page: page);
+});
 //// Fader:
-~base.setFaderMode(3, 'whiteFill', bank: mainMixBank, page: page);
-~base.setFaderMonitorFunc(3, { ~base.setFaderValue(3, ~habit.trumpet.mixer.vol.dbfsCC); },
-  bank: mainMixBank, page: page);
-~base.setFaderFunc(3, { | val | ~habit.trumpet.mixer.setVol(val.ccdbfs(-140, 0)); },
-  bank: mainMixBank, page: page);
+4.do({ | i |
+  ~base.setFaderFunc(i+1, { | val |
+    ~habit.songMixer.setVol(i, val.ccdbfs);
+  }, bank: mainMixBank, page: page);
+});
+
 
 //////// Trumpet Looper SubMix:
 
-//// Mute:
-~base.setTouchButtonMonitorFunc(4, {
-  if( ~habit.trumpetLoopers.mixer.isMuted, { ~base.turnTouchButtonRed(4); }, { ~base.turnTouchButtonGreen(4) }); },
-  bank: mainMixBank, page: page);
-~base.setTouchButtonFunc(4, { ~habit.trumpetLoopers.mixer.tglMute; }, bank: mainMixBank, page: page);
-//// Fader:
-~base.setFaderMode(4, 'whiteFill', bank: mainMixBank, page: page);
-~base.setFaderMonitorFunc(4, { ~base.setFaderValue(4, ~habit.trumpetLoopers.mixer.vol.dbfsCC); },
-  bank: mainMixBank, page: page);
-~base.setFaderFunc(4, { | val | ~habit.trumpetLoopers.mixer.vol(val.ccdbfs(-140, 0)); },
-  bank: mainMixBank, page: page);
+4.do({ | i | ~base.setFaderMode(i+5, 'cyanFill', bank: mainMixBank, page: page); });
+4.do({ | i |
+  ~base.setTouchButtonMonitorFunc(i+5, {
+    if( ~habit.trumpetLoopers.submixer.isMuted(i),
+      { ~base.turnTouchButtonRed(i+4) }, { ~base.turnTouchButtonGreen(i+4) });
+  }, bank: mainMixBank, page: page);
+});
+4.do({ | i |
+  ~base.setFaderMonitorFunc(i+5, {
+    ~base.setFaderValue(i+5, ~habit.trumpetLoopers.submixer.vol(i).dbfsCC);
+  }, bank: mainMixBank, page: page);
+});
+4.do({ | i |
+  ~base.setFaderFunc(i+5, { | val |
+    ~habit.trumpetLoopers.submixer.setVol(i, val.ccdbfs);
+  }, bank: mainMixBank, page: page);
+});
 
-//////// Trumpet Looper 1:
-~base.setTouchButtonMonitorFunc(5, {
-  if( ~habit.trumpetLoopers.submixer.isMuted(0), { ~base.turnTouchButtonRed(5); }, { ~base.turnTouchButtonGreen(5) }); },
-  bank: mainMixBank, page: page);
-~base.setTouchButtonFunc(5, { ~habit.trumpetLoopers.submixer.tglMute(0) }, bank: mainMixBank, page: page);
-//// Fader:
-~base.setFaderMode(5, 'cyanFill', bank: mainMixBank, page: page);
-~base.setFaderMonitorFunc(5, { ~base.setFaderValue(5, ~habit.trumpetLoopers.submixer.vol(0).dbfsCC); },
-  bank: mainMixBank, page: page);
-~base.setFaderFunc(5, { | val | ~habit.trumpetLoopers.submixer.setVol(0, val.ccdbfs(-140, 0)); },
-  bank: mainMixBank, page: page);
 
-//////// Trumpet Looper 2:
-~base.setTouchButtonMonitorFunc(6, {
-  if( ~habit.trumpetLoopers.submixer.isMuted(1), { ~base.turnTouchButtonRed(6); }, { ~base.turnTouchButtonGreen(6) }); },
-  bank: mainMixBank, page: page);
-~base.setTouchButtonFunc(6, { ~habit.trumpetLoopers.submixer.tglMute(1) }, bank: mainMixBank, page: page);
-//// Fader:
-~base.setFaderMode(6, 'cyanFill', bank: mainMixBank, page: page);
-~base.setFaderMonitorFunc(6, { ~base.setFaderValue(6, ~habit.trumpetLoopers.submixer.vol(1).dbfsCC); },
-  bank: mainMixBank, page: page);
-~base.setFaderFunc(6, { | val | ~habit.trumpetLoopers.submixer.setVol(1, val.ccdbfs(-140, 0)); },
-  bank: mainMixBank, page: page);
-
-//////// Trumpet Looper 3:
-~base.setTouchButtonMonitorFunc(7, {
-  if( ~habit.trumpetLoopers.submixer.isMuted(2), { ~base.turnTouchButtonRed(7); }, { ~base.turnTouchButtonGreen(7) }); },
-  bank: mainMixBank, page: page);
-~base.setTouchButtonFunc(7, { ~habit.trumpetLoopers.submixer.tglMute(2) }, bank: mainMixBank, page: page);
-//// Fader:
-~base.setFaderMode(7, 'cyanFill', bank: mainMixBank, page: page);
-~base.setFaderMonitorFunc(7, { ~base.setFaderValue(7, ~habit.trumpetLoopers.submixer.vol(2).dbfsCC); },
-  bank: mainMixBank, page: page);
-~base.setFaderFunc(7, { | val | ~habit.trumpetLoopers.submixer.setVol(2, val.ccdbfs(-140, 0)); },
-  bank: mainMixBank, page: page);
-
-//////// Trumpet Looper 4:
-~base.setTouchButtonMonitorFunc(8, {
-  if( ~habit.trumpetLoopers.submixer.isMuted(3), { ~base.turnTouchButtonRed(8); }, { ~base.turnTouchButtonGreen(8) }); },
-  bank: mainMixBank, page: page);
-~base.setTouchButtonFunc(8, { ~habit.trumpetLoopers.submixer.tglMute(3) }, bank: mainMixBank, page: page);
-//// Fader:
-~base.setFaderMode(8, 'cyanFill', bank: mainMixBank, page: page);
-~base.setFaderMonitorFunc(8, { ~base.setFaderValue(8, ~habit.trumpetLoopers.submixer.vol(3).dbfsCC); },
-  bank: mainMixBank, page: page);
-~base.setFaderFunc(8, { | val | ~habit.trumpetLoopers.submixer.setVol(3, val.ccdbfs(-140, 0)); },
-  bank: mainMixBank, page: page);
 
 //////// Misc Bank:
 //// Delay:
@@ -185,33 +133,16 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 
 ////// Delay Sends:
 4.do({ | i | ~base.setFaderMode(i + 4, 'blueFill', bank: miscBank, page: page); });
-
-//// Moog Send:
-~base.setFaderMonitorFunc(4, { ~base.setFaderValue(4, ~habit.moog.mixer.sendVol(3).dbfsCC); },
-  bank: miscBank, page: page);
-~base.setFaderFunc(4, { | val | ~habit.moog.mixer.setSendVol(3, val.ccdbfs); },
-  bank: miscBank, page: page);
-
-//// Modular Send:
-~base.setFaderMonitorFunc(5, { ~base.setFaderValue(5, ~habit.modular.sendVol(3).dbfsCC); },
-  bank: miscBank, page: page);
-~base.setFaderFunc(5, { | val | ~habit.modular.setSendVol(3, val.ccdbfs); },
-  bank: miscBank, page: page);
-
-
-//// Main Trumpet;
-~base.setFaderMonitorFunc(6, { ~base.setFaderValue(6, ~habit.trumpet.mixer.sendVol(3).dbfsCC); },
-  bank: miscBank, page: page);
-~base.setFaderFunc(6, { | val | ~habit.trumpet.mixer.setSendVol(3, val.ccdbfs); },
-  bank: miscBank, page: page);
-
-//// Trumpet Loopers:
-//// Main Trumpet;
-~base.setFaderMonitorFunc(7, { ~base.setFaderValue(7, ~habit.trumpetLoopers.mixer.sendVol(3).dbfsCC); },
-  bank: miscBank, page: page);
-~base.setFaderFunc(7, { | val | ~habit.trumpetLoopers.mixer.setSendVol(3, val.ccdbfs); },
-  bank: miscBank, page: page);
-
+4.do({ | i |
+  ~base.setFaderMonitorFunc(i+1, {
+    ~base.setFaderValue(i, ~habit.songMixer.sendVol(i, 3).dbfsCC);
+  }, bank: miscBank, page: page);
+});
+4.do({ | i |
+  ~base.setFaderFunc(i, { | val |
+    ~habit.songMixer.setSendVol(i, 3, val.ccdbfs);
+  }, bank: miscBank, page: page);
+});
 
 
 ////////// Grid:

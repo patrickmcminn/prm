@@ -113,9 +113,9 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 
 ////// Trumpet Looper Submixer:
 4.do({ | i |
-  ~apc.setFaderFunc(i+4, { | val | ~habit.trumpetLoopers.mixer.setVol(i, val.ccdbfs); }, page: page);
+  ~apc.setFaderFunc(i+4, { | val | ~habit.trumpetLoopers.submixer.setVol(i, val.ccdbfs); }, page: page);
    // toggle mute:
-  ~apc.setTrackSelectFunc(i+4, { ~habit.trumpetLoopers.mixer.tglMute(i); }, page: page);
+  ~apc.setTrackSelectFunc(i+4, { ~habit.trumpetLoopers.submixer.tglMute(i); }, page: page);
   ~apc.setMixerMonitorFunc("mute"++i.asSymbol, {
     if( ~habit.trumpetLoopers.mixer.isMuted(i),
       { ~apc.turnTrackSelectButtonOff(i+4) }, { ~apc.turnTrackSelectButtonOn(i+4); });

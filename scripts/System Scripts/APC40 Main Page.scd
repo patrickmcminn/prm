@@ -14,9 +14,8 @@ var send3 = 3;
 var foundationIsLoaded = false;
 var falseSelfIsLoaded = false;
 
-
-~apc.storageDict[\loadMasterFunc].value;
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
+~apc.storageDict[\loadMasterFunc].value;
 
 ~apc.addMixerEncodersBanks(3);
 

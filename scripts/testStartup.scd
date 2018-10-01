@@ -38,10 +38,11 @@ r {
   while({ try { ~convMix.isLoaded } != true }, { 0.001.wait; });
   4.do({ | chan | ~convMix.mute(chan); });
 
-  try { ~ohm = OhmRGB.new; };
-  //try { ~apc = APC40Mk2.new; };
+  //try { ~ohm = OhmRGB.new; };
+  try { ~apc = APC40Mk2.new; };
   try { ~apc = APC40Mk2.new("mio10", "HST 2"); };
   try { ~base = Base.new; };
+  try { ~base = Base.new("mio10", "HST 3"); };
 
 
   "/Global Functions/Load Global Functions.scd".loadRelative;

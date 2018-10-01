@@ -95,16 +95,16 @@ var dorian = [2, 4, 5, 7, 9, 11, 12]+36;
 // Slider:
 ~base.setFaderMode(1, 'whiteFill', mixerBank1, page);
 ~base.setFaderMonitorFunc(1, {
-  ~base.setFaderValue(1, ~foundation.mixerA.vol(0).dbfsCC);
+  ~base.setFaderValue(1, ~foundation.mixer.vol(0).dbfsCC);
 }, mixerBank1, page);
 ~base.setFaderFunc(1, { | val |
-  ~foundation.mixerA.setVol(0, val.ccdbfs(-70, 0));
+  ~foundation.mixer.setVol(0, val.ccdbfs(-70, 0));
 }, mixerBank1, page);
 // Button:
-~base.setTouchButtonMonitorFunc(1, { if( ~foundation.mixerA.isMuted(0),
+~base.setTouchButtonMonitorFunc(1, { if( ~foundation.mixer.isMuted(0),
   { ~base.turnTouchButtonRed(1) }, { ~base.turnTouchButtonGreen(1) });
 }, mixerBank1, page);
-~base.setTouchButtonFunc(1, { ~foundation.mixerA.tglMute(0); }, bank: mixerBank1, page: page);
+~base.setTouchButtonFunc(1, { ~foundation.mixer.tglMute(0); }, bank: mixerBank1, page: page);
 
 //// HighPass :
 // Slider:
@@ -134,10 +134,10 @@ var dorian = [2, 4, 5, 7, 9, 11, 12]+36;
 // Slider:
 ~base.setFaderMode(4, 'blueFill', mixerBank1, page);
 ~base.setFaderMonitorFunc(4, {
-  var vol = ~foundation.mixerA.sendVol(0, 3).dbfsCC;
+  var vol = ~foundation.mixer.sendVol(0, 3).dbfsCC;
   ~base.setFaderValue(4, vol);
 }, mixerBank1, page);
 ~base.setFaderFunc(4, { | val |
-  ~foundation.mixerA.setSendVol(0, 3, val.ccdbfs(-70, 0));
+  ~foundation.mixer.setSendVol(0, 3, val.ccdbfs(-70, 0));
 }, mixerBank1, page);
 

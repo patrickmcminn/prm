@@ -11,13 +11,26 @@ var activeMixerBank = mixerBank1;
 var mixerBank1 = 0;
 var mixerBank2 = 1;
 
+var sendMod = 0;
+
+var send0 = 0;
+var send1 = 1;
+var send2 = 2;
+var send3 = 3;
+
+var send4 = 4;
+var send5 = 5;
+var send6 = 6;
+var send7 = 7;
+
+
 
 ~apc.makePage(page);
-
 ~apc.addGridBanks(1, page);
 ~apc.addMixerBanks(1, page);
-
 ~apc.addMixerEncodersBanks(7, page);
+~apc.addClipStopBanks(1, page: page);
+~apc.addSceneLaunchBanks(1, page: page);
 
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 
@@ -40,20 +53,6 @@ var mixerBank2 = 1;
 /////// BANK CHANGE
 
 
-/////// crossfader bank:
-
-//// grid bank change:
-~ohm.setCrossfaderButtonMonitorFunc(0, {
-  if( activeGridBank == mainGridBank,
-    { ~ohm.turnCrossfaderButtonCyan(0) }, { ~ohm.turnCrossfaderButtonWhite(0) });
-}, page: page);
-~ohm.setCrossfaderButtonFunc(0, {
-  if( activeGridBank == mainGridBank,
-    { activeGridBank = endGridBank; ~ohm.setActiveGridBank(activeGridBank); },
-    { activeGridBank = mainGridBank; ~ohm.setActiveGridBank(activeGridBank) });
-}, page: page);
-
-
 /////////////////////
 //// main grid: ////
 ////////////////////
@@ -71,7 +70,7 @@ var mixerBank2 = 1;
   if( ~falseSelf.bar >= 55, { ~apc.turnGridMagenta(5, 4); });
   if( ~falseSelf.bar >= 68, { ~apc.turnGridMagenta(6, 4); });
   if( ~falseSelf.bar >= 81, { ~apc.turnGridMagenta(7, 4); });
-}, bank: gridBank1, page: page);
+}, bank: mixerBank1, page: page);
 ~apc.setGridMonitorFunc(\bars, {
   if( ~falseSelf.bar >= 1, { ~apc.turnGridMagenta(0, 4); });
   if( ~falseSelf.bar >= 13, { ~apc.turnGridMagenta(1, 4); });
@@ -81,836 +80,522 @@ var mixerBank2 = 1;
   if( ~falseSelf.bar >= 55, { ~apc.turnGridMagenta(5, 4); });
   if( ~falseSelf.bar >= 68, { ~apc.turnGridMagenta(6, 4); });
   if( ~falseSelf.bar >= 81, { ~apc.turnGridMagenta(7, 4); });
-}, bank: gridBank2, page: page);
+}, bank: mixerBank2, page: page);
 
 
 
 //// countdowns:
-
+/*
 //// Metronome:
 ~ohm.turnGridRed(7, 1, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(7, 1, {
-  ~falseSelf.clock.schedAbs(~falseSelf.clock.beats.ceil, { | beat |
-    //~falseSelf.clock.beatInBar.postln;
-    if( ~falseSelf.clock.beatInBar.round == 0,
-      { ~falseSelf.metronome.playDownbeat },
-      { ~falseSelf.metronome.playBeat }
-    );
-    1;
-  },page);
-  ~ohm.turnGridGreen(7, 1);
+~falseSelf.clock.schedAbs(~falseSelf.clock.beats.ceil, { | beat |
+//~falseSelf.clock.beatInBar.postln;
+if( ~falseSelf.clock.beatInBar.round == 0,
+{ ~falseSelf.metronome.playDownbeat },
+{ ~falseSelf.metronome.playBeat }
+);
+1;
+},page);
+~ohm.turnGridGreen(7, 1);
 }, bank: mainGridBank, page: page);
+*/
 
 
 // grid play funcs:
-~ohm.setGridMonitorFunc(0, 2, { if( ~falseSelf.section1IsPlaying == true,
-  { ~ohm.turnGridGreen(0, 2) }, { ~ohm.turnGridBlue(0, 2) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridMonitorFunc(1, 2, { if( ~falseSelf.chorus1IsPlaying == true,
-  { ~ohm.turnGridGreen(1, 2) }, { ~ohm.turnGridOff(1, 2) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridMonitorFunc(2, 2, { if( ~falseSelf.chorus2IsPlaying == true,
-  { ~ohm.turnGridGreen(2, 2) }, { ~ohm.turnGridOff(2, 2) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridMonitorFunc(3, 2,{ if( ~falseSelf.canonIsPlaying == true,
-  { ~ohm.turnGridGreen(3, 2) }, { ~ohm.turnGridOff(3, 2) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridMonitorFunc(4, 2, { if( ~falseSelf.limboIsPlaying == true,
-  { ~ohm.turnGridGreen(4, 2) }, { ~ohm.turnGridOff(4, 2) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridMonitorFunc(5, 2, { if (~falseSelf.melodyIsPlaying == true,
-  { ~ohm.turnGridGreen(5, 2) }, { ~ohm.turnGridOff(5, 2) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridMonitorFunc(6, 2, { if( ~falseSelf.endIsPlaying == true,
-  { ~ohm.turnGridGreen(6, 2) }, { ~ohm.turnGridOff(6, 2) });
-}, bank: mainGridBank, page: page);
+
+~apc.setGridMonitorFunc(\isPlaying, {
+  if( ~falseSelf.section1IsPlaying == true, { ~apc.turnGridGreen(0, 3) }, { ~apc.turnGridBlue(0, 3, 1); });
+  if( ~falseSelf.chorus1IsPlaying == true, { ~apc.turnGridGreen(1, 3) }, { ~apc.turnGridBlue(1, 3, 1); });
+  if( ~falseSelf.chorus2IsPlaying == true, { ~apc.turnGridGreen(2, 3) }, { ~apc.turnGridBlue(2, 3, 1);});
+  if( ~falseSelf.canonIsPlaying == true, { ~apc.turnGridGreen(3, 3) }, { ~apc.turnGridBlue(3, 3, 1); });
+  if( ~falseSelf.limboIsPlaying == true, { ~apc.turnGridGreen(4, 3) }, { ~apc.turnGridBlue(4, 3, 1); });
+  if(~falseSelf.melodyIsPlaying == true, { ~apc.turnGridGreen(5, 3) }, { ~apc.turnGridBlue(5, 3, 1); });
+  if( ~falseSelf.endIsPlaying == true, { ~apc.turnGridGreen(6, 3) }, { ~apc.turnGridBlue(6, 3, 1); });
+}, bank: mixerBank1, page: page);
+~apc.setGridMonitorFunc(\isPlaying, {
+  if( ~falseSelf.section1IsPlaying == true, { ~apc.turnGridGreen(0, 3) }, { ~apc.turnGridBlue(0, 3, 1); });
+  if( ~falseSelf.chorus1IsPlaying == true, { ~apc.turnGridGreen(1, 3) }, { ~apc.turnGridBlue(1, 3, 1); });
+  if( ~falseSelf.chorus2IsPlaying == true, { ~apc.turnGridGreen(2, 3) }, { ~apc.turnGridBlue(2, 3, 1);});
+  if( ~falseSelf.canonIsPlaying == true, { ~apc.turnGridGreen(3, 3) }, { ~apc.turnGridBlue(3, 3, 1); });
+  if( ~falseSelf.limboIsPlaying == true, { ~apc.turnGridGreen(4, 3) }, { ~apc.turnGridBlue(4, 3, 1); });
+  if(~falseSelf.melodyIsPlaying == true, { ~apc.turnGridGreen(5, 3) }, { ~apc.turnGridBlue(5, 3, 1); });
+  if( ~falseSelf.endIsPlaying == true, { ~apc.turnGridGreen(6, 3) }, { ~apc.turnGridBlue(6, 3, 1); });
+}, bank: mixerBank2, page: page);
+
+///////////////////////
+//// Mixer Bank 1: ///
+/////////////////////
 
 // start song:
-~ohm.setGridFunc(0, 2, { ~falseSelf.startSong; }, bank: mainGridBank, page: page);
-
-// Fake Guitar:
-~ohm.setGridMonitorFunc(0, 3, {
-  if( ~falseSelf.fakeGuitar.isLoaded, { ~ohm.turnGridGreen(0, 3) }, { ~ohm.turnGridRed(0, 3) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(0, 3, {
-  if( ~falseSelf.fakeGuitar.isLoaded, { ~falseSelf.fakeGuitar.free; });
-}, bank: mainGridBank, page: page);
-
-// Main Trumpet:
-~ohm.setGridMonitorFunc(0, 4, {
-  if( ~falseSelf.mainTrumpet.isLoaded, { ~ohm.turnGridGreen(0, 4) }, { ~ohm.turnGridRed(0, 4) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(0, 4, {
-  if( ~falseSelf.mainTrumpet.isLoaded, { ~falseSelf.mainTrumpet.free; });
-}, bank: mainGridBank, page: page);
+~apc.turnSceneLaunchButtonWhite(0, 2, mixerBank1, page);
+~apc.setSceneLaunchFunc(0, { ~falseSelf.startSong; ~apc.turnSceneLaunchButtonGreen(0); },
+  bank: mixerBank1, page: page);
 
 // Bells:
-~ohm.setGridMonitorFunc(0, 5, {
-  if( ~falseSelf.bellSection.isLoaded, { ~ohm.turnGridGreen(0, 5) }, { ~ohm.turnGridRed(0, 5) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(0, 5, {
-  if( ~falseSelf.bellSection.isLoaded, { ~falseSelf.bellSection.free; });
-}, bank: mainGridBank, page: page);
+~apc.setClipStopFunc(1, { ~falseSelf.bellSection.free;  ~apc.turnClipStopButtonOff(1); },
+  bank: mixerBank1, page: page);
+
+// Fake Guitar:
+~apc.setClipStopFunc(2, { ~falseSelf.fakeGuitar.free; ~apc.turnClipStopButtonOff(2); },
+  bank: mixerBank1, page: page);
 
 // Melody Synth:
-~ohm.setGridMonitorFunc(0, 6, {
-  if( ~falseSelf.melodySynth.isLoaded, { ~ohm.turnGridGreen(0, 6) }, { ~ohm.turnGridRed(0, 6) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(0, 6, {
-  if( ~falseSelf.melodySynth.isLoaded, { ~falseSelf.melodySynth.free; });
-}, bank: mainGridBank, page: page);
-
-//// Drums:
-// loaded:
-~ohm.setGridMonitorFunc(4, 3, {
-  if( ~falseSelf.drums.isLoaded, { ~ohm.turnGridWhite(4, 3) }, { ~ohm.turnGridRed(4, 3) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(4, 3, {
-  if( ~falseSelf.drums.isLoaded, { ~falseSelf.drums.free; });
-}, bank: mainGridBank, page: page);
-// beginning:
-~ohm.setGridMonitorFunc(5, 3, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\section1),
-    { ~ohm.turnGridGreen(5, 3) }, { ~ohm.turnGridRed(5, 3) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(5, 3, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\section1),
-    { ~falseSelf.drums.stopSection1 }, { ~falseSelf.drums.playSection1(~falseSelf.clock) });
-}, bank: mainGridBank, page: page);
-// chorus 1:
-~ohm.setGridMonitorFunc(6, 3, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\chorus1),
-    { ~ohm.turnGridGreen(6, 3) }, { ~ohm.turnGridRed(6, 3) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(6, 3, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\chorus1),
-    { ~falseSelf.drums.stopChorus1 }, { ~falseSelf.drums.playChorus1(~falseSelf.clock); });
-}, bank: mainGridBank, page: page);
-// chorus 2:
-~ohm.setGridMonitorFunc(7, 3, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\chorus2),
-    { ~ohm.turnGridGreen(7, 3) }, { ~ohm.turnGridRed(7, 3) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(7, 3, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\chorus2),
-    { ~falseSelf.drums.stopChorus2 }, { ~falseSelf.drums.playChorus2(~falseSelf.clock) });
-}, bank: mainGridBank, page: page);
-// canon:
-~ohm.setGridMonitorFunc(4, 4, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\canon),
-    { ~ohm.turnGridGreen(4, 4) }, { ~ohm.turnGridRed(4, 4) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(4, 4, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\canon),
-    { ~falseSelf.drums.stopCanon }, { ~falseSelf.drums.playCanon(~falseSelf.clock) });
-}, bank: mainGridBank, page: page);
-// end:
-~ohm.setGridMonitorFunc(5, 4, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
-    { ~ohm.turnGridGreen(5, 4) }, { ~ohm.turnGridRed(5, 4) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(5, 4, {
-  if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
-    { ~falseSelf.drums.stopEnding }, { ~falseSelf.drums.playEnding(~falseSelf.clock) });
-}, bank: mainGridBank, page: page);
+~apc.setClipStopFunc(3, { ~falseSelf.melodySynth.free; ~apc.turnClipStopButtonOff(3); },
+  bank: mixerBank1, page: page);
 
 //// Basses:
-// active:
-~ohm.setGridMonitorFunc(4, 6, {
-  if( ~falseSelf.bassSection.isLoaded, { ~ohm.turnGridCyan(4, 6) }, { ~ohm.turnGridRed(4, 6) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(4, 6, {
-  if( ~falseSelf.bassSection.isLoaded, { ~falseSelf.bassSection.free; });
-}, bank: mainGridBank, page: page);
+~apc.setClipStopFunc(4, { ~falseSelf.bassSection.free; ~apc.turnClipStopButtonOff(4); },
+  bank: mixerBank1, page: page);
+/*
+~apc.setGridMonitorFunc(\bass, {
+if( ~falseSelf.bassSection.preChorusIsPlaying,
+{ ~apc.turnGridGreen(3,
+
 ///patterns:
 // pre-chorus:
 ~ohm.setGridMonitorFunc(5, 6, {
-  if( ~falseSelf.bassSection.preChorusIsPlaying,
-    { ~ohm.turnGridGreen(5, 6) }, { ~ohm.turnGridRed(5, 6) });
+if( ~falseSelf.bassSection.preChorusIsPlaying,
+{ ~ohm.turnGridGreen(5, 6) }, { ~ohm.turnGridRed(5, 6) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(5, 6, { if( ~falseSelf.bassSection.preChorusIsPlaying,
-  { ~falseSelf.bassSection.stopPreChorus }, { ~falseSelf.bassSection.playPreChorus });
+{ ~falseSelf.bassSection.stopPreChorus }, { ~falseSelf.bassSection.playPreChorus });
 }, bank: mainGridBank, page: page);
 // chorus:
 ~ohm.setGridMonitorFunc(6, 6, {
-  if( ~falseSelf.bassSection.chorusIsPlaying,
-    { ~ohm.turnGridGreen(6, 6,) }, { ~ohm.turnGridRed(6, 6) });
+if( ~falseSelf.bassSection.chorusIsPlaying,
+{ ~ohm.turnGridGreen(6, 6,) }, { ~ohm.turnGridRed(6, 6) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(6, 6, {
-  if( ~falseSelf.bassSection.chorusIsPlaying,
-    { ~falseSelf.bassSection.stopChorus }, { ~falseSelf.bassSection.playChorus });
+if( ~falseSelf.bassSection.chorusIsPlaying,
+{ ~falseSelf.bassSection.stopChorus }, { ~falseSelf.bassSection.playChorus });
 }, bank: mainGridBank, page: page);
 // post-Chorus:
 ~ohm.setGridMonitorFunc(7, 6, {
-  if( ~falseSelf.bassSection.postChorusIsPlaying,
-    { ~ohm.turnGridGreen(7, 6) }, { ~ohm.turnGridRed(7, 6) });
+if( ~falseSelf.bassSection.postChorusIsPlaying,
+{ ~ohm.turnGridGreen(7, 6) }, { ~ohm.turnGridRed(7, 6) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(7, 6, {
-  if( ~falseSelf.bassSection.postChorusIsPlaying,
-    { ~falseSelf.bassSection.stopPostChorus }, { ~falseSelf.bassSection.playPostChorus });
+if( ~falseSelf.bassSection.postChorusIsPlaying,
+{ ~falseSelf.bassSection.stopPostChorus }, { ~falseSelf.bassSection.playPostChorus });
 }, bank: mainGridBank, page: page);
 // chorale:
 ~ohm.setGridMonitorFunc(5, 7, {
-  if( ~falseSelf.bassSection.endIsPlaying,
-    { ~ohm.turnGridGreen(5, 7) }, { ~ohm.turnGridRed(5, 7) });
+if( ~falseSelf.bassSection.endIsPlaying,
+{ ~ohm.turnGridGreen(5, 7) }, { ~ohm.turnGridRed(5, 7) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(5, 7, {
-  if( ~falseSelf.bassSection.endIsPlaying,
-    { ~falseSelf.bassSection.stopEnd }, { ~falseSelf.bassSection.playEnd });
+if( ~falseSelf.bassSection.endIsPlaying,
+{ ~falseSelf.bassSection.stopEnd }, { ~falseSelf.bassSection.playEnd });
 }, bank: mainGridBank, page: page);
 // end:
 ~ohm.setGridMonitorFunc(6, 7, {
-  if( ~falseSelf.bassSection.codaIsPlaying,
-    { ~ohm.turnGridGreen(6, 7) }, { ~ohm.turnGridRed(6, 7) });
+if( ~falseSelf.bassSection.codaIsPlaying,
+{ ~ohm.turnGridGreen(6, 7) }, { ~ohm.turnGridRed(6, 7) });
 }, bank: mainGridBank, page: page);
 ~ohm.setGridFunc(6, 7, {
-  if( ~falseSelf.bassSection.codaIsPlaying,
-    { ~falseSelf.bassSection.stopCoda }, { ~falseSelf.bassSection.playCoda });
+if( ~falseSelf.bassSection.codaIsPlaying,
+{ ~falseSelf.bassSection.stopCoda }, { ~falseSelf.bassSection.playCoda });
 }, bank: mainGridBank, page: page);
-
-//////// End Grid Bank:
-
-//// tempo:
-// monitor:
-~ohm.setGridMonitorFunc(0, 0, {
-  if( ~falseSelf.clock.tempo == 2.37, { ~ohm.turnGridGreen(0, 0); }, { ~ohm.turnGridBlue(0, 0); });
-}, bank: endGridBank, page: page);
-// change:
-~ohm.setGridFunc(0, 0, { ~falseSelf.clock.tempo = 142.2/60; }, bank: endGridBank, page: page);
-
-//// End Sequence:
-// monitor:
-~ohm.setGridMonitorFunc(1, 0, {
-  if( ~falseSelf.melodyIsPlaying == true,
-    { ~ohm.turnGridGreen(1, 0); }, { ~ohm.turnGridMagenta(1, 0) });
-}, bank: endGridBank, page: page);
-// start sequence:
-~ohm.setGridFunc(1, 0, { ~falseSelf.startMelody; }, bank: endGridBank, page: page);
+*/
 
 
-//// Trumpet Melody:
-// active:
-~ohm.setGridMonitorFunc(0, 2, {
-  if( ~falseSelf.trumpetMelody.isLoaded,
-    { ~ohm.turnGridCyan(0, 2) }, { ~ohm.turnGridRed(0, 2) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(0, 2, {
-  if( ~falseSelf.trumpetMelody.isLoaded, { ~falseSelf.trumpetMelody.free; });
-}, bank: endGridBank, page: page);
-// shift 1:
-~ohm.setGridMonitorFunc(1, 2, {
-  if( ~falseSelf.trumpetMelody.shift1.mixer.isMuted,
-    { ~ohm.turnGridRed(1, 2) }, { ~ohm.turnGridGreen(1, 2) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(1, 2, { ~falseSelf.trumpetMelody.shift1.mixer.tglMute;
-}, bank: endGridBank, page: page);
-// shift 2:
-~ohm.setGridMonitorFunc(2, 2, {
-  if(~falseSelf.trumpetMelody.shift2.mixer.isMuted,
-    { ~ohm.turnGridRed(2, 2) }, { ~ohm.turnGridGreen(2, 2) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(2, 2, { ~falseSelf.trumpetMelody.shift2.mixer.tglMute;
-}, bank: endGridBank, page: page);
-// dry:
-~ohm.setGridMonitorFunc(3, 2, {
-  if( ~falseSelf.trumpetMelody.dry.isMuted,
-    { ~ohm.turnGridRed(3, 2) }, { ~ohm.turnGridGreen(3, 2) })
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(3, 2, { ~falseSelf.trumpetMelody.dry.tglMute;
-}, bank: endGridBank, page: page);
-
-
-//// Plane Noise:
-// active:
-~ohm.setGridMonitorFunc(0, 3, { if( ~falseSelf.planeNoise.isLoaded,
-  { ~ohm.turnGridGreen(0, 3) }, { ~ohm.turnGridYellow(0, 3) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(0, 3, { if( ~falseSelf.planeNoise.isLoaded,
-  { ~falseSelf.planeNoise.free; });
-}, bank: endGridBank, page: page);
-// playing:
-~ohm.setGridMonitorFunc(1, 3, {
-  if( ~falseSelf.planeNoise.isPlaying,
-    { ~ohm.turnGridGreen(1, 3) }, { ~ohm.turnGridRed(1, 3) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(1, 3, {
-  if( ~falseSelf.planeNoise.isPlaying,
-    { ~falseSelf.planeNoise.releaseSample }, { ~falseSelf.planeNoise.playSample; });
-}, bank: endGridBank, page: page);
-
-//// Mid Buzz:
-// active:
-~ohm.setGridMonitorFunc(0, 4, { if( ~falseSelf.midBuzz.isLoaded,
-  { ~ohm.turnGridGreen(0, 4) }, { ~ohm.turnGridWhite(0, 4) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(1, 4, { if( ~falseSelf.midBuzz.isLoaded,
-  { ~falseSelf.midBuzz.free; });
-}, bank: endGridBank, page: page);
-// playing:
-~ohm.setGridMonitorFunc(1, 4, {
-  if( ~falseSelf.midBuzz.sampler.isSequencePlaying(\midBuzz),
-    { ~ohm.turnGridGreen(1, 4) }, { ~ohm.turnGridRed(1, 4) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(1, 4, {
-  if( ~falseSelf.midBuzz.sampler.isSequencePlaying(\midBuzz),
-    { ~falseSelf.midBuzz.stopSequence }, { ~falseSelf.midBuzz.playSequence(~falseSelf.clock); });
-}, bank: endGridBank, page: page);
-
-//// Crude Drones:
-// active:
-~ohm.setGridMonitorFunc(0, 5, { if( ~falseSelf.drones.isLoaded,
-  { ~ohm.turnGridGreen(0, 5) }, { ~ohm.turnGridCyan(0, 5) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(0, 5, { if( ~falseSelf.drones.isLoaded,
-  { ~falseSelf.drones.free });
-}, bank: endGridBank, page: page);
-// voice 1:
-~ohm.setGridMonitorFunc(1, 5, { if( ~falseSelf.drones.sampler.isSequencePlaying(\voice1),
-  { ~ohm.turnGridGreen(1, 5) }, { ~ohm.turnGridRed(1, 5) })
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(1, 5, { if( ~falseSelf.drones.sampler.isSequencePlaying(\voice1),
-  { ~falseSelf.drones.stopVoice1Sequence }, { ~falseSelf.drones.playVoice1Sequence(~falseSelf.clock); });
-}, bank: endGridBank, page: page);
-// voice 2:
-~ohm.setGridMonitorFunc(2, 5, { if( ~falseSelf.drones.sampler.isSequencePlaying(\voice2),
-  { ~ohm.turnGridGreen(2, 5) }, { ~ohm.turnGridRed(2, 5) })
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(2, 5, { if( ~falseSelf.drones.sampler.isSequencePlaying(\voice2),
-  { ~falseSelf.drones.stopVoice2Sequence }, { ~falseSelf.drones.playVoice2Sequence(~falseSelf.clock) });
-}, bank: endGridBank, page: page);
-// voice 3:
-~ohm.setGridMonitorFunc(3, 5, { if( ~falseSelf.drones.sampler.isSequencePlaying(\voice3),
-  { ~ohm.turnGridGreen(3, 5) }, { ~ohm.turnGridRed(3, 5) })
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(3, 5, { if( ~falseSelf.drones.sampler.isSequencePlaying(\voice3),
-  { ~falseSelf.drones.stopVoice3Sequence }, { ~falseSelf.drones.playVoice3Sequence(~falseSelf.clock) });
-}, bank: endGridBank, page: page);
-
-// 16th Drones:
-// active:
-~ohm.setGridMonitorFunc(0, 6, { if( ~falseSelf.sixteenthDrones.isLoaded,
-  { ~ohm.turnGridGreen(0, 6) }, { ~ohm.turnGridCyan(0, 6) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(0, 6, { if( ~falseSelf.sixteenthDrones.isLoaded,
-  { ~falseSelf.sixteenthDrones.free });
-}, bank: endGridBank, page: page);
-// voice 1:
-~ohm.setGridMonitorFunc(1, 6, { if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice1),
-  { ~ohm.turnGridGreen(1, 6) }, { ~ohm.turnGridRed(1, 6) })
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(1, 6, { if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice1),
-  { ~falseSelf.sixteenthDrones.stopVoice1Sequence }, { ~falseSelf.sixteenthDrones.playVoice1Sequence(~falseSelf.clock); });
-}, bank: endGridBank, page: page);
-// voice 2:
-~ohm.setGridMonitorFunc(2, 6, { if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice2),
-  { ~ohm.turnGridGreen(2, 6) }, { ~ohm.turnGridRed(2, 6) })
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(2, 6, { if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice2),
-  { ~falseSelf.sixteenthDrones.stopVoice2Sequence }, { ~falseSelf.sixteenthDrones.playVoice2Sequence(~falseSelf.clock) });
-}, bank: endGridBank, page: page);
-// voice 3:
-~ohm.setGridMonitorFunc(3, 6, { if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice3),
-  { ~ohm.turnGridGreen(3, 6) }, { ~ohm.turnGridRed(3, 6) })
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(3, 6, { if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice3),
-  { ~falseSelf.sixteenthDrones.stopVoice3Sequence }, { ~falseSelf.sixteenthDrones.playVoice3Sequence(~falseSelf.clock) });
-}, bank: endGridBank, page: page);
-
-
-//// Orchestra:
-//active:
-~ohm.setGridMonitorFunc(4, 3, { if( ~falseSelf.orchestra.isLoaded,
-  { ~ohm.turnGridGreen(4, 3) }, { ~ohm.turnGridMagenta(4, 3) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(4, 3, { if( ~falseSelf.orchestra.isLoaded,
-  { ~falseSelf.orchestra.free; })
-}, bank: endGridBank, page: page);
-// play:
-~ohm.turnGridBlue(5, 3, bank: endGridBank, page: page);
-~ohm.setGridFunc(5, 3, { ~falseSelf.orchestra.playMahlerPhrase }, bank: endGridBank, page: page);
-
-//// Guitars:
-// active:
-~ohm.setGridMonitorFunc(4, 4, { if( ~falseSelf.freezeGuitar.isLoaded,
-  { ~ohm.turnGridGreen(4, 4) }, { ~ohm.turnGridCyan(4, 4) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(4, 4, { if( ~falseSelf.freezeGuitar.isLoaded,
-  { ~falseSelf.freezeGuitar.free; });
-}, bank: endGridBank, page: page);
-// chord progression:
-~ohm.setGridMonitorFunc(5, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\chordProgression),
-  { ~ohm.turnGridGreen(5, 4); }, { ~ohm.turnGridRed(5, 4) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(5, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\chordProgression),
-  { ~falseSelf.freezeGuitar.stopChordProgression }, { ~falseSelf.freezeGuitar.playChordProgression(~falseSelf.clock) });
-}, bank: endGridBank, page: page);
-// end progression:
-~ohm.setGridMonitorFunc(6, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\voice1),
-  { ~ohm.turnGridGreen(6, 4) }, { ~ohm.turnGridRed(6, 4) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(6, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\voice1),
-  { ~falseSelf.freezeGuitar.stopEndProgression }, { ~falseSelf.freezeGuitar.playEndProgression(~falseSelf.clock) })
-}, bank: endGridBank, page: page);
-
-//// end trumpet:
-// active:
-~ohm.setGridMonitorFunc(4, 5, { if( ~falseSelf.endTrumpet.isLoaded,
-  { ~ohm.turnGridMagenta(4, 5) }, { ~ohm.turnGridRed(4, 5) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(4, 5, { if( ~falseSelf.endTrumpet.isLoaded,
-  { ~falseSelf.endTrumpet.free; });
-}, bank: endGridBank, page: page);
-// input is muted:
-~ohm.setGridMonitorFunc(5, 5, { if( ~falseSelf.endTrumpet.input.isMuted,
-  { ~ohm.turnGridRed(5, 5) }, { ~ohm.turnGridGreen(5, 5) });
-}, bank: endGridBank, page: page);
-~ohm.setGridFunc(5, 5, { ~falseSelf.endTrumpet.input.tglMute; }, bank: endGridBank, page: page);
-
-
-//// Bank Change:
-~ohm.setGridMonitorFunc(0, 7, {
-  4.do({ | i | ~ohm.turnGridCyan(i, 7) });
-  ~ohm.turnGridGreen(activeLeftBank, 7);
-}, bank: mainGridBank, page: page);
-
-// mix bank 1:
-~ohm.setGridFunc(0, 7, {
-  activeLeftBank = mixerBank1;
-  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
-  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
-  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
-}, bank: mainGridBank, page: page);
-
-// mix bank 2:
-~ohm.setGridFunc(1, 7, {
-  activeLeftBank = mixerBank2;
-  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
-  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
-  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
-}, bank: mainGridBank, page: page);
-
-// mix bank 3:
-~ohm.setGridFunc(2, 7, {
-  activeLeftBank = mixerBank3;
-  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
-  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
-  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
-}, bank: mainGridBank, page: page);
-
-// mix bank 4:
-~ohm.setGridFunc(3, 7, {
-  activeLeftBank = mixerBank4;
-  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
-  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
-  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
-}, bank: mainGridBank, page: page);
-
-//// Bank Change (End Grid Bank):
-~ohm.setGridMonitorFunc(0, 7, {
-  4.do({ | i | ~ohm.turnGridCyan(i, 7) });
-  ~ohm.turnGridGreen(activeLeftBank, 7);
-}, bank: endGridBank, page: page);
-
-// mix bank 1:
-~ohm.setGridFunc(0, 7, {
-  activeLeftBank = mixerBank1;
-  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
-  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
-  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
-}, bank: endGridBank, page: page);
-
-// mix bank 2:
-~ohm.setGridFunc(1, 7, {
-  activeLeftBank = mixerBank2;
-  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
-  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
-  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
-}, bank: endGridBank, page: page);
-
-// mix bank 3:
-~ohm.setGridFunc(2, 7, {
-  activeLeftBank = mixerBank3;
-  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
-  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
-  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
-}, bank: endGridBank, page: page);
-
-// mix bank 4:
-~ohm.setGridFunc(3, 7, {
-  activeLeftBank = mixerBank4;
-  ~ohm.setActiveLeftButtonsBank(activeLeftBank);
-  ~ohm.setActiveLeftSlidersBank(activeLeftBank);
-  ~ohm.setActiveLeftKnobsBank(activeLeftBank);
-}, bank: endGridBank, page: page);
-
-
-//////////////////////
-//// Left Side: /////
-////////////////////
-
-/////// Main Bank:
-
-//// Fake Guitar:
-// mute:
-~ohm.setLeftButtonMonitorFunc(0, { if( ~falseSelf.mixerA.isMuted(0),
-  { ~ohm.turnLeftButtonRed(0); }, { ~ohm.turnLeftButtonGreen(0) });
-}, bank: mixerBank1, page: page);
-~ohm.setLeftButtonFunc(0, { ~falseSelf.mixerA.tglMute(0); }, bank: mixerBank1, page: page);
-// volume:
-~ohm.setLeftSliderFunc(0, { | val |
-  ~falseSelf.mixerA.setVol(0, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-// sends:
-~ohm.setLeftKnobFunc(0, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(0, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-~ohm.setLeftKnobFunc(0, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(0, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(0, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
+// Main Trumpet:
+~apc.setClipStopFunc(5, { ~falseSelf.mainTrumpet.free; ~apc.turnClipStopButtonOff(5) },
+  bank: mixerBank1, page: page);
 
 //// Drums:
-//mute:
-~ohm.setLeftButtonMonitorFunc(1, { if (~falseSelf.mixerB.isMuted(2),
-  { ~ohm.turnLeftButtonRed(1); }, { ~ohm.turnLeftButtonGreen(1) });
-}, bank: mixerBank1, page: page);
-~ohm.setLeftButtonFunc(1, { ~falseSelf.mixerB.tglMute(2); }, bank: mixerBank1, page: page);
-// volume:
-~ohm.setLeftSliderFunc(1, { | val |
-  ~falseSelf.mixerB.setVol(2, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-// sends:
-~ohm.setLeftKnobFunc(1, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(2, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-~ohm.setLeftKnobFunc(1, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(2, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-~ohm.setLeftKnobFunc(1, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(2, 2, val.ccdbfs(-70, 0));
+~apc.setClipStopFunc(6, { ~falseSelf.drums.free; ~apc.turnClipStopButtonOff(6); },
+  bank: mixerBank1, page: page);
+
+~apc.setGridMonitorFunc(\drums, {
+  if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
+    { ~apc.turnGridGreen(5, 2); }, { ~apc.turnGridBlue(5, 2, 1); });
 }, bank: mixerBank1, page: page);
 
-////Bass:
-//mute:
-~ohm.setLeftButtonMonitorFunc(2, { if (~falseSelf.mixerB.isMuted(1),
-  { ~ohm.turnLeftButtonRed(2); }, { ~ohm.turnLeftButtonGreen(2) });
-}, bank: mixerBank1, page: page);
-~ohm.setLeftButtonFunc(2, { ~falseSelf.mixerB.tglMute(1); }, bank: mixerBank1, page: page);
-// volume:
-~ohm.setLeftSliderFunc(2, { | val |
-  ~falseSelf.mixerB.setVol(1, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-// sends:
-~ohm.setLeftKnobFunc(2, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(1, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-~ohm.setLeftKnobFunc(2, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(1, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-~ohm.setLeftKnobFunc(2, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(1, 2, val.ccdbfs(-70, 0));
+~apc.setGridFunc(6, 2, {
+  if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
+    { ~falseSelf.drums.stopEnding }, { ~falseSelf.drums.playEnding(~falseSelf.clock) });
 }, bank: mixerBank1, page: page);
 
 
-//// Trumpet:
-//mute:
-~ohm.setLeftButtonMonitorFunc(3, { if (~falseSelf.mixerA.isMuted(2),
-  { ~ohm.turnLeftButtonRed(3); }, { ~ohm.turnLeftButtonGreen(3) });
-}, bank: mixerBank1, page: page);
-~ohm.setLeftButtonFunc(3, { ~falseSelf.mixerA.tglMute(2); }, bank: mixerBank1, page: page);
-// volume:
-~ohm.setLeftSliderFunc(3, { | val |
-  ~falseSelf.mixerA.setVol(2, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-// sends:
-~ohm.setLeftKnobFunc(3, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(2, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-~ohm.setLeftKnobFunc(3, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(2, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
-~ohm.setLeftKnobFunc(3, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(2, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank1, page: page);
+/*
+// beginning:
+~ohm.setGridMonitorFunc(5, 3, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\section1),
+{ ~ohm.turnGridGreen(5, 3) }, { ~ohm.turnGridRed(5, 3) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(5, 3, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\section1),
+{ ~falseSelf.drums.stopSection1 }, { ~falseSelf.drums.playSection1(~falseSelf.clock) });
+}, bank: mainGridBank, page: page);
+// chorus 1:
+~ohm.setGridMonitorFunc(6, 3, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\chorus1),
+{ ~ohm.turnGridGreen(6, 3) }, { ~ohm.turnGridRed(6, 3) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(6, 3, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\chorus1),
+{ ~falseSelf.drums.stopChorus1 }, { ~falseSelf.drums.playChorus1(~falseSelf.clock); });
+}, bank: mainGridBank, page: page);
+// chorus 2:
+~ohm.setGridMonitorFunc(7, 3, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\chorus2),
+{ ~ohm.turnGridGreen(7, 3) }, { ~ohm.turnGridRed(7, 3) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(7, 3, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\chorus2),
+{ ~falseSelf.drums.stopChorus2 }, { ~falseSelf.drums.playChorus2(~falseSelf.clock) });
+}, bank: mainGridBank, page: page);
+// canon:
+~ohm.setGridMonitorFunc(4, 4, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\canon),
+{ ~ohm.turnGridGreen(4, 4) }, { ~ohm.turnGridRed(4, 4) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(4, 4, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\canon),
+{ ~falseSelf.drums.stopCanon }, { ~falseSelf.drums.playCanon(~falseSelf.clock) });
+}, bank: mainGridBank, page: page);
+// end:
+~ohm.setGridMonitorFunc(5, 4, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
+{ ~ohm.turnGridGreen(5, 4) }, { ~ohm.turnGridRed(5, 4) });
+}, bank: mainGridBank, page: page);
+~ohm.setGridFunc(5, 4, {
+if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
+{ ~falseSelf.drums.stopEnding }, { ~falseSelf.drums.playEnding(~falseSelf.clock) });
+}, bank: mainGridBank, page: page);
 
-//// Bells:
-// mute:
-~ohm.setLeftButtonMonitorFunc(0, { if( ~falseSelf.mixerA.isMuted(1),
-  { ~ohm.turnLeftButtonRed(0) }, { ~ohm.turnLeftButtonGreen(0) });
-}, bank: mixerBank2, page: page);
-~ohm.setLeftButtonFunc(0, { ~falseSelf.mixerA.tglMute(1); }, bank: mixerBank2, page: page);
-// volume:
-~ohm.setLeftSliderFunc(0, { | val |
-  ~falseSelf.mixerA.setVol(1, val.ccdbfs(-70, 0));
-}, bank: mixerBank2, page: page);
-// sends:
-~ohm.setLeftKnobFunc(0, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(1, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank2, page: page);
-~ohm.setLeftKnobFunc(0, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(1, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank2, page: page);
-~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(1, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank2, page: page);
+*/
 
-//// Melody Synth:
-// mute:
-~ohm.setLeftButtonMonitorFunc(1, { if( ~falseSelf.mixerB.isMuted(0),
-  { ~ohm.turnLeftButtonRed(1) }, { ~ohm.turnLeftButtonGreen(1) });
-}, bank: mixerBank2, page: page);
-~ohm.setLeftButtonFunc(1, { ~falseSelf.mixerB.tglMute(0); }, bank: mixerBank2, page: page);
-// volume:
-~ohm.setLeftSliderFunc(1, { | val |
-  ~falseSelf.mixerB.setVol(0, val.ccdbfs(-70, 0));
-}, bank: mixerBank2, page: page);
-// sends:
-~ohm.setLeftKnobFunc(1, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(0, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank2, page: page);
-~ohm.setLeftKnobFunc(1, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(0, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank2, page: page);
-~ohm.setLeftKnobFunc(1, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(0, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank2, page: page);
+// Trumpet Canon:
+~apc.setClipStopFunc(7, { ~falseSelf.trumpetCanon.free; ~apc.turnClipStopButtonOff(7) },
+  bank: mixerBank1, page: page);
+
+//// Orchestra:
+~apc.setClipStopFunc(8, { ~falseSelf.orchestra.free; ~apc.turnClipStopButtonOff(8) },
+  bank: mixerBank1, page: page);
+// play:
+~apc.turnGridCyan(7, 2, 2, mixerBank1, page);
+~apc.setGridFunc(7, 2, { ~falseSelf.orchestra.playMahlerPhrase }, bank: mixerBank1, page: page);
 
 
-//// Modular:
-// mute:
-~ohm.setLeftButtonMonitorFunc(2, { if( ~falseSelf.mixerC.isMuted(0),
-  { ~ohm.turnLeftButtonRed(2) }, { ~ohm.turnLeftButtonGreen(2) });
+///////////////////////
+//// Mixer Bank 2: ///
+/////////////////////
+
+//// Tempo Change:
+~apc.setSceneLaunchMonitorFunc(\tempo, {
+  if( ~falseSelf.clock.tempo == 2.37,
+    { ~apc.turnSceneLaunchButtonGreen(0) }, { ~apc.turnSceneLaunchButtonBlue(0) });
 }, bank: mixerBank2, page: page);
-~ohm.setLeftButtonFunc(2, { ~falseSelf.mixerC.tglMute(0); }, bank: mixerBank2, page: page);
-// volume:
-~ohm.setLeftSliderFunc(2, { | val |
-  ~falseSelf.mixerC.setVol(0, val.ccdbfs(-70, 0));
+~apc.setSceneLaunchFunc(0, { ~falseSelf.clock.tempo = 142.2/60; }, bank: mixerBank2, page: page);
+
+//// End Sequence:
+~apc.setSceneLaunchMonitorFunc(\endSequence, {
+  if( ~falseSelf.melodyIsPlaying == true,
+    { ~apc.turnSceneLaunchButtonGreen(1) }, { ~apc.turnSceneLaunchButtonMagenta(1) });
 }, bank: mixerBank2, page: page);
-// sends:
-~ohm.setLeftKnobFunc(2, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(0, 0, val.ccdbfs(-70, 0));
+// start sequence:
+~apc.setSceneLaunchFunc(1, { ~falseSelf.startMelody; }, bank: mixerBank2, page: page);
+
+//// Trumpet Melody:
+~apc.setClipStopFunc(1, { ~falseSelf.trumpetMelody.free; ~apc.turnClipStopButtonOff(1); },
+  bank: mixerBank2, page: page);
+~apc.setGridMonitorFunc(\tptShift, {
+  if( ~falseSelf.trumpetMelody.shift1.mixer.isMuted,
+    { ~apc.turnGridRed(0, 2, 1); }, { ~apc.turnGridGreen(0, 2); });
+  if(~falseSelf.trumpetMelody.shift2.mixer.isMuted,
+    { ~apc.turnGridRed(0, 1, 1); }, { ~apc.turnGridGreen(0, 1); });
+  if( ~falseSelf.trumpetMelody.dry.isMuted,
+    { ~apc.turnGridRed(0, 0, 1); }, { ~apc.turnGridGreen(0, 0); });
 }, bank: mixerBank2, page: page);
-~ohm.setLeftKnobFunc(2, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(0, 1, val.ccdbfs(-70, 0));
+// shift 1:
+~apc.setGridFunc(0, 2, { ~falseSelf.trumpetMelody.shift1.mixer.tglMute; },
+  bank: mixerBank2, page: page);
+// shift 2:
+~apc.setGridFunc(0, 1, { ~falseSelf.trumpetMelody.shift2.mixer.tglMute; },
+  bank: mixerBank2, page: page);
+// dry:
+~apc.setGridFunc(0, 0, { ~falseSelf.trumpetMelody.dry.tglMute; },
+  bank: mixerBank2, page: page);
+
+//// Crude Drones:
+~apc.setClipStopFunc(2, { ~falseSelf.drones.free; ~apc.turnClipStopButtonOff(2) },
+  bank: mixerBank2, page: page);
+/// voices:
+~apc.setGridMonitorFunc(\drones, {
+  if( ~falseSelf.drones.sampler.isSequencePlaying(\voice1),
+    { ~apc.turnGridGreen(1, 2); }, { ~apc.turnGridRed(1, 2, 1); });
+  if( ~falseSelf.drones.sampler.isSequencePlaying(\voice2),
+    { ~apc.turnGridGreen(1, 1); }, { ~apc.turnGridRed(1, 1, 1); });
+  if( ~falseSelf.drones.sampler.isSequencePlaying(\voice3),
+    { ~apc.turnGridGreen(1, 0); }, { ~apc.turnGridRed(1, 0, 1); });
 }, bank: mixerBank2, page: page);
-~ohm.setLeftKnobFunc(2, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(0, 2, val.ccdbfs(-70, 0));
+// voice 1:
+~apc.setGridFunc(1, 2, {
+  if( ~falseSelf.drones.sampler.isSequencePlaying(\voice1),
+    { ~falseSelf.drones.stopVoice1Sequence }, { ~falseSelf.drones.playVoice1Sequence(~falseSelf.clock); });
+}, bank: mixerBank2, page: page);
+// voice 2:
+~apc.setGridFunc(1, 1, { if( ~falseSelf.drones.sampler.isSequencePlaying(\voice2),
+  { ~falseSelf.drones.stopVoice2Sequence }, { ~falseSelf.drones.playVoice2Sequence(~falseSelf.clock) });
+}, bank: mixerBank2, page: page);
+// voice 3:
+~apc.setGridFunc(1, 0, { if( ~falseSelf.drones.sampler.isSequencePlaying(\voice3),
+  { ~falseSelf.drones.stopVoice3Sequence }, { ~falseSelf.drones.playVoice3Sequence(~falseSelf.clock) });
 }, bank: mixerBank2, page: page);
 
-//// trumpet canon:
-// mute:
-~ohm.setLeftButtonMonitorFunc(3, { if( ~falseSelf.mixerA.isMuted(3),
-  { ~ohm.turnLeftButtonRed(3) }, { ~ohm.turnLeftButtonGreen(3) });
+
+//// 16th Drones:
+~apc.setClipStopFunc(3, { ~falseSelf.sixteenthDrones.free; ~apc.turnClipStopButtonOff(3) },
+  bank: mixerBank2, page: page);
+/// voices:
+~apc.setGridMonitorFunc(\sixteenthDrones, {
+  if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice1),
+    { ~apc.turnGridGreen(2, 2); }, { ~apc.turnGridRed(2, 2, 1); });
+  if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice2),
+    { ~apc.turnGridGreen(2, 1); }, { ~apc.turnGridRed(2, 1, 1); });
+  if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice3),
+    { ~apc.turnGridGreen(2, 0); }, { ~apc.turnGridRed(2, 0, 1); });
 }, bank: mixerBank2, page: page);
-~ohm.setLeftButtonFunc(3, { ~falseSelf.mixerA.tglMute(3); }, bank: mixerBank2, page: page);
-// volume:
-~ohm.setLeftSliderFunc(3, { | val |
-  ~falseSelf.mixerA.setVol(3, val.ccdbfs(-70, 0));
+// voice 1:
+~apc.setGridFunc(2, 2, { if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice1),
+  { ~falseSelf.sixteenthDrones.stopVoice1Sequence }, { ~falseSelf.sixteenthDrones.playVoice1Sequence(~falseSelf.clock); });
 }, bank: mixerBank2, page: page);
-// sends:
-~ohm.setLeftKnobFunc(3, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(3, 0, val.ccdbfs(-70, 0));
+// voice 2:
+~apc.setGridFunc(2, 1, { if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice2),
+  { ~falseSelf.sixteenthDrones.stopVoice2Sequence }, { ~falseSelf.sixteenthDrones.playVoice2Sequence(~falseSelf.clock) });
 }, bank: mixerBank2, page: page);
-~ohm.setLeftKnobFunc(3, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(3, 1, val.ccdbfs(-70, 0));
+// voice 3:
+~apc.setGridFunc(2, 0, { if( ~falseSelf.sixteenthDrones.sampler.isSequencePlaying(\voice3),
+  { ~falseSelf.sixteenthDrones.stopVoice3Sequence }, { ~falseSelf.sixteenthDrones.playVoice3Sequence(~falseSelf.clock) });
 }, bank: mixerBank2, page: page);
-~ohm.setLeftKnobFunc(3, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(3, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank2, page: page);
+
 
 //// Plane Noise:
-// mute:
-~ohm.setLeftButtonMonitorFunc(0, { if( ~falseSelf.mixerC.isMuted(3),
-  { ~ohm.turnLeftButtonRed(0) }, { ~ohm.turnLeftButtonGreen(0) });
-}, bank: mixerBank3, page: page);
-~ohm.setLeftButtonFunc(0, { ~falseSelf.mixerC.tglMute(3); }, bank: mixerBank3, page: page);
-//volume:
-~ohm.setLeftSliderFunc(0, { | val |
-  ~falseSelf.mixerC.setVol(3, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-//sends:
-~ohm.setLeftKnobFunc(0, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(3, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-~ohm.setLeftKnobFunc(0, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(3, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(3, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
+~apc.setClipStopFunc(4, { ~falseSelf.planeNoise.free; ~apc.turnClipStopButtonOff(4); },
+  bank: mixerBank2, page: page);
+// playing:
+~apc.setGridMonitorFunc(\planeNoise, {
+  if( ~falseSelf.planeNoise.isPlaying,
+    { ~apc.turnGridGreen(3, 2) }, { ~apc.turnGridRed(3, 2, 1); });
+}, bank: mixerBank2, page: page);
+~apc.setGridFunc(3, 2, {
+  if( ~falseSelf.planeNoise.isPlaying,
+    { ~falseSelf.planeNoise.releaseSample }, { ~falseSelf.planeNoise.playSample; });
+}, bank: mixerBank2, page: page);
+
 
 //// Mid Buzz:
-// mute:
-~ohm.setLeftButtonMonitorFunc(1, { if( ~falseSelf.mixerC.isMuted(4),
-  { ~ohm.turnLeftButtonRed(1) }, { ~ohm.turnLeftButtonGreen(1) });
-}, bank: mixerBank3, page: page);
-~ohm.setLeftButtonFunc(1, { ~falseSelf.mixerC.tglMute(4); }, bank: mixerBank3, page: page);
-//volume:
-~ohm.setLeftSliderFunc(1, { | val |
-  ~falseSelf.mixerC.setVol(4, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-//sends:
-~ohm.setLeftKnobFunc(1, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(4, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-~ohm.setLeftKnobFunc(1, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(4, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-~ohm.setLeftKnobFunc(1, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(4, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
+~apc.setClipStopFunc(5, { ~falseSelf.midBuzz.free; ~apc.turnClipStopButtonOff(5) },
+  bank: mixerBank2, page: page);
+// playing:
+~apc.setGridMonitorFunc(\midBuzz, {
+  if( ~falseSelf.midBuzz.sampler.isSequencePlaying(\midBuzz),
+    { ~apc.turnGridGreen(4, 2) }, { ~apc.turnGridRed(4, 2, 1); });
+}, bank: mixerBank2, page: page);
+~apc.setGridFunc(4, 2, {
+  if( ~falseSelf.midBuzz.sampler.isSequencePlaying(\midBuzz),
+    { ~falseSelf.midBuzz.stopSequence }, { ~falseSelf.midBuzz.playSequence(~falseSelf.clock); });
+}, bank: mixerBank2, page: page);
 
-//// drones:
-// mute:
-~ohm.setLeftButtonMonitorFunc(2, { if( ~falseSelf.mixerC.isMuted(1),
-  { ~ohm.turnLeftButtonRed(2) }, { ~ohm.turnLeftButtonGreen(2) });
-}, bank: mixerBank3, page: page);
-~ohm.setLeftButtonFunc(2, { ~falseSelf.mixerC.tglMute(1); }, bank: mixerBank3, page: page);
-//volume:
-~ohm.setLeftSliderFunc(2, { | val |
-  ~falseSelf.mixerC.setVol(1, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-//sends:
-~ohm.setLeftKnobFunc(2, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(1, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-~ohm.setLeftKnobFunc(2, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(1, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-~ohm.setLeftKnobFunc(2, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(1, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
 
-//// orchestra:
-// mute:
-~ohm.setLeftButtonMonitorFunc(3, { if( ~falseSelf.mixerB.isMuted(3),
-  { ~ohm.turnLeftButtonRed(3) }, { ~ohm.turnLeftButtonGreen(3) });
-}, bank: mixerBank3, page: page);
-~ohm.setLeftButtonFunc(3, { ~falseSelf.mixerB.tglMute(3); }, bank: mixerBank3, page: page);
-//volume:
-~ohm.setLeftSliderFunc(3, { | val |
-  ~falseSelf.mixerB.setVol(3, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-//sends:
-~ohm.setLeftKnobFunc(3, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(3, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-~ohm.setLeftKnobFunc(3, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(3, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
-~ohm.setLeftKnobFunc(3, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(3, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank3, page: page);
+//// Guitars:
+~apc.setClipStopFunc(6, { ~falseSelf.freezeGuitar.free; ~apc.turnClipStopButtonOff(6) },
+  bank: mixerBank2, page: page);
 
-//// 16th drones:
-// mute:
-~ohm.setLeftButtonMonitorFunc(0, { if( ~falseSelf.mixerC.isMuted(2),
-  { ~ohm.turnLeftButtonRed(0) }, { ~ohm.turnLeftButtonGreen(0) });
-}, bank: mixerBank4, page: page);
-~ohm.setLeftButtonFunc(0, { ~falseSelf.mixerC.tglMute(2); }, bank: mixerBank4, page: page);
-//volume:
-~ohm.setLeftSliderFunc(0, { | val |
-  ~falseSelf.mixerC.setVol(2, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-//sends:
-~ohm.setLeftKnobFunc(0, 2, { | val |
-  ~falseSelf.mixerC.setSendVol(2, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-~ohm.setLeftKnobFunc(0, 1, { | val |
-  ~falseSelf.mixerC.setSendVol(2, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~falseSelf.mixerC.setSendVol(2, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
+/*
+// chord progression:
+~ohm.setGridMonitorFunc(5, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\chordProgression),
+{ ~ohm.turnGridGreen(5, 4); }, { ~ohm.turnGridRed(5, 4) });
+~ohm.setGridFunc(5, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\chordProgression),
+{ ~falseSelf.freezeGuitar.stopChordProgression }, { ~falseSelf.freezeGuitar.playChordProgression(~falseSelf.clock) });
 
-//// trumpet melody:
-// mute:
-~ohm.setLeftButtonMonitorFunc(1, { if( ~falseSelf.mixerA.isMuted(4),
-  { ~ohm.turnLeftButtonRed(1) }, { ~ohm.turnLeftButtonGreen(1) });
-}, bank: mixerBank4, page: page);
-~ohm.setLeftButtonFunc(1, { ~falseSelf.mixerA.tglMute(4); }, bank: mixerBank4, page: page);
-//volume:
-~ohm.setLeftSliderFunc(1, { | val |
-  ~falseSelf.mixerA.setVol(4, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-//sends:
-~ohm.setLeftKnobFunc(1, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(4, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-~ohm.setLeftKnobFunc(1, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(4, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-~ohm.setLeftKnobFunc(1, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(4, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
+// end progression:
+~ohm.setGridMonitorFunc(6, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\voice1),
+{ ~ohm.turnGridGreen(6, 4) }, { ~ohm.turnGridRed(6, 4) });
+}, bank: endGridBank, page: page);
+~ohm.setGridFunc(6, 4, { if( ~falseSelf.freezeGuitar.sampler.isSequencePlaying(\voice1),
+{ ~falseSelf.freezeGuitar.stopEndProgression }, { ~falseSelf.freezeGuitar.playEndProgression(~falseSelf.clock) })
+}, bank: endGridBank, page: page);
+*/
 
-//// freeze guitars:
-// mute:
-~ohm.setLeftButtonMonitorFunc(2, { if( ~falseSelf.mixerB.isMuted(4),
-  { ~ohm.turnLeftButtonRed(2) }, { ~ohm.turnLeftButtonGreen(2) });
-}, bank: mixerBank4, page: page);
-~ohm.setLeftButtonFunc(2, { ~falseSelf.mixerB.tglMute(4); }, bank: mixerBank4, page: page);
-//volume:
-~ohm.setLeftSliderFunc(2, { | val |
-  ~falseSelf.mixerB.setVol(4, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-//sends:
-~ohm.setLeftKnobFunc(2, 2, { | val |
-  ~falseSelf.mixerB.setSendVol(4, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-~ohm.setLeftKnobFunc(2, 1, { | val |
-  ~falseSelf.mixerB.setSendVol(4, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-~ohm.setLeftKnobFunc(2, 0, { | val |
-  ~falseSelf.mixerB.setSendVol(4, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
+//// Modular:
+~apc.setClipStopFunc(7, { ~falseSelf.modular.free; ~apc.turnClipStopButtonOff(7) },
+  bank: mixerBank2, page: page);
 
 //// end trumpet:
-// mute:
-~ohm.setLeftButtonMonitorFunc(3, { if( ~falseSelf.mixerA.isMuted(5),
-  { ~ohm.turnLeftButtonRed(3) }, { ~ohm.turnLeftButtonGreen(3) });
-}, bank: mixerBank4, page: page);
-~ohm.setLeftButtonFunc(3, { ~falseSelf.mixerA.tglMute(5) },
-  bank: mixerBank4, page: page);
-// volume:
-~ohm.setLeftSliderFunc(3, { | val |
-  ~falseSelf.mixerA.setVol(5, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-// sends:
-~ohm.setLeftKnobFunc(3, 2, { | val |
-  ~falseSelf.mixerA.setSendVol(5, 0, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-~ohm.setLeftKnobFunc(3, 1, { | val |
-  ~falseSelf.mixerA.setSendVol(5, 1, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
-~ohm.setLeftKnobFunc(3, 0, { | val |
-  ~falseSelf.mixerA.setSendVol(5, 2, val.ccdbfs(-70, 0));
-}, bank: mixerBank4, page: page);
+~apc.setClipStopFunc(8, { ~falseSelf.endTrumpet.free; ~apc.turnClipStopButtonOff(8) },
+  bank: mixerBank2, page: page);
 
 
+/////////////////////
+// Bank Change: ////
+///////////////////
+
+//// send bank changes:
+
+~apc.setDeviceButtonsMonitorFunc(\sends, {
+  if( ~apc.activeMixerEncodersBank == (send0+sendMod),
+    { ~apc.turnDeviceButtonOn(1) }, { ~apc.turnDeviceButtonOff(1) });
+  if( ~apc.activeMixerEncodersBank  == (send1+sendMod),
+    { ~apc.turnDeviceButtonOn(2) }, { ~apc.turnDeviceButtonOff(2) });
+  if( ~apc.activeMixerEncodersBank  == (send2+sendMod),
+    { ~apc.turnDeviceButtonOn(3) }, { ~apc.turnDeviceButtonOff(3) });
+  if( ~apc.activeMixerEncodersBank == (send3+sendMod),
+    { ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4) });
+}, page: page);
 
 
-////// headphones/click:
-
-~ohm.setGridMonitorFunc(7, 7, {
-  if( clickBankActive == true, { ~ohm.turnGridGreen(7, 7) }, { ~ohm.turnGridWhite(7, 7) });
-}, bank: mainGridBank, page: page);
-~ohm.setGridFunc(7, 7, {
-  if( clickBankActive == true,
-    { ~ohm.setActiveLeftKnobsBank(activeLeftBank); clickBankActive = false; },
-    { ~ohm.setActiveLeftKnobsBank(clickBank); clickBankActive = true; }
-  );
-}, bank: mainGridBank, page: page);
+~apc.setDeviceButtonFunc(1, { ~apc.setActiveMixerEncodersBank(send0+sendMod); }, page: page);
+~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1+sendMod);  }, page: page);
+~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2+sendMod); }, page: page);
+~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3+sendMod); }, page: page);
 
 
-~ohm.setLeftKnobFunc(0, 0, { | val |
-  ~falseSelf.metronome.mixer.setVol(val.ccdbfs(-70, 0));
-}, bank: clickBank, page: page);
-~ohm.setLeftKnobFunc(1, 0, { | val |
-  ~prm.monitorMixer.setVol(0, val.ccdbfs(-70, 6));
-}, bank: clickBank, page: page);
+//// Mixer Bank Change:
+
+~apc.turnDeviceButtonOn(5, page: page);
+~apc.setDeviceButtonFunc(5, {
+  ~apc.turnDeviceButtonOn(5);
+  ~apc.turnDeviceButtonOff(6);
+  activeMixerBank = mixerBank1;
+  ~apc.setActiveClipStopBank(activeMixerBank);
+  ~apc.setActiveMixerBank(activeMixerBank);
+  ~apc.setActiveGridBank(activeMixerBank);
+  ~apc.setActiveSceneLaunchBank(activeMixerBank);
+  ~apc.setActiveMixerEncodersBank(~apc.activeMixerEncodersBank%4);
+  sendMod = 0;
+}, page: page);
+~apc.setDeviceButtonFunc(6, {
+  ~apc.turnDeviceButtonOff(5);
+  ~apc.turnDeviceButtonOn(6);
+  activeMixerBank = mixerBank2;
+  ~apc.setActiveClipStopBank(activeMixerBank);
+  ~apc.setActiveMixerBank(activeMixerBank);
+  ~apc.setActiveGridBank(activeMixerBank);
+  ~apc.setActiveSceneLaunchBank(activeMixerBank);
+  ~apc.setActiveMixerEncodersBank((~apc.activeMixerEncodersBank%4)+4);
+  sendMod = 4;
+}, page: page);
+
+
+//////////////////////////
+///////// Mixer /////////
+////////////////////////
+
+//////// Mixer Bank 1:
+8.do({ | i |
+  // free colors:
+  ~apc.turnClipStopButtonOn(i+1, mixerBank1, page);
+
+  // vol:
+  ~apc.setFaderFunc(i+1, { | val | ~falseSelf.mixer.setVol(i, val.ccdbfs); }, bank: mixerBank1, page: page);
+
+  // toggle mute:
+  ~apc.setTrackSelectFunc(i+1, { ~falseSelf.mixer.tglMute(i); }, bank: mixerBank1, page: page);
+  ~apc.setMixerMonitorFunc("mute"++i.asSymbol, {
+    if( ~falseSelf.mixer.isMuted(i),
+      { ~apc.turnTrackSelectButtonOff(i+1) }, { ~apc.turnTrackSelectButtonOn(i+1); });
+  }, bank: mixerBank1, page: page);
+  // sends pre/post:
+  ~apc.setCrossfaderSelectFunc(i+1, {
+    if( ~falseSelf.mixer.preOrPost(i) == 'post',
+      { ~falseSelf.mixer.setSendPre(i); }, { ~falseSelf.mixer.setSendPost(i) });
+  }, bank: mixerBank1, page: page);
+  ~apc.setMixerMonitorFunc("preOrPost"++i.asSymbol, {
+    if( ~falseSelf.mixer.preOrPost(i) == 'post',
+      { ~apc.turnCrossfaderSelectButtonOrange(i+1) },
+      { ~apc.turnCrossfaderSelectButtonYellow(i+1) });
+  }, bank: mixerBank1, page: page);
+
+  //// sends:
+  ~apc.setMixerEncoderFunc(i+1, { | val |
+    ~falseSelf.mixer.setSendVol(i, 0, val.ccdbfs); }, bank: send0, page: page);
+  ~apc.setMixerEncoderFunc(i+1, { | val |
+    ~falseSelf.mixer.setSendVol(i, 1, val.ccdbfs); }, bank: send1, page: page);
+  ~apc.setMixerEncoderFunc(i+1, { | val |
+    ~falseSelf.mixer.setSendVol(i, 2, val.ccdbfs); }, bank: send2, page: page);
+  ~apc.setMixerEncoderFunc(i+1, { | val |
+    ~falseSelf.mixer.setSendVol(i, 3, val.ccdbfs); }, bank: send3, page: page);
+
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
+    ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i, 0).dbfsCC); }, bank: send0, page: page);
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
+    ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i, 1).dbfsCC); }, bank: send1, page: page);
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
+    ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i, 2).dbfsCC); }, bank: send2, page: page);
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
+    ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i, 3).dbfsCC); }, bank: send3, page: page);
+
+});
+
+
+//// main trumpet input mute:
+~apc.setMixerMonitorFunc(\mainTpt, {
+  if( ~falseSelf.mainTrumpetInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(5) }, { ~apc.turnRecordEnableButtonOn(5) });
+}, bank: mixerBank1, page: page);
+
+~apc.setMixerMonitorFunc(\canonTpt, {
+  if( ~falseSelf.trumpetCanonInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(7) }, { ~apc.turnRecordEnableButtonOn(7) });
+}, bank: mixerBank1, page: page);
+
+
+//////// Mixer Bank 2:
+
+8.do({ | i |
+  // free buttons:
+  ~apc.turnClipStopButtonOn(i+1, mixerBank2, page);
+
+  // vol:
+  ~apc.setFaderFunc(i+1, { | val | ~falseSelf.mixer.setVol(i+8, val.ccdbfs); }, bank: mixerBank2, page: page);
+
+  // toggle mute:
+  ~apc.setTrackSelectFunc(i+1, { ~falseSelf.mixer.tglMute(i+8); }, bank: mixerBank2, page: page);
+  ~apc.setMixerMonitorFunc("mute"++i.asSymbol, {
+    if( ~falseSelf.mixer.isMuted(i+8),
+      { ~apc.turnTrackSelectButtonOff(i+1) }, { ~apc.turnTrackSelectButtonOn(i+1); });
+  }, bank: mixerBank2, page: page);
+  // sends pre/post:
+  ~apc.setCrossfaderSelectFunc(i+1, {
+    if( ~falseSelf.mixer.preOrPost(i+8) == 'post',
+      { ~falseSelf.mixer.setSendPre(i+8); }, { ~falseSelf.mixer.setSendPost(i+8) });
+  }, bank: mixerBank2, page: page);
+  ~apc.setMixerMonitorFunc("preOrPost"++i.asSymbol, {
+    if( ~falseSelf.mixer.preOrPost(i+8) == 'post',
+      { ~apc.turnCrossfaderSelectButtonOrange(i+1) },
+      { ~apc.turnCrossfaderSelectButtonYellow(i+1) });
+  }, bank: mixerBank2, page: page);
+
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
+    ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 0).dbfsCC); }, bank: send4, page: page);
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
+    ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 1).dbfsCC); }, bank: send5, page: page);
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
+    ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 2).dbfsCC); }, bank: send6, page: page);
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
+    ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 3).dbfsCC); }, bank: send7, page: page);
+
+});
+
+~apc.setMixerMonitorFunc(\melodyTpt, {
+  if( ~falseSelf.trumpetMelodyInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
+}, bank: mixerBank2, page: page);
+
+~apc.setMixerMonitorFunc(\modular, {
+  if( ~falseSelf.modularInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(7) }, { ~apc.turnRecordEnableButtonOn(7) });
+}, bank: mixerBank2, page: page);
+
+~apc.setMixerMonitorFunc(\endTpt, {
+  if( ~falseSelf.endTrumpetInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(8) }, { ~apc.turnRecordEnableButtonOn(8) });
+}, bank: mixerBank2, page: page);
+
 
 
 /*

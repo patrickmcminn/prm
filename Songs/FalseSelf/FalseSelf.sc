@@ -4,7 +4,7 @@ FalseSelf.sc
 prm
 */
 
-FalseSelf : Song {
+FalseSelf : IM_Module {
 
   var <server, <isLoaded;
 
@@ -25,12 +25,12 @@ FalseSelf : Song {
   var <section1IsPlaying, <chorus1IsPlaying, <chorus2IsPlaying, <canonIsPlaying;
   var <limboIsPlaying, <melodyIsPlaying, <endIsPlaying;
 
-  *new { | outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
-    ^super.new(24, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
-      relGroup, addAction).prInit;
+  *new { | outBus, moogDevice, moogPort, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
+    ^super.new(16, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
+      relGroup, addAction).prInit(moogDevice, moogPort);
   }
 
-  prInit {
+  prInit { | moogDevice, moogPort |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -46,7 +46,6 @@ FalseSelf : Song {
       clock.tempo = 160/60;
 
 
-
       //// mixer:
       bellSection = FalseSelf_BellSection.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { bellSection.isLoaded } != true }, { 0.001.wait; });
@@ -58,7 +57,7 @@ FalseSelf : Song {
       while({ try { melodySynth.isLoaded } != true }, { 0.001.wait; });
 
       bassSection = FalseSelf_BassSection.new(mixer.chanStereo(3), relGroup: group, addAction: \addToHead,
-        moogDeviceName: "UMC1820", moogPortName: "UMC1820");
+        moogDeviceName: moogDevice, moogPortName: moogPort);
       while({ try { bassSection.isLoaded } != true }, { 0.001.wait; });
 
       mainTrumpet = FalseSelf_MainTrumpet.new(mixer.chanStereo(4), relGroup: group, addAction: \addToHead);

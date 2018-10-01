@@ -11,6 +11,9 @@ var send1 = 1;
 var send2 = 2;
 var send3 = 3;
 
+var foundationIsLoaded = false;
+var falseSelfIsLoaded = false;
+
 
 ~apc.storageDict[\loadMasterFunc].value;
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
@@ -20,8 +23,8 @@ var send3 = 3;
 /////// Grid Functions:
 'Built on a Flawed Foundation';
 
-~ohm.turnGridCyan(0, 4, page: page);
-~ohm.setGridFunc(0, 4, {
+~apc.turnGridCyan(0, 4, page: page);
+~apc.setGridFunc(0, 4, {
   if(foundationIsLoaded == false, {
     r {
       ~foundationDelay = SimpleDelay.newStereo(~prm.audioIn, 2.5, 0.21, 2.5,
@@ -33,17 +36,40 @@ var send3 = 3;
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
         ~prm.procGroup, \addToHead, ~moogDevice, ~moogPort);
       while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.setGridFunc(1, 4, { ~ohm.setPage('foundation'); }, page: page);
-      ~ohm.turnGridGreen(1, 4);
+      ~apc.setGridFunc(1, 4, { ~apc.setPage('foundation'); }, page: page);
+      ~apc.turnGridGreen(1, 4);
       foundationIsLoaded = true;
     }.play;
     },
     {
       ~foundation.free;
       ~foundationDelay.free;
-      ~ohm.setGridFunc(1, 4, { });
-      ~ohm.turnGridOff(1, 4);
+      ~apc.setGridFunc(1, 4, { });
+      ~apc.turnGridOff(1, 4);
       foundationIsLoaded = false;
+  });
+}, page: page);
+
+'False Self';
+
+~apc.turnGridWhite(0, 3, page: page);
+~apc.setGridFunc(0, 3, {
+  if(falseSelfIsLoaded == false, {
+    r {
+      ~falseSelf = FalseSelf.new(~prm.audioIn, ~moogDevice, ~moogPort,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+        ~prm.procGroup, \addToHead);
+      while({ try { ~falseSelf.isLoaded } != true }, { 0.001.wait; });
+      ~apc.setGridFunc(1, 3, { ~apc.setPage('falseSelf'); }, page: page);
+      ~apc.turnGridGreen(1, 3);
+      falseSelfIsLoaded = true;
+    }.play;
+    },
+    {
+      ~falseSelf.free;
+      ~apc.setGridFunc(1, 3, {});
+      ~apc.turnGridOff(1, 3);
+      falseSelfIsLoaded = false;
   });
 }, page: page);
 

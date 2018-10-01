@@ -4,8 +4,22 @@ Load Songs.scd
 prm
 */
 
+
+///////////////////////
+//// Ver Sacrum //////
+/////////////////////
+
+
 "Foundation APC.scd".loadRelative;
 "Foundation Base.scd".loadRelative;
+
+"False Self APC.scd".loadRelative;
+"False Self Base.scd".loadRelative;
+
+
+///////////////////////////////
+//// The Phonometrician //////
+/////////////////////////////
 
 /*
 // Ohm:
@@ -20,17 +34,22 @@ prm
 
 
 // Base:
-"Connections Base.scd".loadRelative;
+//"Connections Base.scd".loadRelative;
 //"Cortez Base.scd".loadRelative;
 //"Dauphine Street Base.scd".loadRelative;
 "Habit Base.scd".loadRelative;
 "False Self Base.scd".loadRelative;
 //"Light Base.scd".loadRelative;
 
-"Boy Base.scd".loadRelative;
+//"Boy Base.scd".loadRelative;
 
 
-/// there was a time when the world was suffused with light:
+//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+//// there was a time when the world was suffused with light: //////
+///////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+
 
 "there was a time when the world was suffused with light/Load there was a time when the world was suffused with light.scd".loadRelative;
 

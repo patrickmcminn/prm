@@ -16,7 +16,7 @@ Habit : IM_Module {
 
   *new {
     |
-    outBus, micIn = 1, modularIn = 2, moogIn = 3, moogDeviceName, moogPortName, mixAOutBus, mixBOutBus, mixCOutBus,
+    outBus, micIn = 1, modularIn = 2, moogIn = 3, moogDeviceName, moogPortName,
     send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead'
     |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
@@ -63,7 +63,7 @@ Habit : IM_Module {
 
 
       // trumpet loopers:
-      trumpetLoopers = Habit_TrumpetLoopers.new(mixer.chanStereo(3), relGroup: group, addAction: \addToHead);
+      trumpetLoopers = Habit_TrumpetLoopers.new(songMixer.chanStereo(3), relGroup: group, addAction: \addToHead);
       while({ try { trumpetLoopers.isLoaded } != true}, { 0.001.wait; });
       trumpetLoopersInput = IM_HardwareIn.new(micIn, trumpetLoopers.inBus, group, \addToHead);
       while({ try { trumpetLoopersInput.isLoaded } != true }, { 0.001.wait; });
@@ -83,8 +83,8 @@ Habit : IM_Module {
       // moog:
       songMixer.setVol(1, -6);
       songMixer.setSendVol(1, 0, -14.6);
-      songMixer.mixer.setSendVol(1, 3, -25.3);
-      songMixer.mixer.setSendVol(1, 2, 0);
+      songMixer.setSendVol(1, 3, -25.3);
+      songMixer.setSendVol(1, 2, 0);
 
       // modular:
       songMixer.setVol(2, -6);

@@ -139,7 +139,7 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
   }, bank: miscBank, page: page);
 });
 4.do({ | i |
-  ~base.setFaderFunc(i, { | val |
+  ~base.setFaderFunc(i+1, { | val |
     ~habit.songMixer.setSendVol(i, 3, val.ccdbfs);
   }, bank: miscBank, page: page);
 });

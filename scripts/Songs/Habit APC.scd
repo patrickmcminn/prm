@@ -48,7 +48,7 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
     if( ~habit.songMixer.preOrPost(i) == 'post',
       { ~apc.turnCrossfaderSelectButtonOrange(i+1) },
       { ~apc.turnCrossfaderSelectButtonYellow(i+1) });
-  });
+  }, page: page);
 
   //// sends:
   ~apc.setMixerEncoderFunc(i+1, { | val | ~habit.songMixer.setSendVol(i, 0, val.ccdbfs); }, bank: send0, page: page);
@@ -75,12 +75,12 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
       { ~apc.turnDeviceButtonOn(3) }, { ~apc.turnDeviceButtonOff(3) });
     if( ~apc.activeMixerEncodersBank == send3,
       { ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4) });
-  });
+  }, page: page);
 
-  ~apc.setDeviceButtonFunc(1, { ~apc.setActiveMixerEncodersBank(send0); });
-  ~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1);  });
-  ~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2); });
-  ~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); });
+  ~apc.setDeviceButtonFunc(1, { ~apc.setActiveMixerEncodersBank(send0); }, page: page);
+  ~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1);  }, page: page);
+  ~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2); }, page: page);
+  ~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); }, page: page);
 
 });
 
@@ -113,12 +113,12 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 
 ////// Trumpet Looper Submixer:
 4.do({ | i |
-  ~apc.setFaderFunc(i+4, { | val | ~habit.trumpetLoopers.submixer.setVol(i, val.ccdbfs); }, page: page);
-   // toggle mute:
-  ~apc.setTrackSelectFunc(i+4, { ~habit.trumpetLoopers.submixer.tglMute(i); }, page: page);
+  ~apc.setFaderFunc(i+5, { | val | ~habit.trumpetLoopers.submixer.setVol(i, val.ccdbfs); }, page: page);
+  // toggle mute:
+  ~apc.setTrackSelectFunc(i+5, { ~habit.trumpetLoopers.submixer.tglMute(i); }, page: page);
   ~apc.setMixerMonitorFunc("mute"++i.asSymbol, {
-    if( ~habit.trumpetLoopers.mixer.isMuted(i),
-      { ~apc.turnTrackSelectButtonOff(i+4) }, { ~apc.turnTrackSelectButtonOn(i+4); });
+    if( ~habit.trumpetLoopers.submixer.isMuted(i),
+      { ~apc.turnTrackSelectButtonOff(i+5) }, { ~apc.turnTrackSelectButtonOn(i+5); });
   }, page: page);
 
 });
@@ -127,7 +127,7 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 
 //// Tempo:
 ~apc.setDeviceEncodersMonitorFunc(\tempo, {
-  var tempo = (~habit.clock.tempo/60).explin(20, 1200, 0, 127);
+  var tempo = (~habit.clock.tempo*60).explin(20, 1200, 0, 127);
   ~apc.setDeviceEncoderValue(1, tempo);
 }, page: page);
 ~apc.setDeviceEncoderFunc(1, { |val |
@@ -230,7 +230,7 @@ sequenceResetFunc = {
 ~apc.setGridMonitorFunc(\notesPlaying, {
   8.do({ | i | ~apc.turnGridWhite(i, 3); });
   if( ~habit.moog.notePlaying.isInteger, { ~apc.turnGridGreen(pitchArray.atIdentityHash(~habit.moog.notePlaying), 3) },
-    { 8.do({ | i | ~ohm.turnGridWhite(i, 3); }); });
+    { 8.do({ | i | ~apc.turnGridWhite(i, 3); }); });
 }, page: page);
 
 
@@ -244,22 +244,22 @@ sequenceResetFunc = {
   if( ~habit.trumpetLoopers.looper1.isPlaying,
     { ~apc.turnGridGreen(4, 0) }, { ~apc.turnGridRed(4, 0, 0) });
   if( ~habit.trumpetLoopers.looper2.isRecording, { ~apc.turnGridWhite(5, 1) },
-    if( ~habity.trumpetLoopers.looper2.isPlaying,
+    if( ~habit.trumpetLoopers.looper2.isPlaying,
       { ~apc.turnGridGreen(5, 1) }, { ~apc.turnGridBlue(5, 1, 1); });
   );
   if( ~habit.trumpetLoopers.looper2.isPlaying,
     { ~apc.turnGridGreen(5, 0) }, { ~apc.turnGridRed(5, 0, 0) });
   if( ~habit.trumpetLoopers.looper3.isRecording, { ~apc.turnGridWhite(6, 1) },
-    if( ~habity.trumpetLoopers.looper3.isPlaying,
+    if( ~habit.trumpetLoopers.looper3.isPlaying,
       { ~apc.turnGridGreen(6, 1) }, { ~apc.turnGridBlue(6, 1, 1); });
   );
   if( ~habit.trumpetLoopers.looper3.isPlaying,
     { ~apc.turnGridGreen(6, 0) }, { ~apc.turnGridRed(6, 0, 0) });
   if( ~habit.trumpetLoopers.looper4.isRecording, { ~apc.turnGridWhite(7, 1) },
-    if( ~habity.trumpetLoopers.looper4.isPlaying,
+    if( ~habit.trumpetLoopers.looper4.isPlaying,
       { ~apc.turnGridGreen(7, 1) }, { ~apc.turnGridBlue(7, 1, 1); });
     if( ~habit.trumpetLoopers.looper4.isPlaying,
-    { ~apc.turnGridGreen(7, 0) }, { ~apc.turnGridRed(7, 0, 0) });
+      { ~apc.turnGridGreen(7, 0) }, { ~apc.turnGridRed(7, 0, 0) });
   );
 }, page: page);
 
@@ -272,7 +272,7 @@ sequenceResetFunc = {
 ~apc.setGridFunc(4, 1, { ~habit.trumpetLoopers.looper1.loop; }, page: page);
 // play:
 ~apc.setGridFunc(4, 0, { ~habit.trumpetLoopers.looper1.togglePlayLoop; }, page: page);
-~ohm.setGridFunc(0, 3, { ~habit.trumpetLoopers.looper1.togglePlayLoop; }, page: page);
+~apc.setGridFunc(0, 3, { ~habit.trumpetLoopers.looper1.togglePlayLoop; }, page: page);
 // erase:
 ~apc.setGridFunc(4, 2, { ~habit.trumpetLoopers.looper1.clearLoop(90); }, page: page);
 
@@ -307,7 +307,7 @@ sequenceResetFunc = {
 ~apc.setGridMonitorFunc(\grain, {
   3.do({ | i | ~apc.turnGridCyan(i, 1, 1); });
   3.do({ | i | ~apc.turnGridCyan(i, 0, 1); });
-switch( ~prm.granulator.grainEnv,
+  switch( ~prm.granulator.grainEnv,
     'sine', { ~apc.turnGridGreen(0, 1); },
     'gabor', { ~apc.turnGridGreen(1, 1); },
     'perc', { ~apc.turnGridGreen(2, 1); },
@@ -332,15 +332,13 @@ switch( ~prm.granulator.grainEnv,
 
 
 //////// tempo reset:
-// set tempo to 60 BPM:
 ~apc.setSceneLaunchMonitorFunc(\tempo, {
   if( ~habit.clock.tempo == 1,
-    { ~apc.turnSceneLaunchButtonGreen(0) }, { ~apc.turnSceneLaunchButtonWhite(1); });
-}, page: page);
-~apc.setSceneLaunchFunc(0, { ~habit.setClockTempo(60); }, page: page);
-// set tempo to 120 BPM:
-~apc.setSceneLaunchMonitorFunc(\tempo, {
+    { ~apc.turnSceneLaunchButtonGreen(0) }, { ~apc.turnSceneLaunchButtonWhite(0); });
   if( ~habit.clock.tempo == 2,
     { ~apc.turnSceneLaunchButtonGreen(1) }, { ~apc.turnSceneLaunchButtonWhite(1); });
 }, page: page);
+// set tempo to 60 BPM:
+~apc.setSceneLaunchFunc(0, { ~habit.setClockTempo(60); }, page: page);
+// set tempo to 120 BPM:
 ~apc.setSceneLaunchFunc(1, { ~habit.setClockTempo(120); }, page: page);

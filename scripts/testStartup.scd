@@ -13,7 +13,7 @@ device = "iConnectAudio4+";
 ohm = "HST1";
 base = "HST3";*/
 
-//
+Server.killAll
 // s.options.blockSize = 64;
 // s.options.memSize = 131072;
 // s.options.numAudioBusChannels = 512;

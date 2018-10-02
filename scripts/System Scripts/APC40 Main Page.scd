@@ -14,6 +14,8 @@ var send3 = 3;
 var foundationIsLoaded = false;
 var falseSelfIsLoaded = false;
 
+var habitIsLoaded = false;
+
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 ~apc.storageDict[\loadMasterFunc].value;
 
@@ -69,6 +71,28 @@ var falseSelfIsLoaded = false;
       ~apc.setGridFunc(1, 3, {});
       ~apc.turnGridOff(1, 3);
       falseSelfIsLoaded = false;
+  });
+}, page: page);
+
+'Habit Fills Up What Remains';
+~apc.turnGridPurple(4, 4, 2, page: page);
+~apc.setGridFunc(4, 4, {
+  if(habitIsLoaded == false, {
+    r{
+      ~habit = Habit.new(~prm.audioIn, 1, 2, 3, ~moogDevice, ~moogPort,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+        relGroup: ~prm.procGroup, addAction: \addToHead);
+      while({ try { ~habit.isLoaded } != true }, { 0.001.wait; });
+      ~apc.setGridFunc(5, 4, { ~apc.setPage('habit'); }, page: page);
+      ~apc.turnGridGreen(5, 4);
+      habitIsLoaded = true;
+    }.play;
+    },
+    {
+      ~habit.free;
+      ~apc.setGridFunc(5, 4, { });
+      ~apc.turnGridOff(5, 4);
+      habitIsLoaded = false;
   });
 }, page: page);
 

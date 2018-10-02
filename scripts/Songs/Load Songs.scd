@@ -21,6 +21,13 @@ prm
 //// The Phonometrician //////
 /////////////////////////////
 
+///////////////////////////////
+//////// Digressions /////////
+/////////////////////////////
+
+"Habit APC.scd".loadRelative;
+"Habit Base.scd".loadRelative;
+
 /*
 // Ohm:
 "Connections Ohm.scd".loadRelative;
@@ -37,8 +44,7 @@ prm
 //"Connections Base.scd".loadRelative;
 //"Cortez Base.scd".loadRelative;
 //"Dauphine Street Base.scd".loadRelative;
-"Habit Base.scd".loadRelative;
-"False Self Base.scd".loadRelative;
+
 //"Light Base.scd".loadRelative;
 
 //"Boy Base.scd".loadRelative;

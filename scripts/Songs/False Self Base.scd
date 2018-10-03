@@ -124,7 +124,7 @@ var phraseResetFunc;
 //// Modular:
 ~base.setFaderMode(7, 'whiteFill', bank: mixerBank2, page: page);
 //// Trumpet End:
-~base.setFaderMode(8, 'magentaFill', bank: mixerank2, page: page);
+~base.setFaderMode(8, 'magentaFill', bank: mixerBank2, page: page);
 
 8.do({ | i |
   ~base.setTouchButtonMonitorFunc(i+1, {

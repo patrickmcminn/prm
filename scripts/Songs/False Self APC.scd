@@ -62,24 +62,24 @@ var send7 = 7;
 8.do({ | button | ~apc.turnGridBlue(button, 4, 0, mixerBank1, page); });
 8.do({ | button | ~apc.turnGridBlue(button, 4, 0, mixerBank2, page); });
 ~apc.setGridMonitorFunc(\bars, {
-  if( ~falseSelf.bar >= 1, { ~apc.turnGridMagenta(0, 4); });
-  if( ~falseSelf.bar >= 13, { ~apc.turnGridMagenta(1, 4); });
-  if( ~falseSelf.bar >= 21, { ~apc.turnGridMagenta(2, 4); });
-  if( ~falseSelf.bar >= 25, { ~apc.turnGridMagenta(3, 4); });
-  if( ~falseSelf.bar >= 53, { ~apc.turnGridMagenta(4, 4); });
-  if( ~falseSelf.bar >= 55, { ~apc.turnGridMagenta(5, 4); });
-  if( ~falseSelf.bar >= 68, { ~apc.turnGridMagenta(6, 4); });
-  if( ~falseSelf.bar >= 81, { ~apc.turnGridMagenta(7, 4); });
+  if( ~falseSelf.bar >= 1, { ~apc.turnGridMagenta(0, 4); }, { ~apc.turnGridBlue(0, 4) });
+  if( ~falseSelf.bar >= 13, { ~apc.turnGridMagenta(1, 4); }, { ~apc.turnGridBlue(1, 4) });
+  if( ~falseSelf.bar >= 21, { ~apc.turnGridMagenta(2, 4); }, { ~apc.turnGridBlue(2, 4) });
+  if( ~falseSelf.bar >= 25, { ~apc.turnGridMagenta(3, 4); }, { ~apc.turnGridBlue(3, 4) });
+  if( ~falseSelf.bar >= 53, { ~apc.turnGridMagenta(4, 4); }, { ~apc.turnGridBlue(4, 4) });
+  if( ~falseSelf.bar >= 55, { ~apc.turnGridMagenta(5, 4); }, { ~apc.turnGridBlue(5, 4) });
+  if( ~falseSelf.bar >= 68, { ~apc.turnGridMagenta(6, 4); }, { ~apc.turnGridBlue(6, 4) });
+  if( ~falseSelf.bar >= 81, { ~apc.turnGridMagenta(7, 4); }, { ~apc.turnGridBlue(7, 4) });
 }, bank: mixerBank1, page: page);
 ~apc.setGridMonitorFunc(\bars, {
-  if( ~falseSelf.bar >= 1, { ~apc.turnGridMagenta(0, 4); });
-  if( ~falseSelf.bar >= 13, { ~apc.turnGridMagenta(1, 4); });
-  if( ~falseSelf.bar >= 21, { ~apc.turnGridMagenta(2, 4); });
-  if( ~falseSelf.bar >= 25, { ~apc.turnGridMagenta(3, 4); });
-  if( ~falseSelf.bar >= 53, { ~apc.turnGridMagenta(4, 4); });
-  if( ~falseSelf.bar >= 55, { ~apc.turnGridMagenta(5, 4); });
-  if( ~falseSelf.bar >= 68, { ~apc.turnGridMagenta(6, 4); });
-  if( ~falseSelf.bar >= 81, { ~apc.turnGridMagenta(7, 4); });
+  if( ~falseSelf.bar >= 1, { ~apc.turnGridMagenta(0, 4); }, { ~apc.turnGridBlue(0, 4) });
+  if( ~falseSelf.bar >= 13, { ~apc.turnGridMagenta(1, 4); }, { ~apc.turnGridBlue(1, 4) });
+  if( ~falseSelf.bar >= 21, { ~apc.turnGridMagenta(2, 4); }, { ~apc.turnGridBlue(2, 4) });
+  if( ~falseSelf.bar >= 25, { ~apc.turnGridMagenta(3, 4); }, { ~apc.turnGridBlue(3, 4) });
+  if( ~falseSelf.bar >= 53, { ~apc.turnGridMagenta(4, 4); }, { ~apc.turnGridBlue(4, 4) });
+  if( ~falseSelf.bar >= 55, { ~apc.turnGridMagenta(5, 4); }, { ~apc.turnGridBlue(5, 4) });
+  if( ~falseSelf.bar >= 68, { ~apc.turnGridMagenta(6, 4); }, { ~apc.turnGridBlue(6, 4) });
+  if( ~falseSelf.bar >= 81, { ~apc.turnGridMagenta(7, 4); }, { ~apc.turnGridBlue(7, 4) });
 }, bank: mixerBank2, page: page);
 
 
@@ -209,11 +209,16 @@ if( ~falseSelf.bassSection.codaIsPlaying,
   bank: mixerBank1, page: page);
 
 ~apc.setGridMonitorFunc(\drums, {
+  if( ~falseSelf.drums.drums.isSequencePlaying(\canon),
+    { ~apc.turnGridGreen(5, 2); }, { ~apc.turnGridPurple(5, 2, 1); });
   if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
-    { ~apc.turnGridGreen(5, 2); }, { ~apc.turnGridBlue(5, 2, 1); });
+    { ~apc.turnGridGreen(5, 1); }, { ~apc.turnGridCyan(5, 1, 1); });
 }, bank: mixerBank1, page: page);
-
-~apc.setGridFunc(6, 2, {
+~apc.setGridFunc(5, 2, {
+  if( ~falseSelf.drums.drums.isSequencePlaying(\canon),
+    { ~falseSelf.drums.stopCanon }, { ~falseSelf.drums.playCanon(~falseSelf.clock); });
+}, bank: mixerBank1, page: page);
+~apc.setGridFunc(5, 1, {
   if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
     { ~falseSelf.drums.stopEnding }, { ~falseSelf.drums.playEnding(~falseSelf.clock) });
 }, bank: mixerBank1, page: page);
@@ -570,9 +575,18 @@ if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
       { ~apc.turnCrossfaderSelectButtonYellow(i+1) });
   }, bank: mixerBank2, page: page);
 
+  ~apc.setMixerEncoderFunc(i+1, { | val |
+    ~falseSelf.mixer.setSendVol(i+8, 0, val.ccdbfs); }, bank: send4, page: page);
+  ~apc.setMixerEncoderFunc(i+1, { | val |
+    ~falseSelf.mixer.setSendVol(i+8, 1, val.ccdbfs); }, bank: send5, page: page);
+  ~apc.setMixerEncoderFunc(i+1, { | val |
+    ~falseSelf.mixer.setSendVol(i+8, 2, val.ccdbfs); }, bank: send6, page: page);
+  ~apc.setMixerEncoderFunc(i+1, { | val |
+    ~falseSelf.mixer.setSendVol(i+8, 3, val.ccdbfs); }, bank: send7, page: page);
+
   ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
     ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 0).dbfsCC); }, bank: send4, page: page);
-  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i+tem+"send").asSymbol, {
     ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 1).dbfsCC); }, bank: send5, page: page);
   ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
     ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 2).dbfsCC); }, bank: send6, page: page);

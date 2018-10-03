@@ -176,7 +176,7 @@ var send7 = 7;
   { ~foundation.sc.releaseTremolo }, { ~foundation.sc.playTremolo });
 }, bank: mixerBank1, page: page);
 // chords:
-~apc.setGridMonitorFunc(\scChords, { if( ~foundation.sc.tremIsPlaying,
+~apc.setGridMonitorFunc(\scChords, { if( ~foundation.sc.chordsIsPlaying,
   { ~apc.turnGridGreen(5, 1) }, { ~apc.turnGridBlue(5, 1); });
 }, bank: mixerBank1, page: page);
 ~apc.setGridFunc(5, 1, { if( ~foundation.sc.chordsIsPlaying,
@@ -252,9 +252,6 @@ var send7 = 7;
   bank: mixerBank2, page: page);
 ~apc.setGridMonitorFunc(\cellos, { if( ~foundation.cellos.mainSequenceIsPlaying,
   { ~apc.turnGridGreen(2, 2) }, { ~apc.turnGridPink(2, 2, 1); });
-}, bank: mixerBank2, page: page);
-~apc.setGridMonitorFunc(5, 3, { if( ~foundation.cellos.mainSequenceIsPlaying,
-  { ~ohm.turnGridGreen(5, 3) }, { ~ohm.turnGridRed(5, 3) });
 }, bank: mixerBank2, page: page);
 
 

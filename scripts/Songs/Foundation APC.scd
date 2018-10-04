@@ -365,10 +365,10 @@ var send7 = 7;
   bank: mixerBank1, page: page);
 // clean trumpet input:
 ~apc.setMixerMonitorFunc(\cleanTptInput, {
-  if( ~foundation.cleanTrumpet.trumpet.isMuted,
+  if( ~foundation.cleanTrumpetInput.isMuted,
     { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
 }, bank: mixerBank1, page: page);
-~apc.setRecordEnableButtonFunc(2, { ~foundation.cleanTrumpet.trumpet.tglMute },
+~apc.setRecordEnableButtonFunc(2, { ~foundation.cleanTrumpetInput.tglMute },
   bank: mixerBank1, page: page);
 // dist trumpet input:
 ~apc.setMixerMonitorFunc(\distTptInput, {

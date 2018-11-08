@@ -176,6 +176,7 @@ FalseSelf : IM_Module {
 
     // modular:
     //mixerC.setVol(0, -inf);
+    mixer.mute(14);
     mixer.setSendVol(14, 0, -15);
 
     // Trumpet Canon:
@@ -211,7 +212,8 @@ FalseSelf : IM_Module {
     // end trumpet:
     mixer.setSendVol(15, 0, -6);
     mixer.setSendVol(15, 2, 0);
-    endTrumpet.input.mute;
+    //endTrumpet.input.mute;
+    endTrumpetInput.mute;
   }
 
   prSetAssignableOutParameters {
@@ -380,7 +382,7 @@ FalseSelf : IM_Module {
       // mute delays:
       clock.sched(416, { trumpetCanon.muteDelays; });
       // high pass sweep:
-      clock.sched(344, { trumpetCanon.postEQ.sweepHighPassFilter(30, 1200, 31.5); });
+      clock.sched(344, { trumpetCanon.postEQ.sweepHighPassFilter(30, 1200, 36); });
       clock.sched(440, { trumpetCanon.muteInput });
 
 

@@ -6,19 +6,12 @@ startup script for testing code w/o an
 audio interface
 */
 
-/*var device, ohm, base;
-device = "iConnectAudio4+";
-//ohm = "Ohm Port 1";
-//base = "Base Port 1";
-ohm = "HST1";
-base = "HST3";*/
+
 
 Server.killAll
-// s.options.blockSize = 64;
-// s.options.memSize = 131072;
-// s.options.numAudioBusChannels = 512;
+s.meter
 
-//s.boot;
+
 
 //////////////////
 //// Studio: ////

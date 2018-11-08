@@ -144,7 +144,7 @@ var dissolutionIsLoaded = false;
   if( sorrowIsLoaded == false, {
     r{
       ~sorrow = Sorrow.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
-        relGroup: ~prm.procGroup, addAction: \addToHead);
+        ~prm.delay.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
       while({ try { ~sorrow.isLoaded } != true }, { 0.001.wait; });
       ~apc.turnGridGreen(3, 1);
       ~apc.setGridFunc(3, 1, { ~apc.setPage('sorrow'); }, page: page);

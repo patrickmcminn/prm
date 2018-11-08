@@ -37,20 +37,16 @@ BeatstepPro  {
       isLoaded = false;
 
       this.prInitMIDI(deviceName, portName);
-
-      //// MIDI Section
+      //// MIDI Section:
       this.prSetSequencerChannels(sequencer1Chan, sequencer2Chan, drumChan, controlChan);
       this.prMakeResponders;
-
       this.prMakePageDictionary;
 
       //// Sequences:
       sequencer1Dict = IdentityDictionary.new;
       sequencer2Dict = IdentityDictionary.new;
       drumSequencerDict = IdentityDictionary.new;
-
       sequencerClock = TempoClock.new;
-
       server.sync;
 
       this.prMakeSyncSequence;
@@ -60,6 +56,7 @@ BeatstepPro  {
   }
 
   prInitMIDI { | deviceName, portName |
+    MIDIIn.connectAll;
     midiInPort = MIDIIn.findPort(deviceName, portName);
     midiOutPort = MIDIOut.newByName(deviceName, portName);
     midiOutPort.latency = 0;
@@ -93,11 +90,11 @@ BeatstepPro  {
     // slot 0 is for note on funcs:
     // slot 1 is for note off funcs:
     sequencer1ButtonFuncArray = Array.fill2D(2, 128, { nil });
-    128.do({ | num |
-      sequencer1ButtonFuncArray[0][num] = MIDIFunc({ }, num, sequencer1Channel, \noteOn, midiInPort.uid).fix;
+    84.do({ | num |
+      sequencer1ButtonFuncArray[0][num] = MIDIFunc({ }, num + 24, sequencer1Channel, \noteOn, midiInPort.uid).fix;
     });
-    128.do({ | num |
-      sequencer1ButtonFuncArray[1][num] = MIDIFunc({ }, num, sequencer1Channel, \noteOff, midiInPort.uid).fix;
+    84.do({ | num |
+      sequencer1ButtonFuncArray[1][num] = MIDIFunc({ }, num + 24, sequencer1Channel, \noteOff, midiInPort.uid).fix;
     });
   }
 
@@ -107,11 +104,11 @@ BeatstepPro  {
     // slot 0 is for note on funcs:
     // slot 1 is for note off funcs:
     sequencer2ButtonFuncArray = Array.fill2D(2, 128, { nil });
-    128.do({ | num |
-      sequencer2ButtonFuncArray[0][num] = MIDIFunc({ }, num, sequencer2Channel, \noteOn, midiInPort.uid).fix;
+    84.do({ | num |
+      sequencer2ButtonFuncArray[0][num] = MIDIFunc({ }, num + 24, sequencer2Channel, \noteOn, midiInPort.uid).fix;
     });
-    128.do({ | num |
-      sequencer2ButtonFuncArray[1][num] = MIDIFunc({ }, num, sequencer2Channel, \noteOff, midiInPort.uid).fix;
+    84.do({ | num |
+      sequencer2ButtonFuncArray[1][num] = MIDIFunc({ }, num + 24, sequencer2Channel, \noteOff, midiInPort.uid).fix;
     });
   }
 

@@ -44,12 +44,12 @@ Sorrow : IM_Module {
 
   prInitializeParameters {
     // trumpets:
-    mixer.setPreVol(0, -3);
+    //mixer.setPreVol(0, -3);
     mixer.setVol(0, -3);
     mixer.setSendVol(0, 0, -3);
 
     // moog:
-    mixer.setPreVol(1, -6);
+    //mixer.setPreVol(1, -6);
     mixer.setVol(1, -6);
     mixer.setSendVol(1, 0, -9);
   }

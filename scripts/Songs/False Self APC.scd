@@ -586,7 +586,7 @@ if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
 
   ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
     ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 0).dbfsCC); }, bank: send4, page: page);
-  ~apc.setMixerEncodersMonitorFunc(("mixer"++i+tem+"send").asSymbol, {
+  ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
     ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 1).dbfsCC); }, bank: send5, page: page);
   ~apc.setMixerEncodersMonitorFunc(("mixer"++i++"send").asSymbol, {
     ~apc.setMixerEncoderValue(i+1,  ~falseSelf.mixer.sendVol(i+8, 2).dbfsCC); }, bank: send6, page: page);
@@ -599,16 +599,22 @@ if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
   if( ~falseSelf.trumpetMelodyInput.isMuted,
     { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
 }, bank: mixerBank2, page: page);
+~apc.setRecordEnableButtonFunc(1, { ~falseSelf.trumpetMelodyInput.tglMute; },
+  bank: mixerBank2, page: page);
 
 ~apc.setMixerMonitorFunc(\modular, {
   if( ~falseSelf.modularInput.isMuted,
     { ~apc.turnRecordEnableButtonOff(7) }, { ~apc.turnRecordEnableButtonOn(7) });
 }, bank: mixerBank2, page: page);
+~apc.setRecordEnableButtonFunc(7, { ~falseSelf.modularInput.tglMute; },
+  bank: mixerBank2, page: page);
 
 ~apc.setMixerMonitorFunc(\endTpt, {
   if( ~falseSelf.endTrumpetInput.isMuted,
     { ~apc.turnRecordEnableButtonOff(8) }, { ~apc.turnRecordEnableButtonOn(8) });
 }, bank: mixerBank2, page: page);
+~apc.setRecordEnableButtonFunc(8, { ~falseSelf.endTrumpetInput.tglMute; },
+  bank: mixerBank2, page: page);
 
 
 

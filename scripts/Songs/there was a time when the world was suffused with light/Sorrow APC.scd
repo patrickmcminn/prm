@@ -99,7 +99,7 @@ var send3 = 3;
 //// Mute:
 ~apc.setMixerMonitorFunc(\moogMute, {
   if( ~sorrow.mixer.isMuted(1),
-    { ~apc.turnTrackSelectButtonOn(4) }, { ~apc.turnTrackSelectButtonOff(4) });
+    { ~apc.turnTrackSelectButtonOff(4) }, { ~apc.turnTrackSelectButtonOn(4) });
 }, page: page);
 ~apc.setTrackSelectFunc(4, { ~sorrow.mixer.tglMute(1) }, page: page);
 //// Volume:
@@ -128,3 +128,37 @@ var send3 = 3;
   ~apc.setMixerEncoderValue(4,  ~sorrow.mixer.sendVol(1, 2).dbfsCC); }, bank: send2, page: page);
 ~apc.setMixerEncodersMonitorFunc(\moogSend3, {
   ~apc.setMixerEncoderValue(4,  ~sorrow.mixer.sendVol(1, 3).dbfsCC); }, bank: send3, page: page);
+
+
+//////////////////////
+////// Modular //////
+////////////////////
+
+~apc.setMixerMonitorFunc(\cMixModular, {
+  if( ~prm.cmix.isMuted(2),
+    { ~apc.turnTrackSelectButtonOff(5) }, { ~apc.turnTrackSelectButtonOn(5) });
+  if( ~prm.cmix.preOrPost(2) == 'post',
+    { ~apc.turnCrossfaderSelectButtonOrange(5) }, { ~apc.turnCrossfaderSelectButtonYellow(5) });
+}, page: page);
+~apc.setTrackSelectFunc(5, { ~prm.cmix.tglMute(2) }, page: page);
+~apc.setCrossfaderSelectFunc(5, {
+  if( ~prm.cmix.preOrPost(2) == 'post',
+    { ~prm.cmix.setSendPre(2); }, { ~prm.cmix.setSendPost(2) });
+}, page: page);
+~apc.setFaderFunc(5, { | val |
+  ~prm.cmix.setVol(2, val.ccdbfs);
+}, page: page);
+
+~apc.setMixerEncodersMonitorFunc(\cmixsend1, {
+  ~apc.setMixerEncoderValue(5, ~prm.cmix.sendVol(2, 0).dbfsCC); }, bank: send0, page: page);
+~apc.setMixerEncodersMonitorFunc(\cmixsend2, {
+  ~apc.setMixerEncoderValue(5, ~prm.cmix.sendVol(2, 1).dbfsCC); }, bank: send1, page: page);
+~apc.setMixerEncodersMonitorFunc(\cmixsend3, {
+  ~apc.setMixerEncoderValue(5, ~prm.cmix.sendVol(2, 2).dbfsCC); }, bank: send2, page: page);
+~apc.setMixerEncodersMonitorFunc(\cmixsend4, {
+  ~apc.setMixerEncoderValue(5, ~prm.cmix.sendVol(2, 3).dbfsCC); }, bank: send3, page: page);
+
+~apc.setMixerEncoderFunc(5, { | val | ~prm.cmix.setSendVol(2, 0, val.ccdbfs); }, bank: send0, page: page);
+~apc.setMixerEncoderFunc(5, { | val | ~prm.cmix.setSendVol(2, 1, val.ccdbfs); }, bank: send1, page: page);
+~apc.setMixerEncoderFunc(5, { | val | ~prm.cmix.setSendVol(2, 2, val.ccdbfs); }, bank: send2, page: page);
+~apc.setMixerEncoderFunc(5, { | val | ~prm.cmix.setSendVol(2, 3, val.ccdbfs); }, bank: send3, page: page);

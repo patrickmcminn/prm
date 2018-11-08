@@ -113,6 +113,75 @@ var send3 = 3;
 // volume:
 ~apc.setFaderFunc(4, { | val | ~meaning.returns.setVol(1, val.ccdbfs); }, page: page);
 
+//////////////////////
+////// Modular //////
+////////////////////
+
+~apc.setMixerMonitorFunc(\cMixModular, {
+  if( ~prm.cmix.isMuted(2),
+    { ~apc.turnTrackSelectButtonOff(5) }, { ~apc.turnTrackSelectButtonOn(5) });
+  if( ~prm.cmix.preOrPost(2) == 'post',
+    { ~apc.turnCrossfaderSelectButtonOrange(5) }, { ~apc.turnCrossfaderSelectButtonYellow(5) });
+}, page: page);
+~apc.setTrackSelectFunc(5, { ~prm.cmix.tglMute(2) }, page: page);
+~apc.setCrossfaderSelectFunc(5, {
+  if( ~prm.cmix.preOrPost(2) == 'post',
+    { ~prm.cmix.setSendPre(2); }, { ~prm.cmix.setSendPost(2) });
+}, page: page);
+~apc.setFaderFunc(5, { | val |
+  ~prm.cmix.setVol(2, val.ccdbfs);
+}, page: page);
+
+~apc.setMixerEncodersMonitorFunc(\cmixsend1, {
+  ~apc.setMixerEncoderValue(5, ~prm.cmix.sendVol(2, 0).dbfsCC); }, bank: send0, page: page);
+~apc.setMixerEncodersMonitorFunc(\cmixsend2, {
+  ~apc.setMixerEncoderValue(5, ~prm.cmix.sendVol(2, 1).dbfsCC); }, bank: send1, page: page);
+~apc.setMixerEncodersMonitorFunc(\cmixsend3, {
+  ~apc.setMixerEncoderValue(5, ~prm.cmix.sendVol(2, 2).dbfsCC); }, bank: send2, page: page);
+~apc.setMixerEncodersMonitorFunc(\cmixsend4, {
+  ~apc.setMixerEncoderValue(5, ~prm.cmix.sendVol(2, 3).dbfsCC); }, bank: send3, page: page);
+
+
+~apc.setMixerEncoderFunc(5, { | val | ~prm.cmix.setSendVol(2, 0, val.ccdbfs); }, bank: send0, page: page);
+~apc.setMixerEncoderFunc(5, { | val | ~prm.cmix.setSendVol(2, 1, val.ccdbfs); }, bank: send1, page: page);
+~apc.setMixerEncoderFunc(5, { | val | ~prm.cmix.setSendVol(2, 2, val.ccdbfs); }, bank: send2, page: page);
+~apc.setMixerEncoderFunc(5, { | val | ~prm.cmix.setSendVol(2, 3, val.ccdbfs); }, bank: send3, page: page);
+
+//////////////////////
+////// Moog //////
+////////////////////
+
+~apc.setMixerMonitorFunc(\cMixModular, {
+  if( ~prm.cmix.isMuted(3),
+    { ~apc.turnTrackSelectButtonOff(6) }, { ~apc.turnTrackSelectButtonOn(6) });
+  if( ~prm.cmix.preOrPost(3) == 'post',
+    { ~apc.turnCrossfaderSelectButtonOrange(6) }, { ~apc.turnCrossfaderSelectButtonYellow(6) });
+}, page: page);
+~apc.setTrackSelectFunc(6, { ~prm.cmix.tglMute(3) }, page: page);
+~apc.setCrossfaderSelectFunc(6, {
+  if( ~prm.cmix.preOrPost(3) == 'post',
+    { ~prm.cmix.setSendPre(3); }, { ~prm.cmix.setSendPost(3) });
+}, page: page);
+~apc.setFaderFunc(6, { | val |
+  ~prm.cmix.setVol(3, val.ccdbfs);
+}, page: page);
+
+~apc.setMixerEncodersMonitorFunc(\cmixmoogsend1, {
+  ~apc.setMixerEncoderValue(6, ~prm.cmix.sendVol(3, 0).dbfsCC); }, bank: send0, page: page);
+~apc.setMixerEncodersMonitorFunc(\cmixmoogsend2, {
+  ~apc.setMixerEncoderValue(6, ~prm.cmix.sendVol(3, 1).dbfsCC); }, bank: send1, page: page);
+~apc.setMixerEncodersMonitorFunc(\cmixmoogsend3, {
+  ~apc.setMixerEncoderValue(6, ~prm.cmix.sendVol(3, 2).dbfsCC); }, bank: send2, page: page);
+~apc.setMixerEncodersMonitorFunc(\cmixmoogsend4, {
+  ~apc.setMixerEncoderValue(6, ~prm.cmix.sendVol(3, 3).dbfsCC); }, bank: send3, page: page);
+
+
+~apc.setMixerEncoderFunc(6, { | val | ~prm.cmix.setSendVol(3, 0, val.ccdbfs); }, bank: send0, page: page);
+~apc.setMixerEncoderFunc(6, { | val | ~prm.cmix.setSendVol(3, 1, val.ccdbfs); }, bank: send1, page: page);
+~apc.setMixerEncoderFunc(6, { | val | ~prm.cmix.setSendVol(3, 2, val.ccdbfs); }, bank: send2, page: page);
+~apc.setMixerEncoderFunc(6, { | val | ~prm.cmix.setSendVol(3, 3, val.ccdbfs); }, bank: send3, page: page);
+
+
 
 /////// incidentals:
 

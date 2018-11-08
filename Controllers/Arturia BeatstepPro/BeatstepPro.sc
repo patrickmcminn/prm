@@ -13,6 +13,8 @@ BeatstepPro  {
   var midiInPort, midiOutPort;
   var <sequencer1Channel, <sequencer2Channel, <drumChannel, <controlChannel;
 
+  var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
+
   var <sequencer1Dict, <sequencer2Dict, <drumSequencerDict;
   var <sequencerClock, <tempo, <beats;
 
@@ -143,34 +145,24 @@ BeatstepPro  {
   prFreeControlButtonFuncArray { controlButtonFuncArray.do({ | f | f.free; }); }
 
   prMakeControlResponders {
-    //this.prMakeSequencer1EncoderFuncArray;
-    //this.prMakeSequencer2EncoderFuncArray;
-    //this.prMakeDrumEncoderFuncArray;
-    this.prMakeControlEncoderFuncArray;
-  }
-
-  prFreeControlResponders {
-    //this.prFreeSequencer1EncoderFuncArray;
-    //this.prFreeSequencer2EncoderFuncArray;
-    //this.prFreeDrumEncoderFuncArray;
-    this.prFreeControlEncoderFuncArray;
-  }
-
-  prMakeControlEncoderFuncArray {
     controlEncoderFuncArray = Array.fill(16, { nil });
     controlEncoderFuncArray.do({ | num |
       controlEncoderFuncArray[num] = MIDIFunc({ }, num + 16, controlChannel, \control, midiInPort.uid).fix;
     });
   }
 
-  prFreeControlEncoderFuncArray { controlEncoderFuncArray.do({ | f | f.free; }); }
+  prFreeControlResponders { controlEncoderFuncArray.do({ | f | f.free; }); }
 
+
+  ///// this won't work until it also re-writes all of the MIDI funcs
+  /*
   prSetSequencerChannels { | seq1Chan = 1, seq2Chan = 2, drumChan = 10, controlChan = 3 |
     this.setSequencer1Channel(seq1Chan);
     this.setSequencer2Channel(seq2Chan);
     this.setDrumChannel(drumChan);
     this.setControlChannel(controlChan);
   }
+
 
   setSequencer1Channel { | channel = 1 |
     var midiChan = channel-1;
@@ -189,7 +181,33 @@ BeatstepPro  {
     controlChannel = midiChan;
   }
 
+  */
+
+  /////// pages:
+  prMakePageDictionary {
+    pageDict = IdentityDictionary.new;
+    this.makePage('main');
+    activePage = pageDict['main'];
+    this.setPage('main');
+  }
+
+  makePage { | name = 'newPage' |
+    pageDict[name] = BeatstepPro_Page.new;
+  }
 
 
+  setPage { | name = 'page' |
+    activePage.offLoadFunctionDict.do({ | func | func.value; });
+
+    previousPage = activePageKey;
+    activePageKey = name;
+    activePage = pageDict[activePageKey];
+
+    ///// load all functions onto page:
+
+
+    // page load function:
+    activePage.loadFunctionDict.do({ | func | func.value; });
+  }
 }
 

@@ -13,7 +13,7 @@ prm
   prSetAllSequencer1ButtonFuncs {
     84.do({ | func |
       this.prSetSequencer1ButtonFunc(func, 'noteOn');
-      this.prSetSequencer1ButtonFunc(func, 'noteOn');
+      this.prSetSequencer1ButtonFunc(func, 'noteOff');
     });
   }
   prSetSequencer1ButtonFunc { | num = 24, type = 'noteOn' |
@@ -34,7 +34,7 @@ prm
   prSetAllSequencer2ButtonFuncs {
     84.do({ | func |
       this.prSetSequencer2ButtonFunc(func, 'noteOn');
-      this.prSetSequencer2ButtonFunc(func, 'noteOn');
+      this.prSetSequencer2ButtonFunc(func, 'noteOff');
     });
   }
   prSetSequencer2ButtonFunc { | num = 24, type = 'noteOn' |
@@ -52,13 +52,35 @@ prm
     this.prSetSequencer1ButtonFunc(num, type);
   }
 
+  prSetAllDrumButtonFuncs {
+    16.do({ | func |
+      this.prSetDrumButtonFunc(func, 'noteOn');
+      this.prSetDrumButtonFunc(func, 'noteOff');
+    });
+  }
+  prSetDrumButtonFunc { | button = 1, type = 'noteOn' |
+    var index = button -1;
+    switch(type,
+      { 'noteOn' },
+      { drumButtonFuncArray[0][index].prFunc_(activePage.getDrumButtonFunc(index, 'noteOn')) },
+      { 'noteOff' },
+      { drumButtonFuncArray[1][index].prFunc_(activePage.getDrumButtonFunc(index, 'noteOff')) }
+    );
+  }
+  setDrumFunc { | button = 1, func, type = 'noteOn', bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    pageDict[page].setDrumFunc(button, func, type, bank);
+    this.prSetDrumButtonFunc(button, type);
+  }
+
   prSetAllControlButtonFuncs {
     16.do({ | func |
       this.prSetControlButtonFunc(func, 'noteOn');
       this.prSetControlButtonFunc(func, 'noteOff');
     });
   }
-  prSetControlButtonFunc { | num = 0, type = 'noteOn' |
+  prSetControlButtonFunc { | button = 1, type = 'noteOn' |
+    var num = button - 1;
     switch(type,
       { 'noteOn' },
       { controlButtonFuncArray[0][num].prFunc_(activePage.getControlButtonFunc(num, 'noteOn')) },
@@ -66,17 +88,23 @@ prm
       { controlButtonFuncArray[1][num].prFunc_(activePage.getControlButtonFunc(num, 'noteOff')) }
     );
   }
-  setControlButtonFunc { | num = 0, func, type = 'noteOn', bank = 'active', page = 'active' |
+  setControlButtonFunc { | button = 1, func, type = 'noteOn', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].setControlButtonFunc(num, func, type, bank);
-    this.prSetControlButtonFunc(num, type);
+    pageDict[page].setControlButtonFunc(button, func, type, bank);
+    this.prSetControlButtonFunc(button, type);
   }
 
   prSetAllControlEncoderFuncs {
     16.do({ | func | this.prSetControlEncoderFunc(func) });
   }
-  prSetControlEncoderFunc { |num = 0, func |
-
+  prSetControlEncoderFunc { | encoder = 1 |
+    var num = encoder - 1;
+    controlEncoderFuncArray[num].prFunc_(activePage.getControlEncoderFunc(num));
+  }
+  setControlEncoderFunc { | encoder = 1, func, bank = 'active', page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    pageDict[page].setControlEncoderFunc(encoder, func, bank);
+    this.prSetControlEncoderFunc(encoder);
   }
 
 }

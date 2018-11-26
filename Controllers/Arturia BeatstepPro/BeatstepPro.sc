@@ -15,6 +15,8 @@ BeatstepPro  {
 
   var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
 
+  var <activeSequencer1Bank = 0, <activeSequencer2Bank = 0, <activeDrumBank = 0, <activeControlBank = 0;
+
   var <sequencer1Dict, <sequencer2Dict, <drumSequencerDict;
   var <sequencerClock, <tempo, <beats;
 
@@ -204,7 +206,10 @@ BeatstepPro  {
     activePage = pageDict[activePageKey];
 
     ///// load all functions onto page:
-
+    this.prSetAllSequencer1ButtonFuncs;
+    this.prSetAllSequencer2ButtonFuncs;
+    this.prSetAllDrumButtonFuncs;
+    this.prSetAllControlEncoderFuncs;
 
     // page load function:
     activePage.loadFunctionDict.do({ | func | func.value; });

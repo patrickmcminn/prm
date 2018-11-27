@@ -93,7 +93,7 @@ BeatstepPro  {
   prMakeSequencer1ButtonFuncArray {
     // slot 0 is for note on funcs:
     // slot 1 is for note off funcs:
-    sequencer1ButtonFuncArray = Array.fill2D(2, 128, { nil });
+    sequencer1ButtonFuncArray = Array.fill2D(2, 84, { nil });
     84.do({ | num |
       sequencer1ButtonFuncArray[0][num] = MIDIFunc({ }, num + 24, sequencer1Channel, \noteOn, midiInPort.uid).fix;
     });
@@ -107,7 +107,7 @@ BeatstepPro  {
   prMakeSequencer2ButtonFuncArray {
     // slot 0 is for note on funcs:
     // slot 1 is for note off funcs:
-    sequencer2ButtonFuncArray = Array.fill2D(2, 128, { nil });
+    sequencer2ButtonFuncArray = Array.fill2D(2, 84, { nil });
     84.do({ | num |
       sequencer2ButtonFuncArray[0][num] = MIDIFunc({ }, num + 24, sequencer2Channel, \noteOn, midiInPort.uid).fix;
     });

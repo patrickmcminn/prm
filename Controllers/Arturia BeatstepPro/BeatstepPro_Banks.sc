@@ -43,4 +43,20 @@ prm
     activeSequencer2Bank = activePage.activeSequencer2Bank;
   }
 
+  setActiveDrumBank { | bank = 0, page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    pageDict[page].setActiveDrumBank(bank);
+    this.prSetAllDrumButtonFuncs;
+    activeDrumBank = activePage.activeDrumBank;
+  }
+
+  setActiveControlBank { | bank = 0, page = 'active' |
+    if( page == 'active', { page = activePageKey });
+    pageDict[page].setActiveControlBank(bank);
+    this.prSetAllControlButtonFuncs;
+    this.prSetAllControlEncoderFuncs;
+    activeControlBank = activePage.activeControlBank;
+  }
+
+
 }

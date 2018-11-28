@@ -179,7 +179,7 @@ BeatstepPro_Page {
     });
   }
 
-  prSetControlEncoder { | num = 0, func |
+  prSetControlEncoderFunc { | num = 0, func |
     controlEncoderFuncArray[num] = func;
   }
 

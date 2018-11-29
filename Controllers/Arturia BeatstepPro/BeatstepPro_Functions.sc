@@ -11,9 +11,9 @@ prm
   ////////////////////////
 
   prSetAllSequencer1ButtonFuncs {
-    84.do({ | func |
-      this.prSetSequencer1ButtonFunc(func, 'noteOn');
-      this.prSetSequencer1ButtonFunc(func, 'noteOff');
+    84.do({ | num |
+      this.prSetSequencer1ButtonFunc(num+24, 'noteOn');
+      this.prSetSequencer1ButtonFunc(num+24, 'noteOff');
     });
   }
   prSetSequencer1ButtonFunc { | num = 24, type = 'noteOn' |
@@ -32,9 +32,9 @@ prm
   }
 
   prSetAllSequencer2ButtonFuncs {
-    84.do({ | func |
-      this.prSetSequencer2ButtonFunc(func, 'noteOn');
-      this.prSetSequencer2ButtonFunc(func, 'noteOff');
+    84.do({ | num |
+      this.prSetSequencer2ButtonFunc(num+24, 'noteOn');
+      this.prSetSequencer2ButtonFunc(num+24, 'noteOff');
     });
   }
   prSetSequencer2ButtonFunc { | num = 24, type = 'noteOn' |
@@ -49,13 +49,13 @@ prm
   setSequencer2Func { | num = 24, func, type = 'noteOn', bank = 'active', page = 'active' |
     if( page == 'active', { page = activePageKey });
     pageDict[page].setSequencer2Func(num, func, type, bank);
-    this.prSetSequencer1ButtonFunc(num, type);
+    this.prSetSequencer2ButtonFunc(num, type);
   }
 
   prSetAllDrumButtonFuncs {
-    16.do({ | func |
-      this.prSetDrumButtonFunc(func, 'noteOn');
-      this.prSetDrumButtonFunc(func, 'noteOff');
+    16.do({ | num |
+      this.prSetDrumButtonFunc(num+1, 'noteOn');
+      this.prSetDrumButtonFunc(num+1, 'noteOff');
     });
   }
   prSetDrumButtonFunc { | button = 1, type = 'noteOn' |
@@ -74,9 +74,9 @@ prm
   }
 
   prSetAllControlButtonFuncs {
-    16.do({ | func |
-      this.prSetControlButtonFunc(func, 'noteOn');
-      this.prSetControlButtonFunc(func, 'noteOff');
+    16.do({ | num |
+      this.prSetControlButtonFunc(num+1, 'noteOn');
+      this.prSetControlButtonFunc(num+1, 'noteOff');
     });
   }
   prSetControlButtonFunc { | button = 1, type = 'noteOn' |
@@ -95,7 +95,7 @@ prm
   }
 
   prSetAllControlEncoderFuncs {
-    16.do({ | func | this.prSetControlEncoderFunc(func) });
+    16.do({ | num | this.prSetControlEncoderFunc(num+1) });
   }
   prSetControlEncoderFunc { | encoder = 1 |
     var num = encoder - 1;

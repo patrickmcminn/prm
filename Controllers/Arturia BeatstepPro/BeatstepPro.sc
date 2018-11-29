@@ -25,7 +25,7 @@ BeatstepPro  {
 
   *new {
     |
-    deviceName = "Arturia BeatStep Pro", portName = "Arturia BeatStep Pro",
+    deviceName = "Arturia BeatStep Pro", portName = "Arturia BeatStepPro",
     sequencer1Chan = 1, sequencer2Chan = 2, drumChan = 10, controlChan = 3
     |
     ^super.new.prInit(deviceName, portName, sequencer1Chan, sequencer2Chan, drumChan, controlChan);
@@ -33,7 +33,7 @@ BeatstepPro  {
 
   prInit {
     |
-    deviceName = "Arturia BeatStep Pro", portName = "Arturia BeatStep Pro",
+    deviceName = "Arturia BeatStep Pro", portName = "Arturia BeatStepPro",
     sequencer1Chan = 1, sequencer2Chan = 2, drumChan = 10, controlChan = 3
     |
     server = Server.default;
@@ -42,7 +42,12 @@ BeatstepPro  {
 
       this.prInitMIDI(deviceName, portName);
       //// MIDI Section:
-      this.prSetSequencerChannels(sequencer1Chan, sequencer2Chan, drumChan, controlChan);
+      //this.prSetSequencerChannels(sequencer1Chan, sequencer2Chan, drumChan, controlChan);
+      sequencer1Channel = 0;
+      sequencer2Channel = 1;
+      controlChannel = 2;
+      drumChannel = 9;
+
       this.prMakeResponders;
       this.prMakePageDictionary;
 
@@ -53,7 +58,7 @@ BeatstepPro  {
       sequencerClock = TempoClock.new;
       server.sync;
 
-      this.prMakeSyncSequence;
+      //this.prMakeSyncSequence;
 
       isLoaded = true;
     }
@@ -148,7 +153,7 @@ BeatstepPro  {
 
   prMakeControlResponders {
     controlEncoderFuncArray = Array.fill(16, { nil });
-    controlEncoderFuncArray.do({ | num |
+    16.do({ | num |
       controlEncoderFuncArray[num] = MIDIFunc({ }, num + 16, controlChannel, \control, midiInPort.uid).fix;
     });
   }

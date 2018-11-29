@@ -33,21 +33,21 @@ prm
     if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveSequencer1Bank(bank);
     this.prSetAllSequencer1ButtonFuncs;
-    activeSequencer1Bank = activePage.activeSequencer1Bank;
+    activeSequencer1Bank = activePage.activeSequencer1Bnk;
   }
 
   setActiveSequencer2Bank { | bank = 0, page = 'active' |
     if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveSequencer2Bank(bank);
     this.prSetAllSequencer2ButtonFuncs;
-    activeSequencer2Bank = activePage.activeSequencer2Bank;
+    activeSequencer2Bank = activePage.activeSequencer2Bnk;
   }
 
   setActiveDrumBank { | bank = 0, page = 'active' |
     if( page == 'active', { page = activePageKey });
     pageDict[page].setActiveDrumBank(bank);
     this.prSetAllDrumButtonFuncs;
-    activeDrumBank = activePage.activeDrumBank;
+    activeDrumBank = activePage.activeDrumBnk;
   }
 
   setActiveControlBank { | bank = 0, page = 'active' |
@@ -55,7 +55,7 @@ prm
     pageDict[page].setActiveControlBank(bank);
     this.prSetAllControlButtonFuncs;
     this.prSetAllControlEncoderFuncs;
-    activeControlBank = activePage.activeControlBank;
+    activeControlBank = activePage.activeControlBnk;
   }
 
 

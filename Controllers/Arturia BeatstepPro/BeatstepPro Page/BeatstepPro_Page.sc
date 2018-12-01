@@ -109,8 +109,8 @@ BeatstepPro_Page {
     if( bank == 'active', { bankSelect = activeSequencer1Bnk }, { bankSelect = bank });
     if( index > 84, { ^"Out of Range!" }, {
       switch(type,
-        \noteOn, { sequencer1BankArray[bankSelect][num][0] = func; },
-        \noteOff, { sequencer1BankArray[bankSelect][num][1] = func; }
+        \noteOn, { sequencer1BankArray[bankSelect][index][0] = func; },
+        \noteOff, { sequencer1BankArray[bankSelect][index][1] = func; }
       );
       if( bank == 'active', { this.prSetSequencer1Func(index, type, func); });
     });
@@ -130,8 +130,8 @@ BeatstepPro_Page {
     if( bank == 'active', { bankSelect = activeSequencer2Bnk }, { bankSelect = bank });
     if( index > 84, { ^"Out of Range!" }, {
       switch(type,
-        \noteOn, { sequencer2BankArray[bankSelect][num][0] = func; },
-        \noteOff, { sequencer2BankArray[bankSelect][num][1] = func; }
+        \noteOn, { sequencer2BankArray[bankSelect][index][0] = func; },
+        \noteOff, { sequencer2BankArray[bankSelect][index][1] = func; }
       );
       if( bank == 'active', { this.prSetSequencer2Func(index, type, func); });
     });
@@ -149,12 +149,13 @@ BeatstepPro_Page {
     var index = num-1;
     if( bank == activeDrumBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeDrumBnk }, { bankSelect = bank });
+    bankSelect.postln;
     if( index > 15, { ^"Out of Range!" }, {
       switch(type,
-        \noteOn, { drumBankArray[bankSelect][num][0] = func; },
-        \noteOff, { drumBankArray[bankSelect][num][1] = func; }
+        \noteOn, { drumBankArray[bankSelect][index][0] = func; num.postln; },
+        \noteOff, { drumBankArray[bankSelect][index][1] = func; }
       );
-      if( bank == 'active', { this.prSetDrumButtonFunc(index, type, func); });
+      if( bank == 'active', { this.prSetDrumButtonFunc(index, type, func); "this posted".postln; });
     });
   }
 
@@ -172,8 +173,8 @@ BeatstepPro_Page {
     if( bank == 'active', { bankSelect = activeControlBnk }, { bankSelect = bank });
     if( index > 15, { ^"Out of Range!" }, {
       switch(type,
-        \noteOn, { controlBankArray[bankSelect][0][num][0] = func; },
-        \noteOff, { controlBankArray[bankSelect][0][num][1] = func; }
+        \noteOn, { controlBankArray[bankSelect][0][index][0] = func; },
+        \noteOff, { controlBankArray[bankSelect][0][index][1] = func; }
       );
       if( bank == 'active', { this.prSetControlButtonFunc(index, func); });
     });
@@ -189,7 +190,7 @@ BeatstepPro_Page {
     if( bank == activeControlBnk, { bank = 'active' });
     if( bank == 'active', { bankSelect = activeControlBnk }, { bankSelect = bank });
     if( index > 15, { ^"Out of Range!" }, {
-      controlBankArray[bankSelect][1][num][0] = func;
+      controlBankArray[bankSelect][1][index][0] = func;
       if( bank == 'active', { this.prSetControlEncoderFunc(index, func); });
     });
   }

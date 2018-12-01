@@ -10,22 +10,22 @@ prm
 
   addSequencer1Banks { | numBanks = 1, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].addSequencer1Banks;
+    pageDict[page].addSequencer1Banks(numBanks);
   }
 
   addSequencer2Banks { | numBanks = 1, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].addSequencer2Banks;
+    pageDict[page].addSequencer2Banks(numBanks);
   }
 
   addDrumBanks { | numBanks = 1, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].addDrumBanks;
+    pageDict[page].addDrumBanks(numBanks);
   }
 
   addControlBanks { | numBanks = 1, page = 'active' |
     if( page == 'active', { page = activePageKey });
-    pageDict[page].addControlBanks;
+    pageDict[page].addControlBanks(numBanks);
   }
 
   //////// setting banks:
@@ -58,5 +58,10 @@ prm
     activeControlBank = activePage.activeControlBnk;
   }
 
+  //////// num banks:
+  numSequencer1Banks { ^activePage.numSequencer1Banks }
+  numSequencer2Banks { ^activePage.numSequencer2Banks }
+  numDrumBanks { ^activePage.numDrumBanks }
+  numControlBanks { ^activePage.numControlBanks }
 
 }

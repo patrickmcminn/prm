@@ -29,6 +29,13 @@ prm
 		sequencer1Dict[name].play(playClock, quant);
 	}
 
+  resetSeq1Sequence { | name | sequencer1Dict[name].reset; }
+  stopSeq1Sequence { | name | sequencer1Dict[name].stop; }
+  pauseSeq1Sequence { | name | sequencer1Dict[name].pause }
+  resumeSeq1Sequence { | name | sequencer1Dict[name].resume; }
+  isSeq1SequencePlaying { | name | ^sequencer1Dict[name].isPlaying }
+  setSeq1SequenceQuant { | name, quant = 0 | sequencer1Dict[name].setQuant(quant) }
+
 	makeSeq2Sequence { |name |
 		{
 			sequencer2Dict[name] = IM_PatternSeq.new;
@@ -51,6 +58,13 @@ prm
 		sequencer2Dict[name].play(playClock, quant);
 	}
 
+  resetSeq2Sequence { | name | sequencer2Dict[name].reset; }
+  stopSeq2Sequence { | name | sequencer2Dict[name].stop; }
+  pauseSeq2Sequence { | name | sequencer2Dict[name].pause }
+  resumeSeq2Sequence { | name | sequencer2Dict[name].resume; }
+  isSeq2SequencePlaying { | name | ^sequencer2Dict[name].isPlaying }
+  setSeq2SequenceQuant { | name, quant = 0 | sequencer2Dict[name].setQuant(quant) }
+
 	makeDrumSequence { |name |
 		{
 			drumSequencerDict[name] = IM_PatternSeq.new;
@@ -63,6 +77,13 @@ prm
 		}.fork;
 	}
 
+  resetSeq1Sequence { | name | sequencer1Dict[name].reset; }
+  stopSeq1Sequence { | name | sequencer1Dict[name].stop; }
+  pauseSeq1Sequence { | name | sequencer1Dict[name].pause }
+  resumeSeq1Sequence { | name | sequencer1Dict[name].resume; }
+  isSeq1SequencePlaying { | name | ^sequencer1Dict[name].isPlaying }
+  setSeq1SequenceQuant { | name, quant = 0 | sequencer1Dict[name].setQuant(quant) }
+
 	addDrumKey { | name, key, action |
 		drumSequencerDict[name].addKey(key, action);
 	}
@@ -72,6 +93,13 @@ prm
 		if( clock == 'internal', { playClock = sequencerClock }, { playClock = clock });
 		drumSequencerDict[name].play(playClock, quant);
 	}
+
+  resetDrumSequence { | name | drumSequencerDict[name].reset; }
+  stopDrumSequence { | name | drumSequencerDict[name].stop; }
+  pauseDrumSequence { | name | drumSequencerDict[name].pause }
+  resumeDrumSequence { | name | drumSequencerDict[name].resume; }
+  isDrumSequencePlaying { | name | ^drumSequencerDict[name].isPlaying }
+  setDrumSequenceQuant { | name, quant = 0 | drumSequencerDict[name].setQuant(quant) }
 
 	setSequencerClockTempo { | bpm = 60 |
 		var bps = bpm/60;

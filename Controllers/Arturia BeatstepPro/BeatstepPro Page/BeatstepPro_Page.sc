@@ -88,7 +88,7 @@ BeatstepPro_Page {
   }
 
   getControlEncoderFunc { | num |
-    ^controlButtonFuncArray[num];
+    ^controlEncoderFuncArray[num];
   }
 
   ////////////////////////////////
@@ -176,7 +176,7 @@ BeatstepPro_Page {
         \noteOn, { controlBankArray[bankSelect][0][index][0] = func; },
         \noteOff, { controlBankArray[bankSelect][0][index][1] = func; }
       );
-      if( bank == 'active', { this.prSetControlButtonFunc(index, func); });
+      if( bank == 'active', { this.prSetControlButtonFunc(index, type, func); });
     });
   }
 

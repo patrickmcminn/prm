@@ -21,7 +21,7 @@ BeatstepPro  {
   var <sequencerClock, <tempo, <beats;
 
   var sequencer1ButtonFuncArray, sequencer2ButtonFuncArray, drumButtonFuncArray, controlButtonFuncArray;
-  var sequencer1EncoderFuncArray, sequencer2EncoderFuncArray, drumEncoderFuncArray, controlEncoderFuncArray;
+  var <controlEncoderFuncArray;
 
   *new {
     |

@@ -132,6 +132,7 @@ Control Bank Arrays:
 
 	setActiveControlBank { | bank = 0 |
 		activeControlBnk = bank;
+    activeControlBnk.postln;
 		16.do({ | index |
 			this.prSetControlButtonFunc(index, 'noteOn',
 				controlBankArray[activeControlBnk][0][index][0]);

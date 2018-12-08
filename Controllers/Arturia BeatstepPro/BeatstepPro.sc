@@ -17,7 +17,7 @@ BeatstepPro  {
 
   var <activeSequencer1Bank = 0, <activeSequencer2Bank = 0, <activeDrumBank = 0, <activeControlBank = 0;
 
-  var <sequencer1Dict, <sequencer2Dict, <drumSequencerDict;
+  var <sequencer1Dict, <sequencer2Dict, <drumSequencerDict, <syncSequencerDict;
   var <sequencerClock, <tempo, <beats;
 
   var sequencer1ButtonFuncArray, sequencer2ButtonFuncArray, drumButtonFuncArray, controlButtonFuncArray;
@@ -55,6 +55,7 @@ BeatstepPro  {
       sequencer1Dict = IdentityDictionary.new;
       sequencer2Dict = IdentityDictionary.new;
       drumSequencerDict = IdentityDictionary.new;
+      syncSequencerDict = IdentityDictionary.new;
       sequencerClock = TempoClock.new;
       server.sync;
 

@@ -64,7 +64,7 @@ prm
     pageDict[page].setActiveSceneLaunchBank(bank);
     this.prSetAllSceneLaunchFuncs;
     this.prSetAllSceneLaunchColors;
-    activeSceneLaunchBank = activePage.activeSceneLauncBnk;
+    activeSceneLaunchBank = activePage.activeSceneLaunchBnk;
   }
 
   setActiveClipStopBank { | bank = 0, page = 'active' |

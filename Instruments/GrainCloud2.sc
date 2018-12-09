@@ -13,34 +13,40 @@ prm
 // this class is specifically for 12tet grainclouds
 // using a more traditional keyboard layout
 
-GrainCloud2 {
+GrainCloud2 : IM_Module {
 
-  var server, group, cloudGroup, envGroup;
+  var <isLoaded;
+  var server, cloudGroup, envGroup;
   var cloudPatternArray, cloudEnvArray, cloudBusArray;
   var faderBus, faderSynth, output;
 
   var <instArray, <playingArray;
-  var <trigRateLow, <trigRateHigh, sustainLow, sustainHigh, ampLow, ampHigh, cutoffLow, cutoffHigh, rqLow, rqHigh, panLow, panHigh;
-  var attack, release;
+  var <trigRateLow, <trigRateHigh, <sustainLow, <sustainHigh, <ampLow, <ampHigh;
+  var <cutoffLow, <cutoffHigh, <rqLow, <rqHigh, <panLow, <panHigh;
+  var <attack, <release;
+
+  var <ampdist,  <durdist,  <adparam,  <ddparam;
+  var <ampscale, <durscale,  <knum;
 
   // temp:
   var cloudPattern;
 
-  *new { | outBus = 0, amp = 0.5, balance = 0, relGroup = nil, addAction = \addToTail |
-    ^super.new.prInit(outBus, amp, balance, relGroup, addAction);
+  *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = \addToHead |
+    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
   }
 
-  prInit { | output = 0, amp, balance, relGroup = nil, addAction = \addToTail |
+  prInit {
     server = Server.default;
     server.waitForBoot{
+      isLoaded = false;
       this.prAddSynthDefs;
       server.sync;
-      this.prMakeGroups(relGroup, addAction);
+      this.prMakeGroups;
       this.prMakeParameters;
       this.prMakePatternArray;
       this.prMakeBusses;
       server.sync;
-      this.prMakeSynth(output, amp, balance);
+      isLoaded = true;
     }
   }
 
@@ -181,9 +187,13 @@ GrainCloud2 {
       }, \ir ! 5).add;
 
     SynthDef(\gaborGendy, {
-      | outBus, amp = 0.1, freq = 440, sustain = 0.01, pan = 0, cutoff = 5000, rq = 1 |
+      |
+      outBus, amp = 0.1, freq = 440, sustain = 0.01, pan = 0, cutoff = 5000, rq = 1,
+      ampdist = 1, durdist = 1, adparam = 1, ddparam = 1, ampscale = 0.5, durscale = 0.5, knum = 12
+      |
       var snd, filter, amp2, env;
-      snd = Gendy3.ar(1, 1, 1, 1, freq, 0.5, 0.5, 12);
+      snd = Gendy3.ar(ampdist, durdist, adparam, ddparam, freq, ampscale, durscale, 12, knum);
+      //snd = Gendy3.ar(1, 1, 1, 1, freq, 0.5, 0.5, 12);
       filter = RLPF.ar(snd, cutoff, rq);
       amp2 = amp * AmpComp.ir(freq.max(50)) * 0.5;
       env = EnvGen.ar(Env.sine(sustain, amp2), doneAction: 2);
@@ -200,27 +210,17 @@ GrainCloud2 {
       Out.ar(outBus, sig);
     }).add;
 
-    SynthDef(\PRM_stereoFader, {
-      | inBus, outBus, amp = 0.6, balance = 0, mute = 1 |
-      var input, bal, sig;
-      var lagTime = 0.05;
-      input = In.ar(inBus, 2);
-      bal = Balance2.ar(input[0], input[1], balance, amp.lag(lagTime));
-      sig = input * amp;
-      sig = sig * mute;
-      sig = Out.ar(outBus, sig);
-    }).add;
-
   }
 
-  prMakeGroups { | relGroup = nil, addAction = \addToTail |
-    group = Group.new(relGroup, addAction);
-    cloudGroup = Group.new(group, \addToTail);
-    envGroup = Group.new(group, \addToTail);
+  prMakeGroups {
+    //group = Group.new(relGroup, addAction);
+    envGroup = Group.new(group, \addToHead);
+    cloudGroup = Group.new(group, \addToHead);
+
   }
 
   prFreeGroups {
-    group.free;
+    //group.free;
     cloudGroup.free;
     envGroup.free;
   }
@@ -247,6 +247,8 @@ GrainCloud2 {
     panHigh = 1;
     attack = 0.05;
     release = 0.05;
+    ampdist = 1; durdist = 1; adparam = 1; ddparam = 1;
+    ampscale = 0.5; durscale = 0.5; knum = 12;
   }
 
   prMakeBusses {
@@ -257,14 +259,6 @@ GrainCloud2 {
   prFreeBusses {
     cloudBusArray.do({ | bus | bus.free; });
     faderBus.free;
-  }
-
-  prMakeSynth { | outBus = 0, amp = 0.5, balance = 0 |
-    faderSynth = Synth(\PRM_stereoFader, [\inBus, faderBus, \outBus, outBus, \amp, amp, \balance, balance], group, \addToTail);
-  }
-
-  prFreeSynth {
-    faderSynth.free;
   }
 
   prMakePatternArray {
@@ -294,20 +288,7 @@ GrainCloud2 {
     cloudPatternArray.do({ | pattern | pattern.stop; });
     instArray = instArray.drop(instArray.size);
     instArray = nil;
-    this.prFreeSynth;
     this.prFreeBusses;
-  }
-
-  setAmp { | amp |
-    faderSynth.set(\amp, amp);
-  }
-
-  setVol { | vol |
-    faderSynth.set(\amp, vol.dbamp);
-  }
-
-  setBalance { | balance = 0 |
-    faderSynth.set(\balance, balance);
   }
 
   setAttack { | atk = 0.05 |
@@ -339,7 +320,8 @@ GrainCloud2 {
 
   addNote { | note |
     playingArray[note] = true;
-    cloudEnvArray[note] = Synth(\PRM_stereoEnv, [\inBus, cloudBusArray[note], \outBus, faderBus, \attack, attack, \release, release],
+    cloudEnvArray[note] = Synth(\PRM_stereoEnv,
+      [\inBus, cloudBusArray[note], \outBus, mixer.chanStereo(0), \attack, attack, \release, release],
       envGroup, \addToTail);
     cloudPatternArray[note] = Pbind(
       \outBus, cloudBusArray[note],
@@ -347,7 +329,7 @@ GrainCloud2 {
       \addAction, \addToTail,
       \instrument, Prand(instArray, inf),
       \note, note,
-      \octave, 3,
+      \octave, 1,
       \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
       \sustain, Pwhite(sustainLow, sustainHigh, inf),
       \amp, Pwhite(ampLow, ampHigh, inf),
@@ -377,7 +359,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -400,7 +382,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -423,7 +405,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -451,7 +433,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -474,7 +456,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -502,7 +484,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -525,7 +507,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -553,7 +535,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -576,7 +558,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -604,7 +586,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -627,7 +609,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -655,7 +637,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),
@@ -678,7 +660,7 @@ GrainCloud2 {
             \addAction, \addToTail,
             \instrument, Prand(instArray, inf),
             \note, index,
-            \octave, 3,
+            \octave, 1,
             \dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
             \sustain, Pwhite(sustainLow, sustainHigh, inf),
             \amp, Pwhite(ampLow, ampHigh, inf),

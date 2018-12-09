@@ -13,15 +13,19 @@ BeatstepPro  {
   var midiInPort, midiOutPort;
   var <sequencer1Channel, <sequencer2Channel, <drumChannel, <controlChannel;
 
-  var <sequencer1Dict, <sequencer2Dict, <drumSequencerDict;
+  var <pageDict, <activePage, <activePageKey, <storageDict, <previousPage;
+
+  var <activeSequencer1Bank = 0, <activeSequencer2Bank = 0, <activeDrumBank = 0, <activeControlBank = 0;
+
+  var <sequencer1Dict, <sequencer2Dict, <drumSequencerDict, <syncSequencerDict;
   var <sequencerClock, <tempo, <beats;
 
   var sequencer1ButtonFuncArray, sequencer2ButtonFuncArray, drumButtonFuncArray, controlButtonFuncArray;
-  var sequencer1EncoderFuncArray, sequencer2EncoderFuncArray, drumEncoderFuncArray, controlEncoderFuncArray;
+  var <controlEncoderFuncArray;
 
   *new {
     |
-    deviceName = "Arturia BeatStep Pro", portName = "Arturia BeatStep Pro",
+    deviceName = "Arturia BeatStep Pro", portName = "Arturia BeatStepPro",
     sequencer1Chan = 1, sequencer2Chan = 2, drumChan = 10, controlChan = 3
     |
     ^super.new.prInit(deviceName, portName, sequencer1Chan, sequencer2Chan, drumChan, controlChan);
@@ -29,7 +33,7 @@ BeatstepPro  {
 
   prInit {
     |
-    deviceName = "Arturia BeatStep Pro", portName = "Arturia BeatStep Pro",
+    deviceName = "Arturia BeatStep Pro", portName = "Arturia BeatStepPro",
     sequencer1Chan = 1, sequencer2Chan = 2, drumChan = 10, controlChan = 3
     |
     server = Server.default;
@@ -37,29 +41,32 @@ BeatstepPro  {
       isLoaded = false;
 
       this.prInitMIDI(deviceName, portName);
+      //// MIDI Section:
+      //this.prSetSequencerChannels(sequencer1Chan, sequencer2Chan, drumChan, controlChan);
+      sequencer1Channel = 0;
+      sequencer2Channel = 1;
+      controlChannel = 2;
+      drumChannel = 9;
 
-      //// MIDI Section
-      this.prSetSequencerChannels(sequencer1Chan, sequencer2Chan, drumChan, controlChan);
       this.prMakeResponders;
-
       this.prMakePageDictionary;
 
       //// Sequences:
       sequencer1Dict = IdentityDictionary.new;
       sequencer2Dict = IdentityDictionary.new;
       drumSequencerDict = IdentityDictionary.new;
-
+      syncSequencerDict = IdentityDictionary.new;
       sequencerClock = TempoClock.new;
-
       server.sync;
 
-      this.prMakeSyncSequence;
+      //this.prMakeSyncSequence;
 
       isLoaded = true;
     }
   }
 
   prInitMIDI { | deviceName, portName |
+    MIDIIn.connectAll;
     midiInPort = MIDIIn.findPort(deviceName, portName);
     midiOutPort = MIDIOut.newByName(deviceName, portName);
     midiOutPort.latency = 0;
@@ -92,12 +99,12 @@ BeatstepPro  {
   prMakeSequencer1ButtonFuncArray {
     // slot 0 is for note on funcs:
     // slot 1 is for note off funcs:
-    sequencer1ButtonFuncArray = Array.fill2D(2, 128, { nil });
-    128.do({ | num |
-      sequencer1ButtonFuncArray[0][num] = MIDIFunc({ }, num, sequencer1Channel, \noteOn, midiInPort.uid).fix;
+    sequencer1ButtonFuncArray = Array.fill2D(2, 84, { nil });
+    84.do({ | num |
+      sequencer1ButtonFuncArray[0][num] = MIDIFunc({ }, num + 24, sequencer1Channel, \noteOn, midiInPort.uid).fix;
     });
-    128.do({ | num |
-      sequencer1ButtonFuncArray[1][num] = MIDIFunc({ }, num, sequencer1Channel, \noteOff, midiInPort.uid).fix;
+    84.do({ | num |
+      sequencer1ButtonFuncArray[1][num] = MIDIFunc({ }, num + 24, sequencer1Channel, \noteOff, midiInPort.uid).fix;
     });
   }
 
@@ -106,12 +113,12 @@ BeatstepPro  {
   prMakeSequencer2ButtonFuncArray {
     // slot 0 is for note on funcs:
     // slot 1 is for note off funcs:
-    sequencer2ButtonFuncArray = Array.fill2D(2, 128, { nil });
-    128.do({ | num |
-      sequencer2ButtonFuncArray[0][num] = MIDIFunc({ }, num, sequencer2Channel, \noteOn, midiInPort.uid).fix;
+    sequencer2ButtonFuncArray = Array.fill2D(2, 84, { nil });
+    84.do({ | num |
+      sequencer2ButtonFuncArray[0][num] = MIDIFunc({ }, num + 24, sequencer2Channel, \noteOn, midiInPort.uid).fix;
     });
-    128.do({ | num |
-      sequencer2ButtonFuncArray[1][num] = MIDIFunc({ }, num, sequencer2Channel, \noteOff, midiInPort.uid).fix;
+    84.do({ | num |
+      sequencer2ButtonFuncArray[1][num] = MIDIFunc({ }, num + 24, sequencer2Channel, \noteOff, midiInPort.uid).fix;
     });
   }
 
@@ -146,34 +153,24 @@ BeatstepPro  {
   prFreeControlButtonFuncArray { controlButtonFuncArray.do({ | f | f.free; }); }
 
   prMakeControlResponders {
-    //this.prMakeSequencer1EncoderFuncArray;
-    //this.prMakeSequencer2EncoderFuncArray;
-    //this.prMakeDrumEncoderFuncArray;
-    this.prMakeControlEncoderFuncArray;
-  }
-
-  prFreeControlResponders {
-    //this.prFreeSequencer1EncoderFuncArray;
-    //this.prFreeSequencer2EncoderFuncArray;
-    //this.prFreeDrumEncoderFuncArray;
-    this.prFreeControlEncoderFuncArray;
-  }
-
-  prMakeControlEncoderFuncArray {
     controlEncoderFuncArray = Array.fill(16, { nil });
-    controlEncoderFuncArray.do({ | num |
+    16.do({ | num |
       controlEncoderFuncArray[num] = MIDIFunc({ }, num + 16, controlChannel, \control, midiInPort.uid).fix;
     });
   }
 
-  prFreeControlEncoderFuncArray { controlEncoderFuncArray.do({ | f | f.free; }); }
+  prFreeControlResponders { controlEncoderFuncArray.do({ | f | f.free; }); }
 
+
+  ///// this won't work until it also re-writes all of the MIDI funcs
+  /*
   prSetSequencerChannels { | seq1Chan = 1, seq2Chan = 2, drumChan = 10, controlChan = 3 |
     this.setSequencer1Channel(seq1Chan);
     this.setSequencer2Channel(seq2Chan);
     this.setDrumChannel(drumChan);
     this.setControlChannel(controlChan);
   }
+
 
   setSequencer1Channel { | channel = 1 |
     var midiChan = channel-1;
@@ -192,7 +189,36 @@ BeatstepPro  {
     controlChannel = midiChan;
   }
 
+  */
+
+  /////// pages:
+  prMakePageDictionary {
+    pageDict = IdentityDictionary.new;
+    this.makePage('main');
+    activePage = pageDict['main'];
+    this.setPage('main');
+  }
+
+  makePage { | name = 'newPage' |
+    pageDict[name] = BeatstepPro_Page.new;
+  }
 
 
+  setPage { | name = 'page' |
+    activePage.offLoadFunctionDict.do({ | func | func.value; });
+
+    previousPage = activePageKey;
+    activePageKey = name;
+    activePage = pageDict[activePageKey];
+
+    ///// load all functions onto page:
+    this.prSetAllSequencer1ButtonFuncs;
+    this.prSetAllSequencer2ButtonFuncs;
+    this.prSetAllDrumButtonFuncs;
+    this.prSetAllControlEncoderFuncs;
+
+    // page load function:
+    activePage.loadFunctionDict.do({ | func | func.value; });
+  }
 }
 

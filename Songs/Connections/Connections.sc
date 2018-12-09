@@ -18,8 +18,8 @@ Connections : Song {
   var <clock;
 
   *new {
-    | mixAOutBus, mixBOutBus, mixCOutBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
-    ^super.new(mixAOutBus, 3, mixBOutBus, 2, mixCOutBus, 2, send0Bus, send1Bus, send2Bus, send3Bus, false,
+    | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
+    ^super.new(7, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
       relGroup, addAction).prInit;
   }
 
@@ -27,7 +27,7 @@ Connections : Song {
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
-      while({ try { mixerC.isLoaded } != true }, { 0.001.wait; });
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
       clock = TempoClock.new;
       server.sync;
@@ -39,10 +39,7 @@ Connections : Song {
       while({ try { noteRecordInput.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
-      mixerA.setMasterVol(-9);
-      mixerB.setMasterVol(-9);
-      mixerC.setMasterVol(-9);
-
+      mixer.setMasterVol(-9);
       isLoaded = true;
     }
   }
@@ -64,7 +61,7 @@ Connections : Song {
     if( try { airSputters.isLoaded } != true,
       {
        r {
-          airSputters = Connections_AirSputters.new(mixerA.chanStereo(0), clock, group, \addToHead);
+          airSputters = Connections_AirSputters.new(mixer.chanStereo(0), clock, group, \addToHead);
           while({ try { airSputters.isLoaded } != true }, { 0.001.wait; });
           airSputtersInput = IM_HardwareIn.new(0, airSputters.inBus, group, \addToHead);
         }.play;
@@ -80,7 +77,7 @@ Connections : Song {
     if( try { droner.isLoaded } != true,
       {
         r{
-          droner = Droner.newMono(mixerA.chanStereo(1), relGroup: group, addAction: \addToHead);
+          droner = Droner.newMono(mixer.chanStereo(1), relGroup: group, addAction: \addToHead);
           while({ try { droner.isLoaded } != true }, { 0.001.wait; });
           dronerInput = IM_HardwareIn.new(0, droner.inBus, group, \addToHead);
         }.play;
@@ -94,7 +91,7 @@ Connections : Song {
 
   toggleLoadBass {
     if( try { bass.isLoaded } != true,
-      { bass = Connections_Bassline.new(mixerB.chanStereo(0), noteRecord.noteBufferArray, group, \addToHead); },
+      { bass = Connections_Bassline.new(mixer.chanStereo(2), noteRecord.noteBufferArray, group, \addToHead); },
       { bass.free; }
     );
   }
@@ -103,7 +100,7 @@ Connections : Song {
     if( try { trumpetGran.isLoaded } != true,
       {
         r{
-          trumpetGran = Connections_TrumpetGran.new(mixerA.chanStereo(2), group, \addToHead);
+          trumpetGran = Connections_TrumpetGran.new(mixer.chanStereo(3), group, \addToHead);
           while({ try { trumpetGran.isLoaded } != true }, { 0.001.wait; });
           trumpetGranInput = IM_HardwareIn.new(0, trumpetGran.inBus, group, \addToHead);
         }.play;
@@ -119,10 +116,10 @@ Connections : Song {
     if( try { inlet.isLoaded } != true,
       {
         r {
-          inlet = Connections_Inlet.new(mixerB.chanStereo(1), noteRecord.noteBufferArray,
+          inlet = Connections_Inlet.new(mixer.chanStereo(4), noteRecord.noteBufferArray,
             noteRecord.cascadeBufferArray,  group, \addToHead);
           while({ try { inlet.isLoaded } != true }, { 0.001.wait; });
-          mixerB.setSendVol(1, 0, -6);
+          mixer.setSendVol(4, 0, -6);
           "Inlet Finally Loaded".postln;
         }.play;
       },
@@ -133,7 +130,7 @@ Connections : Song {
   toggleLoadChords {
     if( try { chords.isLoaded } != true,
       {
-        chords = Connections_Chords.new(mixerC.chanStereo(0), noteRecord.chordBufferArray,
+        chords = Connections_Chords.new(mixer.chanStereo(5), noteRecord.chordBufferArray,
         group, \addToHead);
       },
       { chords.free;}

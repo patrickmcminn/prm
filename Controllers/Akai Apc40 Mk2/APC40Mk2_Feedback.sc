@@ -47,7 +47,7 @@ prm
     8.do({ | num | this.prTurnTrackActivatorButtonColor(num, activePage.trackActivatorColorArray[num]) });
     8.do({ | num | this.prTurnCrossfaderSelectButtonColor(num, activePage.crossfaderSelectColorArray[num]) });
     8.do({ | num | this.prTurnSoloButtonColor(num, activePage.soloColorArray[num]) });
-    8.do({ | num | this.prTurnRecordButtonColor(num, activePage.recordEnableColorArray[num]) });
+    8.do({ | num | this.prTurnRecordEnableButtonColor(num, activePage.recordEnableColorArray[num]) });
   }
   prSetAllDeviceButtonColors {
     8.do({ | num | this.prTurnDeviceButtonColor(num, activePage.deviceColorArray[num]) });
@@ -93,6 +93,10 @@ prm
       colorVal != activePage.getGridButtonColor(num),
       { this.prTurnButtonColor(num, colorVal); }); });
     pageDict[page].turnGridColor(column, row, colorVal, bank);
+  }
+
+  turnGridOff { | column = 0, row = 0, bank = 'active', page = 'active' |
+    this.turnGridColor(column, row, 0, bank, page);
   }
 
   turnGridWhite { | column = 0, row = 0, brightness = 2, bank = 'active', page = 'active' |
@@ -170,6 +174,10 @@ prm
       colorVal != activePage.getSceneLaunchButtonColor(num),
       { this.prTurnButtonColor(num, colorVal); }); });
     pageDict[page].turnSceneLaunchButtonColor(button, colorVal, bank);
+  }
+
+  turnSceneLaunchButtonOff { | button = 0, bank = 'active', page = 'active' |
+    this.turnSceneLaunchButtonColor(button, 0, bank, page);
   }
 
   turnSceneLaunchButtonWhite { | button = 0, brightness = 2, bank = 'active', page = 'active' |
@@ -306,13 +314,21 @@ prm
     pageDict[page].turnTrackActivatorButtonOff(index, bank);
   }
 
-  turnCrossfaderSelectButtonOn { | button = 1, bank = 'active', page = 'active' |
+  turnCrossfaderSelectButtonYellow { | button = 1, bank = 'active', page = 'active' |
     var index = button-1;
     if( page == 'active', { page = activePageKey });
     if( page == activePageKey, { if(
       activePage.getCrossfaderSelectButtonColor(index) != 1,
       { this.prTurnCrossfaderSelectButtonColor(index, 1) }); });
-    pageDict[page].turnCrossfaderSelectButtonOn(index, bank);
+    pageDict[page].turnCrossfaderSelectButtonYellow(index, bank);
+  }
+  turnCrossfaderSelectButtonOrange { | button = 1, bank = 'active', page = 'active' |
+    var index = button-1;
+    if( page == 'active', { page = activePageKey });
+    if( page == activePageKey, { if(
+      activePage.getCrossfaderSelectButtonColor(index) != 2,
+      { this.prTurnCrossfaderSelectButtonColor(index, 2) }); });
+    pageDict[page].turnCrossfaderSelectButtonOrange(index, bank);
   }
   turnCrossfaderSelectButtonOff { | button = 1, bank = 'active', page = 'active' |
     var index = button-1;

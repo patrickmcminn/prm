@@ -109,6 +109,7 @@ IM_Mixer_1Ch {
   fadeOutMaster { |dur = 1| masterChan.fadeOut(dur) }
 
   mapAmp { | bus | masterChan.mapAmp(bus); }
+  mapPan { | bus | masterChan.mapPan(bus); }
 
   mapSend0Amp { | bus | masterChan.mapSend0Amp(bus) }
   mapSend1Amp { | bus | masterChan.mapSend1Amp(bus) }

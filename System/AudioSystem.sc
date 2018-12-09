@@ -9,20 +9,14 @@ AudioSystem {
 
   var <isLoaded;
   var <procGroup, systemGroup;
-  var hardwareOut, <systemMixer, <monitorMixer;
+  var hardwareOut, <systemMixer, <cmix;
   var <irLibrary;
 
   var <reverb, <granulator, <modularSend, <delay;
-
-  var <submixerA, <submixerB, <submixerC;
   var <splitter;
-
-  var <modular, modularIn, <microphone, micIn, <moog, <moogIn;
-
+  var <microphone, micIn, <pickup, <pickupIn, <modular, modularIn,  <moog, <moogIn;
   var <subtractive;
-
   var <songBook;
-
   var <server;
 
   var <masterEQ;
@@ -67,18 +61,13 @@ AudioSystem {
       masterEQ = Equalizer.newStereo(systemMixer.inBus(0), systemGroup, \addToHead);
       while({ try { masterEQ.isLoaded } != true }, { 0.001.wait; });
 
-
       irLibrary = IM_IRLibrary.new("~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses");
       server.sync;
       while( { try { irLibrary.isLoaded } != true }, { 0.001.wait; });
 
-      // taking splitter out, monitor mix no longer needed/wanted from hardware.
-      /*
-      splitter = Splitter.newStereo(2, [systemMixer.inBus, monitorMixer.inBus], relGroup: systemGroup, addAction: \addToHead);
-      while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
-      */
-
       server.sync;
+
+      ///////// RETURN FX:
 
       // delay:
       delay = SimpleDelay.newStereo(masterEQ.inBus, 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
@@ -89,68 +78,45 @@ AudioSystem {
       modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
       while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 
-      //granulator = IM_Granulator(systemMixer.inBus(0),
-        //relGroup: systemGroup, addAction: \addToHead);
       granulator = GranularDelay.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( {  try { granulator.isLoaded } != true }, { 0.001.wait; });
       granulator.granulator.setCrossfade(1);
       granulator.delay.setMix(0);
 
-      //reverb = Wash.newStereo(systemMixer.inBus(0), relGroup: systemGroup, addAction: \addToHead);
       reverb = IM_Reverb.newConvolution(masterEQ.inBus, bufName: irLibrary.irDict['3.2EmptyChurch'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
 
-      //reverb.setMix(1);
+      /////////// DEFAULT INPUTS:
 
-      submixerA = Looper.newStereo(masterEQ.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
-        procGroup, \addToHead);
-      while( { try { submixerA.isLoaded } != true }, { 0.001.wait; });
-      submixerB = Looper.newStereo(masterEQ.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
-        procGroup, \addToHead);
-      while( { try { submixerB.isLoaded } != true }, { 0.001.wait; });
-      submixerC = Looper.newStereo(masterEQ.inBus, 30, 0, reverb.inBus, granulator.inBus, modularSend.inBus, nil,
-        procGroup, \addToHead);
-      while( { try { submixerC.isLoaded } != true }, { 0.001.wait; });
+      cmix = IM_Mixer.new(4, this.audioIn,
+        reverb.inBus, granulator.inBus, modularSend.inBus, delay.inBus, false, procGroup, \addToHead);
+      while({ try { cmix.isLoaded } != true }, { 0.001.wait; });
 
+      pickup = IM_Mixer_1Ch.new(cmix.chanStereo(0), relGroup: procGroup, addAction: \addToHead);
+      while({ try { pickup.isLoaded } != true }, { 0.001.wait; });
+      pickupIn = IM_HardwareIn.new(0, pickup.chanMono, procGroup, \addToHead);
+      while({ try { pickupIn.isLoaded } != true }, { 0.001.wait; });
 
-      /*
-      submixerA.mixer.setPreVol(3);
-      submixerB.mixer.setPreVol(3);
-      submixerC.mixer.setPreVol(3);
-      */
-
-      modular = IM_Mixer_1Ch.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus,
-        nil, false, procGroup, \addToHead);
-      while( { try { modular.isLoaded } != true }, { 0.001.wait; });
-      modularIn = IM_HardwareIn.new(2, modular.chanMono, procGroup, \addToHead);
-      while({ try { modularIn.isLoaded } != true }, { 0.001.wait; });
-
-      microphone = IM_Mixer_1Ch.new(this.submixC, reverb.inBus, granulator.inBus, modularSend.inBus, nil, false,
-        procGroup, \addToHead);
+      microphone = IM_Mixer_1Ch.new(cmix.chanStereo(1), relGroup: procGroup, addAction: \addToHead);
       while({ try { microphone.isLoaded } != true }, { 0.001.wait; });
       micIn = IM_HardwareIn.new(1, microphone.chanMono(0), procGroup, \addToHead);
       while({ try { micIn.isLoaded } != true }, { 0.001.wait; });
 
-      moog = IM_Mixer_1Ch.new(this.submixA, reverb.inBus, granulator.inBus, modularSend.inBus, nil, false,
-        procGroup, \addToHead);
+      modular = IM_Mixer_1Ch.new(cmix.chanStereo(2), relGroup: procGroup, addAction: \addToHead);
+      while( { try { modular.isLoaded } != true }, { 0.001.wait; });
+      modularIn = IM_HardwareIn.new(2, modular.chanMono, procGroup, \addToHead);
+      while({ try { modularIn.isLoaded } != true }, { 0.001.wait; });
+
+      moog = IM_Mixer_1Ch.new(cmix.chanStereo(3), relGroup: procGroup, addAction: \addToHead);
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
       moogIn = IM_HardwareIn.new(3, moog.chanMono(0), procGroup, \addToHead);
       while({ try { moogIn.isLoaded } != true }, { 0.001.wait; });
 
-      // modular + mic come in muted
-      modular.setVol(-70);
-      moog.setVol(-70);
-      microphone.setVol(-70);
-      microphone.setPreVol(3);
-
-      /*
-      subtractive = Subtractive.new(this.submixB, reverb.inBus, granulator.inBus, modularSend.inBus, nil, procGroup,
-        \addToHead);
-      while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
-      */
+      // utilities come in muted:
+      cmix.mute(0); cmix.mute(1); cmix.mute(2); cmix.mute(3);
 
       songBook = IdentityDictionary.new;
 
@@ -161,7 +127,7 @@ AudioSystem {
 
   // Define audio device, block size, and total memory reserved for SCLang
   // Default memory size = 2 ** 17
-  prSetServerOptions { |server, blockSize = 64, memSize = 131072, numAudioBusChannels = 512, devName|
+  prSetServerOptions { |server, blockSize = 64, memSize = 131072, numAudioBusChannels = 1024, devName|
     server.options.blockSize = blockSize;
     server.options.memSize = memSize;
     server.options.numAudioBusChannels = numAudioBusChannels;
@@ -181,10 +147,6 @@ AudioSystem {
       modularIn.free;
       modular.free;
 
-      submixerA.free;
-      submixerB.free;
-      submixerC.free;
-
       hardwareOut.free;
       reverb.free;
       granulator.free;
@@ -202,10 +164,6 @@ AudioSystem {
 
       modularIn = nil;
       modular = nil;
-
-      submixerA = nil;
-      submixerB = nil;
-      submixerC = nil;
 
       reverb = nil;
       granulator = nil;
@@ -234,7 +192,5 @@ AudioSystem {
   getSong { |songName = nil| ^songBook.getSong(songName) }
   freeSong { |songName = nil| ^songBook.freeSong(songName) }
 
-  submixA { ^submixerA.inBus; }
-  submixB { ^submixerB.inBus; }
-  submixC { ^submixerC.inBus; }
+  audioIn { ^masterEQ.inBus }
 }

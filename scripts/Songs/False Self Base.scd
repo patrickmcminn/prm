@@ -70,8 +70,78 @@ var phraseResetFunc;
   ~base.setActiveGridBank(activeGridBank);
 }, page: page);
 
+/////////////////////////
+//////// Mixer: ////////
+///////////////////////
 
-//////// Mixer:
+////// Mixer Bank 1:
+// bell:
+~base.setFaderMode(1, 'blueFill', bank: mixerBank1, page: page);
+//// FakeGuitar:
+~base.setFaderMode(2, 'whiteFill', bank: mixerBank1, page: page);
+//// Melody:
+~base.setFaderMode(3, 'cyanFill', bank: mixerBank1, page: page);
+//// Bass:
+~base.setFaderMode(4, 'cyanFill', bank: mixerBank1, page: page);
+//// Trumpet:
+~base.setFaderMode(5, 'magentaFill', bank: mixerBank1, page: page);
+//// Drums:
+~base.setFaderMode(6, 'yellowFill', bank: mixerBank1, page: page);
+//// Trumpet Canon:
+~base.setFaderMode(7, 'magentaFill', bank: mixerBank1, page: page);
+//// Orchestra:
+~base.setFaderMode(8, 'cyanFill', bank: mixerBank1, page: page);
+
+
+8.do({ | i |
+  ~base.setTouchButtonMonitorFunc(i+1, {
+    if( ~falseSelf.mixer.isMuted(i), { ~base.turnTouchButtonRed(i+1) }, { ~base.turnTouchButtonGreen(i+1) });
+  }, bank: mixerBank1, page: page);
+  ~base.setTouchButtonFunc(i+1, { ~falseSelf.mixer.tglMute(i); },
+    bank: mixerBank1, page: page);
+  ~base.setFaderMonitorFunc(i+1, {
+    ~base.setFaderValue(i+1, ~falseSelf.mixer.vol(i).dbfsCC);
+  }, bank: mixerBank1, page: page);
+  ~base.setFaderFunc(i+1, { | val |
+    ~falseSelf.mixer.setVol(i, val.ccdbfs);
+  }, bank: mixerBank1, page: page);
+});
+
+////// Mixer Bank 2:
+
+//// Trumpet Melody:
+~base.setFaderMode(1, 'magentaFill', bank: mixerBank2, page: page);
+//// Crude Drones:
+~base.setFaderMode(2, 'yellowFill', bank: mixerBank2, page: page);
+//// 16th Drones:
+~base.setFaderMode(3, 'yellowFill', bank: mixerBank2, page: page);
+//// Plane Noise:
+~base.setFaderMode(4, 'cyanFill', bank: mixerBank2, page: page);
+//// Mid- Buzz:
+~base.setFaderMode(5, 'cyanFill', bank: mixerBank2, page: page);
+//// Guitars:
+~base.setFaderMode(6, 'cyanFill', bank: mixerBank2, page: page);
+//// Modular:
+~base.setFaderMode(7, 'whiteFill', bank: mixerBank2, page: page);
+//// Trumpet End:
+~base.setFaderMode(8, 'magentaFill', bank: mixerBank2, page: page);
+
+8.do({ | i |
+  ~base.setTouchButtonMonitorFunc(i+1, {
+    if( ~falseSelf.mixer.isMuted(i+8), { ~base.turnTouchButtonRed(i+1) }, { ~base.turnTouchButtonGreen(i+1) });
+  }, bank: mixerBank1, page: page);
+  ~base.setTouchButtonFunc(i+1, { ~falseSelf.mixer.tglMute(i+8); },
+    bank: mixerBank1, page: page);
+  ~base.setFaderMonitorFunc(i+1, {
+    ~base.setFaderValue(i+1, ~falseSelf.mixer.vol(i+8).dbfsCC);
+  }, bank: mixerBank1, page: page);
+  ~base.setFaderFunc(i+1, { | val |
+    ~falseSelf.mixer.setVol(i+8, val.ccdbfs);
+  }, bank: mixerBank2, page: page);
+});
+
+/*
+
 
 ////// Mixer Bank 1:
 
@@ -79,225 +149,226 @@ var phraseResetFunc;
 ~base.setFaderMode(1, 'whiteFill', bank: mixerBank1, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(1, {
-	if( ~falseSelf.mixerA.isMuted(0), { ~base.turnTouchButtonRed(1) }, { ~base.turnTouchButtonGreen(1) });
+	if( ~falseSelf.mixer.isMuted(0), { ~base.turnTouchButtonRed(1) }, { ~base.turnTouchButtonGreen(1) });
 }, bank: mixerBank1, page: page);
-~base.setTouchButtonFunc(1, { ~falseSelf.mixerA.tglMute(0) }, bank: mixerBank1, page: page);
+~base.setTouchButtonFunc(1, { ~falseSelf.mixer.tglMute(0) }, bank: mixerBank1, page: page);
 // volume:
 ~base.setFaderMonitorFunc(1, {
-	~base.setFaderValue(1, ~falseSelf.mixerA.vol(0).dbfsCC);
+	~base.setFaderValue(1, ~falseSelf.mixer.vol(0).dbfsCC);
 }, bank: mixerBank1, page: page);
-~base.setFaderFunc(1, { | val | ~falseSelf.mixerA.setVol(0, val.ccdbfs);
+~base.setFaderFunc(1, { | val | ~falseSelf.mixer.setVol(0, val.ccdbfs);
 }, bank: mixerBank1, page: page);
 
 //// Drums:
 ~base.setFaderMode(2, 'yellowFill', bank: mixerBank1, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(2, {
-	if( ~falseSelf.mixerB.isMuted(2), { ~base.turnTouchButtonRed(2) }, { ~base.turnTouchButtonGreen(2) });
+	if( ~falseSelf.mixer.isMuted(2), { ~base.turnTouchButtonRed(2) }, { ~base.turnTouchButtonGreen(2) });
 }, bank: mixerBank1, page: page);
-~base.setTouchButtonFunc(2, { ~falseSelf.mixerB.tglMute(2) }, bank: mixerBank1, page: page);
+~base.setTouchButtonFunc(2, { ~falseSelf.mixer.tglMute(2) }, bank: mixerBank1, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(2, {
-	~base.setFaderValue(2, ~falseSelf.mixerB.vol(2).dbfsCC);
+	~base.setFaderValue(2, ~falseSelf.mixer.vol(2).dbfsCC);
 }, bank: mixerBank1, page: page);
-~base.setFaderFunc(2, { | val | ~falseSelf.mixerB.setVol(2, val.ccdbfs);
+~base.setFaderFunc(2, { | val | ~falseSelf.mixer.setVol(2, val.ccdbfs);
 }, bank: mixerBank1, page: page);
 
 //// Bass:
 ~base.setFaderMode(3, 'cyanFill', bank: mixerBank1, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(3, {
-	if( ~falseSelf.mixerB.isMuted(1), { ~base.turnTouchButtonRed(3) }, { ~base.turnTouchButtonGreen(3) });
+	if( ~falseSelf.mixer.isMuted(1), { ~base.turnTouchButtonRed(3) }, { ~base.turnTouchButtonGreen(3) });
 }, bank: mixerBank1, page: page);
-~base.setTouchButtonFunc(3, { ~falseSelf.mixerB.tglMute(1) });
+~base.setTouchButtonFunc(3, { ~falseSelf.mixer.tglMute(1) });
 // Volume:
 ~base.setFaderMonitorFunc(3, {
-	~base.setFaderValue(3, ~falseSelf.mixerB.vol(1).dbfsCC);
+	~base.setFaderValue(3, ~falseSelf.mixer.vol(1).dbfsCC);
 }, bank: mixerBank1, page: page);
-~base.setFaderFunc(3, { | val | ~falseSelf.mixerB.setVol(1, val.ccdbfs);
+~base.setFaderFunc(3, { | val | ~falseSelf.mixer.setVol(1, val.ccdbfs);
 }, bank: mixerBank1, page: page);
 
 //// Trumpet:
 ~base.setFaderMode(4, 'magentaFill', bank: mixerBank1, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(4, {
-	if( ~falseSelf.mixerA.isMuted(2), { ~base.turnTouchButtonRed(4) }, { ~base.turnTouchButtonGreen(4) });
+	if( ~falseSelf.mixer.isMuted(2), { ~base.turnTouchButtonRed(4) }, { ~base.turnTouchButtonGreen(4) });
 }, bank: mixerBank1, page: page);
-~base.setTouchButtonFunc(4, { ~falseSelf.mixerA.tglMute(2) }, bank: mixerBank1, page: page);
+~base.setTouchButtonFunc(4, { ~falseSelf.mixer.tglMute(2) }, bank: mixerBank1, page: page);
 //// Volume:
 ~base.setFaderMonitorFunc(4, {
-	~base.setFaderValue(4, ~falseSelf.mixerA.vol(2).dbfsCC);
+	~base.setFaderValue(4, ~falseSelf.mixer.vol(2).dbfsCC);
 }, bank: mixerBank1, page: page);
-~base.setFaderFunc(4, { | val | ~falseSelf.mixerA.setVol(2, val.ccdbfs);
+~base.setFaderFunc(4, { | val | ~falseSelf.mixer.setVol(2, val.ccdbfs);
 }, bank: mixerBank1, page: page);
 
 //// Bells:
-~base.setFaderMode(5, 'blueFill', bank: mixerBank1, page: page);
+
 // Mute:
 ~base.setTouchButtonMonitorFunc(5, {
-	if( ~falseSelf.mixerA.isMuted(1), { ~base.turnTouchButtonRed(5) }, { ~base.turnTouchButtonGreen(5) });
+	if( ~falseSelf.mixer.isMuted(1), { ~base.turnTouchButtonRed(5) }, { ~base.turnTouchButtonGreen(5) });
 }, bank: mixerBank1, page: page);
-~base.setTouchButtonFunc(5, { ~falseSelf.mixerA.tglMute(1) }, bank: mixerBank1, page: page);
+~base.setTouchButtonFunc(5, { ~falseSelf.mixer.tglMute(1) }, bank: mixerBank1, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(5, {
-	~base.setFaderValue(5, ~falseSelf.mixerA.vol(1).dbfsCC );
+	~base.setFaderValue(5, ~falseSelf.mixer.vol(1).dbfsCC );
 }, bank: mixerBank1, page: page);
-~base.setFaderFunc(5, { | val | ~falseSelf.mixerA.setVol(1, val.ccdbfs);
+~base.setFaderFunc(5, { | val | ~falseSelf.mixer.setVol(1, val.ccdbfs);
 }, bank: mixerBank1, page: page);
 
 //// Melody:
 ~base.setFaderMode(6, 'cyanFill', bank: mixerBank1, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(6, {
-	if( ~falseSelf.mixerB.isMuted(0), { ~base.turnTouchButtonRed(6) }, { ~base.turnTouchButtonGreen(6) });
+	if( ~falseSelf.mixer.isMuted(0), { ~base.turnTouchButtonRed(6) }, { ~base.turnTouchButtonGreen(6) });
 }, bank: mixerBank1, page: page);
-~base.setTouchButtonFunc(6, { ~falseSelf.mixerB.tglMute(0) }, bank: mixerBank1, page: page);
+~base.setTouchButtonFunc(6, { ~falseSelf.mixer.tglMute(0) }, bank: mixerBank1, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(6, {
-	~base.setFaderValue(6, ~falseSelf.mixerB.vol(0).dbfsCC);
+	~base.setFaderValue(6, ~falseSelf.mixer.vol(0).dbfsCC);
 }, bank: mixerBank1, page: page);
-~base.setFaderFunc(6, { | val | ~falseSelf.mixerB.setVol(0, val.ccdbfs);
+~base.setFaderFunc(6, { | val | ~falseSelf.mixer.setVol(0, val.ccdbfs);
 }, bank: mixerBank1, page: page);
 
 //// Modular:
 ~base.setFaderMode(7, 'whiteFill', bank: mixerBank1, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(7, {
-	if( ~falseSelf.mixerC.isMuted(0), { ~base.turnTouchButtonRed(7) }, { ~base.turnTouchButtonGreen(7) });
+	if( ~falseSelf.mixer.isMuted(0), { ~base.turnTouchButtonRed(7) }, { ~base.turnTouchButtonGreen(7) });
 }, bank: mixerBank1, page: page);
-~base.setTouchButtonFunc(7, { ~falseSelf.mixerC.tglMute(0) }, bank: mixerBank1, page: page);
+~base.setTouchButtonFunc(7, { ~falseSelf.mixer.tglMute(0) }, bank: mixerBank1, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(7, {
-	~base.setFaderValue(7, ~falseSelf.mixerC.vol(0).dbfsCC );
+	~base.setFaderValue(7, ~falseSelf.mixer.vol(0).dbfsCC );
 }, bank: mixerBank1, page: page);
-~base.setFaderFunc(7, { | val | ~falseSelf.mixerC.setVol(0, val.ccdbfs);
+~base.setFaderFunc(7, { | val | ~falseSelf.mixer.setVol(0, val.ccdbfs);
 }, bank: mixerBank1, page: page);
 
 //// Trumpet Canon:
 ~base.setFaderMode(8, 'magentaFill', bank: mixerBank1, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(8, {
-	if( ~falseSelf.mixerA.isMuted(3), { ~base.turnTouchButtonRed(8) }, { ~base.turnTouchButtonGreen(8) });
+	if( ~falseSelf.mixer.isMuted(3), { ~base.turnTouchButtonRed(8) }, { ~base.turnTouchButtonGreen(8) });
 }, bank: mixerBank1, page: page);
-~base.setTouchButtonFunc(8, { ~falseSelf.mixerA.tglMute(3) }, bank: mixerBank1, page: page);
+~base.setTouchButtonFunc(8, { ~falseSelf.mixer.tglMute(3) }, bank: mixerBank1, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(8, {
-	~base.setFaderValue(8, ~falseSelf.mixerA.vol(3).dbfsCC );
+	~base.setFaderValue(8, ~falseSelf.mixer.vol(3).dbfsCC );
 }, bank: mixerBank1, page: page);
-~base.setFaderFunc(8, { | val | ~falseSelf.mixerA.setVol(3, val.ccdbfs);
+~base.setFaderFunc(8, { | val | ~falseSelf.mixer.setVol(3, val.ccdbfs);
 }, bank: mixerBank1, page: page);
 
 //// Plane Noise:
 ~base.setFaderMode(1, 'cyanFill', bank: mixerBank2, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(1, {
-	if( ~falseSelf.mixerC.isMuted(3), { ~base.turnTouchButtonRed(1) }, { ~base.turnTouchButtonGreen(1) });
+	if( ~falseSelf.mixer.isMuted(3), { ~base.turnTouchButtonRed(1) }, { ~base.turnTouchButtonGreen(1) });
 }, bank: mixerBank2, page: page);
-~base.setTouchButtonFunc(1, { ~falseSelf.mixerC.tglMute(3) }, bank: mixerBank2, page: page);
+~base.setTouchButtonFunc(1, { ~falseSelf.mixer.tglMute(3) }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(1, {
-	~base.setFaderValue(1, ~falseSelf.mixerC.vol(3).dbfsCC; );
+	~base.setFaderValue(1, ~falseSelf.mixer.vol(3).dbfsCC; );
 }, bank: mixerBank2, page: page);
-~base.setFaderFunc(1, { | val | ~falseSelf.mixerC.setVol(3, val.ccdbfs);
+~base.setFaderFunc(1, { | val | ~falseSelf.mixer.setVol(3, val.ccdbfs);
 }, bank: mixerBank2, page: page);
 
 //// Mid- Buzz:
 ~base.setFaderMode(2, 'cyanFill', bank: mixerBank2, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(2, {
-	if( ~falseSelf.mixerC.isMuted(4), { ~base.turnTouchButtonRed(2) }, { ~base.turnTouchButtonGreen(2) });
+	if( ~falseSelf.mixer.isMuted(4), { ~base.turnTouchButtonRed(2) }, { ~base.turnTouchButtonGreen(2) });
 }, bank: mixerBank2, page: page);
-~base.setTouchButtonFunc(2, { ~falseSelf.mixerC.tglMute(4) }, bank: mixerBank2, page: page);
+~base.setTouchButtonFunc(2, { ~falseSelf.mixer.tglMute(4) }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(2, {
-	~base.setFaderValue(2, ~falseSelf.mixerC.vol(4).dbfsCC; );
+	~base.setFaderValue(2, ~falseSelf.mixer.vol(4).dbfsCC; );
 }, bank: mixerBank2, page: page);
-~base.setFaderFunc(2, { | val | ~falseSelf.mixerC.setVol(4, val.ccdbfs);
+~base.setFaderFunc(2, { | val | ~falseSelf.mixer.setVol(4, val.ccdbfs);
 }, bank: mixerBank2, page: page);
 
 //// Crude Drones:
 ~base.setFaderMode(3, 'yellowFill', bank: mixerBank2, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(3, {
-	if( ~falseSelf.mixerC.isMuted(1), { ~base.turnTouchButtonRed(3) }, { ~base.turnTouchButtonGreen(3) });
+	if( ~falseSelf.mixer.isMuted(1), { ~base.turnTouchButtonRed(3) }, { ~base.turnTouchButtonGreen(3) });
 }, bank: mixerBank2, page: page);
-~base.setTouchButtonFunc(3, { ~falseSelf.mixerC.tglMute(1) }, bank: mixerBank2, page: page);
+~base.setTouchButtonFunc(3, { ~falseSelf.mixer.tglMute(1) }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(3, {
-	~base.setFaderValue(3, ~falseSelf.mixerC.vol(1).dbfsCC );
+	~base.setFaderValue(3, ~falseSelf.mixer.vol(1).dbfsCC );
 }, bank: mixerBank2, page: page);
-~base.setFaderFunc(3, { | val | ~falseSelf.mixerC.setVol(1, val.ccdbfs);
+~base.setFaderFunc(3, { | val | ~falseSelf.mixer.setVol(1, val.ccdbfs);
 }, bank: mixerBank2, page: page);
 
 //// Orchestra:
 ~base.setFaderMode(4, 'cyanFill', bank: mixerBank2, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(4, {
-	if( ~falseSelf.mixerB.isMuted(3), { ~base.turnTouchButtonRed(4) }, { ~base.turnTouchButtonGreen(4) });
+	if( ~falseSelf.mixer.isMuted(3), { ~base.turnTouchButtonRed(4) }, { ~base.turnTouchButtonGreen(4) });
 }, bank: mixerBank2, page: page);
-~base.setTouchButtonFunc(4, { ~falseSelf.mixerB.tglMute(3); }, bank: mixerBank2, page: page);
+~base.setTouchButtonFunc(4, { ~falseSelf.mixer.tglMute(3); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(4, {
-	~base.setFaderValue(4,  ~falseSelf.mixerB.vol(3).dbfsCC );
+	~base.setFaderValue(4,  ~falseSelf.mixer.vol(3).dbfsCC );
 }, bank: mixerBank2, page: page);
-~base.setFaderFunc(4, { | val | ~falseSelf.mixerB.setVol(3, val.ccdbfs);
+~base.setFaderFunc(4, { | val | ~falseSelf.mixer.setVol(3, val.ccdbfs);
 }, bank: mixerBank2, page: page);
 
 //// 16th Drones:
 ~base.setFaderMode(5, 'yellowFill', bank: mixerBank2, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(5, {
-	if( ~falseSelf.mixerC.isMuted(2), { ~base.turnTouchButtonRed(5) }, { ~base.turnTouchButtonGreen(5) });
+	if( ~falseSelf.mixer.isMuted(2), { ~base.turnTouchButtonRed(5) }, { ~base.turnTouchButtonGreen(5) });
 }, bank: mixerBank2, page: page);
-~base.setTouchButtonFunc(5, { ~falseSelf.mixerC.tglMute(2); }, bank: mixerBank2, page: page);
+~base.setTouchButtonFunc(5, { ~falseSelf.mixer.tglMute(2); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(5, {
-	~base.setFaderValue(5, ~falseSelf.mixerC.vol(2).dbfsCC );
+	~base.setFaderValue(5, ~falseSelf.mixer.vol(2).dbfsCC );
 }, bank: mixerBank2, page: page);
-~base.setFaderFunc(5, { | val | ~falseSelf.mixerC.setVol(2, val.ccdbfs);
+~base.setFaderFunc(5, { | val | ~falseSelf.mixer.setVol(2, val.ccdbfs);
 }, bank: mixerBank2, page: page);
 
 //// Trumpet Melody:
 ~base.setFaderMode(6, 'magentaFill', bank: mixerBank2, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(6, {
-	if( ~falseSelf.mixerA.isMuted(4), { ~base.turnTouchButtonRed(6) }, { ~base.turnTouchButtonGreen(6) });
+	if( ~falseSelf.mixer.isMuted(4), { ~base.turnTouchButtonRed(6) }, { ~base.turnTouchButtonGreen(6) });
 }, bank: mixerBank2, page: page);
-~base.setTouchButtonFunc(6, { ~falseSelf.mixerA.tglMute(4); }, bank: mixerBank2, page: page);
+~base.setTouchButtonFunc(6, { ~falseSelf.mixer.tglMute(4); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(6, {
-	~base.setFaderValue(6, ~falseSelf.mixerA.vol(4).dbfsCC );
+	~base.setFaderValue(6, ~falseSelf.mixer.vol(4).dbfsCC );
 }, bank: mixerBank2, page: page);
-~base.setFaderFunc(6, { | val | ~falseSelf.mixerA.setVol(4, val.ccdbfs);
+~base.setFaderFunc(6, { | val | ~falseSelf.mixer.setVol(4, val.ccdbfs);
 }, bank: mixerBank2, page: page);
 
 //// Guitars:
 ~base.setFaderMode(7, 'cyanFill', bank: mixerBank2, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(7, {
-	if( ~falseSelf.mixerB.isMuted(4), { ~base.turnTouchButtonRed(7) }, { ~base.turnTouchButtonGreen(7) });
+	if( ~falseSelf.mixer.isMuted(4), { ~base.turnTouchButtonRed(7) }, { ~base.turnTouchButtonGreen(7) });
 }, bank: mixerBank2, page: page);
-~base.setTouchButtonFunc(7, { ~falseSelf.mixerB.tglMute(4); }, bank: mixerBank2, page: page);
+~base.setTouchButtonFunc(7, { ~falseSelf.mixer.tglMute(4); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(7, {
-	~base.setFaderValue(7,  ~falseSelf.mixerB.vol(4).dbfsCC );
+	~base.setFaderValue(7,  ~falseSelf.mixer.vol(4).dbfsCC );
 }, bank: mixerBank2, page: page);
-~base.setFaderFunc(7, { | val | ~falseSelf.mixerB.setVol(4, val.ccdbfs);
+~base.setFaderFunc(7, { | val | ~falseSelf.mixer.setVol(4, val.ccdbfs);
 }, bank: mixerBank2, page: page);
 
 //// Trumpet End:
-~base.setFaderMode(8, 'magentaFill', bank: mixerBank2, page: page);
+~base.setFaderMode(8, 'magentaFill', bank: mixerank2, page: page);
 // Mute:
 ~base.setTouchButtonMonitorFunc(8, {
-	if( ~falseSelf.mixerA.isMuted(5), { ~base.turnTouchButtonRed(8) }, { ~base.turnTouchButtonGreen(8) });
+	if( ~falseSelf.mixer.isMuted(5), { ~base.turnTouchButtonRed(8) }, { ~base.turnTouchButtonGreen(8) });
 }, bank: mixerBank2, page: page);
-~base.setTouchButtonFunc(8, { ~falseSelf.mixerA.tglMute(5); }, bank: mixerBank2, page: page);
+~base.setTouchButtonFunc(8, { ~falseSelf.mixer.tglMute(5); }, bank: mixerBank2, page: page);
 // Volume:
 ~base.setFaderMonitorFunc(8, {
-	~base.setFaderValue(8, ~falseSelf.mixerA.vol(5).dbfsCC );
+	~base.setFaderValue(8, ~falseSelf.mixer.vol(5).dbfsCC );
 }, bank: mixerBank2, page: page);
-~base.setFaderFunc(8, { | val | ~falseSelf.mixerA.setVol(5, val.ccdbfs);
+~base.setFaderFunc(8, { | val | ~falseSelf.mixer.setVol(5, val.ccdbfs);
 }, bank: mixerBank2, page: page);
+*/
 
 //////// main grid bank:
 

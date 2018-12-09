@@ -21,8 +21,11 @@ IM_Reverb : IM_Processor {
   var synth;
   var <isLoaded;
   var <lowPassFreq, <highPassFreq;
+  var <preEQ, <postEQ;
   var <isEnabled;
+  var reverbBus;
   var server;
+  var isConvolution;
 
   *newConvolution { | outBus = 0, send0Bus = nil, send1Bus = nil,
     send2Bus = nil, send3Bus = nil, feedback = false, amp = 1,
@@ -48,18 +51,27 @@ IM_Reverb : IM_Processor {
     highPassFreq = 80;
 
     isEnabled = true;
+    isConvolution = true;
 
     server.waitForBoot {
       isLoaded = false;
       this.prMakeSynthDefs;
+
+      reverbBus = Bus.audio(server, 2);
+
       server.sync;
 
       while( { mixer.isLoaded.not }, { 0.001.wait; });
 
-      synth = Synth(\IM_reverbConv, [\inBus, inBus, \outBus, mixer.chanStereo(0),
-        \buffer, bufName, \fftMul, fftMul], group, \addToHead);
+      postEQ = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
+      while({ try { postEQ.isLoaded } != true }, { 0.001.wait; });
 
+      synth = Synth(\IM_reverbConv, [\inBus, reverbBus, \outBus, postEQ.inBus,
+        \buffer, bufName, \fftMul, fftMul], group, \addToHead);
       while( { synth == nil }, { 0.001.wait; });
+
+      preEQ = Equalizer.newStereo(reverbBus, group, \addToHead);
+      while({ try { preEQ.isLoaded } != true }, { 0.001.wait; });
 
       isLoaded = true;
     };
@@ -71,17 +83,28 @@ IM_Reverb : IM_Processor {
     lowPassFreq = 15000;
     highPassFreq = 80;
     isEnabled = true;
+    isConvolution = false;
 
     server.waitForBoot {
       isLoaded = false;
       this.prMakeSynthDefs;
       server.sync;
 
+      reverbBus = Bus.audio(server, 2);
+
       //while( { try { mixer.chanMono(0) } == nil }, { 0.01.wait } );
       while({ mixer.isLoaded.not }, { 0.001.wait; });
-      synth = Synth(\IM_reverb, [\inBus, inBus, \outBus, mixer.chanMono(0), \mix, mix,
+
+      postEQ = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
+      while({ try { postEQ.isLoaded } != true }, { 0.001.wait; });
+
+      synth = Synth(\IM_reverb, [\inBus, reverbBus, \outBus, postEQ.inBus, \mix, mix,
         \roomSize, roomSize, \damp, damp], group, \addToHead);
       while( { synth == nil }, { 0.001.wait; });
+
+      preEQ = Equalizer.newStereo(reverbBus, group, \addToHead);
+      while({ try { preEQ.isLoaded } != true }, { 0.001.wait; });
+
       isLoaded = true;
     };
   }
@@ -132,11 +155,13 @@ IM_Reverb : IM_Processor {
 
   free {
     mixer.mute;
-
+    reverbBus.free;
     synth.free;
     synth = nil;
     this.freeProcessor;
   }
+
+  inBus { ^preEQ.inBus }
 
   setLowPassFreq { | freq = 15000 |
     lowPassFreq = freq;

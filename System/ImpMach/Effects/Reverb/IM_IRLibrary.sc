@@ -12,7 +12,7 @@ IM_IRLibrary {
   var <isLoaded;
 
   *new {
-    | path = "~/Library/Application Support/SuperCollider/Extensions/Impatience Machine/Effects/Reverb/Impulse Responses", fftMul = 2 |
+    | path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses/", fftMul = 2 |
     ^super.new.prInit(path, fftMul);
   }
 
@@ -68,7 +68,6 @@ IM_IRLibrary {
   irKeys {
     ^irDict.keys;
   }
-
 
   returnIRDictKeyFromIndex { }
 

@@ -22,6 +22,7 @@ IM_Reverb : IM_Processor {
   var <isLoaded;
   var <lowPassFreq, <highPassFreq;
   var <isEnabled;
+  var server;
 
   *newConvolution { | outBus = 0, send0Bus = nil, send1Bus = nil,
     send2Bus = nil, send3Bus = nil, feedback = false, amp = 1,
@@ -40,10 +41,12 @@ IM_Reverb : IM_Processor {
   }
 
   prInitConvolution { |bufName = nil, fftMul = 2|
-    var server = Server.default;
+    server = Server.default;
 
+    //// legacy values:
     lowPassFreq = 15000;
     highPassFreq = 80;
+
     isEnabled = true;
 
     server.waitForBoot {
@@ -51,11 +54,13 @@ IM_Reverb : IM_Processor {
       this.prMakeSynthDefs;
       server.sync;
 
-      //while( { try { mixer.chanMono(0) } == nil }, { 0.01.wait } );
       while( { mixer.isLoaded.not }, { 0.001.wait; });
+
       synth = Synth(\IM_reverbConv, [\inBus, inBus, \outBus, mixer.chanStereo(0),
         \buffer, bufName, \fftMul, fftMul], group, \addToHead);
+
       while( { synth == nil }, { 0.001.wait; });
+
       isLoaded = true;
     };
   }
@@ -157,6 +162,30 @@ IM_Reverb : IM_Processor {
   setMix {  | mix = 1 |
     synth.set(\mix, mix);
 
+  }
+
+  changeIR { | bufName, fadeTime = 2, preAmp = 1, fftMul = 2 |
+    {
+      var oldVerb;
+      var fadeOutBus, fadeInBus;
+      fadeOutBus = Bus.control;
+      fadeInBus = Bus.control;
+
+      oldVerb = synth;
+      synth = Synth(\IM_reverbConv, [\inBus, inBus, \outBus, mixer.chanStereo(0),
+        \buffer, bufName, \fftMul, fftMul, \amp, 0, \preAmp, preAmp], group, \addToHead);
+      server.sync;
+
+      oldVerb.map(\amp, fadeOutBus);
+      synth.map(\amp, fadeInBus);
+
+      server.sync;
+
+      { Out.kr(fadeOutBus, Line.kr(1, 0, fadeTime, doneAction: 2)) }.play;
+      { Out.kr(fadeInBus, Line.kr(0, 1, fadeTime, doneAction: 2)); }.play;
+
+      { oldVerb.free }.defer(fadeTime);
+    }.fork
   }
 
 }

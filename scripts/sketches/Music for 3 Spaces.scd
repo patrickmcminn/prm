@@ -416,6 +416,10 @@ var delBank = 1;
 
 });
 
+~apc.setMasterFaderFunc({ | val |
+  ~prm.systemMixer.setVol(0, val.ccdbfs);
+}, page: page);
+
 //////////////////////////
 //// Device Control: ////
 ////////////////////////
@@ -533,11 +537,11 @@ var delBank = 1;
 }, bank: delBank);
 
 ~apc.setDeviceEncodersMonitorFunc(\feedback, {
-  var feedback = ~prm.delay.feedback.linlin(0, 1, 0, 127);
+  var feedback = ~prm.delay.feedback.linlin(0, 1.1, 0, 127);
   ~apc.setDeviceEncoderValue(6, feedback);
 }, bank: delBank);
 ~apc.setDeviceEncoderFunc(6, { | val |
-  var feedback = val.linlin(0, 127, 0, 1);
+  var feedback = val.linlin(0, 127, 0, 1.1);
   ~prm.delay.setFeedback(feedback);
 }, bank: delBank);
 

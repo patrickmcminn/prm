@@ -30,23 +30,23 @@ var send3 = 3;
 
 //// sends:
 ~apc.setMixerEncoderFunc(1, { | val |
-  ~meaning.mainMixer.setSendVol(0, 0, val.ccdbfs); }, bank: send0, page: page);
+  ~dissolution.mixer.setSendVol(0, 0, val.ccdbfs); }, bank: send0, page: page);
 ~apc.setMixerEncoderFunc(1, { | val |
-  ~meaning.mainMixer.setSendVol(0, 1, val.ccdbfs); }, bank: send1, page: page);
+  ~dissolution.mixer.setSendVol(0, 1, val.ccdbfs); }, bank: send1, page: page);
 ~apc.setMixerEncoderFunc(1, { | val |
-  ~meaning.mainMixer.setSendVol(0, 2, val.ccdbfs); }, bank: send2, page: page);
+  ~dissolution.mixer.setSendVol(0, 2, val.ccdbfs); }, bank: send2, page: page);
 ~apc.setMixerEncoderFunc(1, { | val |
-  ~meaning.mainMixer.setSendVol(0, 3, val.ccdbfs); }, bank: send3, page: page);
+  ~dissolution.mixer.setSendVol(0, 3, val.ccdbfs); }, bank: send3, page: page);
 
 
 ~apc.setMixerEncodersMonitorFunc(("mixer"++0++"send").asSymbol, {
-  ~apc.setMixerEncoderValue(1,  ~meaning.mainMixer.sendVol(0, 0).dbfsCC); }, bank: send0, page: page);
+  ~apc.setMixerEncoderValue(1,  ~dissolution.mixer.sendVol(0, 0).dbfsCC); }, bank: send0, page: page);
 ~apc.setMixerEncodersMonitorFunc(("mixer"++0++"send").asSymbol, {
-  ~apc.setMixerEncoderValue(1,  ~meaning.mainMixer.sendVol(0, 1).dbfsCC); }, bank: send1, page: page);
+  ~apc.setMixerEncoderValue(1,  ~dissolution.mixer.sendVol(0, 1).dbfsCC); }, bank: send1, page: page);
 ~apc.setMixerEncodersMonitorFunc(("mixer"++0++"send").asSymbol, {
-  ~apc.setMixerEncoderValue(1,  ~meaning.mainMixer.sendVol(0, 2).dbfsCC); }, bank: send2, page: page);
+  ~apc.setMixerEncoderValue(1,  ~dissolution.mixer.sendVol(0, 2).dbfsCC); }, bank: send2, page: page);
 ~apc.setMixerEncodersMonitorFunc(("mixer"++0++"send").asSymbol, {
-  ~apc.setMixerEncoderValue(1,  ~meaning.mainMixer.sendVol(0, 3).dbfsCC); }, bank: send3, page: page);
+  ~apc.setMixerEncoderValue(1,  ~dissolution.mixer.sendVol(0, 3).dbfsCC); }, bank: send3, page: page);
 
 //// send bank changes:
 ~apc.setDeviceButtonsMonitorFunc(\sends, {

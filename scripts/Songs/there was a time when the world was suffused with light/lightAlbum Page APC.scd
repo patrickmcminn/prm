@@ -193,26 +193,25 @@ darknessIsLoaded = false;
 */
 
 'dissolution of color onto an infinite plane';
-~apc.turnGridPink(2, 3, 2, page: page);
-~apc.setGridFunc(2, 3, {
+~apc.turnGridPink(4, 4, page: page);
+~apc.setGridFunc(4, 4, {
   if( dissolutionIsLoaded == false, {
     r{
       ~dissolution = Dissolution.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
         ~prm.delay.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
       while({ try { ~dissolution.isLoaded } != true }, { 0.001.wait; });
-      ~apc.turnGridGreen(3, 3);
-      ~apc.setGridFunc(3, 3, { ~apc.setPage('dissolution'); });
+      ~apc.turnGridGreen(5, 4);
+      ~apc.setGridFunc(5, 4, { ~apc.setPage('dissolution'); });
       dissolutionIsLoaded = true;
     }.play;
     },
     {
       ~dissolution.free;
-      ~apc.setGridFunc(3, 3, {});
-      ~apc.turnGridOff(3, 3);
+      ~apc.setGridFunc(5, 4, {});
+      ~apc.turnGridOff(5, 4);
       dissolutionIsLoaded = false;
   });
 }, page: page);
-
     /*
     'dissolution of color onto an infinite plane';
     ~ohm.turnGridBlue(4, 3, page: page);

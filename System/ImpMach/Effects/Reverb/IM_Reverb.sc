@@ -197,8 +197,8 @@ IM_Reverb : IM_Processor {
       fadeInBus = Bus.control;
 
       oldVerb = synth;
-      synth = Synth(\IM_reverbConv, [\inBus, inBus, \outBus, mixer.chanStereo(0),
-        \buffer, bufName, \fftMul, fftMul, \amp, 0, \preAmp, preAmp], group, \addToHead);
+      synth = Synth(\IM_reverbConv, [\inBus, reverbBus, \outBus, postEQ.inBus,
+        \buffer, bufName, \fftMul, fftMul, \amp, 0, \preAmp, preAmp], postEQ.synth, \addBefore);
       server.sync;
 
       oldVerb.map(\amp, fadeOutBus);

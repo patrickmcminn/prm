@@ -8,7 +8,7 @@ Equalizer : IM_Processor {
 
   var <isLoaded;
   var server;
-  var synth;
+  var <synth;
 
   var <lowFreq, <lowRQ, <lowGain;
   var <peak1Freq, <peak1RQ, <peak1Gain;

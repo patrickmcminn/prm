@@ -26,28 +26,28 @@ var dissolutionIsLoaded = false;
 // Light:
 ~ohm.turnGridYellow(0, 0, page: page);
 ~ohm.setGridFunc(0, 0, {
-  if(lightIsLoaded == false, {
-    r {
-      ~lightSend = Light_Sends.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
-        ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.reverb.inBus,
-        relGroup: ~prm.procGroup, addAction: \addToHead);
-      while({ try { ~lightSend.isLoaded } != true }, { 0.001.wait; });
-      s.sync;
-      ~light = Light.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
-        ~lightSend.reverb.inBus, ~lightSend.delays.inBus, ~prm.modularSend.inBus, ~lightSend.multiShift.inBus,
-        ~prm.procGroup, \addToHead);
-      while({ try { ~light.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.setGridFunc(1, 0, { ~ohm.setPage('light'); }, page: page);
-      ~ohm.turnGridGreen(1, 0);
-      lightIsLoaded = true;
-    }.play;
-    },
-    {
-      ~light.free;
-      ~lightSend.free;
-      ~ohm.setGridFunc(1, 0, {  });
-      ~ohm.turnGridOff(1, 0);
-  });
+if(lightIsLoaded == false, {
+r {
+~lightSend = Light_Sends.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+~prm.irLibrary.irDict['3.4Cathedral'], ~prm.reverb.inBus,
+relGroup: ~prm.procGroup, addAction: \addToHead);
+while({ try { ~lightSend.isLoaded } != true }, { 0.001.wait; });
+s.sync;
+~light = Light.new(~prm.submixA, ~prm.submixB, ~prm.submixC,
+~lightSend.reverb.inBus, ~lightSend.delays.inBus, ~prm.modularSend.inBus, ~lightSend.multiShift.inBus,
+~prm.procGroup, \addToHead);
+while({ try { ~light.isLoaded } != true }, { 0.001.wait; });
+~ohm.setGridFunc(1, 0, { ~ohm.setPage('light'); }, page: page);
+~ohm.turnGridGreen(1, 0);
+lightIsLoaded = true;
+}.play;
+},
+{
+~light.free;
+~lightSend.free;
+~ohm.setGridFunc(1, 0, {  });
+~ohm.turnGridOff(1, 0);
+});
 }, page: page);
 */
 
@@ -87,22 +87,22 @@ var dissolutionIsLoaded = false;
 ~ohm.turnGridBlue(0, 4, page: page);
 ~ohm.setGridFunc(0, 4, {
 
-  if( wasntKnownIsLoaded == false, {
-    r{
-      ~wasntKnown = WasntKnown.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus,
-        ~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
-      while({ try { ~wasntKnown.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.turnGridGreen(1, 4);
-      ~ohm.setGridFunc(1, 4, { ~ohm.setPage('wasntKnown'); }, page: page);
-      wasntKnownIsLoaded = true;
-    }.play;
-    },
-    {
-      ~wasntKnown.free;
-      ~ohm.setGridFunc(1, 4, {});
-      ~ohm.turnGridOff(1, 4);
-      wasntKnownIsLoaded = false;
-  });
+if( wasntKnownIsLoaded == false, {
+r{
+~wasntKnown = WasntKnown.new(~prm.submixA, ~prm.submixB, ~prm.submixC, ~prm.reverb.inBus, ~prm.granulator.inBus,
+~prm.modularSend.inBus, nil, ~prm.procGroup, \addToHead);
+while({ try { ~wasntKnown.isLoaded } != true }, { 0.001.wait; });
+~ohm.turnGridGreen(1, 4);
+~ohm.setGridFunc(1, 4, { ~ohm.setPage('wasntKnown'); }, page: page);
+wasntKnownIsLoaded = true;
+}.play;
+},
+{
+~wasntKnown.free;
+~ohm.setGridFunc(1, 4, {});
+~ohm.turnGridOff(1, 4);
+wasntKnownIsLoaded = false;
+});
 }, page: page);
 */
 
@@ -118,22 +118,22 @@ var dissolutionIsLoaded = false;
 'to compress the world to a docile state';
 ~ohm.turnGridWhite(0, 7);
 ~ohm.setGridFunc(0, 7, {
-  if( docileIsLoaded == false, {
-    r{
-      ~docile = Docile.new(~prm.submixA, "UMC404HD 192k", "UMC404HD 192k", ~prm.reverb.inBus, ~prm.granulator.inBus,
-        ~prm.modularSend.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
-      while({ try { ~docile.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.turnGridGreen(1, 7);
-      ~ohm.setGridFunc(1, 7, { ~ohm.setPage('docile'); }, page: page);
-      docileIsLoaded = true;
-    }.play;
-    },
-    {
-      ~docile.free;
-      ~ohm.setGridFunc(1, 7, {});
-      ~ohm.turnGridOff(1, 7);
-      docileIsLoaded = false;
-  });
+if( docileIsLoaded == false, {
+r{
+~docile = Docile.new(~prm.submixA, "UMC404HD 192k", "UMC404HD 192k", ~prm.reverb.inBus, ~prm.granulator.inBus,
+~prm.modularSend.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
+while({ try { ~docile.isLoaded } != true }, { 0.001.wait; });
+~ohm.turnGridGreen(1, 7);
+~ohm.setGridFunc(1, 7, { ~ohm.setPage('docile'); }, page: page);
+docileIsLoaded = true;
+}.play;
+},
+{
+~docile.free;
+~ohm.setGridFunc(1, 7, {});
+~ohm.turnGridOff(1, 7);
+docileIsLoaded = false;
+});
 }, page: page);
 */
 
@@ -169,48 +169,70 @@ var dissolutionIsLoaded = false;
 'a shallow eclipsing darkness';
 ~ohm.turnGridWhite(4, 2, page: page);
 ~ohm.setGridFunc(4, 2, {
-  if( darknessIsLoaded == false, {
-    r{
-      ~darknessReturns = Darkness_Returns.new(~prm.submixA, ~prm.reverb.inBus,
-        relGroup: ~prm.procGroup, addAction: \addToHead);
-      while({ try { ~darknessReturns.isLoaded } != true }, { 0.001.wait; });
-      ~darkness = Darkness.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~darknessReturns.delay.inBus,
-        ~darknessReturns.granulator.inBus, "UMC404HD 192k", "UMC404HD 192k", ~prm.procGroup, \addToHead);
-      while({ try { ~darkness.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.turnGridGreen(5, 2);
-      ~ohm.setGridFunc(5, 2, { ~ohm.setPage('darkness'); });
-      darknessIsLoaded = true;
-    }.play;
-    },
-    {
-      ~darkness.free;
-      ~darknessReturns.free;
-      ~ohm.setGridFunc(5, 2, {});
-      ~ohm.turnGridOff(5, 2);
-      darknessIsLoaded = false;
-  });
+if( darknessIsLoaded == false, {
+r{
+~darknessReturns = Darkness_Returns.new(~prm.submixA, ~prm.reverb.inBus,
+relGroup: ~prm.procGroup, addAction: \addToHead);
+while({ try { ~darknessReturns.isLoaded } != true }, { 0.001.wait; });
+~darkness = Darkness.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~darknessReturns.delay.inBus,
+~darknessReturns.granulator.inBus, "UMC404HD 192k", "UMC404HD 192k", ~prm.procGroup, \addToHead);
+while({ try { ~darkness.isLoaded } != true }, { 0.001.wait; });
+~ohm.turnGridGreen(5, 2);
+~ohm.setGridFunc(5, 2, { ~ohm.setPage('darkness'); });
+darknessIsLoaded = true;
+}.play;
+},
+{
+~darkness.free;
+~darknessReturns.free;
+~ohm.setGridFunc(5, 2, {});
+~ohm.turnGridOff(5, 2);
+darknessIsLoaded = false;
+});
 }, page: page);
 */
 
-/*
 'dissolution of color onto an infinite plane';
-~ohm.turnGridBlue(4, 3, page: page);
-~ohm.setGridFunc(4, 3, {
+~apc.turnGridPink(2, 3, 2, page: page);
+~apc.setGridFunc(2, 3, {
   if( dissolutionIsLoaded == false, {
-    r {
-      ~dissolution = Dissolution.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
-        relGroup: ~prm.procGroup, addAction: \addToHead);
+    r{
+      ~dissolution = Dissolution.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+        ~prm.delay.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
       while({ try { ~dissolution.isLoaded } != true }, { 0.001.wait; });
-      ~ohm.turnGridGreen(5, 3);
-      ~ohm.setGridFunc(5, 3, { ~ohm.setPage('dissolution'); });
+      ~apc.turnGridGreen(3, 3);
+      ~apc.setGridFunc(3, 3, { ~apc.setPage('dissolution'); });
       dissolutionIsLoaded = true;
     }.play;
     },
     {
       ~dissolution.free;
-      ~ohm.setGridFunc(5, 3, {});
-      ~ohm.turnGridOff(5, 3);
+      ~apc.setGridFunc(3, 3, {});
+      ~apc.turnGridOff(3, 3);
       dissolutionIsLoaded = false;
   });
 }, page: page);
-*/
+
+    /*
+    'dissolution of color onto an infinite plane';
+    ~ohm.turnGridBlue(4, 3, page: page);
+    ~ohm.setGridFunc(4, 3, {
+    if( dissolutionIsLoaded == false, {
+    r {
+    ~dissolution = Dissolution.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+    relGroup: ~prm.procGroup, addAction: \addToHead);
+    while({ try { ~dissolution.isLoaded } != true }, { 0.001.wait; });
+    ~ohm.turnGridGreen(5, 3);
+    ~ohm.setGridFunc(5, 3, { ~ohm.setPage('dissolution'); });
+    dissolutionIsLoaded = true;
+    }.play;
+    },
+    {
+    ~dissolution.free;
+    ~ohm.setGridFunc(5, 3, {});
+    ~ohm.turnGridOff(5, 3);
+    dissolutionIsLoaded = false;
+    });
+    }, page: page);
+    */
+    

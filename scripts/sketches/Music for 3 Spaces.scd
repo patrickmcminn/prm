@@ -1,3 +1,11 @@
+/*
+
+
+2/24/2019
+- changing root freq of ~endscale to create constant frequency for D
+*/
+
+
 Server.killAll;
 ~prm = AudioSystem.new(2);
 
@@ -17,7 +25,6 @@ Server.killAll;
 (
 
 ~prm.delay.setDelayTime(1.5);
-
 
 // sub
 ~mix.setVol(0, -6);
@@ -74,8 +81,9 @@ Server.killAll;
 
 
 ~scale = Scale.new(#[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, Tuning.et(10), "ET10Chromatic");
-
 ~endScale = Scale.mixolydian(\just);
+~endScale.tuning
+
 
 ~sub.makeSequence(\EBb);
 ~sub.makeSequence(\EC);

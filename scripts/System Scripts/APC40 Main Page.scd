@@ -75,6 +75,7 @@ var habitIsLoaded = false;
 }, page: page);
 
 'Habit Fills Up What Remains';
+
 ~apc.turnGridPurple(4, 4, 2, page: page);
 ~apc.setGridFunc(4, 4, {
   if(habitIsLoaded == false, {

@@ -165,7 +165,6 @@ prm
       { this.turnGridColor(column, row, colorVal, bank, page); });
   }
 
-
   ////////// launch button colors:
   turnSceneLaunchButtonColor { | button = 0, colorVal = 0, bank = 'active', page = 'active' |
     var num = button + 82;

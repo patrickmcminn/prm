@@ -23,6 +23,8 @@ var send3 = 3;
   ~apc.turnGridGreen(0, 4);
 }, page: page);
 
+
+/*
 ~apc.setFaderFunc(1, { | val |
   ~dissolution.mixer.setVol(val.ccdbfs);
 }, page: page);
@@ -65,7 +67,7 @@ var send3 = 3;
 ~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2); }, page: page);
 ~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); }, page: page);
 
-
+*/
 
 /*
 var page = 'dissolution';

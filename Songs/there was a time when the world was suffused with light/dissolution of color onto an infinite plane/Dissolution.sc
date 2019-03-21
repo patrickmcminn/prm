@@ -33,6 +33,9 @@ Dissolution : IM_Module {
 
       server.sync;
 
+      ///// just manage this from the front page of the control surface:
+      mixer.mute(0);
+
       isLoaded = true;
     }
   }

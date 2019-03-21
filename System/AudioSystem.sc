@@ -84,10 +84,16 @@ AudioSystem {
       granulator.granulator.setCrossfade(1);
       granulator.delay.setMix(0);
 
-      reverb = IM_Reverb.newConvolution(masterEQ.inBus, bufName: irLibrary.irDict['3.2EmptyChurch'],
+      reverb = IM_Reverb.newConvolution(masterEQ.inBus, bufName: irLibrary.irDict['3.0LongReverb'],
         relGroup: systemGroup, addAction: \addToHead);
       server.sync;
       while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
+      reverb.setPreAmp(-6.dbamp);
+      reverb.postEQ.setLowGain(-6);
+      reverb.postEQ.setHighGain(3);
+      reverb.postEQ.setLowFreq(250);
+      reverb.postEQ.setPeak1Freq(350);
+      reverb.postEQ.setPeak1Gain(-5);
 
       /////////// DEFAULT INPUTS:
 

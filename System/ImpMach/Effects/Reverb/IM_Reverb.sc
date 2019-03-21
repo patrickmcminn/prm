@@ -163,6 +163,8 @@ IM_Reverb : IM_Processor {
 
   inBus { ^preEQ.inBus }
 
+  setPreAmp { | amp = 1 |  synth.set(\preAmp, amp); }
+
   setLowPassFreq { | freq = 15000 |
     lowPassFreq = freq;
     synth.set(\lowPassFreq, lowPassFreq);

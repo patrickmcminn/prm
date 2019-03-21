@@ -26,7 +26,7 @@ Sorrow : IM_Module {
       trumpets = Sorrow_Trumpets.new(mixer.chanStereo(0), group, \addToHead);
       while({ try { trumpets.isLoaded } != true }, { 0.001.wait; });
 
-      trumpetInput = IM_HardwareIn.new(0, trumpets.inBus, group, \addToHead);
+      trumpetInput = IM_HardwareIn.new(1, trumpets.inBus, group, \addToHead);
       while({ try { trumpetInput.isLoaded } != true }, { 0.001.wait; });
 
       moog = IM_HardwareIn.new(3, mixer.chanMono(1), group, \addToHead);

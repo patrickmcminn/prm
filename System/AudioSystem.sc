@@ -15,6 +15,7 @@ AudioSystem {
   var <reverb, <granulator, <modularSend, <delay;
   var <splitter;
   var <microphone, micIn, <pickup, <pickupIn, <modular, modularIn,  <moog, <moogIn;
+  var <beauty, <beautyIn;
   var <subtractive;
   var <songBook;
   var <server;
@@ -97,7 +98,7 @@ AudioSystem {
 
       /////////// DEFAULT INPUTS:
 
-      cmix = IM_Mixer.new(4, this.audioIn,
+      cmix = IM_Mixer.new(5, this.audioIn,
         reverb.inBus, granulator.inBus, modularSend.inBus, delay.inBus, false, procGroup, \addToHead);
       while({ try { cmix.isLoaded } != true }, { 0.001.wait; });
 
@@ -121,8 +122,13 @@ AudioSystem {
       moogIn = IM_HardwareIn.new(3, moog.chanMono(0), procGroup, \addToHead);
       while({ try { moogIn.isLoaded } != true }, { 0.001.wait; });
 
+      beauty = Beauty.newMono(cmix.chanStereo(4), relGroup: procGroup, addAction: \addToHead);
+      while({ try { beauty.isLoaded } != true }, { 0.001.wait; });
+      beautyIn = IM_HardwareIn.new(0, beauty.inBus, procGroup, \addToHead);
+      while({ try { beautyIn.isLoaded } != true }, { 0.001.wait; });
+
       // utilities come in muted:
-      cmix.mute(0); cmix.mute(1); cmix.mute(2); cmix.mute(3);
+      cmix.mute(0); cmix.mute(1); cmix.mute(2); cmix.mute(3); cmix.mute(4);
 
       songBook = IdentityDictionary.new;
 

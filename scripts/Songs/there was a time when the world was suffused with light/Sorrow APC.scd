@@ -94,6 +94,13 @@ var send3 = 3;
 ~apc.setMixerEncodersMonitorFunc(\tptSend3, {
   ~apc.setMixerEncoderValue(1,  ~sorrow.mixer.sendVol(0, 3).dbfsCC); }, bank: send3, page: page);
 
+////// trumpet input:
+~apc.setMixerMonitorFunc(\tptMute, {
+  if( ~sorrow.trumpetInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
+}, page: page);
+~apc.setRecordEnableButtonFunc(1, { ~sorrow.trumpetInput.tglMute }, page: page);
+
 
 //////// Moog:
 //// Mute:

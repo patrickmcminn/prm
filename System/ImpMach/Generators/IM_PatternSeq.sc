@@ -1,14 +1,15 @@
 // make a child of pattern proxy
 IM_PatternSeq {
-  var pattProxy, lastPatt;
+  var <pattProxy, lastPatt;
   var player;
   var <isPlaying;
 
   *new { ^super.new.prInit }
 
   prInit {
-    pattProxy = PatternProxy.new(Pbind(\degree, \rest));
+    pattProxy = PatternProxy.new(Pbind(\dur, 1));
     player = pattProxy.play(quant: 0);
+    player.stop;
   }
 
   addKey { |key, patt|

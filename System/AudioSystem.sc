@@ -14,7 +14,7 @@ AudioSystem {
 
   var <reverb, <granulator, <modularSend, <delay;
   var <splitter;
-  var <microphone, micIn, <pickup, <pickupIn, <modular, modularIn,  <moog, <moogIn;
+  var <microphone, micInput, <pickup, <pickupInput, <modular, modularInput,  <moog, <moogInput;
   var <beauty, <beautyIn;
   var <subtractive;
   var <songBook;
@@ -22,14 +22,19 @@ AudioSystem {
 
   var <masterEQ;
 
-  *new { | numOutputs = 2 |
-    ^super.new.prInit(numOutputs);
+  var micIn, pickupIn, moogIn, morphageneIn, modularOut;
+
+  *new { | numOutputs = 2, micInBus, pickupInBus, moogInBus, morphageneInBus, modularOutBus |
+    ^super.new.prInit(numOutputs,micInBus, pickupInBus, moogInBus, morphageneInBus, modularOutBus);
   }
 
-  prInit { |numOutputs|
+  prInit { |numOutputs, micInBus, pickupInBus, moogInBus, morphageneInBus, modularOutBus|
     server = Server.default;
 
     this.prSetServerOptions(server, 64, 131072, 1024, nil);
+
+    micIn = micInBus; pickupIn = pickupInBus; moogIn = moogInBus; morphageneIn = morphageneInBus;
+    modularOut = modularOutBus;
 
     server.waitForBoot {
       var masterOutArray;
@@ -76,7 +81,7 @@ AudioSystem {
       delay.setMix(1);
 
       // send out to modular system
-      modularSend = MonoHardwareSend.new(2, relGroup: systemGroup, addAction: \addToHead);
+      modularSend = MonoHardwareSend.new(modularOut, relGroup: systemGroup, addAction: \addToHead);
       while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 
       granulator = GranularDelay.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
@@ -104,27 +109,27 @@ AudioSystem {
 
       pickup = IM_Mixer_1Ch.new(cmix.chanStereo(0), relGroup: procGroup, addAction: \addToHead);
       while({ try { pickup.isLoaded } != true }, { 0.001.wait; });
-      pickupIn = IM_HardwareIn.new(0, pickup.chanMono, procGroup, \addToHead);
-      while({ try { pickupIn.isLoaded } != true }, { 0.001.wait; });
+      pickupInput = IM_HardwareIn.new(pickupInBus, pickup.chanMono, procGroup, \addToHead);
+      while({ try { pickupInput.isLoaded } != true }, { 0.001.wait; });
 
       microphone = IM_Mixer_1Ch.new(cmix.chanStereo(1), relGroup: procGroup, addAction: \addToHead);
       while({ try { microphone.isLoaded } != true }, { 0.001.wait; });
-      micIn = IM_HardwareIn.new(1, microphone.chanMono(0), procGroup, \addToHead);
-      while({ try { micIn.isLoaded } != true }, { 0.001.wait; });
+      micInput = IM_HardwareIn.new(micInBus, microphone.chanMono(0), procGroup, \addToHead);
+      while({ try { micInput.isLoaded } != true }, { 0.001.wait; });
 
       modular = IM_Mixer_1Ch.new(cmix.chanStereo(2), relGroup: procGroup, addAction: \addToHead);
       while( { try { modular.isLoaded } != true }, { 0.001.wait; });
-      modularIn = IM_HardwareIn.new(2, modular.chanMono, procGroup, \addToHead);
-      while({ try { modularIn.isLoaded } != true }, { 0.001.wait; });
+      modularInput = IM_HardwareIn.new(morphageneInBus, modular.chanMono, procGroup, \addToHead);
+      while({ try { modularInput.isLoaded } != true }, { 0.001.wait; });
 
       moog = IM_Mixer_1Ch.new(cmix.chanStereo(3), relGroup: procGroup, addAction: \addToHead);
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
-      moogIn = IM_HardwareIn.new(3, moog.chanMono(0), procGroup, \addToHead);
-      while({ try { moogIn.isLoaded } != true }, { 0.001.wait; });
+      moogInput = IM_HardwareIn.new(moogInBus, moog.chanMono(0), procGroup, \addToHead);
+      while({ try { moogInput.isLoaded } != true }, { 0.001.wait; });
 
       beauty = Beauty.newMono(cmix.chanStereo(4), relGroup: procGroup, addAction: \addToHead);
       while({ try { beauty.isLoaded } != true }, { 0.001.wait; });
-      beautyIn = IM_HardwareIn.new(0, beauty.inBus, procGroup, \addToHead);
+      beautyIn = IM_HardwareIn.new(pickupInBus, beauty.inBus, procGroup, \addToHead);
       while({ try { beautyIn.isLoaded } != true }, { 0.001.wait; });
 
       // utilities come in muted:
@@ -156,9 +161,6 @@ AudioSystem {
     fork {
       systemMixer.muteAll;
 
-      modularIn.free;
-      modular.free;
-
       hardwareOut.free;
       reverb.free;
       granulator.free;
@@ -174,7 +176,7 @@ AudioSystem {
 
       hardwareOut = nil;
 
-      modularIn = nil;
+      modularInput = nil;
       modular = nil;
 
       reverb = nil;

@@ -8,7 +8,7 @@ update 5/27/2019
 originally written Spring of 2010?
 */
 
-Connections : Song {
+Connections : IM_Module {
 
   var <isLoaded, server;
   var <noteRecord, <inlet;
@@ -19,16 +19,29 @@ Connections : Song {
   var airSputtersInput, dronerInput;
   var noteRecordInput, <trumpetGranInput;
 
+  var micIn, pickupIn, moogIn, moogDevice, moogPort;
+
   var <clock;
 
   *new {
-    | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
+    |
+    outBus = 0, micInBus, pickupInBus, moogInBus,
+    send0Bus, send1Bus, send2Bus, send3Bus,
+    moogDeviceName, moogPortName,
+    relGroup, addAction = 'addToHead'
+    |
     ^super.new(7, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
-      relGroup, addAction).prInit;
+      relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, moogDeviceName, moogPortName);
   }
 
   prInit {
+    |
+    micInBus, pickupInBus, moogInBus,
+    moogDeviceName, moogPortName
+    |
     server = Server.default;
+    micIn = micInBus; pickupIn = pickupInBus; moogIn = moogInBus;
+    moogDevice = moogDeviceName; moogPort = moogPortName;
     server.waitForBoot {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
@@ -39,7 +52,7 @@ Connections : Song {
 
       noteRecord = Connections_NoteRecord.new(group, \addToHead);
       while({ try { noteRecord.isLoaded } != true }, { 0.001.wait; });
-      noteRecordInput = IM_HardwareIn.new(0, noteRecord.inBus, group, \addToHead);
+      noteRecordInput = IM_HardwareIn.new(pickupInBus, noteRecord.inBus, group, \addToHead);
       while({ try { noteRecordInput.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
@@ -67,7 +80,7 @@ Connections : Song {
        r {
           airSputters = Connections_AirSputters.new(mixer.chanStereo(0), clock, group, \addToHead);
           while({ try { airSputters.isLoaded } != true }, { 0.001.wait; });
-          airSputtersInput = IM_HardwareIn.new(0, airSputters.inBus, group, \addToHead);
+          airSputtersInput = IM_HardwareIn.new(pickupIn, airSputters.inBus, group, \addToHead);
         }.play;
       },
         {
@@ -83,7 +96,7 @@ Connections : Song {
         r{
           droner = Droner.newMono(mixer.chanStereo(1), relGroup: group, addAction: \addToHead);
           while({ try { droner.isLoaded } != true }, { 0.001.wait; });
-          dronerInput = IM_HardwareIn.new(0, droner.inBus, group, \addToHead);
+          dronerInput = IM_HardwareIn.new(pickupIn, droner.inBus, group, \addToHead);
         }.play;
       },
       {
@@ -106,7 +119,7 @@ Connections : Song {
         r{
           trumpetGran = Connections_TrumpetGran.new(mixer.chanStereo(3), group, \addToHead);
           while({ try { trumpetGran.isLoaded } != true }, { 0.001.wait; });
-          trumpetGranInput = IM_HardwareIn.new(0, trumpetGran.inBus, group, \addToHead);
+          trumpetGranInput = IM_HardwareIn.new(pickupIn, trumpetGran.inBus, group, \addToHead);
         }.play;
       },
       {

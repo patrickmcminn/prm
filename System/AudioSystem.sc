@@ -14,7 +14,7 @@ AudioSystem {
 
   var <reverb, <granulator, <modularSend, <delay;
   var <splitter;
-  var <microphone, micInput, <pickup, <pickupInput, <modular, modularInput,  <moog, <moogInput;
+  var <microphone, <micInput, <pickup, <pickupInput, <modular, modularInput,  <moog, <moogInput;
   var <beauty, <beautyIn;
   var <subtractive;
   var <songBook;

@@ -19,24 +19,26 @@ Connections : IM_Module {
   var airSputtersInput, dronerInput;
   var noteRecordInput, <trumpetGranInput;
 
+  var <modularClock;
+
   var micIn, pickupIn, moogIn, moogDevice, moogPort;
 
   var <clock;
 
   *new {
     |
-    outBus = 0, micInBus, pickupInBus, moogInBus,
+    outBus = 0, micInBus, pickupInBus, moogInBus, clockOutBus,
     send0Bus, send1Bus, send2Bus, send3Bus,
     moogDeviceName, moogPortName,
     relGroup, addAction = 'addToHead'
     |
     ^super.new(7, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
-      relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, moogDeviceName, moogPortName);
+      relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, clockOutBus, moogDeviceName, moogPortName);
   }
 
   prInit {
     |
-    micInBus, pickupInBus, moogInBus,
+    micInBus, pickupInBus, moogInBus,clockOutBus,
     moogDeviceName, moogPortName
     |
     server = Server.default;
@@ -55,6 +57,9 @@ Connections : IM_Module {
       noteRecordInput = IM_HardwareIn.new(pickupInBus, noteRecord.inBus, group, \addToHead);
       while({ try { noteRecordInput.isLoaded } != true }, { 0.001.wait; });
 
+      modularClock = ModularClock.new(clockOutBus, 75, 25, group, \addToHead);
+      while({ try { modularClock.isLoaded } != true }, { 0.001.wait; });
+
       server.sync;
       mixer.setMasterVol(-9);
       isLoaded = true;
@@ -71,7 +76,9 @@ Connections : IM_Module {
     try { bass.free; };
     try { trumpetGran.free; };
     try { chords.free; };
-    this.freeSong;
+    try { modularClock.free;};
+    //this.freeSong;
+    this.freeModule;
   }
 
   toggleLoadAirSputters {

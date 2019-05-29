@@ -16,6 +16,8 @@ var falseSelfIsLoaded = false;
 
 var habitIsLoaded = false;
 
+var connectionsIsLoaded = false;
+
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 ~apc.storageDict[\loadMasterFunc].value;
 
@@ -96,6 +98,30 @@ var habitIsLoaded = false;
       habitIsLoaded = false;
   });
 }, page: page);
+
+'Connections';
+
+~apc.turnGridBlue(4, 3, 2, page: page);
+~apc.setGridFunc(4, 3, {
+  if(connectionsIsLoaded == false, {
+    r{
+      ~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+        ~moogDevice, ~moogPort, ~prm.procGroup, \addToHead);
+      while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
+      ~apc.setGridFunc(5, 3, { ~apc.setPage('connections'); }, page: page);
+      ~apc.turnGridGreen(5, 3);
+      connectionsIsLoaded = true;
+    }.play;
+  },
+  {
+    ~connections.free;
+    ~apc.setGridFunc(5, 3, {});
+    ~apc.turnGridOff(5, 3);
+    connectionsIsLoaded = false;
+  });
+}, page: page);
+
 
 
 //////// There Was a Time when the World was Suffused with Light ////////

@@ -10,6 +10,7 @@ Connections_AirSputters : IM_Processor {
   var <granulator, <sampler, onsetDetector, <bufferArray, oscFunc;
   var <sputterNum, recordRoutine;
   var <isPlayingArray;
+  var <isPlaying;
 
   *new { | outBus = 0, clock, relGroup = nil, addAction = 'addToTail' |
     ^super.new(1, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(clock);
@@ -57,6 +58,7 @@ Connections_AirSputters : IM_Processor {
       granulator.setGranulatorCrossfade(1);
 
       mixer.setPreVol(18);
+      isPlaying = true;
       isLoaded = true;
     };
   }
@@ -286,6 +288,7 @@ Connections_AirSputters : IM_Processor {
     this.playPattern2;
     this.playPattern3;
     this.playPattern4;
+    isPlaying = true;
   }
 
   stopAllPatterns {
@@ -293,6 +296,7 @@ Connections_AirSputters : IM_Processor {
     this.stopPattern2;
     this.stopPattern3;
     this.stopPattern4;
+    isPlaying = false;
   }
 
 

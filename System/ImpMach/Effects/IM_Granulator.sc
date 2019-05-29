@@ -21,6 +21,7 @@ IM_Granulator : IM_Processor {
 
   var server, <synth, grainBufDict;
   var <isLoaded;
+  var <crossfade;
 
   *new {
 
@@ -55,6 +56,9 @@ IM_Granulator : IM_Processor {
         \posLow, posLow, \posHigh, posHigh, \panLow, panLow, \panHigh, panHigh, \sync, sync, \bufLength, bufLength],
         group, \addToHead);
       while( { synth == nil }, { 0.001.wait; });
+
+      crossfade = 1;
+
       isLoaded = true;
       //"loaded".postln;
     };
@@ -194,7 +198,8 @@ IM_Granulator : IM_Processor {
     synth.set(\cutoff, cutoff);
   }
 
-  setCrossfade { | crossfade = 1 |
+  setCrossfade { | fade = 1 |
+    crossfade = fade;
     synth.set(\mix, crossfade);
   }
 }

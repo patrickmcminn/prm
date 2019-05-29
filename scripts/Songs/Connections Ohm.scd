@@ -101,7 +101,7 @@ loadAirSputtersFuncs = {
 
       ~connections.airSputters.playAllPatterns;
       ~ohm.turnGridGreen(2, 0).yield;
-    };
+    };8
   }, bank: mainBank, page: page);
 
 };

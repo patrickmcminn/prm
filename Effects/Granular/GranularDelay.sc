@@ -88,5 +88,7 @@ GranularDelay : IM_Module {
   setDelayFilterRQ { | rq = 1 | delay.setFilterRQ(rq); }
   setDelayFilterType { | type = 'none' | delay.setFilterType(type); }
 
+  crossfade { ^granulator.crossfade; }
+
 
 }

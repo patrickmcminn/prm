@@ -16,7 +16,7 @@ Connections : IM_Module {
   var <airSputters, <droner, <bass;
   var <trumpetGran, <chords;
 
-  var airSputtersInput, dronerInput;
+  var <airSputtersInput, <dronerInput;
   var noteRecordInput, <trumpetGranInput;
 
   var <modularClock;

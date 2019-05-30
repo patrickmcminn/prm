@@ -58,11 +58,34 @@ chordsLoaded = false;
 }, page: page);
 
 //////// Modular Clock:
-~apc.setMetronomeButtonFunc({
+~apc.setPanButtonFunc({
   ~connections.modularClock.togglePlay;
   if( ~connections.modularClock.isPlaying,
-    { ~apc.turnMetronomeButtonOn }, { ~apc.turnMetronomeButtonOff });
+    { ~apc.turnPanButtonOn }, { ~apc.turnPanButtonOff });
 }, page: page);
+
+/////////////////////
+// Bank Change: ////
+///////////////////
+
+//// send bank changes:
+
+~apc.setDeviceButtonsMonitorFunc(\sends, {
+  if( ~apc.activeMixerEncodersBank == (send0+sendMod),
+    { ~apc.turnDeviceButtonOn(1) }, { ~apc.turnDeviceButtonOff(1) });
+  if( ~apc.activeMixerEncodersBank  == (send1+sendMod),
+    { ~apc.turnDeviceButtonOn(2) }, { ~apc.turnDeviceButtonOff(2) });
+  if( ~apc.activeMixerEncodersBank  == (send2+sendMod),
+    { ~apc.turnDeviceButtonOn(3) }, { ~apc.turnDeviceButtonOff(3) });
+  if( ~apc.activeMixerEncodersBank == (send3+sendMod),
+    { ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4) });
+}, page: page);
+
+
+~apc.setDeviceButtonFunc(1, { ~apc.setActiveMixerEncodersBank(send0+sendMod); }, page: page);
+~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1+sendMod);  }, page: page);
+~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2+sendMod); }, page: page);
+~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3+sendMod); }, page: page);
 
 
 ////////////////
@@ -114,61 +137,36 @@ chordsLoaded = false;
 });
 
 //// microphone:
-~apc.setFaderFunc(8, { | val | ~prm.microphone.setVol(val.ccdbfs); }, bank: mixerBank1, page: page);
-~apc.setTrackSelectFunc(8, { ~prm.microphone.tglMute; }, bank: mixerBank1, page: page);
+~apc.setFaderFunc(8, { | val | ~prm.cmix(0).setVol(val.ccdbfs); }, bank: mixerBank1, page: page);
+~apc.setTrackSelectFunc(8, { ~prm.cmix(0).tglMute; }, bank: mixerBank1, page: page);
 ~apc.setMixerMonitorFunc("micMute", {
-  if( ~prm.microphone.isMuted,
+  if( ~prm.cmix(0).isMuted,
     { ~apc.turnTrackSelectButtonOff(8); }, { ~apc.turnTrackSelectButtonOn(8) });
 }, bank: mixerBank1, page: page);
 //// sends:
 ~apc.setMixerEncoderFunc(8, { | val |
-  ~prm.microphone.setSendVol(0, val.ccdbfs); }, bank: send0, page: page);
+  ~prm.cmix(0).setSendVol(0, val.ccdbfs); }, bank: send0, page: page);
 ~apc.setMixerEncoderFunc(8, { | val |
-  ~prm.microphone.setSendVol(1, val.ccdbfs); }, bank: send1, page: page);
+  ~prm.cmix(0).setSendVol(1, val.ccdbfs); }, bank: send1, page: page);
 ~apc.setMixerEncoderFunc(8, { | val |
-  ~prm.microphone.setSendVol(2, val.ccdbfs); }, bank: send2, page: page);
+  ~prm.cmix(0).setSendVol(2, val.ccdbfs); }, bank: send2, page: page);
 ~apc.setMixerEncoderFunc(8, { | val |
-  ~prm.microphone.setSendVol(3, val.ccdbfs); }, bank: send3, page: page);
+  ~prm.cmix(0).setSendVol(3, val.ccdbfs); }, bank: send3, page: page);
 
 ~apc.setMixerEncodersMonitorFunc("micSend0", {
-  ~apc.setMixerEncoderValue(8,  ~prm.microphone.sendVol(i, 0).dbfsCC); }, bank: send0, page: page);
+  ~apc.setMixerEncoderValue(8,  ~prm.cmix(0).sendVol(0).dbfsCC); }, bank: send0, page: page);
 ~apc.setMixerEncodersMonitorFunc("micSend1", {
-  ~apc.setMixerEncoderValue(8,  ~prm.microphone.sendVol(i, 1).dbfsCC); }, bank: send1, page: page);
+  ~apc.setMixerEncoderValue(8,  ~prm.cmix(0).sendVol(1).dbfsCC); }, bank: send1, page: page);
 ~apc.setMixerEncodersMonitorFunc("micSend2", {
-  ~apc.setMixerEncoderValue(8,  ~prm.microphone.sendVol(i, 2).dbfsCC); }, bank: send2, page: page);
+  ~apc.setMixerEncoderValue(8,  ~prm.cmix(0).sendVol(2).dbfsCC); }, bank: send2, page: page);
 ~apc.setMixerEncodersMonitorFunc("micSend3", {
-  ~apc.setMixerEncoderValue(8,  ~prm.microphone.sendVol(i, 3).dbfsCC); }, bank: send3, page: page);
+  ~apc.setMixerEncoderValue(8,  ~prm.cmix(0).sendVol(3).dbfsCC); }, bank: send3, page: page);
 //// input mute:
 ~apc.setRecordEnableButtonFunc(8, { ~prm.micInput.tglMute; }, bank: mixerBank1, page: page);
 ~apc.setMixerMonitorFunc('micInput', { if(~prm.micInput.isMuted,
   { ~apc.turnRecordEnableButtonOff(8) }, { ~apc.turnRecordEnableButtonOn(8) });
 }, bank: mixerBank1, page: page);
 
-///////////////////////
-//// input mutes: ////
-/////////////////////
-
-//// air sputters:
-~apc.setRecordEnableButtonFunc(1, { ~connections.airSputtersInput.tglMute },
-  bank: mixerBank1, page: page);
-~apc.setMixerMonitorFunc('airSputtersInput', { if( ~connections.airSputtersInput.isMuted,
-  { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
-}, bank: mixerBank1, page: page);
-
-
-//// droner:
-~apc.setRecordEnableButtonFunc(2, { ~connections.dronerInput.tglMute },
-  bank: mixerBank1, page: page);
-~apc.setMixerMonitorFunc('dronerInput', { if ( ~connections.dronerInput.isMuted,
-  { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
-}, bank: mixerBank1, page: page);
-
-//// trumpet gran:
-~apc.setRecordEnableButtonFunc(4, { ~connections.trumpetGranInput.tglMute },
-  bank: mixerBank1, page: page);
-~apc.setMixerMonitorFunc('trumpetGranInput', { if( ~connections.trumpetGranInput.isMuted,
-  { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
-}, bank: mixerBank1, page: page);
 
 
 
@@ -216,7 +214,7 @@ chordRecordColorArray = ['magenta', 'green', 'cyan', 'magenta', 'white', 'green'
   {
     r {
       ~connections.toggleLoadAirSputters;
-      while({ try { ~connections.airSputters.isLoaded } != true }, { 0.001.wait; });
+      while({ try { ~connections.airSputtersInput.isLoaded } != true }, { 0.001.wait; });
       loadAirSputtersFuncs.value;
       ~apc.turnClipStopButtonOn(1);
       airSputtersLoaded = true;
@@ -233,6 +231,12 @@ chordRecordColorArray = ['magenta', 'green', 'cyan', 'magenta', 'white', 'green'
 // Function Load:
 loadAirSputtersFuncs = {
 
+  ~apc.setRecordEnableButtonFunc(1, { ~connections.airSputtersInput.tglMute },
+    bank: mixerBank1, page: page);
+  ~apc.setMixerMonitorFunc('airSputtersInput', { if( ~connections.airSputtersInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
+  }, bank: mixerBank1, page: page);
+
   // monitoring routines:
   airSputtersMonitorRoutine.reset;
   airSputtersMonitorRoutine.play;
@@ -242,9 +246,9 @@ loadAirSputtersFuncs = {
   ~apc.setGridMonitorFunc('airSputtersMonitor', {
     switch( ~connections.airSputters.sputterNum,
       1, { ~apc.turnGridMagenta(0, 4) },
-      2, { ~ohm.turnGridCyan(0, 4) },
-      3, { ~ohm.turnGridYellow(0, 4) },
-      4, { ~ohm.turnGridWhite(0, 4) }
+      2, { ~apc.turnGridCyan(0, 4) },
+      3, { ~apc.turnGridYellow(0, 4) },
+      4, { ~apc.turnGridWhite(0, 4) }
     );
   }, bank: gridBank1, page: page);
 
@@ -266,6 +270,9 @@ loadAirSputtersFuncs = {
 
 freeAirSputtersFuncs = {
   airSputtersMonitorRoutine.stop;
+  ~apc.turnRecordEnableButtonOff(1, bank: gridBank1, page: page);
+  ~apc.setRecordEnableButtonFunc(1, {}, bank: gridBank1, page: page);
+  ~apc.setMixerMonitorFunc('airSputtersInput', { }, bank: gridBank1, page: page);
   ~apc.setGridFunc(0, 3, { }, bank: gridBank1, page: page);
   ~apc.setGridMonitorFunc('airSputtersMonitor', { }, bank: gridBank1, page: page);
   ~apc.setGridMonitorFunc('airSputters', { }, bank: gridBank1, page: page);
@@ -276,27 +283,39 @@ freeAirSputtersFuncs = {
 
 /////// Droner:
 ~apc.setClipStopMonitorFunc(\dronerIsLoaded, {
-  if( ~connections.droner.isLoaded,
+  if( dronerLoaded  == true,
     { ~apc.turnClipStopButtonOn(2) }, { ~apc.turnClipStopButtonOff(2) });
 }, bank: mixerBank1, page: page);
 ~apc.setClipStopFunc(2, {
-  if(~connections.droner.isLoaded == false,
-    r {
-      ~connections.toggleLoadDroner;
-      while({ try { ~connections.droner.isLoaded } != true }, { 0.001.wait; });
-      loadDronerFuncs.value;
-    }.play,
+  if( dronerLoaded == false,
+    {
+      r {
+        ~connections.toggleLoadDroner;
+        while({ try { ~connections.dronerInput.isLoaded } != true }, { 0.001.wait; });
+        loadDronerFuncs.value;
+        dronerLoaded = true;
+      }.play
+    },
     {
       ~connections.toggleLoadDroner;
       freeDronerFuncs.value;
+      dronerLoaded = false;
   });
-}, bank: gridBank1, page: page);
+}, bank: mixerBank1, page: page);
 
-loadDronerFuncs =  {
+loadDronerFuncs = {
 
   var grainRateResetFunc;
 
-  grainRateResetFunc = { 3.do({ | i | ~apc.turnGridPink(1, i+2, 1, bank: gridBank1, page: page); }); };
+  "This is Working".postln;
+
+  grainRateResetFunc = { 3.do({ | i | ~apc.turnGridPink(1, i+1, 1, bank: gridBank1, page: page); }); };
+
+  ~apc.setRecordEnableButtonFunc(2, { ~connections.dronerInput.tglMute },
+    bank: mixerBank1, page: page);
+  ~apc.setMixerMonitorFunc('dronerInput', { if( ~connections.dronerInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
+  }, bank: mixerBank1, page: page);
 
   ////// buttons:
 
@@ -371,6 +390,9 @@ loadDronerFuncs =  {
 
 freeDronerFuncs =  {
   //// buttons:
+  ~apc.turnRecordEnableButtonOff(2, bank: gridBank1, page: page);
+  ~apc.setRecordEnableButtonFunc(2, { }, bank: gridBank1, page: page);
+  ~apc.setMixerMonitorFunc(\dronerInput, { }, bank: gridBank1, page: page);
   4.do({ | i | ~apc.turnGridOff(1, i+1, bank: gridBank1, page: page); });
   4.do({ | i | ~apc.setGridFunc(1, i+1, { }, bank: gridBank1, page: page); });
 
@@ -408,21 +430,23 @@ noteRecordColorArray = ['blue', 'cyan', 'magenta', 'white', 'green', 'yellow'];
 //// Bassline:
 // On/Off:
 ~apc.setClipStopMonitorFunc(\bassline, {
-  if( ~connections.bass.isLoaded,
+  if( basslinesLoaded == true,
     { ~apc.turnClipStopButtonOn(3) }, { ~apc.turnClipStopButtonOff(3) });
 }, bank: gridBank1, page: page);
 ~apc.setClipStopFunc(3, {
-  if( ~connections.bass.isLoaded == false,
+  if( basslinesLoaded == false,
     {
       r {
         ~connections.toggleLoadBass;
         while({ try { ~connections.bass.isLoaded } != true }, { 0.001.wait; });
         loadBasslineFuncs.value;
+        basslinesLoaded = true;
       }.play
     },
     {
       ~connections.toggleLoadBass;
       freeBasslineFuncs.value;
+      basslinesLoaded = false;
   })
 }, bank: gridBank1, page: page);
 
@@ -434,7 +458,7 @@ loadBasslineFuncs = {
     if( ~connections.bass.bassline1IsPlaying,
       { ~apc.turnGridGreen(2, 1) }, { ~apc.turnGridCyan(2, 1, 1) });
     if( ~connections.bass.bassline2IsPlaying,
-      { ~apc.turnGridGreen(2, 0) }, { ~apc.turnGridCyan(2, 1, 1) });
+      { ~apc.turnGridGreen(2, 0) }, { ~apc.turnGridCyan(2, 0, 1) });
   }, bank: gridBank1, page: page);
   ~apc.setGridFunc(2, 1, {
     if( ~connections.bass.bassline1IsPlaying == false,
@@ -474,27 +498,35 @@ freeBasslineFuncs = {
 
 /////// Trumpet Gran:
 ~apc.setClipStopMonitorFunc(\trumpetGran, {
-  if( ~connections.trumpetGran.isLoaded,
+  if( trumpetGranLoaded,
     { ~apc.turnClipStopButtonOn(4) }, { ~apc.turnClipStopButtonOff(4) });
 }, bank: mixerBank1, page: page);
 ~apc.setClipStopFunc(4, {
-  if( ~connections.trumpetGran.isLoaded == false,
+  if( trumpetGranLoaded == false,
     {
       r{
         ~connections.toggleLoadTrumpetGran;
-        while({ try { ~connections.trumpetGran.isLoaded } != true }, { 0.001.wait; });
+        while({ try { ~connections.trumpetGranInput.isLoaded } != true }, { 0.001.wait; });
         loadTrumpetGranFuncs.value;
+        trumpetGranLoaded = true;
       }.play;
     },
     {
       ~connections.toggleLoadTrumpetGran;
       freeTrumpetGranFuncs.value;
+      trumpetGranLoaded = false;
 
     }
   );
 }, bank: mixerBank1, page: page);
 
 loadTrumpetGranFuncs = {
+  // input mute:
+  ~apc.setRecordEnableButtonFunc(4, { ~connections.trumpetGranInput.tglMute },
+    bank: mixerBank1, page: page);
+  ~apc.setMixerMonitorFunc('trumpetGranInput', { if( ~connections.trumpetGranInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
+  }, bank: mixerBank1, page: page);
   //// knobs:
   ~apc.setDeviceEncodersMonitorFunc(\trumpetGran, {
     var feedback = ~connections.trumpetGran.granulator.delay.feedback.linlin(0.0, 1.1, 0, 127);
@@ -515,27 +547,32 @@ loadTrumpetGranFuncs = {
 };
 
 freeTrumpetGranFuncs = {
+  ~apc.turnRecordEnableButtonOff(4, bank: gridBank1, page: page);
+  ~apc.setRecordEnableButtonFunc(4, { }, bank: gridBank1, page: page);
+  ~apc.setMixerMonitorFunc(\trumpetGranInput, { }, bank: gridBank1, page: page);
   ~apc.setDeviceEncodersMonitorFunc(\trumpetGran, { }, bank: encoderBank1, page: page);
   2.do({ | i | ~apc.setDeviceEncoderFunc(i+5, {}, bank: encoderBank1, page: page); });
 };
 
 /////// Inlet:
 ~apc.setClipStopMonitorFunc(\inlet, {
-  if( ~connections.inlet.isLoaded,
+  if( inletLoaded == true,
     { ~apc.turnClipStopButtonOn(5) }, { ~apc.turnClipStopButtonOff(5) });
 }, bank: mixerBank1, page: page);
 ~apc.setClipStopFunc(5, {
-  if( ~connections.inlet.isLoaded == false,
+  if( inletLoaded == false,
     {
       r{
         ~connections.toggleLoadInlet;
         while({ try { ~connections.inlet.isLoaded } != true }, { 0.001.wait; });
         loadInletFuncs.value;
+        inletLoaded = true;
       }.play;
     },
     {
       ~connections.toggleLoadInlet;
       freeInletFuncs.value;
+      inletLoaded = false;
   });
 }, bank: mixerBank1, page: page);
 
@@ -550,17 +587,18 @@ loadInletFuncs = {
 
   ~apc.setDeviceEncoderFunc(7, { | val |
     var crossfade = val.linlin(0, 127, -1.0, 1.0);
-    ~connections.inlet.granulator.setCrossfade(crossfade);
+    ~connections.inlet.granulator.setGranulatorCrossfade(crossfade);
   }, bank: encoderBank1, page: page);
 
   // attack randomizer:
   ~apc.setDeviceEncoderFunc(8, { | val |
-    ~connections.inlet.attackRandomizer.mixer.setVol(val.ccdbfs(-70, 3));
+    ~connections.inlet.attackRandomizer.mixer.setVol(val.ccdbfs);
   }, bank: encoderBank1, page: page);
+
   // cascade:
   ~apc.setFaderFunc(7, { | val |
-    ~connections.inlet.cascade.mixer.setValue(val.ccdbfs(-70, 3));
-  }, bank: encoderBank1 page: page);
+    ~connections.inlet.cascade.mixer.setVol(val.ccdbfs(-70, 0));
+  }, bank: encoderBank1, page: page);
 
   ~apc.setGridMonitorFunc(\inlet, {
     if( ~connections.inlet.attackRandomizer.isPlaying,
@@ -572,13 +610,14 @@ loadInletFuncs = {
   ~apc.setGridFunc(4, 4, {
     if( ~connections.inlet.attackRandomizer.isPlaying == false,
       { ~connections.inlet.attackRandomizer.playSequences(~connections.clock) },
-      { ~conecctions.inlet.attackRandomizer.stopSequence; });
+      { ~connections.inlet.attackRandomizer.stopSequences; });
   }, bank: mixerBank1, page: page);
   ~apc.setGridFunc(4, 3, {
     if( ~connections.inlet.cascade.isPlaying == false,
       { ~connections.inlet.cascade.playSequences(~connections.clock); },
       { ~connections.inlet.cascade.stopSequences; });
   }, bank: mixerBank1, page: page);
+
 
 };
 
@@ -592,24 +631,27 @@ freeInletFuncs = {
   ~apc.setMixerMonitorFunc(\inlet, {}, bank: mixerBank1, page: page);
 };
 
+
 /////// Chords:
 
 ~apc.setClipStopMonitorFunc(\chords, {
-  if( ~connections.chords.isLoaded,
+  if( chordsLoaded == true,
     { ~apc.turnClipStopButtonOn(6) }, { ~apc.turnClipStopButtonOff(7) });
 }, bank: mixerBank1, page: page);
 ~apc.setClipStopFunc(6, {
-  if( ~connections.chords.isLoaded == false,
+  if( chordsLoaded == false,
     {
       r{
         ~connections.toggleLoadChords;
         while({ try { ~connections.chords.isLoaded } != true }, { 0.001.wait; });
         loadChordFuncs.value;
+        chordsLoaded = true;
       }.play
     },
     {
       ~connections.toggleLoadChords;
       freeChordFuncs.value;
+      chordsLoaded = false;
   });
 }, bank: mixerBank1, page: page);
 

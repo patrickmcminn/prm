@@ -59,13 +59,17 @@ r {
 
   //try { ~ohm = OhmRGB.new; };
   try { ~apc = APC40Mk2.new; };
-  try { ~base = Base.new("mio10", "HST 3"); };
+  try { ~base = Base.new; };
+
 
   "/Global Functions/Load Global Functions.scd".loadRelative;
   "/System Scripts/Load System Scripts.scd".loadRelative;
   "/Songs/Load Songs.scd".loadRelative;
 
+
 }.play;
+
+
 
 //////////////////
 //// Live: //////

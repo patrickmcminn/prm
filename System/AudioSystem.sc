@@ -107,15 +107,15 @@ AudioSystem {
         reverb.inBus, granulator.inBus, modularSend.inBus, delay.inBus, false, procGroup, \addToHead);
       while({ try { cmix.isLoaded } != true }, { 0.001.wait; });
 
-      pickup = IM_Mixer_1Ch.new(cmix.chanStereo(0), relGroup: procGroup, addAction: \addToHead);
-      while({ try { pickup.isLoaded } != true }, { 0.001.wait; });
-      pickupInput = IM_HardwareIn.new(pickupInBus, pickup.chanMono, procGroup, \addToHead);
-      while({ try { pickupInput.isLoaded } != true }, { 0.001.wait; });
-
-      microphone = IM_Mixer_1Ch.new(cmix.chanStereo(1), relGroup: procGroup, addAction: \addToHead);
+      microphone = IM_Mixer_1Ch.new(cmix.chanStereo(0), relGroup: procGroup, addAction: \addToHead);
       while({ try { microphone.isLoaded } != true }, { 0.001.wait; });
       micInput = IM_HardwareIn.new(micInBus, microphone.chanMono(0), procGroup, \addToHead);
       while({ try { micInput.isLoaded } != true }, { 0.001.wait; });
+
+      pickup = IM_Mixer_1Ch.new(cmix.chanStereo(1), relGroup: procGroup, addAction: \addToHead);
+      while({ try { pickup.isLoaded } != true }, { 0.001.wait; });
+      pickupInput = IM_HardwareIn.new(pickupInBus, pickup.chanMono, procGroup, \addToHead);
+      while({ try { pickupInput.isLoaded } != true }, { 0.001.wait; });
 
       modular = IM_Mixer_1Ch.new(cmix.chanStereo(2), relGroup: procGroup, addAction: \addToHead);
       while( { try { modular.isLoaded } != true }, { 0.001.wait; });

@@ -36,13 +36,13 @@ Connections_Inlet : IM_Module {
 
       server.sync;
 
-      reverb.mixer.setVol(-12);
+      reverb.mixer.setVol(-9);
       granulator.setGranulatorCrossfade(1);
       granulator.setDelayMix(0);
       granulator.setTrigRate(40);
       granulator.setGrainDur(0.1, 0.3);
 
-      mixer.setPreVol(0);
+      mixer.setPreVol(3);
 
       isLoaded = true;
     }

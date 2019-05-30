@@ -46,13 +46,13 @@ Connections_Chords :IM_Module {
       server.sync;
       this.prMakePatterns;
 
-      eq.setHighFreq(900);
-      eq.setHighGain(-16);
+      eq.setHighFreq(1200);
+      eq.setHighGain(-9);
       granulator.setDelayMix(0);
       granulator.setGranulatorCrossfade(-0.25);
       granulator.setGrainDur(0.1, 0.2);
       granulator.setTrigRate(25);
-      granulator.mixer.setVol(-16);
+      granulator.mixer.setVol(-6);
 
       server.sync;
       this.prMakePatternParameters;

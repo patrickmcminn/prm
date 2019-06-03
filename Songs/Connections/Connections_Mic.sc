@@ -49,9 +49,11 @@ Connections_Mic : IM_Module {
   }
 
   prInitializeParameters {
-    eq.setHighPassCutoff(220);
-    eq.setPeak1Freq(350);
-    eq.setPeak1Gain(-6);
+    eq.setHighPassCutoff(200);
+    eq.setPeak1Freq(400);
+    eq.setPeak1Gain(3);
+    eq.setPeak2Freq(650);
+    eq.setPeak2Gain(-6);
 
     granulator.setGranulatorCrossfade(-0.75);
     granulator.granulator.setRate(0.5, 0.5);

@@ -49,17 +49,24 @@ Connections_Mic : IM_Module {
   }
 
   prInitializeParameters {
-    eq.setHighPassCutoff(180);
+    eq.setHighPassCutoff(220);
     eq.setPeak1Freq(350);
     eq.setPeak1Gain(-6);
 
-    granulator.setGranulatorCrossfade(-0.3);
+    granulator.setGranulatorCrossfade(-0.75);
     granulator.granulator.setRate(0.5, 0.5);
+    granulator.setGrainEnvelope('gabWide');
+    granulator.setTrigRate(16);
+    granulator.setGrainDur(0.1, 0.3);
+    granulator.setGranulatorCrossfade(-0.75);
+    granulator.setDelayMix(0);
+
   }
 
   ///////// public functions:
 
   free {
+    isLoaded = false;
     this.freeModule;
     inBusHack.free;
     granulator.free;

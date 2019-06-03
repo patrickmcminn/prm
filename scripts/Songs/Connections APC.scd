@@ -26,7 +26,7 @@ var freeTrumpetGranFuncs, freeInletFuncs, freeChordFuncs, freeMicFuncs;
 var airSputtersMonitorRoutine;
 
 var noteRecordLoaded, airSputtersLoaded, dronerLoaded, basslinesLoaded, trumpetGranLoaded;
-var inletLoaded, chordsLoaded;
+var inletLoaded, chordsLoaded, micLoaded;
 
 var noteRecordColorArray, cascadeRecordColorArray, chordRecordColorArray;
 
@@ -37,6 +37,7 @@ basslinesLoaded = false;
 trumpetGranLoaded = false;
 inletLoaded = false;
 chordsLoaded = false;
+micLoaded = false;
 
 ~apc.makePage(page);
 
@@ -93,7 +94,7 @@ chordsLoaded = false;
 //////////////
 
 
-7.do({ | i |
+8.do({ | i |
 
   // volume:
   ~apc.setFaderFunc(i+1, { | val | ~connections.mixer.setVol(i, val.ccdbfs); }, bank: mixerBank1, page: page);
@@ -135,39 +136,6 @@ chordsLoaded = false;
     ~apc.setMixerEncoderValue(i+1,  ~connections.mixer.sendVol(i, 3).dbfsCC); }, bank: send3, page: page);
 
 });
-
-//// microphone:
-~apc.setFaderFunc(8, { | val | ~prm.cmix(0).setVol(val.ccdbfs); }, bank: mixerBank1, page: page);
-~apc.setTrackSelectFunc(8, { ~prm.cmix(0).tglMute; }, bank: mixerBank1, page: page);
-~apc.setMixerMonitorFunc("micMute", {
-  if( ~prm.cmix(0).isMuted,
-    { ~apc.turnTrackSelectButtonOff(8); }, { ~apc.turnTrackSelectButtonOn(8) });
-}, bank: mixerBank1, page: page);
-//// sends:
-~apc.setMixerEncoderFunc(8, { | val |
-  ~prm.cmix(0).setSendVol(0, val.ccdbfs); }, bank: send0, page: page);
-~apc.setMixerEncoderFunc(8, { | val |
-  ~prm.cmix(0).setSendVol(1, val.ccdbfs); }, bank: send1, page: page);
-~apc.setMixerEncoderFunc(8, { | val |
-  ~prm.cmix(0).setSendVol(2, val.ccdbfs); }, bank: send2, page: page);
-~apc.setMixerEncoderFunc(8, { | val |
-  ~prm.cmix(0).setSendVol(3, val.ccdbfs); }, bank: send3, page: page);
-
-~apc.setMixerEncodersMonitorFunc("micSend0", {
-  ~apc.setMixerEncoderValue(8,  ~prm.cmix(0).sendVol(0).dbfsCC); }, bank: send0, page: page);
-~apc.setMixerEncodersMonitorFunc("micSend1", {
-  ~apc.setMixerEncoderValue(8,  ~prm.cmix(0).sendVol(1).dbfsCC); }, bank: send1, page: page);
-~apc.setMixerEncodersMonitorFunc("micSend2", {
-  ~apc.setMixerEncoderValue(8,  ~prm.cmix(0).sendVol(2).dbfsCC); }, bank: send2, page: page);
-~apc.setMixerEncodersMonitorFunc("micSend3", {
-  ~apc.setMixerEncoderValue(8,  ~prm.cmix(0).sendVol(3).dbfsCC); }, bank: send3, page: page);
-//// input mute:
-~apc.setRecordEnableButtonFunc(8, { ~prm.micInput.tglMute; }, bank: mixerBank1, page: page);
-~apc.setMixerMonitorFunc('micInput', { if(~prm.micInput.isMuted,
-  { ~apc.turnRecordEnableButtonOff(8) }, { ~apc.turnRecordEnableButtonOn(8) });
-}, bank: mixerBank1, page: page);
-
-
 
 
 cascadeRecordColorArray = ['yellow', 'blue', 'cyan', 'magenta', 'white'];
@@ -695,5 +663,43 @@ freeChordFuncs = {
     ~apc.setGridMonitorFunc(\chords, { }, bank: gridBank1, page: page);
   });
 
-}
+};
+
+/////// mic:
+~apc.setClipStopMonitorFunc(\mic, {
+  if( micLoaded == true,
+    { ~apc.turnClipStopButtonOn(8) }, { ~apc.turnClipStopButtonOff(8) });
+}, bank: mixerBank1, page: page);
+
+~apc.setClipStopFunc(8, {
+  if( micLoaded == false,
+    {
+      r {
+        ~connections.toggleLoadMic;
+        while({ try { ~connections.micInput.isLoaded } != true }, { 0.001.wait; });
+        loadMicFuncs.value;
+        micLoaded = true;
+      }.play;
+    },
+    {
+      ~connections.toggleLoadMic;
+      freeMicFuncs.value;
+      micLoaded = false;
+  });
+}, bank: mixerBank1, page: page);
+
+loadMicFuncs = {
+  //// input mute:
+  ~apc.setRecordEnableButtonFunc(8, { ~connections.micInput.tglMute }, bank: mixerBank1, page: page);
+  ~apc.setMixerMonitorFunc('micInput', { if(~connections.micInput.isMuted,
+    { ~apc.turnRecordEnableButtonOff(8) }, { ~apc.turnRecordEnableButtonOn(8) });
+  }, bank: mixerBank1, page: page);
+};
+
+freeMicFuncs  = {
+  ~apc.turnRecordEnableButtonOff(8, mixerBank1, page);
+  ~apc.setRecordEnableButtonFunc(8, { }, bank: mixerBank1, page: page);
+  ~apc.setMixerMonitorFunc('micInput', { }, bank: mixerBank1, page: page);
+};
+
 

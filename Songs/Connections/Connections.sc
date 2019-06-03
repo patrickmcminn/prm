@@ -18,6 +18,7 @@ Connections : IM_Module {
 
   var <airSputtersInput, <dronerInput;
   var noteRecordInput, <trumpetGranInput;
+  var <mic, <micInput;
 
   var <modularClock;
 
@@ -32,7 +33,7 @@ Connections : IM_Module {
     moogDeviceName, moogPortName,
     relGroup, addAction = 'addToHead'
     |
-    ^super.new(7, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
+    ^super.new(8, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
       relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, clockOutBus, moogDeviceName, moogPortName);
   }
 
@@ -61,7 +62,11 @@ Connections : IM_Module {
       while({ try { modularClock.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
+
+      // mixer parameters:
       mixer.setMasterVol(-9);
+      mixer.setSendVol(7, 0, -6);
+
       isLoaded = true;
     }
   }
@@ -77,6 +82,7 @@ Connections : IM_Module {
     try { trumpetGran.free; };
     try { chords.free; };
     try { modularClock.free;};
+    try { mic.free; micInput.free; };
     //this.freeSong;
     this.freeModule;
   }
@@ -84,16 +90,16 @@ Connections : IM_Module {
   toggleLoadAirSputters {
     if( try { airSputters.isLoaded } != true,
       {
-       r {
+        r {
           airSputters = Connections_AirSputters.new(mixer.chanStereo(0), clock, group, \addToHead);
           while({ try { airSputters.isLoaded } != true }, { 0.001.wait; });
           airSputtersInput = IM_HardwareIn.new(pickupIn, airSputters.inBus, group, \addToHead);
         }.play;
       },
-        {
-          airSputtersInput.free;
-          airSputters.free;
-        }
+      {
+        airSputtersInput.free;
+        airSputters.free;
+      }
     );
   }
 
@@ -155,9 +161,24 @@ Connections : IM_Module {
     if( try { chords.isLoaded } != true,
       {
         chords = Connections_Chords.new(mixer.chanStereo(5), noteRecord.chordBufferArray,
-        group, \addToHead);
+          group, \addToHead);
       },
       { chords.free;}
     );
   }
+
+  toggleLoadMic {
+    if( try { mic.isLoaded } != true,
+      {
+        r{
+          mic = Connections_Mic.new(mixer.chanStereo(7), group, \addToHead);
+          while({ try { mic.isLoaded } != true }, { 0.001.wait; });
+          micInput = IM_HardwareIn.new(micIn, mic.inBus, group, \addToHead);
+          while({ try { micInput.isLoaded } != true }, { 0.001.wait; });
+        }.play;
+      },
+      { mic.free; micInput.free; }
+    );
+  }
+
 }

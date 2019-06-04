@@ -57,7 +57,7 @@ Connections : IM_Module {
       noteRecordInput = IM_HardwareIn.new(pickupInBus, noteRecord.inBus, group, \addToHead);
       while({ try { noteRecordInput.isLoaded } != true }, { 0.001.wait; });
 
-      modularClock = ModularClock.new(clockOutBus, 75, 25, group, \addToHead);
+      modularClock = ModularClock.new(clockOutBus, 75, 24, group, \addToHead);
       while({ try { modularClock.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;

@@ -38,7 +38,12 @@ var send7 = 7;
 
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 
-
+//////// Modular Clock:
+~apc.setPanButtonFunc({
+  ~foundation.modularClock.togglePlay;
+  if( ~foundation.modularClock.isPlaying,
+    { ~apc.turnPanButtonOn }, { ~apc.turnPanButtonOff });
+}, page: page);
 
 
 //////// Metronome:

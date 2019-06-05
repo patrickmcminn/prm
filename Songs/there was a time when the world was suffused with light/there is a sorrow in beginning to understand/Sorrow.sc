@@ -13,11 +13,21 @@ Sorrow : IM_Module {
 
   var <trumpets, <trumpetInput, <moog;
 
-  *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
-    ^super.new(2, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
+  *new {
+    |
+    outBus = 0, micInBus, pickupInBus, moogInBus, clockOutBus,
+    send0Bus, send1Bus, send2Bus, send3Bus,
+    moogDeviceName, moogPortName,
+    relGroup, addAction = 'addToHead'
+    |
+    ^super.new(2, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, clockOutBus, moogDeviceName, moogPortName);
   }
 
   prInit {
+    |
+    micInBus, pickupInBus, moogInBus,clockOutBus,
+    moogDeviceName, moogPortName
+    |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -26,11 +36,11 @@ Sorrow : IM_Module {
       trumpets = Sorrow_Trumpets.new(mixer.chanStereo(0), group, \addToHead);
       while({ try { trumpets.isLoaded } != true }, { 0.001.wait; });
 
-      trumpetInput = IM_HardwareIn.new(1, trumpets.inBus, group, \addToHead);
+      trumpetInput = IM_HardwareIn.new(micInBus, trumpets.inBus, group, \addToHead);
       while({ try { trumpetInput.isLoaded } != true }, { 0.001.wait; });
       trumpetInput.mute;
 
-      moog = IM_HardwareIn.new(3, mixer.chanMono(1), group, \addToHead);
+      moog = IM_HardwareIn.new(moogInBus, mixer.chanMono(1), group, \addToHead);
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;

@@ -112,7 +112,7 @@ IM_Reverb : IM_Processor {
   prMakeSynthDefs {
     SynthDef(\IM_reverbConv, {
       | inBus = 0, outBus = 0, preAmp = 1, amp = 1,
-      lowPassFreq = 15000, highPassFreq = 80, buffer, fftMul = 2, mute = 1 |
+      lowPassFreq = 15000, highPassFreq = 80, buffer, fftMul = 2, mute = 1, mix = 1 |
 
       var fftSize, input, leftConvolution, rightConvolution, sum, lowPass, highPass;
       var sig, lagTime;
@@ -131,6 +131,7 @@ IM_Reverb : IM_Processor {
 
       sig = highPass * amp.lag(lagTime);
       sig = sig * -10.dbamp * mute;
+      sig = (sig * mix) + (input * (1-mix));
       Out.ar(outBus, sig);
     }).add;
 

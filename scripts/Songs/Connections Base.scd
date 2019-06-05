@@ -115,57 +115,87 @@ controlButtonResetFunc.value;
 
 //////// Faders:
 
+
+//// droner:
+3.do({ | i | ~base.setFaderMode(i+1, 'cyanFill', bank: mainBank, page: page); });
+// volume:
+~base.setFaderMonitorFunc(1, {
+  var vol = ~connections.mixer.vol(1).dbfsCC;
+  ~base.setFaderValue(1, vol);
+}, bank:mainBank, page: page);
+~base.setFaderFunc(1, { | val | ~connections.mixer.setVol(1, val.ccdbfs); },
+  bank: mainBank, page: page);
+// modular send:
+~base.setFaderMonitorFunc(2, {
+  var vol = ~connections.mixer.sendVol(1, 2).dbfsCC;
+  ~base.setFaderValue(2, vol);
+}, bank: mainBank, page: page);
+~base.setFaderFunc(2, { | val | ~connections.mixer.setSendVol(1, 2, val.ccdbfs); },
+  bank: mainBank, page: page);
+// granulator feedback:
+~base.setFaderMonitorFunc(3, {
+  var fb = ~connections.droner.delay.feedback.linlin(0.3, 1.2, 0, 127);
+  ~base.setFaderValue(3, fb);
+}, bank: mainBank, page: page);
+~base.setFaderFunc(3, { | val |
+  var fb = val.linlin(0, 127, 0.3, 1.2);
+  ~connections.droner.delay.setFeedback(fb);
+}, bank: mainBank, page: page);
+
+/*
 //// droner:
 
 3.do({ | i | ~base.setFaderMode(i+1, 'cyanFill', bank: mainBank, page: page); });
 // reverb send:
 ~base.setFaderFunc(1, { | val |
-  ~connections.mixerA.setSendVol(1, 0, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(1, val);
+~connections.mixerA.setSendVol(1, 0, val.ccdbfs(-70, 0));
+~base.setFaderValue(1, val);
 }, bank: mainBank, page: page);
 // modular send:
 ~base.setFaderFunc(2, { | val |
-  ~connections.mixerA.setSendVol(1, 2, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(2, val);
+~connections.mixerA.setSendVol(1, 2, val.ccdbfs(-70, 0));
+~base.setFaderValue(2, val);
 }, bank: mainBank, page: page);
 // granulator feedback:
 ~base.setFaderFunc(3, { | val |
-  var fb = val.linlin(0, 127, 0.7, 1.2);
-  ~connections.droner.delay.setFeedback(fb);
-  ~base.setFaderValue(3, val);
+var fb = val.linlin(0, 127, 0.7, 1.2);
+~connections.droner.delay.setFeedback(fb);
+~base.setFaderValue(3, val);
 }, bank: mainBank, page: page);
-
+*/
+/*
 //// microphone:
 4.do({ | i | ~base.setFaderMode(i+4, 'magentaFill', bank: mainBank, page: page); });
 // volume:
 ~base.setFaderFunc(4, { | val |
-  ~prm.microphone.setVol(val.ccdbfs(-70, 0));
-  ~base.setFaderValue(4, val);
+~prm.microphone.setVol(val.ccdbfs(-70, 0));
+~base.setFaderValue(4, val);
 }, bank: mainBank, page: page);
 // verb send:
 ~base.setFaderFunc(5, { | val |
-  ~prm.microphone.setSendVol(0, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(5, val);
+~prm.microphone.setSendVol(0, val.ccdbfs(-70, 0));
+~base.setFaderValue(5, val);
 }, bank: mainBank, page: page);
 
 // gran send:
 ~base.setFaderFunc(6, { | val |
-  ~prm.microphone.setSendVol(1, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(6, val);
+~prm.microphone.setSendVol(1, val.ccdbfs(-70, 0));
+~base.setFaderValue(6, val);
 }, bank: mainBank, page: page);
 
 // modular send:
 ~base.setFaderFunc(7, { | val |
-  ~prm.microphone.setSendVol(2, val.ccdbfs(-70, 0));
-  ~base.setFaderValue(7, val);
+~prm.microphone.setSendVol(2, val.ccdbfs(-70, 0));
+~base.setFaderValue(7, val);
 }, bank: mainBank, page: page);
 
 // modular volume:
 ~base.setFaderMode(8, 'redFill', bank: mainBank, page: page);
 ~base.setFaderFunc(8, { | val |
-  ~prm.modular.setVol(val.ccdbfs(-70, 0));
-  ~base.setFaderValue(8, val);
+~prm.modular.setVol(val.ccdbfs(-70, 0));
+~base.setFaderValue(8, val);
 }, bank: mainBank, page: page);
+*/
 
 
 //////// grid:
@@ -174,12 +204,14 @@ controlButtonResetFunc.value;
 // droner erosion:
 ~base.turnGridYellow(0, 3, bank: mainBank, page: page);
 ~base.setGridFunc(0, 3, { | val |
-  var mix = val.linlin(0, 127, 0.02, 1);
-  ~connections.droner.setErosionMix(mix);
+  var vol = val.linlin(0, 127, 0, -12);
+  var dist = val.linlin(0, 127, 1, 25);
+  ~connections.droner.distortion.mixer.setPreVol(vol);
+  ~connections.droner.distortion.setDistortionGain(dist);
 }, 'pressure', bank: mainBank, page: page);
 
 
-
+/*
 
 ////////////////////////////
 ///// Air Sputters Bank: ////
@@ -416,10 +448,11 @@ controlButtonResetFunc.value;
 }, bank: micBank, page: page);
 // modular send:
 ~base.setFaderFunc(4, { | val |
- ~prm.microphone.setSendVol(2, val.ccdbfs(-70, 0));
+  ~prm.microphone.setSendVol(2, val.ccdbfs(-70, 0));
   ~base.setFaderValue(4, val);
 }, bank: micBank, page: page);
 
 //////// Grid:
 ~base.turnAllGridWhite(micBank, page: page);
+*/
 

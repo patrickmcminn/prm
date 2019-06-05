@@ -23,6 +23,7 @@ Connections : IM_Module {
   var <modularClock;
 
   var micIn, pickupIn, moogIn, moogDevice, moogPort;
+  var impulseResponse;
 
   var <clock;
 
@@ -30,17 +31,17 @@ Connections : IM_Module {
     |
     outBus = 0, micInBus, pickupInBus, moogInBus, clockOutBus,
     send0Bus, send1Bus, send2Bus, send3Bus,
-    moogDeviceName, moogPortName,
+    moogDeviceName, moogPortName, ir,
     relGroup, addAction = 'addToHead'
     |
     ^super.new(8, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
-      relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, clockOutBus, moogDeviceName, moogPortName);
+      relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, clockOutBus, moogDeviceName, moogPortName, ir);
   }
 
   prInit {
     |
     micInBus, pickupInBus, moogInBus,clockOutBus,
-    moogDeviceName, moogPortName
+    moogDeviceName, moogPortName, ir
     |
     server = Server.default;
     micIn = micInBus; pickupIn = pickupInBus; moogIn = moogInBus;
@@ -52,6 +53,7 @@ Connections : IM_Module {
       clock = TempoClock.new;
       server.sync;
       clock.tempo = 75/60;
+      impulseResponse = ir;
 
       noteRecord = Connections_NoteRecord.new(group, \addToHead);
       while({ try { noteRecord.isLoaded } != true }, { 0.001.wait; });
@@ -107,7 +109,7 @@ Connections : IM_Module {
     if( try { droner.isLoaded } != true,
       {
         r{
-          droner = Droner.newMono(mixer.chanStereo(1), relGroup: group, addAction: \addToHead);
+          droner = Droner.newMono(mixer.chanStereo(1), impulseResponse,  relGroup: group, addAction: \addToHead);
           while({ try { droner.isLoaded } != true }, { 0.001.wait; });
           dronerInput = IM_HardwareIn.new(pickupIn, droner.inBus, group, \addToHead);
         }.play;

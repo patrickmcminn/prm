@@ -291,11 +291,17 @@ loadDronerFuncs = {
   ~apc.turnGridYellow(1, 4, bank: gridBank1, page: page);
   // mix high:
   ~apc.setGridFunc(1, 4, {
-    ~connections.droner.setErosionMix(0.7);
+    //~connections.droner.setErosionMix(0.7);
+    ~connections.droner.distortion.mixer.setPreVol(-12);
+    ~connections.droner.distortion.setDistortionGain(25);
+    //~connections.droner.distortion.postEQ.setHighGain(12);
     ~apc.turnGridWhite(1, 4);
   }, type: 'noteOn', bank: gridBank1, page: page);
   ~apc.setGridFunc(1, 4, {
-    ~connections.droner.setErosionMix(0.02);
+    ~connections.droner.distortion.mixer.setPreVol(0);
+    ~connections.droner.distortion.setDistortionGain(1);
+    //~connections.droner.distortion.postEQ.setHighGain(0);
+    //~connections.droner.setErosionMix(0.02);
     ~apc.turnGridYellow(1, 4);
   }, type: 'noteOff', bank: gridBank1, page: page);
 
@@ -328,8 +334,8 @@ loadDronerFuncs = {
 
   ~apc.setDeviceEncodersMonitorFunc('dronerKnobs', {
     var crossfade = ~connections.droner.granulator.crossfade.linlin(-1.0, 1.0, 0, 127);
-    var lowShelf = ~connections.droner.eq.lowGain.linlin(-6.0, 6.0, 0, 127);
-    var highShelf = ~connections.droner.eq.highGain.linlin(-6.0, 6.0, 0, 127);
+    var lowShelf = ~connections.droner.eq.lowGain.linlin(-12.0, 12.0, 0, 127);
+    var highShelf = ~connections.droner.eq.highGain.linlin(-12.0, 12.0, 0, 127);
     ~apc.setDeviceEncoderValue(1, crossfade);
     ~apc.setDeviceEncoderValue(2, lowShelf);
     ~apc.setDeviceEncoderValue(3, highShelf);
@@ -344,13 +350,13 @@ loadDronerFuncs = {
 
   // low shelf:
   ~apc.setDeviceEncoderFunc(2, { | val |
-    var eq = val.linlin(0, 127, -6.0, 6.0);
+    var eq = val.linlin(0, 127, -12.0, 12.0);
     ~connections.droner.eq.setLowGain(eq);
   }, bank: encoderBank1, page: page);
 
   // high shelf;
   ~apc.setDeviceEncoderFunc(3, { | val |
-    var eq = val.linlin(0, 127, -6.0, 6.0);
+    var eq = val.linlin(0, 127, -12.0, 12.0);
     ~connections.droner.eq.setHighGain(eq);
   }, bank: encoderBank1, page: page);
 

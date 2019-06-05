@@ -97,7 +97,7 @@ Foundation_TrumpetSection : IM_Module {
     var noteLoop = [-2, -3, -10, -2, -3, -12];
     trumpet1.addKey(\arrival, \legato, 1);
     trumpet1.addKey(\arrival, \rate, Pseq([
-      Rest,
+      Rest(),
       Pseq(noteLoop.midiratio, 4),
       Pseq([-2, -3, -10].midiratio, 1)
     ], 1));
@@ -126,7 +126,7 @@ Foundation_TrumpetSection : IM_Module {
     var noteLoop = [0, -4, -9, -7];
     trumpet2.addKey(\arrival, \legato, 1);
     trumpet2.addKey(\arrival, \rate, Pseq([
-      Rest, Rest,
+      Rest(), Rest(),
       Pseq(noteLoop.midiratio, 5),
       0.midiratio
     ], 1));
@@ -149,7 +149,7 @@ Foundation_TrumpetSection : IM_Module {
     var note = [0, 5, 3, 2, 0, 5, 3, 2, -2, 0, 5, 3, 2, 0, 5, 3];
     var dur = [4, 4, 2, 2, 4, 4, 2, 2, 2, 2, 4, 2, 2, 2, 4, 2, 2, 2];
     trumpet3.addKey(\arrival, \legato, 1);
-    trumpet3.addKey(\arrival, \rate, Pseq([Rest, Rest, Pseq(note.midiratio, 1)], 1));
+    trumpet3.addKey(\arrival, \rate, Pseq([Rest(), Rest(), Pseq(note.midiratio, 1)], 1));
     trumpet3.addKey(\arrival, \dur, Pseq(dur, 1));
   }
 

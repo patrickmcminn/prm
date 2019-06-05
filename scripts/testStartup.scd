@@ -42,7 +42,7 @@ r {
 
   // M32:
   ~moogDevice = "mio10";
-  ~moogPort = "Moog Mother 32";
+  ~moogPort = "DIN 5";
 
   // Juno 106:
   ~junoDevice = "mio10";
@@ -57,7 +57,6 @@ r {
 
   while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
-  //try { ~ohm = OhmRGB.new; };
   try { ~apc = APC40Mk2.new; };
   try { ~base = Base.new; };
 

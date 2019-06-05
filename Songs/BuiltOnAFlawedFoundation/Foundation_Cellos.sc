@@ -98,7 +98,7 @@ Foundation_Cellos : IM_Module {
     subtractive.addKey(\cello3Main, \legato, 1);
     subtractive.addKey(\cello3Main, \octave, 4);
     subtractive.addKey(\cello3Main, \dur, Pseq([30, iter2DurArray, iter3DurArray, iter4DurArray, 12], 1));
-    subtractive.addKey(\cello3Main, \note, Pseq([Rest, iter2NoteArray, iter2NoteArray, iter3NoteArray, -10], 1));
+    subtractive.addKey(\cello3Main, \note, Pseq([Rest(), iter2NoteArray, iter2NoteArray, iter3NoteArray, -10], 1));
 
   }
 
@@ -113,7 +113,7 @@ Foundation_Cellos : IM_Module {
     subtractive.addKey(\cello2Main, \legato, 1);
     subtractive.addKey(\cello2Main, \octave, 3);
     subtractive.addKey(\cello2Main, \dur, Pseq([30, 27, iter3DurArray, iter4DurArray, 12], 1));
-    subtractive.addKey(\cello2Main, \note, Pseq([Rest, Rest, iter3NoteArray, iter4NoteArray, 5], 1));
+    subtractive.addKey(\cello2Main, \note, Pseq([Rest(), Rest(), iter3NoteArray, iter4NoteArray, 5], 1));
   }
 
   prMakeCello1Pattern {
@@ -127,7 +127,7 @@ Foundation_Cellos : IM_Module {
     subtractive.addKey(\cello1Main, \legato, 1);
     subtractive.addKey(\cello1Main, \octave, 4);
     subtractive.addKey(\cello1Main, \dur, Pseq([30, 27, iter3DurArray, iter4DurArray, 12], 1));
-    subtractive.addKey(\cello1Main, \note, Pseq([Rest, Rest, iter3NoteArray, iter4NoteArray, -3], 1));
+    subtractive.addKey(\cello1Main, \note, Pseq([Rest(), Rest(), iter3NoteArray, iter4NoteArray, -3], 1));
   }
 
   //////// public functions:

@@ -55,13 +55,13 @@ Foundation_EndTrumpets :IM_Module {
     var squareNoteArray, squareDurArray;
     var driftNoteArray, driftDurArray;
     squareNoteArray = Pseq([
-      -7.midiratio, -7.midiratio, Rest, -10.midiratio, Rest, -4.midiratio, Rest, -12.midiratio, -12.midiratio,
-      Rest, -5.midiratio, Rest, -4.midiratio, Rest, -9.midiratio, Rest
+      -7.midiratio, -7.midiratio, Rest(), -10.midiratio, Rest(), -4.midiratio, Rest(), -12.midiratio, -12.midiratio,
+      Rest(), -5.midiratio, Rest(), -4.midiratio, Rest(), -9.midiratio, Rest()
     ], 1);
     squareDurArray = Pseq([6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 2, 7, 1.5, 2.5, 1.5, 4.5]/2, 1);
     driftNoteArray = Pseq([
-      -7.midiratio, -7.midiratio, Rest, -10.midiratio, Rest, -4.midiratio, Rest, -12.midiratio, -12.midiratio,
-      Rest, -5.midiratio, Rest, -4.midiratio, Rest, -9.midiratio, Rest
+      -7.midiratio, -7.midiratio, Rest(), -10.midiratio, Rest(), -4.midiratio, Rest(), -12.midiratio, -12.midiratio,
+      Rest(), -5.midiratio, Rest(), -4.midiratio, Rest(), -9.midiratio, Rest()
     ], inf);
     driftDurArray = Pseq([6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 2, 7, 1.5, 2.5, 1.5, 3.5]/2, inf);
 
@@ -76,13 +76,13 @@ Foundation_EndTrumpets :IM_Module {
     var driftNoteArray, driftDurArray;
 
     squareNoteArray = Pseq([
-      Rest, -4.midiratio, Rest, -12.midiratio, -12.midiratio, Rest, -5.midiratio, Rest,
-      -9.midiratio, Rest, -7.midiratio, 0.midiratio, Rest, -5.midiratio, Rest, -10.midiratio, Rest
+      Rest(), -4.midiratio, Rest(), -12.midiratio, -12.midiratio, Rest(), -5.midiratio, Rest(),
+      -9.midiratio, Rest(), -7.midiratio, 0.midiratio, Rest(), -5.midiratio, Rest(), -10.midiratio, Rest()
     ], 1);
     squareDurArray = Pseq([4, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 6, 3, 1.5, 2.5, 1.5, 3.5]/2, 1);
     driftNoteArray = Pseq([
-      Rest, -4.midiratio, Rest, -12.midiratio, -12.midiratio, Rest, -5.midiratio, Rest,
-      -9.midiratio, Rest, -7.midiratio, 0.midiratio, Rest, -5.midiratio, Rest, -10.midiratio, Rest
+      Rest(), -4.midiratio, Rest(), -12.midiratio, -12.midiratio, Rest(), -5.midiratio, Rest(),
+      -9.midiratio, Rest(), -7.midiratio, 0.midiratio, Rest(), -5.midiratio, Rest(), -10.midiratio, Rest()
     ], inf);
     driftDurArray = Pseq([4, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 2.5, 6, 6, 3, 1.5, 2.5, 1.5, 4]/2, inf);
 
@@ -97,13 +97,13 @@ Foundation_EndTrumpets :IM_Module {
     var driftNoteArray, driftDurArray;
 
     squareNoteArray = Pseq([
-      Rest, -5.midiratio, Rest, -9.midiratio, Rest, -7.midiratio, -7.midiratio, Rest,
-      -10.midiratio, Rest, -4.midiratio, Rest, -12.midiratio, -7.midiratio, -12.midiratio
+      Rest(), -5.midiratio, Rest(), -9.midiratio, Rest(), -7.midiratio, -7.midiratio, Rest(),
+      -10.midiratio, Rest(), -4.midiratio, Rest(), -12.midiratio, -7.midiratio, -12.midiratio
     ], 1);
     squareDurArray = Pseq([5, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 4.5, 6, 4, 4]/2, 1);
     driftNoteArray = Pseq([
-      Rest, -5.midiratio, Rest, -9.midiratio, Rest, -7.midiratio, -7.midiratio, Rest,
-      -10.midiratio, Rest, -4.midiratio, Rest, -12.midiratio, -7.midiratio, -12.midiratio
+      Rest(), -5.midiratio, Rest(), -9.midiratio, Rest(), -7.midiratio, -7.midiratio, Rest(),
+      -10.midiratio, Rest(), -4.midiratio, Rest(), -12.midiratio, -7.midiratio, -12.midiratio
     ], inf);
     driftDurArray = Pseq([5, 1.5, 5.5, 1.5, 2.5, 6, 3, 4, 1.5, 5.5, 1.5, 4.5, 6, 4, 2]/2, inf);
 

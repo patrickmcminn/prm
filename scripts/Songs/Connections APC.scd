@@ -436,14 +436,14 @@ loadBasslineFuncs = {
   }, bank: gridBank1, page: page);
   ~apc.setGridFunc(2, 1, {
     if( ~connections.bass.bassline1IsPlaying == false,
-      { ~connections.bass.playBassline1(~connections.clock); },
-      { ~connections.bass.stopBassline1(~connections.clock); }
+      { ~connections.clock.playNextBar({ ~connections.bass.playBassline1(~connections.clock); }) },
+      { ~connections.clock.playNextBar({~connections.bass.stopBassline1(~connections.clock); }) }
     );
   }, bank: gridBank1, page: page);
   ~apc.setGridFunc(2, 0, {
     if( ~connections.bass.bassline2IsPlaying == false,
-      { ~connections.bass.playBassline2(~connections.clock); },
-      { ~connections.bass.stopBassline2(~connections.clock); }
+      { ~connections.clock.playNextBar({ ~connections.bass.playBassline2(~connections.clock); }); },
+      { ~connections.clock.playNextBar({ ~connections.bass.stopBassline2(~connections.clock); }); }
     );
   }, bank: gridBank1, page: page);
 
@@ -583,13 +583,13 @@ loadInletFuncs = {
 
   ~apc.setGridFunc(4, 4, {
     if( ~connections.inlet.attackRandomizer.isPlaying == false,
-      { ~connections.inlet.attackRandomizer.playSequences(~connections.clock) },
-      { ~connections.inlet.attackRandomizer.stopSequences; });
+      { ~connections.clock.playNextBar({~connections.inlet.attackRandomizer.playSequences(~connections.clock) })},
+      { ~connections.clock.playNextBar({~connections.inlet.attackRandomizer.stopSequences; }) });
   }, bank: mixerBank1, page: page);
   ~apc.setGridFunc(4, 3, {
     if( ~connections.inlet.cascade.isPlaying == false,
-      { ~connections.inlet.cascade.playSequences(~connections.clock); },
-      { ~connections.inlet.cascade.stopSequences; });
+      { ~connections.clock.playNextBar({~connections.inlet.cascade.playSequences(~connections.clock); })},
+      { ~connections.clock.playNextBar({ ~connections.inlet.cascade.stopSequences; }) });
   }, bank: mixerBank1, page: page);
 
 
@@ -649,14 +649,14 @@ loadChordFuncs = {
   // random chords:
   ~apc.setGridFunc(5, 3, {
     if( ~connections.chords.randomChordsIsPlaying == false,
-      { ~connections.chords.playRandomChords(~connections.clock); },
-      { ~connections.chords.stopRandomChords; });
+      { ~connections.clock.playNextBar({ ~connections.chords.playRandomChords(~connections.clock); })},
+      { ~connections.clock.playNextBar({ ~connections.chords.stopRandomChords;}) });
   }, bank: mixerBank1, page: page);
   // chord progression:
   ~apc.setGridFunc(5, 2, {
     if( ~connections.chords.chordProgressionIsPlaying == false,
-      {  ~connections.chords.playChordProgression(~connections.clock); },
-      { ~connections.chords.stopChordProgression; });
+      {  ~connections.clock.playNextBar({ ~connections.chords.playChordProgression(~connections.clock); })},
+      { ~connections.clock.playNextBar({~connections.chords.stopChordProgression; }); });
   }, bank: mixerBank1, page: page);
 
 };

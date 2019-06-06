@@ -42,7 +42,7 @@ r {
 
   // M32:
   ~moogDevice = "mio10";
-  ~moogPort = "Moog Mother 32";
+  ~moogPort = "DIN 5";
 
   // Juno 106:
   ~junoDevice = "mio10";

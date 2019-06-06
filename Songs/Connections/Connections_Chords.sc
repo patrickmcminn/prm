@@ -49,15 +49,15 @@ Connections_Chords :IM_Module {
       eq.setHighFreq(1200);
       eq.setHighGain(-9);
       granulator.setDelayMix(0);
-      granulator.setGranulatorCrossfade(-0.25);
+      granulator.setGranulatorCrossfade(-0.75);
       granulator.setGrainDur(0.1, 0.2);
       granulator.setTrigRate(25);
-      granulator.mixer.setVol(-6);
+      granulator.mixer.setVol(-3);
 
       server.sync;
       this.prMakePatternParameters;
 
-      mixer.setPreVol(12);
+      mixer.setPreVol(3);
       isLoaded = true;
     };
   }

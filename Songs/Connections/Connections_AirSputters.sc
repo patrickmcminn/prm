@@ -7,7 +7,7 @@ prm
 Connections_AirSputters : IM_Processor {
 
   var <isLoaded, server;
-  var <granulator, <sampler, onsetDetector, <bufferArray, oscFunc;
+  var <granulator, <sampler, onsetDetector, <bufferArray, <eq, oscFunc;
   var <sputterNum, recordRoutine;
   var <isPlayingArray;
   var <isPlaying;
@@ -30,7 +30,11 @@ Connections_AirSputters : IM_Processor {
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = GranularDelay.new(mixer.chanStereo(0), group, \addToHead);
+      eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
+      while({ try { eq.isLoaded } != true }, { 0.001.wait; });
+
+
+      granulator = GranularDelay.new(eq.inBus, group, \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
       sampler = Sampler.newMono(granulator.inBus, relGroup: group, addAction: \addToHead);
@@ -56,6 +60,18 @@ Connections_AirSputters : IM_Processor {
       granulator.granulator.setPan(-0.7, 0.7);
       granulator.setDelayMix(0);
       granulator.setGranulatorCrossfade(1);
+
+      eq.setHighPassCutoff(100);
+      eq.setLowFreq(180);
+      eq.setLowGain(12);
+
+      eq.setLowPassCutoff(3500);
+
+      eq.setPeak1Freq(650);
+      eq.setPeak1Gain(-9);
+
+      eq.setPeak3Freq(900);
+      eq.setPeak3Gain(-6);
 
       mixer.setPreVol(18);
       isPlaying = true;
@@ -101,8 +117,8 @@ Connections_AirSputters : IM_Processor {
     sampler.addKey(\sputterOne, \sustainTime, 0.125);
     sampler.addKey(\sputterOne, \rate, 1);
     sampler.addKey(\sputterOne, \rate,Pstep(
-			Prand([-1, -1, -1, -1, -1, -1, -0.5, -0.5, -0.5, 0.5, 1, 1,
-				1.1, 1.1, 1.1, 1.1, 1.2, 1.2, 1.2, 1.3, 1.3, 1.3, 1.3, 1.3, 2, 2, 2, 2, 2], inf),
+      Prand([-1, -1, -1, -1, -1, -1, -0.5, -0.5, -0.5, 0.5, 1, 1,
+        1.1, 1.1, 1.1, 1.1, 1.2, 1.2, 1.2, 1.3, 1.3, 1.3, 1.3, 1.3, 2, 2, 2, 2, 2], inf),
       1, inf));
     sampler.addKey(\sputterOne, \startPos, Pif(Pkey(\rate).isPositive, 0, server.sampleRate*0.4));
     sampler.addKey(\sputterOne, \loop, 0);
@@ -115,8 +131,8 @@ Connections_AirSputters : IM_Processor {
     sampler.addKey(\sputterTwo, \sustainTime, 0.125);
     //sampler.addKey(\sputterTwo, \note, Pseq([1, 1, \r, \r, \r, \r, \r, 1, 1, \r, \r, \r, \r, \r, 1, 1], inf));
     sampler.addKey(\sputterTwo, \rate, Pstep(
-			Prand([-2, -2, -2, -2, -2, -2, -0.5, -0.5, -0.5, 3, 1.7, 1.7, 1.1, 1.1, 1.1, 1.1, 2.4, 2.4, 2.4,
-				2, 2, 2, 2, 2, 2, 2, 2, 2, 2], inf),
+      Prand([-2, -2, -2, -2, -2, -2, -0.5, -0.5, -0.5, 3, 1.7, 1.7, 1.1, 1.1, 1.1, 1.1, 2.4, 2.4, 2.4,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2], inf),
       1, inf));
     sampler.addKey(\sputterTwo, \startPos, Pif(Pkey(\rate).isPositive, 0, server.sampleRate*0.4));
 
@@ -128,8 +144,8 @@ Connections_AirSputters : IM_Processor {
     sampler.addKey(\sputterThree, \sustainTime, 0.125);
     //sampler.addKey(\sputterThree, \note, Pseq([1, \r, \r, \r], inf));
     sampler.addKey(\sputterThree, \rate, Pstep(
-			Prand([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 1, 1, 1.1, 1.1, 1.1, 1.1,
-				0.6, 0.6, 0.6, 0.4, 0.4, 0.4, 0.4], inf),
+      Prand([0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 1, 1, 1.1, 1.1, 1.1, 1.1,
+        0.6, 0.6, 0.6, 0.4, 0.4, 0.4, 0.4], inf),
       1, inf));
     sampler.addKey(\sputterThree, \startPos, Pif(Pkey(\rate).isPositive, 0, server.sampleRate*0.4));
 

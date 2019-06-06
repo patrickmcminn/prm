@@ -74,7 +74,7 @@ Droner : IM_Module {
       granulator.setPan(-0.03, 0.03);
       granulator.setGranulatorCrossfade(1);
       granulator.setDelayMix(0);
-      granulator.mixer.setVol(0);
+      granulator.mixer.setVol(3);
 
       reverb.setMix(0.75);
       reverb.mixer.setPreVol(-3);
@@ -92,7 +92,7 @@ Droner : IM_Module {
       eq.setHighFreq(2637);
       eq.setHighGain(-3);
 
-      mixer.setPreVol(0);
+      mixer.setPreVol(3);
       mixer.setVol(0);
 
       isLoaded = true;

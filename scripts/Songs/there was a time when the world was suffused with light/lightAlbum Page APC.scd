@@ -143,8 +143,13 @@ docileIsLoaded = false;
 ~apc.setGridFunc(2, 1, {
   if( sorrowIsLoaded == false, {
     r{
+      /*
       ~sorrow = Sorrow.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
         ~prm.delay.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
+      */
+      ~sorrow = Sorrow.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+        ~moogDevice, ~moogPort, ~prm.procGroup, \addToHead);
       while({ try { ~sorrow.isLoaded } != true }, { 0.001.wait; });
       ~apc.turnGridGreen(3, 1);
       ~apc.setGridFunc(3, 1, { ~apc.setPage('sorrow'); }, page: page);

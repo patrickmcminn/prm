@@ -4,20 +4,24 @@ Droner.sc
 prm
 
 picked up again 7/6/2015
+
+updated 6/5/2019
+-- erosion sounds terrible -- replacing with Distortion
 */
 
 Droner : IM_Module {
 
   var <isLoaded, server;
   var demand, <input, <delay, <granulator, erosion, <reverb, <eq;
+  var <distortion;
   var <inBus;
   var demandBus, erosionBus;
 
   *newMono { | outBus = 0, ir, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono;
+    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono(ir);
   }
 
-  prInitMono {
+  prInitMono { | ir |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -31,17 +35,27 @@ Droner : IM_Module {
       eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
+
+      /*
       reverb = IM_Reverb.new(eq.inBus, mix: 0.75, roomSize: 1, damp: 0.85, relGroup: group, addAction: \addToHead);
+      while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
+      */
+
+      reverb = IM_Reverb.newConvolution(eq.inBus, bufName: ir, relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       granulator = GranularDelay.new(reverb.inBus, group, \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
-
+      /*
       erosion = Synth(\prm_Droner_Erosion, [\inBus, erosionBus, \outBus, granulator.inBus, \freq, 500, \rangeLow, 0.002,
-        \rangeHigh, 0.009, \mix, 0.02], group, \addToHead);
+      \rangeHigh, 0.009, \mix, 0.02], group, \addToHead);
       server.sync;
+      */
 
-      delay = SimpleDelay.newStereo(erosionBus, 1.305, 0.99, 3, relGroup: group, addAction: \addToHead);
+      distortion = Distortion.newStereo(granulator.inBus, 1, relGroup: group, addAction: \addToHead);
+      while({ try { distortion.isLoaded } != true }, { 0.001.wait; });
+
+      delay = SimpleDelay.newStereo(distortion.inBus, 1.305, 0.99, 3, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       input = IM_Mixer_1Ch.new(delay.inBus, relGroup: group, addAction: \addToHead);
@@ -60,15 +74,26 @@ Droner : IM_Module {
       granulator.setPan(-0.03, 0.03);
       granulator.setGranulatorCrossfade(1);
       granulator.setDelayMix(0);
-      granulator.mixer.setVol(6);
+      granulator.mixer.setVol(3);
 
-      eq.setLowFreq(250);
+      reverb.setMix(0.75);
+      reverb.mixer.setPreVol(-3);
+      reverb.postEQ.setHighGain(6);
+      reverb.preEQ.setPeak1Freq(300);
+      reverb.postEQ.setPeak2Freq(650);
+      reverb.postEQ.setPeak2Gain(-6);
+      reverb.preEQ.setPeak1Gain(-3);
+      reverb.postEQ.setHighPassCutoff(20);
+
+      reverb.setMix(0.75);
+
+      eq.setLowFreq(120);
       eq.setLowGain(0);
       eq.setHighFreq(2637);
       eq.setHighGain(-3);
 
-      mixer.setPreVol(6);
-      mixer.setVol(3);
+      mixer.setPreVol(3);
+      mixer.setVol(0);
 
       isLoaded = true;
     };
@@ -105,7 +130,8 @@ Droner : IM_Module {
     demand.free;
     input.free;
     delay.free;
-    erosion.free;
+    //erosion.free;
+    distortion.free;
     granulator.free;
     reverb.free;
     eq.free;

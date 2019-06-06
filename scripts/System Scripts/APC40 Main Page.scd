@@ -35,9 +35,14 @@ var connectionsIsLoaded = false;
       while({ try { ~foundationDelay.isLoaded } != true }, { 0.001.wait; });
       s.sync;
       ~foundationDelay.setMix(1);
+      /*
       ~foundation = Foundation.new(~prm.audioIn,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
         ~prm.procGroup, \addToHead, ~moogDevice, ~moogPort);
+      */
+      ~foundation = Foundation.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+        ~moogDevice, ~moogPort, ~prm.procGroup, \addToHead);
       while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
       ~apc.setGridFunc(1, 4, { ~apc.setPage('foundation'); }, page: page);
       ~apc.turnGridGreen(1, 4);
@@ -107,7 +112,7 @@ var connectionsIsLoaded = false;
     r{
       ~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
-        ~moogDevice, ~moogPort, ~prm.procGroup, \addToHead);
+        ~moogDevice, ~moogPort, ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.procGroup, \addToHead);
       while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
       ~apc.setGridFunc(5, 3, { ~apc.setPage('connections'); }, page: page);
       ~apc.turnGridGreen(5, 3);

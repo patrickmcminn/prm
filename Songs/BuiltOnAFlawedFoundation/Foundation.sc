@@ -16,17 +16,25 @@ Foundation : IM_Module {
   var <sc, <warps;
   var <clock, <bar, relBar;
 
+  var <modularClock;
+
   var <introIsPlaying, <arrivalIsPlaying, <mainIsPlaying, <endIsPlaying;
 
   *new {
     |
-    outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead',
-    moogDeviceName = "USB Uno MIDI Interface", moogPortName = "USB Uno MIDI Interface"
+    outBus = 0, micInBus, pickupInBus, moogInBus, clockOutBus,
+    send0Bus, send1Bus, send2Bus, send3Bus,
+    moogDeviceName, moogPortName,
+    relGroup, addAction = 'addToHead'
     |
-    ^super.new(11, outBus, send0Bus, send1Bus, send2Bus, send3Bus,  false, relGroup, addAction).prInit(moogDeviceName, moogPortName);
+    ^super.new(11, outBus, send0Bus, send1Bus, send2Bus, send3Bus,  false, relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, clockOutBus, moogDeviceName, moogPortName);
   }
 
-  prInit { | moogDeviceName = "USB Uno MIDI Interface", moogPortName = "USB Uno MIDI Interface" |
+  prInit {
+    |
+    micInBus, pickupInBus, moogInBus,clockOutBus,
+    moogDeviceName, moogPortName
+    |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -41,22 +49,26 @@ Foundation : IM_Module {
       clock = TempoClock.new(96/60);
       server.sync;
 
+      modularClock = ModularClock.new(clockOutBus, 96, 24, group, 'addToHead');
+      while({ try { modularClock.isLoaded } != true }, { 0.001.wait; });
+
       songBuffers = Foundation_SongBuffers.new(group, \addToHead);
       while({ try { songBuffers.isLoaded } != true }, { 0.001.wait; });
       songBuffersInput = IM_HardwareIn.new(0, songBuffers.inBus, group, \addToHead);
       while({ try { songBuffersInput.isLoaded } != true }, { 0.001.wait; });
 
       // 1 - moog:
-      moog = Foundation_Moog.new(3, mixer.chanStereo(0), moogDeviceName, moogPortName, group, \addToHead);
+      moog = Foundation_Moog.new(moogInBus, mixer.chanStereo(0),
+        moogDeviceName, moogPortName, group, \addToHead);
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
       // 2 - Clean Trumpet:
       cleanTrumpet = Foundation_CleanTrumpet.new(mixer.chanStereo(1), group, \addToHead);
       while({ try { cleanTrumpet.isLoaded } != true }, { 0.001.wait; });
       // input:
-      cleanTrumpetInput = IM_HardwareIn.new(0, cleanTrumpet.inBus, group, \addToHead);
+      cleanTrumpetInput = IM_HardwareIn.new(micInBus, cleanTrumpet.inBus, group, \addToHead);
       while({ try { cleanTrumpetInput.isLoaded } != true }, { 0.001.wait; });
       // 3 - Distorted Trumpet:
-      trumpet = FoundationTrumpet.new(mixer.chanStereo(2), 0, relGroup: group, addAction: \addToHead);
+      trumpet = FoundationTrumpet.new(mixer.chanStereo(2), pickupInBus, relGroup: group, addAction: \addToHead);
       while({ try { trumpet.isLoaded } != true }, { 0.001.wait; });
       // 4 - bass section:
       bassSection = Foundation_BassSection.new(mixer.chanStereo(3), group, \addToHead);
@@ -250,7 +262,7 @@ Foundation : IM_Module {
 
       //////// this section ends 154 beats after the start of 'arrival' ////////
       clock.sched(154, { mainIsPlaying = false; endIsPlaying = true; });
-   });
+    });
   }
 
 }

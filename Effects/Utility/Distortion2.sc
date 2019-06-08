@@ -20,36 +20,37 @@ Distortion2 : IM_Module {
 
   *newMono {
     |
-    outBus, distortionGain = 10, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
+    outBus, distortionAmp = 0.5, distortionSmooth = 0.5, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
     feedback = false, relGroup = nil, addAction = 'addToHead'
     |
-    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitMono(distortionGain);
+    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitMono(distortionAmp, distortionSmooth);
   }
 
   *newStereo {
     |
-    outBus, distortionGain = 10, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
+    outBus, distortionAmp = 0.5, distortionSmooth = 0.5, send0Bus = nil, send1Bus = nil, send2Bus = nil, send3Bus = nil,
     feedback = false, relGroup = nil, addAction = 'addToHead'
     |
-    ^super.new(1,  outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitStereo(distortionGain);
+    ^super.new(1,  outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitStereo(distortionAmp, distortionSmooth);
   }
 
-  prInitMono { | distortionGain = 10 |
+  prInitMono { | distortionAmp, distortionSmooth |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
       this.prAddSynthDefs;
       server.sync;
       distBus = Bus.audio(server, 1);
-      distAmp = 0.5;
-      distSmooth = 0.5;
+      distAmp = distortionAmp;
+      distSmooth = distortionSmooth;
       while( { try { mixer.isLoaded } != true }, { 0.001.wait } );
+      mixer.mute;
 
       postEQ = Equalizer.newMono(mixer.chanMono(0), group, 'addToHead');
       server.sync;
       while( { try { postEQ.isLoaded } != true }, { 0.001.wait; });
 
-      synth = Synth(\prm_Distortion2Mono, [\inBus, distBus, \outBus, postEQ.inBus, \distortionGain, distortionGain],
+      synth = Synth(\prm_Distortion2Mono, [\inBus, distBus, \outBus, postEQ.inBus, \distSmooth, distSmooth, \distAmp, distAmp],
         group, \addToHead);
       while( { try { synth } == nil }, { 0.001.wait; });
 
@@ -59,17 +60,20 @@ Distortion2 : IM_Module {
       inBus = preEQ.inBus;
       server.sync;
 
+      mixer.unMute;
+
       isLoaded = true;
     }
   }
 
-  prInitStereo { | distortionGain = 10 |
+  prInitStereo { | distortionAmp, distortionSmooth |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
       this.prAddSynthDefs;
       distBus = Bus.audio(server, 2);
-
+      distAmp = distortionAmp;
+      distSmooth = distortionSmooth;
       server.sync;
       while( { try { mixer.isLoaded } != true }, { 0.001.wait } );
 
@@ -79,7 +83,7 @@ Distortion2 : IM_Module {
       while( { try { postEQ.isLoaded } != true }, { 0.001.wait; });
 
 
-      synth = Synth(\prm_Distortion2Stereo, [\inBus, distBus, \outBus, postEQ.inBus, \distortionGain, distortionGain],
+      synth = Synth(\prm_Distortion2Stereo, [\inBus, distBus, \outBus, postEQ.inBus, \distSmooth, distSmooth, \distAmp, distAmp],
         group, \addToHead);
       while( { try { synth } == nil }, { 0.001.wait; });
 

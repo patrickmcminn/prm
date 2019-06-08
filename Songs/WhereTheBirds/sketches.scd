@@ -73,6 +73,27 @@ Pmono
 ~clock.tempo = 50/60
 
 
+x = WhereTheBirds_NoiseSynth.new(0);
+
+
+x.isLoaded;
+
+x.bufferArray[0].play
+
+x.mixer.setPreVol(-12);
+
+x.playPhrase1;
+x.stopPhrase1;
+
+x.playPhrase2;
+x.stopPhrase2;
+
+x.playPhrase3;
+x.stopPhrase3;
+
+x.playPhrase4;
+
+x.granulator.setGranulatorCrossfade(-1);
 
 
 
@@ -85,6 +106,27 @@ Pmono
 
 ~bed = WhereTheBirds_Bed.new(~mix.chanStereo(0), ~prm.procGroup, \addToHead);
 ~bed = WhereTheBirds_Bed.new;
+
+~bed.mixer.setPreVol(-12);
+
+
+~bed.playCSharp;
+~bed.playGSharp;
+~bed.playFSharp;
+
+~bed.playB;
+~bed.playE;
+
+~bed.playA;
+
+
+~bed.stopA;
+~bed.stopB;
+~bed.stopCSharp;
+~bed.stopE;
+~bed.stopFSharp;
+~bed.stopGSharp;
+
 
 ~bed.prSetSequenceParameters;
 

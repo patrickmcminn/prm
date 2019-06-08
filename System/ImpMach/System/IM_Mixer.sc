@@ -172,4 +172,5 @@ IM_Mixer {
   preOrPost { | index = 0 | ^this.chan(index).preOrPost; }
 
   mapAmp { | index, bus | this.chan(index).mapAmp(bus) }
+  mapPan { | index, bus | this.chan(index).mapPan(bus); }
 }

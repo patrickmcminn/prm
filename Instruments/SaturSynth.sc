@@ -188,6 +188,8 @@ SaturSynth : IM_Module {
     synth.set(\tremoloDepth, depth);
   }
 
+  mapCutoff { | bus | synth.set(\filterCutoff, bus.asMap); }
+
   ///////// Pattern Sequencer:
   makeSequence { | name |
     fork {

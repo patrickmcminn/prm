@@ -90,4 +90,10 @@ LFO {
 
   setRangeLow { | rangeLo = -1 | synth.set(\rangeLow, rangeLo); }
   setRangeHigh { | rangeHi = 1 | synth.set(\rangeHigh, rangeHi);}
+
+  map { | param = \freq, bus |
+    synth.set(param, bus.asMap);
+  }
+
+  mapFreq { | bus | this.map(\freq, bus); }
 }

@@ -239,7 +239,40 @@ release = 0.162;
 
 
 
+~birdBass = WhereTheBirds_Bass.new(~prm.audioIn, ~modInput[0], ~moogDevice, ~moogPort, ~prm.procGroup, \addToHead);
 
+~birdBass.satur.playNote(110);
+~birdBass.satur.releaseNote(110);
+
+~birdBass.moog.playSequence(\bass2);
+
+
+~birdBass.moog.stopSequence(\bass3);
+
+~birdBass.moog.addKey(\bass3, \octave, 2);
+~birdBass.moog.addKey(\bass3, \legato, 0.99);
+~birdBass.satur.addKey(\bass3, \octave, 2);
+
+(
+~birdBass.moog.playSequence(\bass3);
+~birdBass.satur.playSequence(\bass3);
+)
+
+~birdBass.satur.addKey(\bass3, \octave, 3);
+
+~birdBass.satur.stopSequence(\bass3);
+
+~birdBass.moog.playSequence(\endDrone);
+~birdBass.moog.addKey(\endDrone, \octave, 2);
+
+~birdBass.satur.playSequence(\endDrone);
+
+~birdBass.satur.addKey(\endDrone, \octave, 2);
+~birdBass.satur.stopSequence(\endDrone);
+
+~birdBass.playEndDrone;
+
+~birdBass.satur.setFilterCutoff(200);
 
 
 

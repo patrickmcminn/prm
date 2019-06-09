@@ -47,7 +47,7 @@ WhereTheBirds_Bass : IM_Module {
 
       this.prSetMoogSequenceParameters;
       server.sync;
-      this.setSaturSequenceParameters;
+      this.prSetSaturSequenceParameters;
 
       isLoaded = true;
     }
@@ -94,7 +94,7 @@ WhereTheBirds_Bass : IM_Module {
 
   }
 
-  setSaturSequenceParameters {
+  prSetSaturSequenceParameters {
     satur.addKey(\bass3, \dur, 4);
     satur.addKey(\bass3, \note, Pseq([6, 9, 13, 4], inf));
     satur.addKey(\bass3, \legato, 1);
@@ -105,6 +105,14 @@ WhereTheBirds_Bass : IM_Module {
     satur.addKey(\endDrone, \octave, 2);
     satur.addKey(\endDrone, \legato, 1);
 
+  }
+
+  /////// public functions:
+
+  free {
+    moog.free;
+    satur.free;
+    this.freeModule;
   }
 
   toggleSection2 { | clock | if( section2IsPlaying == true, { this.stopSection2; }, { this.playSection2(clock) }); }

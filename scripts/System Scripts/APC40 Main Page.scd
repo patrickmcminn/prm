@@ -16,7 +16,9 @@ var falseSelfIsLoaded = false;
 
 var habitIsLoaded = false;
 
+var birdsIsLoaded = false;
 var connectionsIsLoaded = false;
+
 
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 ~apc.storageDict[\loadMasterFunc].value;
@@ -37,8 +39,8 @@ var connectionsIsLoaded = false;
       ~foundationDelay.setMix(1);
       /*
       ~foundation = Foundation.new(~prm.audioIn,
-        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
-        ~prm.procGroup, \addToHead, ~moogDevice, ~moogPort);
+      ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
+      ~prm.procGroup, \addToHead, ~moogDevice, ~moogPort);
       */
       ~foundation = Foundation.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
@@ -48,13 +50,13 @@ var connectionsIsLoaded = false;
       ~apc.turnGridGreen(1, 4);
       foundationIsLoaded = true;
     }.play;
-    },
-    {
-      ~foundation.free;
-      ~foundationDelay.free;
-      ~apc.setGridFunc(1, 4, { });
-      ~apc.turnGridOff(1, 4);
-      foundationIsLoaded = false;
+  },
+  {
+    ~foundation.free;
+    ~foundationDelay.free;
+    ~apc.setGridFunc(1, 4, { });
+    ~apc.turnGridOff(1, 4);
+    foundationIsLoaded = false;
   });
 }, page: page);
 
@@ -72,14 +74,64 @@ var connectionsIsLoaded = false;
       ~apc.turnGridGreen(1, 3);
       falseSelfIsLoaded = true;
     }.play;
-    },
-    {
-      ~falseSelf.free;
-      ~apc.setGridFunc(1, 3, {});
-      ~apc.turnGridOff(1, 3);
-      falseSelfIsLoaded = false;
+  },
+  {
+    ~falseSelf.free;
+    ~apc.setGridFunc(1, 3, {});
+    ~apc.turnGridOff(1, 3);
+    falseSelfIsLoaded = false;
   });
 }, page: page);
+
+'Where the Birds Must Be Drunk to be Amidst the Unknown Spray and Sky';
+~apc.turnGridPink(2, 4, 2, page: page);
+~apc.setGridFunc(2, 4, {
+  if( birdsIsLoaded == false, {
+    r{
+      ~birds = WhereTheBirds.new(~prm.audioIn, ~micIn, ~modInput[0], ~modInput[2], ~modInput[3],
+        ~modOutput[2], ~modOutput[3], ~modOutput[4], ~modOutput[7],
+        ~moogDevice, ~moogPort,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+        ~prm.procGroup, \addToHead);
+      while({ try { ~birds.isLoaded } != true }, { 0.001.wait; });
+      ~apc.setGridFunc(3, 4, { ~apc.setPage('birds') }, page: page);
+      ~apc.turnGridGreen(3, 4);
+      birdsIsLoaded = true;
+    }.play;
+  },
+  {
+    ~birds.free;
+    ~apc.setGridFunc(3, 4, { });
+    ~apc.turnGridOff(3, 4);
+    birdsIsLoaded = false;
+  });
+}, page: page);
+
+'Connections';
+
+~apc.turnGridBlue(2, 2, 2, page: page);
+~apc.setGridFunc(2, 2, {
+  if(connectionsIsLoaded == false, {
+    r{
+      ~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+        ~moogDevice, ~moogPort, ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.procGroup, \addToHead);
+      while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
+      ~apc.setGridFunc(3, 2, { ~apc.setPage('connections'); }, page: page);
+      ~apc.turnGridGreen(3, 2);
+      connectionsIsLoaded = true;
+    }.play;
+  },
+  {
+    ~connections.free;
+    ~apc.setGridFunc(3, 2, {});
+    ~apc.turnGridOff(3, 2);
+    connectionsIsLoaded = false;
+  });
+}, page: page);
+
+
+
 
 'Habit Fills Up What Remains';
 
@@ -95,38 +147,14 @@ var connectionsIsLoaded = false;
       ~apc.turnGridGreen(5, 4);
       habitIsLoaded = true;
     }.play;
-    },
-    {
-      ~habit.free;
-      ~apc.setGridFunc(5, 4, { });
-      ~apc.turnGridOff(5, 4);
-      habitIsLoaded = false;
-  });
-}, page: page);
-
-'Connections';
-
-~apc.turnGridBlue(4, 3, 2, page: page);
-~apc.setGridFunc(4, 3, {
-  if(connectionsIsLoaded == false, {
-    r{
-      ~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
-        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
-        ~moogDevice, ~moogPort, ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.procGroup, \addToHead);
-      while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
-      ~apc.setGridFunc(5, 3, { ~apc.setPage('connections'); }, page: page);
-      ~apc.turnGridGreen(5, 3);
-      connectionsIsLoaded = true;
-    }.play;
   },
   {
-    ~connections.free;
-    ~apc.setGridFunc(5, 3, {});
-    ~apc.turnGridOff(5, 3);
-    connectionsIsLoaded = false;
+    ~habit.free;
+    ~apc.setGridFunc(5, 4, { });
+    ~apc.turnGridOff(5, 4);
+    habitIsLoaded = false;
   });
 }, page: page);
-
 
 
 //////// There Was a Time when the World was Suffused with Light ////////

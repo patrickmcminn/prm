@@ -30,6 +30,7 @@ WhereTheBirds : IM_Module {
     server.waitForBoot {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+      mixer.masterChan.mute;
 
       clock = TempoClock.new(60/60);
 
@@ -69,6 +70,7 @@ WhereTheBirds : IM_Module {
 
       this.prSetInitialParameters;
 
+      mixer.masterChan.unMute;
       isLoaded = true;
     }
   }
@@ -78,15 +80,17 @@ WhereTheBirds : IM_Module {
     mixer.setVol(0, -6);
     mixer.setSendVol(0, 0, 0);
     // chords:
+    mixer.mute(1);
     mixer.setVol(1, -15);
     mixer.setSendVol(1, 0, -9);
     // noise chords:
-    mixer.mute(1);
+    mixer.mute(2);
     mixer.setVol(1, -inf);
     mixer.setSendVol(2, 0, -15);
     // bass:
     mixer.setVol(3, -9);
     mixer.setSendVol(3, 0, -24);
+    mixer.setPreVol(3, 3);
     // noise synth:
     mixer.setVol(4, -3);
     mixer.setSendVol(4, 0, -6);
@@ -97,6 +101,7 @@ WhereTheBirds : IM_Module {
     // mic:
     //mixer.mute(6);
     mic.input.mute;
+    mixer.setPreVol(6, 3);
     mixer.setSendVol(6, 0, -3);
 
   }

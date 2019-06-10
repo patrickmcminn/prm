@@ -33,7 +33,7 @@ WhereTheBirds_DistChords : IM_Module {
       lfo.setWaveform(4.5);
       mixer.mapAmp(lfo.outBus);
       //mixer.setPreVol(-6);
-      distortion.postEQ.setLowPassCutoff(4200);
+      distortion.postEQ.setLowPassCutoff(1500);
       distortion.postEQ.setHighPassCutoff(100);
 
       server.sync;

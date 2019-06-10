@@ -38,6 +38,8 @@ WhereTheBirds_Chords : IM_Module {
 
   var <sequencerDict;
 
+  var <droneIsPlaying, <section1IsPlaying, <turnaroundIsPlaying, <endDroneIsPlaying;
+
   *new { | outBus, pitchOutBus, chordOutBus, inversionOutBus, inBus, relGroup, addAction = 'addToHead' |
     ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(pitchOutBus, chordOutBus, inversionOutBus, inBus);
   }
@@ -70,13 +72,18 @@ WhereTheBirds_Chords : IM_Module {
       input = IM_HardwareIn.new(inBus, eq.inBus, group, \addToHead);
 
       server.sync;
-/*
+      /*
       synth = Synth(\prm_birdsChords, [\pitchOutBus, pitchOutBus, \chordOutBus, chordOutBus,
-        \inversionOutBus, inversionOutBus, \freq, frequency, \chordValue, chordCV,
-        \inversionValue, inversionCV], group, \addToHead);
+      \inversionOutBus, inversionOutBus, \freq, frequency, \chordValue, chordCV,
+      \inversionValue, inversionCV], group, \addToHead);
 
       server.sync;
-*/
+      */
+
+      droneIsPlaying = false;
+      section1IsPlaying = false;
+      turnaroundIsPlaying = false;
+      endDroneIsPlaying = false;
 
       this.prSetSequenceParameters;
 
@@ -138,6 +145,11 @@ WhereTheBirds_Chords : IM_Module {
     this.addKey(\turnaround, \chordValue, Pseq([0.13, 0.5, 0.13, 0.5], inf));
     this.addKey(\turnaround, \inversionValue, Pseq([0.05, 0.05, 0.15, 0.2], inf));
 
+    this.addKey(\endDrone, \dur, 8);
+    this.addKey(\endDrone, \freq, 54.midicps);
+    this.addKey(\endDrone, \chordValue, 0.13);
+    this.addKey(\endDrone, \inversionValue, 0);
+
   }
 
   //////// public functions:
@@ -197,6 +209,54 @@ WhereTheBirds_Chords : IM_Module {
   resumeSequence { | name | sequencerDict[name].resume; }
   isSequencePlaying { | name | ^sequencerDict[name].isPlaying }
   setSequenceQuant { | name, quant = 0 | sequencerDict[name].setQuant(quant) }
+
+  toggleDrone { | clock | if( droneIsPlaying,
+    { this.stopDrone }, { this.playDrone(clock) });
+  }
+  playDrone { | clock |
+    sequencerDict[\drone].play(clock);
+    droneIsPlaying = true;
+  }
+  stopDrone {
+    sequencerDict[\drone].stop;
+    droneIsPlaying = false;
+  }
+
+  toggleSection1 { | clock | if( section1IsPlaying,
+    { this.stopSection1 }, { this.playSection1(clock) });
+  }
+  playSection1 { | clock |
+    sequencerDict[\section1].play(clock);
+    section1IsPlaying = true;
+  }
+  stopSection1 {
+    sequencerDict[\section1].stop;
+    section1IsPlaying = false;
+  }
+
+  toggleTurnaround { | clock | if( turnaroundIsPlaying,
+    { this.stopTurnaround }, { this.playTurnaround(clock) });
+  }
+  playTurnaround { | clock |
+    sequencerDict[\turnaround].play(clock);
+    turnaroundIsPlaying = true;
+  }
+  stopTurnaround {
+    sequencerDict[\turnaround].stop;
+    turnaroundIsPlaying = false;
+  }
+
+  toggleEndDrone { | clock | if( endDroneIsPlaying,
+    { this.stopEndDrone }, { this.playEndDrone(clock) });
+  }
+  playEndDrone { | clock |
+    sequencerDict[\endDrone].play(clock);
+    endDroneIsPlaying = true;
+  }
+  stopEndDrone {
+    sequencerDict[\endDrone].stop;
+    endDroneIsPlaying = false;
+  }
 
 
 }

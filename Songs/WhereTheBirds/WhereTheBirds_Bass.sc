@@ -55,6 +55,9 @@ WhereTheBirds_Bass : IM_Module {
   }
 
   prSetInitialParameters {
+    section2IsPlaying = false;
+    section3IsPlaying = false;
+    endDroneIsPlaying = false;
     /*
     mixer.setPreVol(0, -6);
     mixer.setPreVol(1, -6);

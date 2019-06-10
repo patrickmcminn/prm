@@ -102,6 +102,7 @@ x.granulator.setGranulatorCrossfade(-1);
 
 
 ~mix.setSendVol(0, 0, 0);
+~mix.setSendVol(1, 0, -6);
 
 
 ~bed = WhereTheBirds_Bed.new(~mix.chanStereo(0), ~prm.procGroup, \addToHead);
@@ -275,5 +276,13 @@ release = 0.162;
 ~birdBass.satur.setFilterCutoff(200);
 
 
+~birdBass.toggleEndDrone
+
+~birdBass.moog.playSequence(\section2);
+
+~birdBass.section2IsPlaying;
+
+
+~mic = WhereTheBirds_Mic.new(~mix.chanStereo(1), ~micIn, ~prm.procGroup, \addToHead);
 
   

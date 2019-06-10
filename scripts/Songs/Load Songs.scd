@@ -20,6 +20,7 @@ prm
 ///////////////////////////////
 //// The Phonometrician //////
 /////////////////////////////
+"WhereTheBirds APC.scd".loadRelative;
 "Connections APC.scd".loadRelative;
 "Connections Base.scd".loadRelative;
 

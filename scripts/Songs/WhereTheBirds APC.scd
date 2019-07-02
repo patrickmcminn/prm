@@ -375,8 +375,19 @@ var encoderBank1 = 0;
 ~apc.setDeviceEncodersMonitorFunc(\bank1, {
   var crossfade = ~birds.noiseSynth.granulator.crossfade.linlin(-1.0, 1.0, 0, 127);
   var cutoff = ~birds.distChords.distortion.postEQ.lowPassCutoff.explin(900, 5000, 0, 127);
+
+  var lfoCutoff = ~birds.noiseFilter.filterCutoff.explin(400, 20000, 0, 127);
+  var lfoSpeed = ~birds.noiseFilter.lfo.frequency.explin(0.01, 50, 0, 127);
+  var lfoAmount = ~birds.noiseFilter.cutoffLFOTopRatio.linlin(1, 4, 0, 127);
+  var waveform = ~birds.noiseFilter.lfo.lfoWaveform.linlin(0, 5, 0, 127);
+
   ~apc.setDeviceEncoderValue(1, cutoff);
   ~apc.setDeviceEncoderValue(2, crossfade);
+
+  ~apc.setDeviceEncoderValue(5, lfoCutoff);
+  ~apc.setDeviceEncoderValue(6, lfoSpeed);
+  ~apc.setDeviceEncoderValue(7, lfoAmount);
+  ~apc.setDeviceEncoderValue(8, waveform);
 
 }, bank: encoderBank1, page: page);
 
@@ -390,6 +401,32 @@ var encoderBank1 = 0;
 ~apc.setDeviceEncoderFunc(2, { | val |
   var crossfade = val.linlin(0, 127, -1.0, 1.0);
   ~birds.noiseSynth.granulator.setGranulatorCrossfade(crossfade);
+}, bank: encoderBank1, page: page);
+
+// noise filter cutoff:
+~apc.setDeviceEncoderFunc(5, { | val |
+  var cutoff = val.linexp(0, 127, 400, 20000);
+  ~birds.noiseFilter.setCutoff(cutoff);
+}, bank: encoderBank1, page: page);
+
+// noise filter lfo speed:
+~apc.setDeviceEncoderFunc(6, { | val |
+  var freq = val.linexp(0, 127, 0.01, 50);
+  ~birds.noiseFilter.lfo.setFrequency(freq);
+}, bank: encoderBank1, page: page);
+
+// noise filter lfo amount:
+~apc.setDeviceEncoderFunc(7, { | val |
+  var amountHigh = val.linlin(0, 127, 1, 4);
+  var amountLow = val.linlin(0, 127, 1, 1/4);
+  ~birds.noiseFilter.setCutoffLFOBottomRatio(amountLow);
+  ~birds.noiseFilter.setCutoffLFOTopRatio(amountHigh);
+}, bank: encoderBank1, page: page);
+
+// noise filter waveform:
+~apc.setDeviceEncoderFunc(8, { | val |
+  var waveform = val.linlin(0, 127, 0.0, 5.0);
+  ~birds.noiseFilter.lfo.setWaveform(waveform);
 }, bank: encoderBank1, page: page);
 
 

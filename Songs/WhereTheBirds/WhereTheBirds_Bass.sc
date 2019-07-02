@@ -81,13 +81,13 @@ WhereTheBirds_Bass : IM_Module {
   prSetMoogSequenceParameters {
 
     moog.addKey(\bass2, \dur, 4);
-    moog.addKey(\bass2, \note, Pseq([6, 9, 13, 4], inf));
-    moog.addKey(\bass2, \legato, 0.9);
+    moog.addKey(\bass2, \note, Pseq([6, 9, 13, 4, 6, 9, 1, 4], inf));
+    moog.addKey(\bass2, \legato, 0.99);
     moog.addKey(\bass2, \octave, 3);
 
     moog.addKey(\bass3, \dur, 4);
     moog.addKey(\bass3, \note, Pseq([6, 9, 13, 4], inf));
-    moog.addKey(\bass3, \legato, 0.9);
+    moog.addKey(\bass3, \legato, 0.99);
     moog.addKey(\bass3, \octave, 2);
 
     moog.addKey(\endDrone, \dur, 8);

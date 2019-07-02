@@ -19,6 +19,8 @@ var habitIsLoaded = false;
 var birdsIsLoaded = false;
 var connectionsIsLoaded = false;
 
+var tuningNoteIsPlaying = false;
+
 
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 ~apc.storageDict[\loadMasterFunc].value;
@@ -167,7 +169,7 @@ var connectionsIsLoaded = false;
 ////// Convenience Mixer: ////////
 /////////////////////////////////
 
-5.do({ | i |
+7.do({ | i |
   // vol:
   ~apc.setFaderFunc(i+1, { | val | ~prm.cmix.setVol(i, val.ccdbfs); }, page: page);
   // toggle mute:
@@ -273,4 +275,12 @@ var connectionsIsLoaded = false;
 }, page: page);
 
 
+
+//////// tuning note:
+~apc.turnSceneLaunchButtonWhite(4);
+~apc.setSceneLaunchFunc(4, {
+  if( tuningNoteIsPlaying == false,
+    { ~tuner = { Out.ar(~prm.audioIn, SinOsc.ar(60.midicps) * (-12.dbamp)) }.play; tuningNoteIsPlaying = true },
+    { ~tuner.free; tuningNoteIsPlaying = false; });
+}, page: page);
 

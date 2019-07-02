@@ -18,6 +18,11 @@ LowPassFilter : IM_Processor {
     ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitStereo(cutoff, rq);
   }
 
+  *newMono { | outBus = 0, cutoff = 20000, rq = 1, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil,
+    addAction = 'addToHead' |
+    ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono(cutoff, rq);
+  }
+
   prInitStereo { | cutoff = 20000, rq = 1 |
     server = Server.default;
     server.waitForBoot {
@@ -38,11 +43,38 @@ LowPassFilter : IM_Processor {
 
       filter = Synth(\prm_LowPassFilter, [\inBus, inBus, \outBus, mixer.chanStereo(0),
         \lfoInBus, lfo.outBus, \cutoff, filterCutoff, \filterRQ, rq],
-        target: lfo.synth, addAction: \addAfter);
+      target: lfo.synth, addAction: \addAfter);
 
       isLoaded = true;
     }
   }
+
+  prInitMono { | cutoff = 20000, rq = 1 |
+    server = Server.default;
+    server.waitForBoot {
+      isLoaded = false;
+      this.prAddSynthDefs;
+
+      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
+      lfo = LFO.new(1, 'sine', -1, 1, relGroup: group, addAction: \addToHead);
+      while({ try { lfo.isLoaded } != true }, { 0.001.wait; });
+
+      filterCutoff = cutoff;
+      filterRQ = rq;
+      cutoffLFOBottomRatio = 1.0;
+      cutoffLFOTopRatio = 1.0;
+      rqLFOTop = 0.0;
+      rqLFOBottom = 0.0;
+
+      filter = Synth(\prm_LowPassFilter_mono, [\inBus, inBus, \outBus, mixer.chanMono(0),
+        \lfoInBus, lfo.outBus, \cutoff, filterCutoff, \filterRQ, rq],
+      target: lfo.synth, addAction: \addAfter);
+
+      isLoaded = true;
+    }
+  }
+
 
   prAddSynthDefs {
 
@@ -58,7 +90,24 @@ LowPassFilter : IM_Processor {
       lfo = In.kr(lfoInBus, 1);
       cutoffLFO = lfo.linlin(-1, 1, cutoffLFOBottomRatio, cutoffLFOTopRatio);
       rqLFO = rq.linlin(-1, 1, rqLFOBottom, rqLFOTop);
-      filter = RLPF.ar(input, cutoff.lag2(0.1) * cutoffLFO, rq.lag2(0.1) + rqLFO);
+      filter = RLPF.ar(input, (cutoff.lag2(0.1) * cutoffLFO).clip(20, 20000), rq.lag2(0.1) + rqLFO);
+      sig = filter * amp;
+      Out.ar(outBus, sig);
+    }).add;
+
+    SynthDef(\prm_LowPassFilter_mono, {
+      |
+      cutoff = 20000, rq = 1, inBus = 0, outBus = 0, lfoInBus = 0,
+      cutoffLFOBottomRatio = 1, cutoffLFOTopRatio = 1,
+      rqLFOBottom = 0, rqLFOTop = 0,
+      amp = 1
+      |
+      var input, lfo, cutoffLFO, rqLFO, filter, sig;
+      input = In.ar(inBus, 1);
+      lfo = In.kr(lfoInBus, 1);
+      cutoffLFO = lfo.linlin(-1, 1, cutoffLFOBottomRatio, cutoffLFOTopRatio);
+      rqLFO = rq.linlin(-1, 1, rqLFOBottom, rqLFOTop);
+      filter = RLPF.ar(input, (cutoff.lag2(0.1) * cutoffLFO).clip(20, 20000), rq.lag2(0.1) + rqLFO);
       sig = filter * amp;
       Out.ar(outBus, sig);
     }).add;

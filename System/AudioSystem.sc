@@ -15,6 +15,7 @@ AudioSystem {
   var <reverb, <granulator, <modularSend, <delay;
   var <splitter;
   var <microphone, <micInput, <pickup, <pickupInput, <modular, modularInput,  <moog, <moogInput;
+  var <modular2, <modularInput2, <modular3, <modularInput3;
   var <beauty, <beautyIn;
   var <subtractive;
   var <songBook;
@@ -24,11 +25,20 @@ AudioSystem {
 
   var micIn, pickupIn, moogIn, morphageneIn, modularOut;
 
-  *new { | numOutputs = 2, micInBus, pickupInBus, moogInBus, morphageneInBus, modularOutBus |
-    ^super.new.prInit(numOutputs,micInBus, pickupInBus, moogInBus, morphageneInBus, modularOutBus);
+  *new {
+    |
+    numOutputs = 2, micInBus, pickupInBus, moogInBus,
+    morphageneInBus, plaitsInBus, noiseInBus, modularOutBus
+    |
+    ^super.new.prInit(numOutputs,micInBus, pickupInBus, moogInBus, morphageneInBus,
+      plaitsInBus, noiseInBus, modularOutBus);
   }
 
-  prInit { |numOutputs, micInBus, pickupInBus, moogInBus, morphageneInBus, modularOutBus|
+  prInit {
+    |
+    numOutputs,micInBus, pickupInBus, moogInBus, morphageneInBus,
+    plaitsInBus, noiseInBus, modularOutBus
+    |
     server = Server.default;
 
     this.prSetServerOptions(server, 64, 131072, 1024, nil);
@@ -107,9 +117,12 @@ AudioSystem {
 
       /////////// DEFAULT INPUTS:
 
-      cmix = IM_Mixer.new(5, this.audioIn,
+      cmix = IM_Mixer.new(7, this.audioIn,
         reverb.inBus, granulator.inBus, modularSend.inBus, delay.inBus, false, procGroup, \addToHead);
       while({ try { cmix.isLoaded } != true }, { 0.001.wait; });
+
+      // utilities come in muted:
+      cmix.mute(0); cmix.mute(1); cmix.mute(2); cmix.mute(3); cmix.mute(4); cmix.mute(5); cmix.mute(6);
 
       microphone = IM_Mixer_1Ch.new(cmix.chanStereo(0), relGroup: procGroup, addAction: \addToHead);
       while({ try { microphone.isLoaded } != true }, { 0.001.wait; });
@@ -131,13 +144,28 @@ AudioSystem {
       moogInput = IM_HardwareIn.new(moogInBus, moog.chanMono(0), procGroup, \addToHead);
       while({ try { moogInput.isLoaded } != true }, { 0.001.wait; });
 
-      beauty = Beauty.newMono(cmix.chanStereo(4), relGroup: procGroup, addAction: \addToHead);
+      beauty = Beauty.newMono(cmix.chanStereo(6), relGroup: procGroup, addAction: \addToHead);
       while({ try { beauty.isLoaded } != true }, { 0.001.wait; });
       beautyIn = IM_HardwareIn.new(pickupInBus, beauty.inBus, procGroup, \addToHead);
       while({ try { beautyIn.isLoaded } != true }, { 0.001.wait; });
 
-      // utilities come in muted:
-      cmix.mute(0); cmix.mute(1); cmix.mute(2); cmix.mute(3); cmix.mute(4);
+      modular2 = IM_HardwareIn.new(plaitsInBus, cmix.chanMono(4), procGroup, \addToHead);
+      while({ try { modular2.isLoaded } != true }, { 0.001.wait; });
+
+      modular3 = IM_HardwareIn.new(noiseInBus, cmix.chanMono(5), procGroup, \addToHead);
+      while({ try { modular3.isLoaded } != true }, { 0.001.wait; });
+
+
+
+      // reverb!
+      cmix.setSendVol(0, 0, -3);
+      cmix.setSendVol(1, 0, -3);
+      cmix.setSendVol(2, 0, -6);
+      cmix.setSendVol(3, 0, -15);
+      cmix.setSendVol(4, 0, -12);
+      cmix.setSendVol(5, 0, -9);
+      cmix.setSendVol(6, 0, -12);
+
 
       songBook = IdentityDictionary.new;
 

@@ -14,7 +14,7 @@ prm
   ~apc.setRecordButtonFunc({ ~apc.setToPreviousPage; });
   // bring Base over:
   ~apc.turnPlayButtonOn;
-  ~apc.setPlayButtonFunc({ ~base.setPage(~apc.activePageKey); });
+  ~apc.setPlayButtonFunc({ try { ~base.setPage(~apc.activePageKey); } });
 
   //////// Master Volume:
   ~apc.setMasterFaderFunc({ | val |

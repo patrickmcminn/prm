@@ -52,7 +52,8 @@ r {
   ~k2500RDevice = "mio10";
   ~k2500RPort = "Kurzweil K2500R";
 
-  ~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modOutput[0]);
+  ~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
+    ~modOutput[0]);
 
 
   while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
@@ -68,21 +69,36 @@ r {
 
 }.play;
 
+s.makeWindow;
 
-
+Server.killAll;
 //////////////////
 //// Live: //////
 ////////////////
 
 r {
-  ~prm = AudioSystem.new(2);
 
-  ~moogDevice = "UMC404HD 192k";
-  ~moogPort = "UMC404HD 192k";
+  //// Audio Inputs:
+  ~micIn = 0;
+  ~pickupIn = 1;
+
+
+  ~modInput = Array.fill(4, { | i | 10 + i });
+  ~modOutput = Array.fill(8, { | i | 12 + i });
+
+  //// MIDI Devices:
+
+
+  // M32:
+  ~moogDevice = "UMC1820";
+  ~moogPort = "UMC1820";
+
+  //~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modOutput[0]);
+  ~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
+    ~modOutput[0]);
 
   while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
-  //try { ~ohm = OhmRGB.new; };
   try { ~apc = APC40Mk2.new; };
   try { ~base = Base.new; };
 

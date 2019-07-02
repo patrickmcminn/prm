@@ -12,7 +12,7 @@ WhereTheBirds : IM_Module {
   var <clock, <modularClock;
   var <bed, <chords, <distChords;
   var <bass, <noiseSynth;
-  var <noise, <mic;
+  var <noise, <noiseFilter, <mic;
 
   *new {
     |
@@ -59,7 +59,10 @@ WhereTheBirds : IM_Module {
       while({ try { noiseSynth.isLoaded } != true }, { 0.001.wait; });
 
       // 6 -- Noise:
-      noise = IM_HardwareIn.new(noiseIn, mixer.chanMono(5), group, \addToHead);
+      noiseFilter = LowPassFilter.newMono(mixer.chanStereo(5), relGroup: group,
+        addAction: \addToHead);
+      while({ try { noiseFilter.isLoaded } != true }, { 0.001.wait; });
+      noise = IM_HardwareIn.new(noiseIn, noiseFilter.inBus, group, \addToHead);
       while({ try { noise.isLoaded } != true }, { 0.001.wait; });
 
       // 7 -- mic:
@@ -116,6 +119,7 @@ WhereTheBirds : IM_Module {
     distChords.free;
     bass.free;
     noiseSynth.free;
+    noiseFilter.free;
     noise.free;
     mic.free;
     this.freeModule;

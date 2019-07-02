@@ -110,13 +110,13 @@ WhereTheBirds_Bed : IM_Module {
     synth.addKey(\fSharp, \amp, Pwhite(0.25, 0.35, inf));
     synth.addKey(\fSharp, \pan, Pwhite(-1, 1, inf));
 
-    synth.addKey(\b, \dur, Pseq([1.576, 7], inf));
+    synth.addKey(\b, \dur, Pseq([1.576, Rest(7)], inf));
     synth.addKey(\b, \note, 11);
     synth.addKey(\b, \octave, 5);
     synth.addKey(\b, \amp, Pwhite(0.25, 0.35));
     synth.addKey(\b, \pan, Pwhite(-1, 1, inf));
 
-    synth.addKey(\e, \dur, Pseq([1.576, 7.5], inf));
+    synth.addKey(\e, \dur, Pseq([1.576, Rest(7.5)], inf));
     synth.addKey(\e, \note, 4);
     synth.addKey(\e, \octave, Prand([5, 6], inf));
     synth.addKey(\e, \amp, Pwhite(0.2, 0.29));

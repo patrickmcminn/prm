@@ -34,7 +34,7 @@ WhereTheBirds : IM_Module {
 
       clock = TempoClock.new(60/60);
 
-      modularClock = ModularClock.new(clockOut, 96, 24, group, 'addToHead');
+      modularClock = ModularClock.new(clockOut, 60, 24, group, 'addToHead');
       while({ try { modularClock.isLoaded } != true }, { 0.001.wait; });
 
       // 1 -- bed:

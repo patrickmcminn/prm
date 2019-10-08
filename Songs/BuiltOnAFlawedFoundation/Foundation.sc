@@ -54,7 +54,7 @@ Foundation : IM_Module {
 
       songBuffers = Foundation_SongBuffers.new(group, \addToHead);
       while({ try { songBuffers.isLoaded } != true }, { 0.001.wait; });
-      songBuffersInput = IM_HardwareIn.new(0, songBuffers.inBus, group, \addToHead);
+      songBuffersInput = IM_HardwareIn.new(1, songBuffers.inBus, group, \addToHead);
       while({ try { songBuffersInput.isLoaded } != true }, { 0.001.wait; });
 
       // 1 - moog:

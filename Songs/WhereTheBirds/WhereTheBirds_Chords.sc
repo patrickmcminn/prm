@@ -131,7 +131,7 @@ WhereTheBirds_Chords : IM_Module {
 
   prSetSequenceParameters {
     this.addKey(\drone, \dur, 4);
-    this.addKey(\drone, \freq, 54.midicps);
+    this.addKey(\drone, \freq, 66.midicps);
     this.addKey(\drone, \chordValue, 0);
     this.addKey(\drone, \inversionValue, 0);
 

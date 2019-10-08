@@ -11,6 +11,41 @@ audio interface
 Server.killAll
 s.meter
 
+//////////////////
+//// Live: //////
+////////////////
+
+r {
+
+  //// Audio Inputs:
+  ~micIn = 0;
+  ~pickupIn = 1;
+
+
+  ~modInput = Array.fill(4, { | i | 10 + i });
+  ~modOutput = Array.fill(8, { | i | 12 + i });
+
+  //// MIDI Devices:
+
+
+  // M32:
+  ~moogDevice = "UMC1820";
+  ~moogPort = "UMC1820";
+
+  //~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modOutput[0]);
+  ~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
+    ~modOutput[0]);
+
+  while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
+
+  try { ~apc = APC40Mk2.new; };
+  try { ~base = Base.new; };
+
+  "/Global Functions/Load Global Functions.scd".loadRelative;
+  "/System Scripts/Load System Scripts.scd".loadRelative;
+  "/Songs/Load Songs.scd".loadRelative;
+
+}.play;
 
 
 //////////////////
@@ -72,38 +107,3 @@ r {
 s.makeWindow;
 
 Server.killAll;
-//////////////////
-//// Live: //////
-////////////////
-
-r {
-
-  //// Audio Inputs:
-  ~micIn = 0;
-  ~pickupIn = 1;
-
-
-  ~modInput = Array.fill(4, { | i | 10 + i });
-  ~modOutput = Array.fill(8, { | i | 12 + i });
-
-  //// MIDI Devices:
-
-
-  // M32:
-  ~moogDevice = "UMC1820";
-  ~moogPort = "UMC1820";
-
-  //~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modOutput[0]);
-  ~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
-    ~modOutput[0]);
-
-  while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
-
-  try { ~apc = APC40Mk2.new; };
-  try { ~base = Base.new; };
-
-  "/Global Functions/Load Global Functions.scd".loadRelative;
-  "/System Scripts/Load System Scripts.scd".loadRelative;
-  "/Songs/Load Songs.scd".loadRelative;
-
-}.play;

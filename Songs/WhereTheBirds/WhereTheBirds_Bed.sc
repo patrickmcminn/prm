@@ -49,7 +49,7 @@ WhereTheBirds_Bed : IM_Module {
     cSharpIsPlaying = false; fSharpIsPlaying = false; gSharpIsPlaying = false;
     aIsPlaying = false; bIsPlaying = false; eIsPlaying = false;
 
-    mixer.setPreVol(-12);
+    mixer.setPreVol(-9);
 
     synth.setAttackTime(2);
     synth.setReleaseTime(1.5);
@@ -61,7 +61,8 @@ WhereTheBirds_Bed : IM_Module {
     synth.setOsc2Octave(3);
 
     reverb.postEQ.setHighPassCutoff(500);
-    reverb.postEQ.setPeak1Freq(350);
+    reverb.postEQ.setPeak1Freq(496);
+    reverb.postEQ.setPeak1RQ(4);
     reverb.postEQ.setPeak1Gain(-6);
     reverb.postEQ.setPeak2Freq(650);
     reverb.postEQ.setPeak2Gain(-6);

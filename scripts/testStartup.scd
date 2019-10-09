@@ -10,6 +10,7 @@ audio interface
 
 Server.killAll
 s.meter
+s.makeWindow
 
 //////////////////
 //// Live: //////

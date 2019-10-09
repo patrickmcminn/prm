@@ -112,7 +112,8 @@ AudioSystem {
       reverb.postEQ.setLowGain(-9);
       reverb.postEQ.setHighGain(3);
       reverb.postEQ.setLowFreq(250);
-      reverb.postEQ.setPeak1Freq(350);
+      reverb.postEQ.setPeak1Freq(496.6);
+      reverb.postEQ.setPeak1RQ(3);
       reverb.postEQ.setPeak1Gain(-5);
 
       /////////// DEFAULT INPUTS:

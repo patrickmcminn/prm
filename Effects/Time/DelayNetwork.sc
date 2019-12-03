@@ -4,322 +4,303 @@ DelayNetwork.sc
 prm
 */
 
-DelayNetwork {
+DelayNetwork : IM_Module {
 
-  var server, group;
-  var delayBus, faderBus, rampBus;
-  var inputSynth, delayArray, faderSynth;
-  var faderAmp;
+	var <isLoaded, server;
+	var delayArray, shiftArray;
+	var <subMixer, dry, splitter;
+	var delayBus;
+	var isStereo;
 
-  *new {
-    |
-    inBus = 0, outBus = 0, amp = 1, balance = 0, numDelays = 5, maxDelay = 6, delayTimeLow = 1, delayTimeHigh = 4,
-    decayTimeLow = 1, decayTimeHigh = 1, filterType = 0, cutoffLow = 400, cutoffHigh = 1000, resLow = 0, resHigh = 0.5,
-    panLow = -1, panHigh = 1, pitchShiftArray = 0, relGroup = nil, addAction = 'addToTail'
-    |
-   ^super.new.prInit(inBus, outBus, amp, balance, numDelays, maxDelay, delayTimeLow, delayTimeHigh,
-      decayTimeLow, decayTimeHigh, filterType, cutoffLow, cutoffHigh, resLow, resHigh, panLow, panHigh,
-      pitchShiftArray, relGroup, addAction);
-  }
+	/*
+	var server, group;
+	var delayBus, faderBus, rampBus;
+	var inputSynth, delayArray, faderSynth;
+	var faderAmp;
+	*/
 
-  prInit {
-    |
-    inBus = 0, outBus = 0, amp = 1, balance = 0, numDelays = 5, maxDelay = 6, delayTimeLow = 1, delayTimeHigh = 4,
-    decayTimeLow = 1, decayTimeHigh = 1, filterType = 0, cutoffLow = 400, cutoffHigh = 1000, resLow = 0, resHigh = 0.5,
-    panLow = -1, panHigh = 1, pitchShiftArray = 0, relGroup = nil, addAction = 'addToTail'
-    |
-    server = Server.default;
-    server.waitForBoot {
-      this.prAddSynthDefs;
-      server.sync;
-      this.prMakeGroup(relGroup, addAction);
-      this.prMakeBusses;
-      server.sync;
-      this.prMakeSynths(inBus, outBus, amp, balance, numDelays, maxDelay, delayTimeLow, delayTimeHigh,
-      decayTimeLow, decayTimeHigh, filterType, cutoffLow, cutoffHigh, resLow, resHigh, panLow, panHigh,
-      pitchShiftArray);
-    };
-  }
+	*newMono {
+		|
+		outBus = 0, numDelays = 5, delayTimeLow = 0.35, delayTimeHigh = 1.2, maxDelay = 3,
+		send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead'
+		|
+		^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono(numDelays, delayTimeLow, delayTimeHigh, maxDelay);
+	}
 
-  prAddSynthDefs {
-    SynthDef(\prm_DelayNetwork, {
-      |
-      inBus, outBus, amp = 1, mix = 0.5,
-      maxDelay = 6, delayTime = 2, decayTime = 5,
-      filterType = 0, cutoff = 10000, res = 0,
-      pitchShift = 0, pan = 0
-      |
-      var input, dry, delay, filter, int, pitchShifter, sig;
-      input = In.ar(inBus);
-      dry = input * (1-mix);
-      delay = CombC.ar(input, maxDelay, delayTime, decayTime);
-      filter = DFM1.ar(delay, cutoff, res, 1, filterType);
-      int = exp(0.057762265 * pitchShift);
-      pitchShifter = PitchShift.ar(filter, 0.1, int, 0.001, 0.04);
+	*newStereo {
+		|
+		outBus = 0, numDelays = 5, delayTimeLow = 0.35, delayTimeHigh = 1.2, maxDelay = 3,
+		send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead'
+		|
+		^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono(numDelays, delayTimeLow, delayTimeHigh, maxDelay);
+	}
 
-      sig = pitchShifter * mix;
-      sig = sig + dry;
-      sig = sig * amp;
-      sig = Pan2.ar(sig, pan);
-      Out.ar(outBus, sig);
-    }).add;
+	prInitMono { | numDelays, delayTimeLow, delayTimeHigh, maxDelay |
+		server = Server.default;
+		server.waitForBoot {
+			isLoaded = false;
+			isStereo = false;
+			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-    SynthDef(\prm_DelayNetwork_Input, {
-      | inBus, dryOutBus, wetOutBus, dryAmp = 1, dryMute = 1, wetAmp = 1, wetMute = 1 |
-      var input, sig;
-      input = In.ar(inBus);
-      Out.ar(dryOutBus, Pan2.ar(input * dryAmp * dryMute));
-      Out.ar(wetOutBus, input * wetAmp * wetMute);
-    }).add;
+			dry = IM_Mixer_1Ch.new(mixer.chanMono(0), relGroup: group, addAction: \addToHead);
+			while({ try { dry.isLoaded } != true }, { 0.001.wait; });
 
+			this.prAddSynthDefs;
+			shiftArray = Array.fill(1, 0);
+			delayBus = Bus.audio(server, 1);
+			server.sync;
 
-    SynthDef(\prm_DelayNetwork_StereoFader, {
-      | inBus, outBus, amp = 0.6, balance = 0, mute = 1 |
-      var input, bal, sig;
-      var lagTime = 0.05;
-      input = In.ar(inBus, 2);
-      bal = Balance2.ar(input[0], input[1], balance, amp.lag(lagTime));
-      sig = bal * mute;
-      sig = Out.ar(outBus, sig);
-    }).add;
-  }
+			// subMixer for delays:
+			subMixer = IM_Mixer.new(numDelays, mixer.chanStereo, relGroup: group, addAction: \addToHead);
+			while({ try { subMixer.isLoaded } != true }, { 0.001.wait; });
 
-  prMakeGroup { | relGroup = nil, addAction = 'addToTail' |
-    group = Group.new(relGroup, addAction);
-  }
+			this.prMakeMonoSynths(numDelays, maxDelay, delayTimeLow, delayTimeHigh);
 
-  prFreeGroup { group.free; }
+			server.sync;
 
-  prMakeBusses {
-    rampBus = Bus.control;
-    delayBus = Bus.audio;
-    faderBus = Bus.audio(server, 2);
+			splitter = Splitter.newMono(2, [dry.inBus, delayBus], relGroup: group, addAction: \addToHead);
+			while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
-  }
+			isLoaded = true;
+		};
+	}
 
-  prFreeBusses {
-    rampBus.free;
-    delayBus.free;
-    faderBus.free;
-  }
+	prAddSynthDefs {
 
-  prMakeSynths {
-    | inBus = 0, outBus = 0, amp = 1, balance = 0, numDelays = 5, maxDelay = 6, delayTimeLow = 1, delayTimeHigh = 4,
-    decayTimeLow = 1, decayTimeHigh = 1, filterType = 0, cutoffLow = 400, cutoffHigh = 1000, resLow = 0, resHigh = 0.5,
-    panLow = -1, panHigh = 1, pitchShiftArray = 0
-    |
-    faderAmp = amp;
+		SynthDef(\prm_delayNetwork_mono, {
+			|
+			inBus = 0, outBus = 0, amp = 1, delayTime = 0.3, maxDelayTime = 5, feedback = 0.2,
+			filterType = 0, cutoff = 20000, rq = 1, mix = 1, shiftAmount = 0
+			|
+			var input, pitchShift, lowPass, highPass, bandPass, filter, localIn, delay, sig;
+			input = In.ar(inBus);
+			pitchShift = PitchShift.ar(input, 0.1, shiftAmount.midiratio, 0, 0.05);
+			localIn = LocalIn.ar(1);
 
-    faderSynth = Synth(\prm_DelayNetwork_StereoFader, [\inBus, faderBus, \outBus, outBus, \amp, faderAmp, \balance, balance],
-      group, \addToTail);
-    inputSynth = Synth(\prm_DelayNetwork_Input, [\inBus, inBus, \dryOutBus, faderBus, \wetOutBus, delayBus, \dryMute, 0],
-      faderSynth, \addBefore);
-    delayArray = Array.fill(numDelays, {
-      var shift;
-      if( pitchShiftArray.isArray, { shift = pitchShiftArray.choose; }, { shift = pitchShiftArray });
-      Synth(\prm_DelayNetwork, [\inBus, delayBus, \outBus, faderBus, \amp, 1/numDelays, \mix, 1, \maxDelay, maxDelay,
-        \delayTime, rrand(delayTimeLow, delayTimeHigh), \decayTime, rrand(decayTimeLow, decayTimeHigh),
-        \filterType, filterType, \cutoff, exprand(cutoffLow, cutoffHigh), \res, rrand(resLow, resHigh),
-        \pan, rrand(panLow, panHigh), \pitchShift, shift], inputSynth, \addAfter);
-    });
-  }
+			lowPass = RLPF.ar(localIn, cutoff, rq);
+			highPass = RHPF.ar(localIn, cutoff, rq);
+			bandPass = BPF.ar(localIn, cutoff, rq);
+			filter = Select.ar(filterType, [localIn, lowPass, highPass, bandPass]);
 
-  prFreeSynths {
-    faderSynth.free;
-    delayArray.do({ | synth | synth.free; });
-    inputSynth.free;
-  }
+			delay = DelayC.ar(pitchShift + (filter * feedback), maxDelayTime, delayTime.lag2(0.1));
+			LocalOut.ar(delay);
 
-  //////// Public Functions:
+			sig = (filter * mix) + (input * (1-mix));
+			sig = sig * amp;
+			Out.ar(outBus, sig);
+		}).add;
 
-  setInBus { | inBus = 0 |
-    inputSynth.set(\inBus, inBus);
-  }
+		SynthDef(\prm_delayNetwork_stereo, {
+			|
+			inBus = 0, outBus = 0, amp = 1, delayTime = 0.3, maxDelayTime = 5, feedback = 0.2,
+			filterType = 0, cutoff = 20000, rq = 1, mix = 1, shiftAmount = 0
+			|
+			var input, pitchShift, lowPass, highPass, bandPass, filter, localIn, delay, sig;
+			input = In.ar(inBus, 2);
+			pitchShift = PitchShift.ar(input, 0.1, shiftAmount.midiratio, 0, 0.05);
+			localIn = LocalIn.ar(1);
 
-  setAmp { | amp |
-    faderAmp = amp;
-    faderSynth.set(\amp, faderAmp);
-    ^amp;
-  }
+			lowPass = RLPF.ar(localIn, cutoff, rq);
+			highPass = RHPF.ar(localIn, cutoff, rq);
+			bandPass = BPF.ar(localIn, cutoff, rq);
+			filter = Select.ar(filterType, [localIn, lowPass, highPass, bandPass]);
 
-  setVol { | vol |
-    faderAmp = vol.dbamp;
-    this.setAmp(faderAmp);
-    ^vol;
-  }
+			delay = DelayC.ar(pitchShift + (filter * feedback), maxDelayTime, delayTime.lag2(0.1));
+			LocalOut.ar(delay);
 
-  setBalance { | balance |
-    faderSynth.set(\balance, balance);
-  }
-
-  setDryAmp { | amp |
-    inputSynth.set(\dryAmp, amp);
-  }
-
-  setDryVol { | vol |
-    this.setDryAmp(vol.dbamp);
-  }
-
-  toggleDry {
-    inputSynth.get(\dryMute, { | muteState |
-      if(muteState == 0, { this.unMuteDry }, { this.muteDry });
-    });
-  }
-
-  muteDry {
-    inputSynth.set(\dryMute, 0);
-  }
-
-  unMuteDry {
-    inputSynth.set(\dryMute, 1);
-  }
-
-  setInput { | inBus |
-    inputSynth.set(\inBus, inBus);
-    ^inBus;
-  }
-
-  setOutput { | outBus |
-    faderSynth.set(\outBus, outBus);
-    ^outBus;
-  }
-
-  getNumDelays {
-    ^delayArray.size
-  }
-
-  addDelay { | delayTime = 1, decayTime = 1, maxDelay = 6, filterType = 0, cutoff = 10000, res = 0, pan = 0, pitchShift = 0 |
-    delayArray.add(
-      Synth(\prm_DelayNetwork, [\inBus, delayBus, \outBus, faderBus, \amp, 1/delayArray.size, \mix, 1, \maxDelay, maxDelay,
-        \delayTime, delayTime, \decayTime, decayTime, \filterType, filterType, \cutoff, cutoff, \res, res,
-        \pan, pan, \pitchShift, pitchShift], inputSynth, \addAfter);
-    );
-  }
-
-  setDelayTime { | delayNum = 0, delayTime = 1 |
-    if( delayArray.size > delayNum,
-      { delayArray.at(delayNum).set(\delayTime, delayTime); },
-      { ^"Delay Synth Does Not Exist at This Index"; });
-  }
-
-  setDecayTime { | delayNum = 0, decayTime = 1 |
-    if( delayArray.size > delayNum,
-      { delayArray.at(delayNum).set(\decayTime, decayTime); },
-      { ^"Delay Synth Does Not Exist at This Index"; });
-  }
-
-  setCutoff { | delayNum = 0, cutoff = 1000 |
-    if( delayArray.size > delayNum,
-      { delayArray.at(delayNum).set(\cutoff, cutoff); },
-      { ^"Delay Synth Does Not Exist at This Index"; });
-  }
-
-  setRes { | delayNum = 0, res = 0 |
-    if( delayArray.size > delayNum,
-      { delayArray.at(delayNum).set(\res, res); },
-      { ^"Delay Synth Does Not Exist at This Index"; });
-  }
-
-  setPan { | delayNum = 0, pan = 0 |
-    if( delayArray.size > delayNum,
-      { delayArray.at(delayNum).set(\pan, pan); },
-      { ^"Delay Synth Does Not Exist at This Index"; });
-  }
-
-  setPitchShift { | delayNum = 0, pitchShift = 0 |
-    if( delayArray.size > delayNum,
-      { delayArray.at(delayNum).set(\pitchShift, pitchShift); },
-      { ^"Delay Synth Does Not Exist at This Index"; });
-  }
-
-  randomizeParameters {
-    |
-    delayTimeLow = 1, delayTimeHigh = 4, decayTimeLow = 1, decayTimeHigh = 1, cutoffLow = 400, cutoffHigh = 1000,
-    resLow = 0, resHigh = 0.5, panLow = -1, panHigh = 1, pitchShiftArray = 0
-    |
-    delayArray.do({ | synth |
-      var shift;
-      if( pitchShiftArray.isArray, { shift = pitchShiftArray.choose; }, { shift = pitchShiftArray });
-      synth.set(\delayTime, rrand(delayTimeLow, delayTimeHigh), \decayTime, rrand(decayTimeLow, decayTimeHigh),
-        \cutoff, exprand(cutoffLow, cutoffHigh), \res, rrand(resLow, resHigh),
-        \pan, rrand(panLow, panHigh), \pitchShift, shift);
-    });
-    ^"parameters randomized";
-  }
-
-  randomizeDelayTime { | delayTimeLow = 1, delayTimeHigh = 4 |
-    delayArray.do({ | synth |
-      synth.set(\delayTime, rrand(delayTimeLow, delayTimeHigh));
-    });
-  }
-
-  randomizeDecayTime { | decayTimeLow = 1, decayTimeHigh = 1.5 |
-    delayArray.do({ | synth |
-      synth.set(\decayTime, rrand(decayTimeLow, decayTimeHigh));
-    });
-  }
-
-  randomizeCutoff { | cutoffLow = 700, cutoffHigh = 2500 |
-    delayArray.do({ | synth |
-      synth.set(\cutoff, exprand(cutoffLow, cutoffHigh));
-    });
-  }
-
-  randomizeRes { | resLow = 0, resHigh = 0.5 |
-    delayArray.do({ | synth |
-      synth.set(\res, rrand(resLow, resHigh));
-    });
-  }
-
-  randomizePan { | panLow = -1, panHigh = 1 |
-    delayArray.do({ | synth |
-      synth.set(\pan, rrand(panLow, panHigh));
-    });
-  }
-
-  setPitchShiftArray { | pitchShiftArray |
-    delayArray.do({ | synth | synth.set(\pitchShift, pitchShiftArray.choose;) });
-  }
-
-  clearDelays {
-
-    var delayRestoreArray = Array.newClear(delayArray.size);
-    var decayRestoreArray = Array.newClear(delayArray.size);
-    var waitTime = 2;
-
-    faderSynth.set(\mute, 0);
-    delayArray.do({ | synth, index |
-      synth.get(\delayTime, { | val |
-        delayRestoreArray[index] = val;
-      });
-      synth.get(\decayTime, { | val |
-        decayRestoreArray[index] = val;
-      });
-      synth.set(\delayTime, 0, \decayTime, 0);
-    });
-
-    {
-      delayArray.do({ | synth, index |
-        synth.set(\delayTime, delayRestoreArray[index], \decayTime, decayRestoreArray[index]);
-      });
-      faderSynth.set(\mute, 1);
-      faderSynth.set(\amp, faderAmp);
-    }.defer(waitTime);
-
-  }
-
-  fadeOutDelays { | rampTime = 3 |
-    { Out.kr(rampBus, Line.kr(faderAmp, 0, rampTime, doneAction: 2)); }.play;
-    faderSynth.set(\amp, rampBus.asMap);
-    { this.clearDelays }.defer(rampTime);
-  }
+			sig = (filter * mix) + (input * (1-mix));
+			sig = sig * amp;
+			Out.ar(outBus, sig);
+		}).add;
+	}
 
 
-  free {
-    this.prFreeSynths;
-    this.prFreeBusses;
-    this.prFreeGroup;
-  }
+	prMakeMonoSynths { | numDelays, maxDelay, delayTimeLow, delayTimeHigh |
+		delayArray = Array.fill(numDelays, { | i |
+			var shift;
+			shift = shiftArray.choose;
+			Synth(\prm_delayNetwork_mono,
+				[
+					\inBus, delayBus, \outBus, subMixer.chanMono(i),
+					\maxDelay, maxDelay, \delayTime, rrand(delayTimeLow, delayTimeHigh),
+					\feedback, 0.2, \shiftAmount, shift
+			], group, \addToHead);
+		});
+	}
+
+	prMakeStereoSynths { | numDelays, maxDelay, delayTimeLow, delayTimeHigh |
+		delayArray = Array.fill(numDelays, { | i |
+			var shift;
+			shift = shiftArray.choose;
+			Synth(\prm_delayNetwork_stereo,
+				[
+					\inBus, delayBus, \outBus, subMixer.chanStereo(i),
+					\maxDelay, maxDelay, \delayTime, rrand(delayTimeLow, delayTimeHigh),
+					\feedback, 0.2, \shiftAmount, shift
+			], group, \addToHead);
+		});
+	}
+
+
+	//////// Public Functions:
+
+	inBus { ^splitter.inBus; }
+
+	free { }
+
+	numDelays { ^delayArray.size }
+
+	addDelay { | delayTime = 0.1, feedback = 0.2, maxDelay = 3, filterType = 0,
+		cutoff = 20000, rq = 1, shiftAmount = 0 |
+		subMixer.addStrip;
+		if( isStereo == false,
+			{
+				delayArray = delayArray.add(Synth(\prm_delayNetwork_mono,
+					[\outBus, mixer.chanMono(delayArray.size),\delayTime, delayTime,
+						\feedback, feedback, \maxDelay, maxDelay,
+						\filterType, filterType, \cutoff, cutoff, \rq, rq, \shiftAmount, shiftAmount],
+					group, \addToHead));
+			},
+			{
+				delayArray = delayArray.add(Synth(\prm_delayNetwork_stereo,
+					[\outBus, mixer.chanStereo(delayArray.size),\delayTime, delayTime,
+						\feedback, feedback, \maxDelay, maxDelay,
+						\filterType, filterType, \cutoff, cutoff, \rq, rq, \shiftAmount, shiftAmount],
+					group, \addToHead));
+			}
+		);
+	}
+
+	/////// addressing individual delays:
+
+	setDelayTime { | delayNum = 0, delayTime = 1 |
+		if( delayArray.size > delayNum,
+			{ delayArray.at(delayNum).set(\delayTime, delayTime); },
+			{ ^"Delay Synth Does Not Exist at This Index"; });
+	}
+
+	setFeedback { | delayNum = 0, feedback = 0.2 |
+		if( delayArray.size > delayNum,
+			{ delayArray.at(delayNum).set(\feedback, feedback); },
+			{ ^"Delay Synth Does Not Exist at This Index"; });
+	}
+
+	setCutoff { | delayNum = 0, cutoff = 1000 |
+		if( delayArray.size > delayNum,
+			{ delayArray.at(delayNum).set(\cutoff, cutoff); },
+			{ ^"Delay Synth Does Not Exist at This Index"; });
+	}
+
+	setRQ { | delayNum = 0, rq = 0 |
+		if( delayArray.size > delayNum,
+			{ delayArray.at(delayNum).set(\res, rq); },
+			{ ^"Delay Synth Does Not Exist at This Index"; });
+	}
+
+	setPan { | delayNum = 0, pan = 0 |
+		if( delayArray.size > delayNum,
+			{ subMixer.setPanBal(delayNum, pan); },
+			{ ^"Delay Synth Does Not Exist at This Index"; });
+	}
+
+	setPitchShift { | delayNum = 0, shiftAmount = 0 |
+		if( delayArray.size > delayNum,
+			{ delayArray.at(delayNum).set(\shiftAmount, shiftAmount); },
+			{ ^"Delay Synth Does Not Exist at This Index"; });
+	}
+
+	///// addressing the entire delay array:
+
+	randomizeParameters {
+		|
+		delayTimeLow = 0.1, delayTimeHigh = 1, feedbackLow = 0, feedbackHigh = 0.5,
+		cutoffLow = 1300, cutoffHigh = 20000, rqLow = 1, rqHigh = 0.7, panLow = -1, panHigh = 1,
+		shiftArray = 0
+		|
+		delayArray.do({ | synth |
+			var shift;
+			if( shiftArray.isArray, { shift = shiftArray.choose; }, { shift = shiftArray });
+			synth.set(
+				\delayTime, rrand(delayTimeLow, delayTimeHigh),
+				\feedback, rrand(feedbackLow, feedbackHigh),
+				\cutoff, rrand(cutoffLow, cutoffHigh),
+				\rq, rrand(rqLow, rqHigh),
+				\shiftAmount, shift
+			);
+		});
+		^"parameters randomized";
+	}
+
+	/*
+
+	randomizeDelayTime { | delayTimeLow = 1, delayTimeHigh = 4 |
+	delayArray.do({ | synth |
+	synth.set(\delayTime, rrand(delayTimeLow, delayTimeHigh));
+	});
+	}
+
+	randomizeDecayTime { | decayTimeLow = 1, decayTimeHigh = 1.5 |
+	delayArray.do({ | synth |
+	synth.set(\decayTime, rrand(decayTimeLow, decayTimeHigh));
+	});
+	}
+
+	randomizeCutoff { | cutoffLow = 700, cutoffHigh = 2500 |
+	delayArray.do({ | synth |
+	synth.set(\cutoff, exprand(cutoffLow, cutoffHigh));
+	});
+	}
+
+	randomizeRes { | resLow = 0, resHigh = 0.5 |
+	delayArray.do({ | synth |
+	synth.set(\res, rrand(resLow, resHigh));
+	});
+	}
+
+	randomizePan { | panLow = -1, panHigh = 1 |
+	delayArray.do({ | synth |
+	synth.set(\pan, rrand(panLow, panHigh));
+	});
+	}
+
+	setPitchShiftArray { | shiftArray |
+	delayArray.do({ | synth | synth.set(\pitchShift, shiftArray.choose;) });
+	}
+
+	clearDelays {
+
+	var delayRestoreArray = Array.newClear(delayArray.size);
+	var decayRestoreArray = Array.newClear(delayArray.size);
+	var waitTime = 2;
+
+	faderSynth.set(\mute, 0);
+	delayArray.do({ | synth, index |
+	synth.get(\delayTime, { | val |
+	delayRestoreArray[index] = val;
+	});
+	synth.get(\decayTime, { | val |
+	decayRestoreArray[index] = val;
+	});
+	synth.set(\delayTime, 0, \decayTime, 0);
+	});
+
+	{
+	delayArray.do({ | synth, index |
+	synth.set(\delayTime, delayRestoreArray[index], \decayTime, decayRestoreArray[index]);
+	});
+	faderSynth.set(\mute, 1);
+	faderSynth.set(\amp, faderAmp);
+	}.defer(waitTime);
+
+	}
+
+	fadeOutDelays { | rampTime = 3 |
+	{ Out.kr(rampBus, Line.kr(faderAmp, 0, rampTime, doneAction: 2)); }.play;
+	faderSynth.set(\amp, rampBus.asMap);
+	{ this.clearDelays }.defer(rampTime);
+	}
+
+	*/
 
 
 }

@@ -9,7 +9,7 @@ updated 6/5/2019
 -- erosion sounds terrible -- replacing with Distortion
 */
 
-Droner : IM_Module {
+Droner : IM_Processor {
 
   var <isLoaded, server;
   var demand, <input, <delay, <granulator, erosion, <reverb, <eq;
@@ -18,7 +18,7 @@ Droner : IM_Module {
   var demandBus, erosionBus;
 
   *newMono { | outBus = 0, ir, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono(ir);
+    ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono(ir);
   }
 
   prInitMono { | ir |

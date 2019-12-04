@@ -1,12 +1,13 @@
 /*
-Tuesday, December 10th 2013
-DelayNetwork.sc
+Wednesday, December 4th 2019
+DelayNetwork2.sc
 prm
 
-updated Tuesday, December 3rd 2019
+Like DelayNetwork except using Comb delays
+with decay times instead of feedback loops
 */
 
-DelayNetwork : IM_Module {
+DelayNetwork2 : IM_Module {
 
 	var <isLoaded, server;
 	var delayArray, shiftArray;
@@ -92,51 +93,38 @@ DelayNetwork : IM_Module {
 
 	prAddSynthDefs {
 
-		SynthDef(\prm_delayNetwork_mono, {
+		SynthDef(\prm_delayNetwork2_mono, {
 			|
-			inBus = 0, outBus = 0, amp = 1, delayTime = 0.3, maxDelayTime = 5, feedback = 0.2,
-			filterType = 0, cutoff = 20000, rq = 1, mix = 1, shiftAmount = 0
+			inBus = 0, outBus = 0, amp = 1, delayTime = 0.3, maxDelayTime = 5, decayTime = 1,
+			filterType = 0, cutoff = 20000, res = 0, shiftAmount = 0
 			|
-			var input, pitchShift, lowPass, highPass, bandPass, filter, localIn, delay, sig;
-			input = In.ar(inBus);
-			pitchShift = PitchShift.ar(input, 0.1, shiftAmount.midiratio, 0, 0.05);
-			localIn = LocalIn.ar(1);
 
-			lowPass = RLPF.ar(localIn, cutoff, rq);
-			highPass = RHPF.ar(localIn, cutoff, rq);
-			bandPass = BPF.ar(localIn, cutoff, rq);
-			filter = Select.ar(filterType, [localIn, lowPass, highPass, bandPass]);
+			var input, delay, filter, pitchShift, sig;
 
-			delay = DelayC.ar(pitchShift + (filter * feedback), maxDelayTime, delayTime.lag2(0.1));
-			LocalOut.ar(delay);
-
-			sig = (filter * mix) + (input * (1-mix));
-			sig = sig * amp;
+			input = In.ar(inBus, 1);
+			delay = CombC.ar(input, maxDelayTime, delayTime, decayTime);
+			filter = BMoog.ar(delay, cutoff, res, filterType);
+			pitchShift = PitchShift.ar(filter, 0.1, shiftAmount.midiratio, 0, 0.05);
+			sig = pitchShift * amp;
 			Out.ar(outBus, sig);
 		}).add;
 
-		SynthDef(\prm_delayNetwork_stereo, {
+		SynthDef(\prm_delayNetwork2_stereo, {
 			|
-			inBus = 0, outBus = 0, amp = 1, delayTime = 0.3, maxDelayTime = 5, feedback = 0.2,
-			filterType = 0, cutoff = 20000, rq = 1, mix = 1, shiftAmount = 0
+			inBus = 0, outBus = 0, amp = 1, delayTime = 0.3, maxDelayTime = 5, decayTime = 1,
+			filterType = 0, cutoff = 20000, res = 0, shiftAmount = 0
 			|
-			var input, pitchShift, lowPass, highPass, bandPass, filter, localIn, delay, sig;
+
+			var input, delay, filter, pitchShift, sig;
+
 			input = In.ar(inBus, 2);
-			pitchShift = PitchShift.ar(input, 0.1, shiftAmount.midiratio, 0, 0.05);
-			localIn = LocalIn.ar(2);
-
-			lowPass = RLPF.ar(localIn, cutoff, rq);
-			highPass = RHPF.ar(localIn, cutoff, rq);
-			bandPass = BPF.ar(localIn, cutoff, rq);
-			filter = Select.ar(filterType, [localIn, lowPass, highPass, bandPass]);
-
-			delay = DelayC.ar(pitchShift + (filter * feedback), maxDelayTime, delayTime.lag2(0.1));
-			LocalOut.ar(delay);
-
-			sig = (filter * mix) + (input * (1-mix));
-			sig = sig * amp;
+			delay = CombC.ar(input, maxDelayTime, delayTime, decayTime);
+			filter = BMoog.ar(delay, cutoff, res, filterType);
+			pitchShift = PitchShift.ar(filter, 0.1, shiftAmount.midiratio, 0, 0.05);
+			sig = pitchShift * amp;
 			Out.ar(outBus, sig);
 		}).add;
+
 	}
 
 
@@ -144,11 +132,11 @@ DelayNetwork : IM_Module {
 		delayArray = Array.fill(numDelays, { | i |
 			var shift;
 			shift = shiftArray.choose;
-			Synth(\prm_delayNetwork_mono,
+			Synth(\prm_delayNetwork2_mono,
 				[
 					\inBus, delayBus, \outBus, subMixer.chanMono(i),
 					\maxDelay, maxDelay, \delayTime, rrand(delayTimeLow, delayTimeHigh),
-					\feedback, 0.2, \shiftAmount, shift
+					\decayTime, 1, \shiftAmount, shift
 			], group, \addToHead);
 		});
 	}
@@ -157,11 +145,11 @@ DelayNetwork : IM_Module {
 		delayArray = Array.fill(numDelays, { | i |
 			var shift;
 			shift = shiftArray.choose;
-			Synth(\prm_delayNetwork_stereo,
+			Synth(\prm_delayNetwork2_stereo,
 				[
 					\inBus, delayBus, \outBus, subMixer.chanStereo(i),
 					\maxDelay, maxDelay, \delayTime, rrand(delayTimeLow, delayTimeHigh),
-					\feedback, 0.2, \shiftAmount, shift
+					\decayTime, 1, \shiftAmount, shift
 			], group, \addToHead);
 		});
 	}
@@ -182,21 +170,21 @@ DelayNetwork : IM_Module {
 
 	numDelays { ^delayArray.size }
 
-	addDelay { | delayTime = 0.1, feedback = 0.2, maxDelay = 3, filterType = 0,
+	addDelay { | delayTime = 0.1, decayTime = 1, maxDelay = 3, filterType = 0,
 		cutoff = 20000, rq = 1, shiftAmount = 0 |
 		subMixer.addStrip;
 		if( isStereo == false,
 			{
-				delayArray = delayArray.add(Synth(\prm_delayNetwork_mono,
+				delayArray = delayArray.add(Synth(\prm_delayNetwork2_mono,
 					[\outBus, mixer.chanMono(delayArray.size),\delayTime, delayTime,
-						\feedback, feedback, \maxDelay, maxDelay,
+						\decayTime, decayTime, \maxDelay, maxDelay,
 						\filterType, filterType, \cutoff, cutoff, \rq, rq, \shiftAmount, shiftAmount],
 					group, \addToHead));
 			},
 			{
-				delayArray = delayArray.add(Synth(\prm_delayNetwork_stereo,
+				delayArray = delayArray.add(Synth(\prm_delayNetwork2_stereo,
 					[\outBus, mixer.chanStereo(delayArray.size),\delayTime, delayTime,
-						\feedback, feedback, \maxDelay, maxDelay,
+						\decayTime, decayTime, \maxDelay, maxDelay,
 						\filterType, filterType, \cutoff, cutoff, \rq, rq, \shiftAmount, shiftAmount],
 					group, \addToHead));
 			}
@@ -211,9 +199,9 @@ DelayNetwork : IM_Module {
 			{ ^"Delay Synth Does Not Exist at This Index"; });
 	}
 
-	setFeedback { | delayNum = 0, feedback = 0.2 |
+	setDecayTime { | delayNum = 0, decayTime = 1 |
 		if( delayArray.size > delayNum,
-			{ delayArray.at(delayNum).set(\feedback, feedback); },
+			{ delayArray.at(delayNum).set(\decayTime, decayTime); },
 			{ ^"Delay Synth Does Not Exist at This Index"; });
 	}
 
@@ -229,9 +217,9 @@ DelayNetwork : IM_Module {
 			{ ^"Delay Synth Does Not Exist at This Index"; });
 	}
 
-	setRQ { | delayNum = 0, rq = 1 |
+	setRes { | delayNum = 0, res = 0 |
 		if( delayArray.size > delayNum,
-			{ delayArray.at(delayNum).set(\rq, rq); },
+			{ delayArray.at(delayNum).set(\res, res); },
 			{ ^"Delay Synth Does Not Exist at This Index"; });
 	}
 
@@ -251,8 +239,8 @@ DelayNetwork : IM_Module {
 
 	randomizeParameters {
 		|
-		delayTimeLow = 0.1, delayTimeHigh = 1, feedbackLow = 0, feedbackHigh = 0.5,
-		cutoffLow = 1300, cutoffHigh = 20000, rqLow = 1, rqHigh = 0.7, panLow = -1, panHigh = 1,
+		delayTimeLow = 0.1, delayTimeHigh = 1, decayTimeLow = 0.5, decayTimeHigh = 1,
+		cutoffLow = 1300, cutoffHigh = 20000, resLow = 0, resHigh = 0.7, panLow = -1, panHigh = 1,
 		shiftArray = 0
 		|
 		delayArray.do({ | synth |
@@ -260,9 +248,9 @@ DelayNetwork : IM_Module {
 			if( shiftArray.isArray, { shift = shiftArray.choose; }, { shift = shiftArray });
 			synth.set(
 				\delayTime, rrand(delayTimeLow, delayTimeHigh),
-				\feedback, rrand(feedbackLow, feedbackHigh),
+				\decayTime, rrand(decayTimeLow, decayTimeHigh),
 				\cutoff, rrand(cutoffLow, cutoffHigh),
-				\rq, rrand(rqLow, rqHigh),
+				\res, rrand(resLow, resHigh),
 				\shiftAmount, shift
 			);
 		});
@@ -275,9 +263,9 @@ DelayNetwork : IM_Module {
 		});
 	}
 
-	randomizeFeedback { | feedbackLow = 0, feedbackHigh = 0.8 |
+	randomizeDecayTime { | decayTimeLow = 0.5, decayTimeHigh = 1 |
 		delayArray.do({ | synth |
-			synth.set(\feedback, rrand(feedbackLow, feedbackHigh));
+			synth.set(\decayTime, rrand(decayTimeLow, decayTimeHigh));
 		});
 	}
 
@@ -287,9 +275,9 @@ DelayNetwork : IM_Module {
 		});
 	}
 
-	randomizeRQ { | rqLow = 0, rqHigh = 0.5 |
+	randomizeRes { | resLow = 0, resHigh = 0.5 |
 		delayArray.do({ | synth |
-			synth.set(\rq, rrand(rqLow, rqHigh));
+			synth.set(\res, rrand(resLow, resHigh));
 		});
 	}
 

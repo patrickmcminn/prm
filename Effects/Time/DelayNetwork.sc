@@ -37,7 +37,7 @@ DelayNetwork : IM_Module {
 			isStereo = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-			dry = IM_Mixer_1Ch.new(mixer.chanMono(0), relGroup: group, addAction: \addToHead);
+			dry = IM_Mixer_1Ch.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
 			while({ try { dry.isLoaded } != true }, { 0.001.wait; });
 
 			this.prAddSynthDefs;
@@ -53,7 +53,8 @@ DelayNetwork : IM_Module {
 
 			server.sync;
 
-			splitter = Splitter.newMono(2, [dry.inBus, delayBus], relGroup: group, addAction: \addToHead);
+			splitter = Splitter.newMono(2, [dry.chanMono(0), delayBus],
+				relGroup: group, addAction: \addToHead);
 			while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
 			isLoaded = true;

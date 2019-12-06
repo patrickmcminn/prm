@@ -80,7 +80,7 @@ IM_Reverb : IM_Processor {
   prInit { |mix = 1, roomSize = 0.7, damp = 0.5|
     var server = Server.default;
 
-    lowPassFreq = 15000;
+    lowPassFreq = 20000;
     highPassFreq = 80;
     isEnabled = true;
     isConvolution = false;
@@ -112,7 +112,7 @@ IM_Reverb : IM_Processor {
   prMakeSynthDefs {
     SynthDef(\IM_reverbConv, {
       | inBus = 0, outBus = 0, preAmp = 1, amp = 1,
-      lowPassFreq = 15000, highPassFreq = 80, buffer, fftMul = 2, mute = 1, mix = 1 |
+      lowPassFreq = 20000, highPassFreq = 80, buffer, fftMul = 2, mute = 1, mix = 1 |
 
       var fftSize, input, leftConvolution, rightConvolution, sum, lowPass, highPass;
       var sig, lagTime;
@@ -137,7 +137,7 @@ IM_Reverb : IM_Processor {
 
     SynthDef(\IM_reverb, {
       | inBus = 0, outBus = 0, preAmp = 1, amp = 1,
-      lowPassFreq = 15000, highPassFreq = 80, roomSize = 0.7, damp = 0.5, mix = 1, mute = 1 |
+      lowPassFreq = 20000, highPassFreq = 80, roomSize = 0.7, damp = 0.5, mix = 1, mute = 1 |
 
       var input, reverb, lowPass, highPass, sig, lagTime;
 
@@ -166,7 +166,7 @@ IM_Reverb : IM_Processor {
 
   setPreAmp { | amp = 1 |  synth.set(\preAmp, amp); }
 
-  setLowPassFreq { | freq = 15000 |
+  setLowPassFreq { | freq = 20000 |
     lowPassFreq = freq;
     synth.set(\lowPassFreq, lowPassFreq);
   }

@@ -91,7 +91,6 @@ r {
   ~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
     ~modOutput[0]);
 
-
   while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
   try { ~apc = APC40Mk2.new; };

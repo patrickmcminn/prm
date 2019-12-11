@@ -16,6 +16,23 @@ s.makeWindow
 //// Live: //////
 ////////////////
 
+/*
+Audio Interface:
+1 - mic
+2 - pickup
+
+Modular:
+Inputs:
+1 - Moog
+2 - Morphagene
+3 - Plaits
+4 - Noise
+
+Outputs:
+1 - Modular Send
+8 - clock out
+*/
+
 r {
 
   //// Audio Inputs:

@@ -26,6 +26,8 @@ var loopDelayIsLoaded = false;
 ~apc.addMixerEncodersBanks(3, page);
 ~apc.addDeviceEncodersBanks(3, page);
 
+~apc.setActiveDeviceEncodersBank(granulator, page);
+
 ///////////////////////
 ////// Grid: ////////
 ////////////////////
@@ -281,4 +283,21 @@ var loopDelayIsLoaded = false;
 //// Modular Send:
 
 //// Delay:
+~apc.setDeviceEncodersMonitorFunc(\delay, {
+	var time, fb;
+	time = ~prm.delay.delayTime.explin(0.05, 6, 0, 127);
+	fb = ~prm.delay.feedback.linlin(0, 1, 0, 127);
+	~apc.setDeviceEncoderValue(1, time, delay, page);
+	~apc.setDeviceEncoderValue(2, fb, delay, page);
+}, delay, page);
+// delay time:
+~apc.setDeviceEncoderFunc(1, { | val |
+	var time = val.linexp(0, 127, 0.05, 6);
+	~prm.delay.setDelayTime(time);
+}, delay, page);
+// feedback:
+~apc.setDeviceEncoderFunc(2, { | val |
+	var fb = val.linlin(0, 127, 0, 1);
+	~prm.delay.setFeedback(fb);
+}, delay, page);
 

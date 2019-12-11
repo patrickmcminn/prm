@@ -20,6 +20,8 @@ var tuningNoteIsPlaying = false;
 
 var loopDelayIsLoaded = false;
 
+var envReset;
+
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 ~apc.storageDict[\loadMasterFunc].value;
 
@@ -124,6 +126,36 @@ var loopDelayIsLoaded = false;
 	~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); });
 
 });
+
+//// grainEnv buttons:
+~envReset = {
+	~apc.turnGridBlue(4, 4, 1, page: page);
+	~apc.turnGridCyan(5, 4, 1, page: page);
+	~apc.turnGridYellowGreen(6, 4, 1, page: page);
+	~apc.turnGridLightBlue(7, 4, 1, page: page);
+	~apc.turnGridYellow(4, 3, 1, page: page);
+	~apc.turnGridWhite(5, 3, 1, page: page);
+};
+
+~apc.setGridMonitorFunc(\grainEnv, {
+	var env = ~prm.granulator.grainEnv;
+	switch( env,
+		'hann', { ~envReset.value; ~apc.turnGridGreen(4, 4, page: page); },
+		'gabor', { ~envReset.value; ~apc.turnGridGreen(5, 4, page: page); },
+		'gabWide', { ~envReset.value; ~apc.turnGridGreen(6, 4, page: page); },
+		'perc', { ~envReset.value; ~apc.turnGridGreen(7, 4, page: page); },
+		'revPerc', { ~envReset.value; ~apc.turnGridGreen(4, 3, page: page); },
+		'expodec', { ~envReset.value; ~apc.turnGridGreen(5, 3, page: page); },
+		'rexpodec', { ~envReset.value; ~apc.turnGridGreen(6, 3, page: page); }
+	);
+}, page: page);
+~apc.setGridFunc(4, 4, { ~prm.granulator.setGrainEnvelope('hann'); }, page: page);
+~apc.setGridFunc(5, 4, { ~prm.granulator.setGrainEnvelope('gabor'); }, page: page);
+~apc.setGridFunc(6, 4, { ~prm.granulator.setGrainEnvelope('gabWide'); }, page: page);
+~apc.setGridFunc(7, 4, { ~prm.granulator.setGrainEnvelope('perc'); }, page: page);
+~apc.setGridFunc(4, 3, { ~prm.granulator.setGrainEnvelope('revPerc'); }, page: page);
+~apc.setGridFunc(5, 3, { ~prm.granulator.setGrainEnvelope('expodec'); }, page: page);
+~apc.setGridFunc(6, 3, { ~prm.granulator.setGrainEnvelope('rexpodec'); }, page: page);
 
 //// beauty buttons:
 

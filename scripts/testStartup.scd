@@ -62,7 +62,7 @@ r {
   "/Global Functions/Load Global Functions.scd".loadRelative;
   "/System Scripts/Load System Scripts.scd".loadRelative;
   "/Songs/Load Songs.scd".loadRelative;
-	"/Effects/Load Effects.scd".loadRelative";
+	"/Effects/Load Effects.scd".loadRelative;
 
 }.play;
 

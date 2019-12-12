@@ -9,7 +9,8 @@ Load System Scripts.scd
 "APC40 Main Page.scd".loadRelative;
 "Base Main Page.scd".loadRelative;
 
-"Song Page.scd".loadRelative;
+"Effects Page.scd".loadRelative;
+"Base Effects Page.scd".loadRelative;
 
 //"Send Page.scd".loadRelative;
 

@@ -39,6 +39,12 @@ var divResetFunc, posResetFunc, rateResetFunc;
 		{ ~apc.turnTrackSelectButtonOff(1) }, { ~apc.turnTrackSelectButtonOn(1) });
 	if( ~loopDelayInput.isMuted,
 		{ ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
+	if( ~loopDelay.mixer.preOrPost == 'post',
+		{ ~apc.turnCrossfaderSelectButtonOrange(1) }, { ~apc.turnCrossfaderSelectButtonYellow(1) });
+}, page: page);
+~apc.setCrossfaderSelectFunc(1, {
+	if( ~loopDelay.mixer.preOrPost(0) == 'post',
+		{ ~loopDelay.mixer.setSendPre(0); }, { ~loopDelay.mixer.setSendPost(0); });
 }, page: page);
 
 // sends:
@@ -131,7 +137,7 @@ var divResetFunc, posResetFunc, rateResetFunc;
 ~apc.setGridFunc(6, 3, {
 	~loopDelay.delayNetwork.setPitchShiftArray([-5, -3, -2, 0, 2, 3, 5, 7]); }, page: page);
 // microtonal fuck you:
-~apc.setGridFunc(4, 3, {
+~apc.setGridFunc(7, 3, {
 	~loopDelay.delayNetwork.setPitchShiftArray([-0.1, 0, 0.1, -0.5, 0.5, 0.3, 0.25, -0.25]); }, page: page);
 
 //////////////////

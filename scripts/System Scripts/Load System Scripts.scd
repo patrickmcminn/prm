@@ -18,3 +18,4 @@ Load System Scripts.scd
 //"Base Submixer Looper Page.scd".loadRelative;
 
 
+s.meter

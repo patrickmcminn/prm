@@ -1,6 +1,4 @@
 /*
-Saturday, September 20th 2014
-LFO.sc
 prm
 */
 
@@ -13,7 +11,7 @@ CV_LFO {
   var group;
   var lfoWaveform;
 
-  *new { | outBus = 0, freq = 1, waveform = 'sine', rangeLow = -1, rangeHigh = 1, relGroup = nil, addAction = 'addToHead' |
+  *new { | outBus = 0, freq = 1, waveform = 'sine', rangeLow = -0.25, rangeHigh = 0.25, relGroup = nil, addAction = 'addToHead' |
     ^super.new.prInit(outBus, freq, waveform, rangeLow, rangeHigh, relGroup, addAction);
   }
 

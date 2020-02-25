@@ -96,15 +96,15 @@ r {
 
   // M32:
   ~moogDevice = "mio10";
-  ~moogPort = "DIN 5";
+  ~moogPort = "DIN 4";
 
   // Juno 106:
   ~junoDevice = "mio10";
-  ~junoPort = "Roland Juno 106";
+  ~junoPort = "DIN 2";
 
   // K2500R:
   ~k2500RDevice = "mio10";
-  ~k2500RPort = "Kurzweil K2500R";
+  ~k2500RPort = "DIN 3";
 
   ~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
     ~modOutput[0]);

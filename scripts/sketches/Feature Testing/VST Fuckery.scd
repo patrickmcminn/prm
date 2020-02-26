@@ -1,14 +1,3 @@
-x = CV_Gate.new(32);
-
-x.makeTrig(1, 0.1);
-
-x.makeGate(-0.3);
-x.releaseGate;
-
-
-x.gateIsHigh;
-x.free;
-
 VSTPlugin
 
 VSTPlugin.search

@@ -3,6 +3,9 @@ Monday, November 10th 2014
 adapted from IM_AudioSystem in ImpMach
 by Jonah Beram and Patrick McMinn
 prm
+
+2/26/2020
+moving over to Valhalla VST
 */
 
 AudioSystem {
@@ -85,17 +88,22 @@ AudioSystem {
 
 			///////// RETURN FX:
 
-			reverb = IM_Reverb.newConvolution(masterEQ.inBus, bufName: irLibrary.irDict['3.0LongReverb'],
-				relGroup: systemGroup, addAction: \addToHead);
+			//
+
+			reverb = Valhalla.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
+			/*reverb = IM_Reverb.newConvolution(masterEQ.inBus, bufName: irLibrary.irDict['3.0LongReverb'],
+				relGroup: systemGroup, addAction: \addToHead);*/
 			server.sync;
 			while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
-			reverb.setPreAmp(-6.dbamp);
+
+			//reverb.setPreAmp(-6.dbamp);
+
 			// pre eq:
 			reverb.preEQ.setHighPassCutoff(180);
-			reverb.preEQ.setLowPassCutoff(15000);
+			//reverb.preEQ.setLowPassCutoff(15000);
 			// post eq:
 			reverb.postEQ.setLowGain(-9);
-			reverb.postEQ.setHighGain(3);
+			//reverb.postEQ.setHighGain(3);
 			reverb.postEQ.setLowFreq(250);
 			reverb.postEQ.setPeak1Freq(496.6);
 			reverb.postEQ.setPeak1RQ(3);

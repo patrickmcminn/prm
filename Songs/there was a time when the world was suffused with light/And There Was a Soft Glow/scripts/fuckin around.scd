@@ -206,3 +206,19 @@ note, 8); });
 
 );
 
+~cvGate1 = CV_Gate.new(37, ~prm.procGroup);
+~cvGate1.makeTrig
+
+~cv
+
+~cvEnv1 = CV_EnvPerc.new(38, ~prm.procGroup);
+
+~cvEnv2 = CV_EnvPerc.new(39, ~prm.procGroup);
+
+MIDIFunc.noteOn({ ~cvGate1.makeTrig }, 63, 15);
+MIDIFunc.noteOn({ ~cvEnv1.triggerEnvelope; }, 61, 15);
+MIDIFunc.noteOn({ ~cvEnv2.triggerEnvelope; }, 62, 15);
+
+
+~mixer.setSendVol(5, 0, -12);
+

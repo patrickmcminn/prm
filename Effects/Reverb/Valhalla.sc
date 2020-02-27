@@ -48,8 +48,8 @@ Valhalla : IM_Module {
 			server.sync;
 
 			mixer.setPreVol(6);
-			preEQ.setPreVol(3);
-			postEQ.setPreVol(3);
+			//preEQ.mixer.setPreVol(3);
+			postEQ.mixer.setPreVol(3);
 
 			isLoaded = true;
 		}

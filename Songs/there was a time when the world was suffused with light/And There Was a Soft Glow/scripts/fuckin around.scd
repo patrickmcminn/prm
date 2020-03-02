@@ -243,7 +243,7 @@ MIDIFunc.noteOn({ ~cvEnv2.triggerEnvelope; }, 62, 15);
 
 
 ~verb = IM_Reverb.new(~mixer.chanStereo(4), damp: 0.8, relGroup: ~prm.procGroup, addAction: \addToHead);
-~dist = Distortion.newMono(~mixer.chanStereo(4), 10, relGroup: ~prm.procGroup, addAction: \addToHead);
+~dist = Decapitator.new(~mixer.chanStereo(4), relGroup: ~prm.procGroup, addAction: \addToHead);
 ~moog2 = IM_HardwareIn(~modInput[0], ~dist.inBus, ~prm.procGroup, \addToHead);
 
 ~dist.postEQ.setLowPassCutoff(1400);
@@ -253,3 +253,6 @@ MIDIFunc.noteOn({ ~cvEnv2.triggerEnvelope; }, 62, 15);
 ~dist.setDistortionGain(1);
 
 ~dist.mixer.setPreVol(-12);
+
+
+~dist.makeGUI

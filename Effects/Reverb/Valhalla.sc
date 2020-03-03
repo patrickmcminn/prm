@@ -85,4 +85,6 @@ Valhalla : IM_Module {
 		synth.writeProgram(path++ name ++ ".fxp");
 	}
 
+	makeGUI { ^synth.gui }
+
 }

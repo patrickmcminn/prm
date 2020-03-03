@@ -109,6 +109,8 @@ AudioSystem {
 			reverb.postEQ.setPeak1RQ(3);
 			reverb.postEQ.setPeak1Gain(-5);
 
+			reverb.loadPreset('longTrumpet');
+
 			granulator = GranularDelay.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
 			server.sync;
 			while( {  try { granulator.isLoaded } != true }, { 0.001.wait; });

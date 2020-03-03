@@ -59,7 +59,10 @@ var send7 = 7;
   });
 }, page: page);
 
+//////// reverb preset:
 
+~apc.turnSceneLaunchButtonBlue(0, 2, page: page);
+~apc.setSceneLaunchFunc(0, { ~prm.reverb.loadPreset('foundation'); ~apc.turnSceneLaunchButtonGreen(0) }, page: page);
 
 /////////////////////
 //// main grid: ////

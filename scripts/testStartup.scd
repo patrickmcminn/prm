@@ -47,8 +47,8 @@ r {
 
 
   // M32:
-  ~moogDevice = "UMC1820";
-  ~moogPort = "UMC1820";
+  ~moogDevice = "Pyramid MIDI USB";
+  ~moogPort = "Pyramid MIDI USB";
 
   //~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modOutput[0]);
   ~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
@@ -95,8 +95,8 @@ r {
 
 
   // M32:
-  ~moogDevice = "mio10";
-  ~moogPort = "DIN 4";
+  ~moogDevice = "Pyramid MIDI USB";
+  ~moogPort = "Pyramid MIDI USB";
 
   // Juno 106:
   ~junoDevice = "mio10";

@@ -62,6 +62,7 @@ Mother32 : IM_Module {
   }
 
   playNote { | freq = 220 |
+	//	this.releaseNote(freq);
     midiOutPort.noteOn(midiChannel, freq.cpsmidi);
   }
 

@@ -114,10 +114,16 @@ Foundation_ChordSynth : IM_Module {
 
 	prMakeMIDIFuncs {
 		onArray = Array.fill(128, { | i |
-			MIDIFunc.noteOn({| vel | this.playNote(i.midicps) }, i, channel, sequencer); });
+			MIDIFunc.noteOn({| note, vel | this.playNote(i.midicps, vel.ccdbfs.dbamp) }, i, channel, sequencer); });
 		offArray = Array.fill(128, { | i |
 			MIDIFunc.noteOff({ this.releaseNote(i.midicps) }, i, channel, sequencer); });
 		midiVol = MIDIFunc.cc({ | val | mixer.setVol(val.ccdbfs); }, 7, channel, sequencer);
+	}
+
+	prFreeMIDIFuncs {
+		onArray.do({ | i | i.free; });
+		offArray.do({ | i | i.free; });
+		midiVol.free;
 	}
 
 	prMakeSequence {
@@ -152,6 +158,7 @@ Foundation_ChordSynth : IM_Module {
 	free {
 		buffer.free;
 		synthDict.do({ | synth | synth.free; });
+		this.prFreeMIDIFuncs;
 		this.freeModule;
 		isLoaded = false;
 	}

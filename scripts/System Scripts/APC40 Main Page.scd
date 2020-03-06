@@ -47,9 +47,12 @@ var tuningNoteIsPlaying = false;
       ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
       ~prm.procGroup, \addToHead, ~moogDevice, ~moogPort);
       */
-      ~foundation = Foundation.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
-        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
-        ~moogDevice, ~moogPort, ~prm.procGroup, \addToHead);
+			~foundation = Foundation.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
+				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
+				~moogDevice, ~moogPort, ~pyr, ~prm.procGroup, \addToHead);
+      //~foundation = Foundation.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
+        //~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
+        //~moogDevice, ~moogPort, ~prm.procGroup, \addToHead);
       while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
       ~apc.setGridFunc(1, 4, { ~apc.setPage('foundation'); }, page: page);
       ~apc.turnGridGreen(1, 4);

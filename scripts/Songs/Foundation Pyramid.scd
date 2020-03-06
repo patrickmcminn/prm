@@ -36,13 +36,17 @@ var moogChan = 0;
 var bass1Chan = 1;
 var bass2Chan = 2;
 var tptChan = 3;
-var tptSectionChan = 4;
-var distTptChan = 5;
-var endTptChan = 6;
-var chordsChan = 7;
-var cellosChan = 8;
-var tremChan = 9;
-var warpsChan = 10;
+var tptSectionChan1 = 4;
+var tptSectionChan2 = 5;
+var tptSectionChan3 = 6;
+var distTptChan = 7;
+var endTptChan1 = 8;
+var endTptChan1 = 9;
+var endTptChan1 = 10;
+var chordsChan = 11;
+var cellosChan = 12;
+var tremChan = 13;
+var warpsChan = 14;
 
 //// moog:
 moogOnArray = Array.fill(128, { | i |

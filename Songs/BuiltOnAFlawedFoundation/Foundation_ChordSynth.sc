@@ -21,7 +21,7 @@ Foundation_ChordSynth : IM_Module {
 
 	var <sequencer, <channel, onArray, offArray, midiVol;
 
-	*new { | outBus = 0, seq = nil, chan = 8, relGroup = nil, addAction = 'addToHead' |
+	*new { | outBus = 0, seq = nil, chan = 11, relGroup = nil, addAction = 'addToHead' |
 		^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(seq, chan);
 	}
 
@@ -114,7 +114,7 @@ Foundation_ChordSynth : IM_Module {
 
 	prMakeMIDIFuncs {
 		onArray = Array.fill(128, { | i |
-			MIDIFunc.noteOn({| note, vel | this.playNote(i.midicps, vel.ccdbfs.dbamp) }, i, channel, sequencer); });
+			MIDIFunc.noteOn({| vel | this.playNote(i.midicps, vel.ccdbfs.dbamp) }, i, channel, sequencer); });
 		offArray = Array.fill(128, { | i |
 			MIDIFunc.noteOff({ this.releaseNote(i.midicps) }, i, channel, sequencer); });
 		midiVol = MIDIFunc.cc({ | val | mixer.setVol(val.ccdbfs); }, 7, channel, sequencer);

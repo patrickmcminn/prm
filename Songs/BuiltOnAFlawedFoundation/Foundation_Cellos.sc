@@ -88,7 +88,7 @@ Foundation_Cellos : IM_Module {
 
 	prMakeMIDIFuncs {
 		onArray = Array.fill(128, { | i |
-			MIDIFunc.noteOn({ | note, vel | subtractive.playNote(i.midicps, vel.ccdbfs) }, i, channel, sequencer); });
+			MIDIFunc.noteOn({ | vel | subtractive.playNote(i.midicps) }, i, channel, sequencer); });
 		offArray = Array.fill(128, { | i |
 			MIDIFunc.noteOff({ subtractive.releaseNote(i.midicps); }, i, channel, sequencer); });
 	}

@@ -71,12 +71,14 @@ var send7 = 7;
 //////// locations:
 //////// buffer record:
 // active:
+/*
 ~apc.setGridMonitorFunc(\bufs, {
   if( ~foundation.songBuffers.isLoaded, { ~apc.turnGridGreen(0, 4) }, { ~apc.turnGridRed(0, 4); });
 }, bank: mainGridBank, page: page);
 ~apc.setGridFunc(0, 4, {
   if( ~foundation.songBuffers.isLoaded, { ~foundation.songBuffers.free; });
 }, bank: mainGridBank, page: page);
+*/
 
 //// buffers:
 ~apc.turnGridBlue (1, 4, bank: mainGridBank, page: page);
@@ -373,10 +375,10 @@ var send7 = 7;
   bank: mixerBank1, page: page);
 // clean trumpet input:
 ~apc.setMixerMonitorFunc(\cleanTptInput, {
-  if( ~foundation.cleanTrumpetInput.isMuted,
+  if( ~foundation.cleanTrumpet.trumpet.isMuted,
     { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
 }, bank: mixerBank1, page: page);
-~apc.setRecordEnableButtonFunc(2, { ~foundation.cleanTrumpetInput.tglMute },
+~apc.setRecordEnableButtonFunc(2, { ~foundation.cleanTrumpet.trumpet.tglMute },
   bank: mixerBank1, page: page);
 // dist trumpet input:
 ~apc.setMixerMonitorFunc(\distTptInput, {

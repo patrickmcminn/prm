@@ -16,10 +16,11 @@ Foundation_Moog : IM_Module {
 	var <mainSequenceIsPlaying = false;
 	var <endSequenceIsPlaying = false;
 	var sequencer, channel;
-	var onArray, offArray, mHighPass, mLowPass;
+	var mHighPass, mLowPass;
 
 	*new {
-		| inBus = 3, outBus = 0, moogDeviceName, moogPortName, seq = nil, seqChan = 0,  relGroup = nil, addAction = 'addToHead' |
+		| inBus = 3, outBus = 0, moogDeviceName, moogPortName,
+		seq = nil, seqChan = 0,  relGroup = nil, addAction = 'addToHead' |
 		^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(inBus, moogDeviceName, moogPortName, seq, seqChan);
 	}
 
@@ -90,8 +91,8 @@ Foundation_Moog : IM_Module {
 	free {
 		midiOut.free;
 		moog.free;
-		onArray.do({ | i | i.free; });
-		offArray.do({ | i | i.free; });
+		//onArray.do({ | i | i.free; });
+		//offArray.do({ | i | i.free; });
 		this.freeModule;
 		isLoaded = false;
 	}

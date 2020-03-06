@@ -61,12 +61,12 @@ Foundation_BassSection : IM_Module {
 
 	prMakeMIDIFuncs {
 		saturOnArray = Array.fill(128, { | i |
-			MIDIFunc.noteOn({ | note, vel | satur.playNote(i.midicps, vel.ccdbfs); }, i, channel1, sequencer); });
+			MIDIFunc.noteOn({ | vel | satur.playNote(i.midicps, vel.ccdbfs);  }, i, channel1, sequencer); });
 		saturOffArray = Array.fill(128, { | i | MIDIFunc.noteOff({ satur.releaseNote(i.midicps) }, i, channel1, sequencer); });
 		saturVol = MIDIFunc.cc({ | val | satur.mixer.setVol(val.ccdbfs) }, 7, channel1, sequencer);
 
 		subOnArray = Array.fill(128, { | i |
-			MIDIFunc.noteOn({ | note, vel | sub.playNote(i.midicps, vel.ccdbfs); }, i, channel2, sequencer); });
+			MIDIFunc.noteOn({ | vel | sub.playNote(i.midicps, vel.ccdbfs); }, i, channel2, sequencer); });
 		subOffArray = Array.fill(128, { | i | MIDIFunc.noteOff({ sub.releaseNote(i.midicps) }, i, channel2, sequencer); });
 		subVol = MIDIFunc.cc({ | val | sub.mixer.setVol(val.ccdbfs) }, 7, channel2, sequencer);
 
@@ -86,7 +86,7 @@ Foundation_BassSection : IM_Module {
 		mixer.setPreVol(0, 3);
 		mixer.setPreVol(1, 3);
 		//// eq:
-		eq.setHighPassCutoff(240);
+		//eq.setHighPassCutoff(240);
 
 		//// subtractive:
 		sub.setOsc1Waveform('saw');
@@ -139,7 +139,7 @@ Foundation_BassSection : IM_Module {
 		satur.free;
 		eq.free;
 		this.freeModule;
-		this.freeMIDIFuncs;
+		this.prFreeMIDIFuncs;
 		isLoaded = false;
 	}
 

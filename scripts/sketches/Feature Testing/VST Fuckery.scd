@@ -33,7 +33,9 @@ SynthDef(\plugin, { | inBus = 0, outBus = 0 |
 	sig = Out.ar(outBus, vst);
 }).add;
 
-~fx = VSTPluginController(Synth(\plugin, [\outBus, 0])).open("Decapitator");
+~fx = VSTPluginController(Synth(\plugin, [\outBus, 0])).open("LittlePlate");
 ~fx.free;
 
 ~fx.loaded;
+
+~fx.gui

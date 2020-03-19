@@ -22,7 +22,7 @@ Decapitator : IM_Processor {
 
 	prInit {
 		var server = Server.default;
-		path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Effects/Timbral/Decapitator Presets/";
+		path = "~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Timbral/Decapitator Presets/";
 		server.waitForBoot {
 			isLoaded = false;
 			this.prAddSynthDefs;
@@ -40,6 +40,7 @@ Decapitator : IM_Processor {
 
 	prInitStereo {
 		var server = Server.default;
+		path = "~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Timbral/Decapitator Presets/";
 		server.waitForBoot {
 			isLoaded = false;
 			this.prAddSynthDefs;

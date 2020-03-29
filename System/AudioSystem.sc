@@ -129,7 +129,7 @@ AudioSystem {
 
 			/////////// DEFAULT INPUTS:
 
-			cmix = IM_Mixer.new(7, this.audioIn,
+			cmix = IM_Mixer.new(8, this.audioIn,
 				reverb.inBus, granulator.inBus, modularSend.inBus, delay.inBus, false, procGroup, \addToHead);
 			while({ try { cmix.isLoaded } != true }, { 0.001.wait; });
 
@@ -167,6 +167,8 @@ AudioSystem {
 			modular3 = IM_HardwareIn.new(noiseInBus, cmix.chanMono(5), procGroup, \addToHead);
 			while({ try { modular3.isLoaded } != true }, { 0.001.wait; });
 
+			subtractive = Subtractive.new(cmix.chanStereo(7), relGroup: procGroup, addAction: \addToHead);
+			while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
 
 
 			// reverb!
@@ -177,6 +179,8 @@ AudioSystem {
 			cmix.setSendVol(4, 0, -12);
 			cmix.setSendVol(5, 0, -9);
 			cmix.setSendVol(6, 0, -12);
+
+			cmix.setSendVol(7, 0, -6);
 
 
 			songBook = IdentityDictionary.new;

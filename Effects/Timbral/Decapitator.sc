@@ -12,6 +12,10 @@ Decapitator : IM_Processor {
 	var <synth;
 	var path;
 
+	var <drive, <mix;
+
+	var server;
+
 	*new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
 		^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
 	}
@@ -21,10 +25,14 @@ Decapitator : IM_Processor {
 	}
 
 	prInit {
-		var server = Server.default;
+		server = Server.default;
 		path = "~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Timbral/Decapitator Presets/";
 		server.waitForBoot {
 			isLoaded = false;
+
+			drive = 0.0;
+			mix = 1.0;
+
 			this.prAddSynthDefs;
 			server.sync;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
@@ -39,7 +47,7 @@ Decapitator : IM_Processor {
 	}
 
 	prInitStereo {
-		var server = Server.default;
+		server = Server.default;
 		path = "~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Timbral/Decapitator Presets/";
 		server.waitForBoot {
 			isLoaded = false;
@@ -83,7 +91,12 @@ Decapitator : IM_Processor {
 	}
 
 	loadPreset { | name = \default |
-		synth.readProgram(path ++ name ++ ".fxp");
+		{
+			synth.readProgram(path ++ name ++ ".fxp");
+			server.sync;
+			synth.get(\Mix, { | i | mix = i });
+			synth.get(\Drive, { | i | drive = i; });
+		}.fork;
 	}
 
 	savePreset { | name = \default |
@@ -91,4 +104,7 @@ Decapitator : IM_Processor {
 	}
 
 	makeGUI { ^synth.gui; }
+
+	setMix { | m = 1.0 | mix = m; synth.set(\Mix, mix); }
+	setDrive { | d = 0.0 | drive = d; synth.set(\Drive, drive); }
 }

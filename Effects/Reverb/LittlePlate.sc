@@ -14,6 +14,7 @@ LittlePlate : IM_Processor {
 	var server, <isLoaded;
 	var <synth, bus;
 	var path;
+	var <mix;
 
 	*new {
 		| outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
@@ -30,6 +31,9 @@ LittlePlate : IM_Processor {
 		path = "~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/Little Plate Presets/";
 		server.waitForBoot {
 			isLoaded = false;
+
+			mix = 1.0;
+
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
 			this.prAddSynthDef;
@@ -96,7 +100,11 @@ LittlePlate : IM_Processor {
 
 
 	loadPreset { | name = \default |
-		synth.readProgram(path ++ name ++ ".fxp");
+		{
+			synth.readProgram(path ++ name ++ ".fxp");
+			server.sync;
+			synth.get(\Mix, { | i | mix = i });
+		}.fork;
 	}
 
 	savePreset { | name = \default |
@@ -104,6 +112,11 @@ LittlePlate : IM_Processor {
 	}
 
 	makeGUI { ^synth.gui }
+
+	setMix { | m = 1.0 |
+		mix = m;
+		synth.set(\Mix, mix);
+	}
 
 }
 

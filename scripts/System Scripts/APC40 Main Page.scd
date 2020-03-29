@@ -175,7 +175,7 @@ var tuningNoteIsPlaying = false;
 ////// Convenience Mixer: ////////
 /////////////////////////////////
 
-7.do({ | i |
+8.do({ | i |
   // vol:
   ~apc.setFaderFunc(i+1, { | val | ~prm.cmix.setVol(i, val.ccdbfs); }, page: page);
   // toggle mute:

@@ -13,12 +13,14 @@ Huge : IM_Module {
 	var <subMixer;
 	var <eq, <endDelay;
 
-	var subOsc, <multiShift, <granulator;
+	var subOsc, <subOscBus, <multiShift, <granulator;
 
 	var <reverb, <distortion, <lowPass;
 
 	var <freezer;
 	var <input, <initShift, <pitchSplitter, <initSplitter, <splitter;
+
+	var <subOscCutoff, <subOscFreqMul;
 
 
 	/*
@@ -42,8 +44,10 @@ Huge : IM_Module {
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
 			mixer.mute;
-
+			subOscBus = Bus.audio(server, 2);
 			this.prAddSynthDefs;
+
+			server.sync;
 
 			eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
 			while({ try { eq.isLoaded } != true }, { 0.001.wait; });
@@ -77,11 +81,15 @@ Huge : IM_Module {
 			reverb = LittlePlate.newStereo(distortion.inBus, relGroup: group, addAction: \addToHead);
 			while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
-			initShift = PitchShifter.newMono(reverb.inBus, -12,
+			initShift = PitchShifter.newStereo(reverb.inBus, -12,
 				relGroup: group, addAction: \addToHead);
 			while({ try { initShift.isLoaded } != true }, { 0.001.wait; });
 
-			pitchSplitter = Splitter.newStereo(2, [reverb.inBus, initShift.inBus], false,
+			subOsc = Synth(\prm_huge_subOsc, [\inBus, subOscBus, \outBus, subMixer.chanStereo(0)],
+				group, \addToHead);
+			server.sync;
+
+			pitchSplitter = Splitter.newStereo(3, [reverb.inBus, initShift.inBus, subOscBus], false,
 				group, \addToHead);
 			while({ try { pitchSplitter.isLoaded } != true }, { 0.001.wait; });
 
@@ -96,8 +104,7 @@ Huge : IM_Module {
 			input = IM_Mixer_1Ch.new(initSplitter.inBus, relGroup: group, addAction: \addToHead);
 			while({ try { input.isLoaded } != true }, { 0.001.wait; });
 
-			subOsc = Synth(\prm_huge_subOsc, [\inBus, input.inBus, \outBus, subMixer.chanStereo(0)],
-				input.group, \addAfter);
+
 			//while({ try { subOsc.notNil }}, { 0.001.wait; });
 
 			server.sync;
@@ -110,18 +117,19 @@ Huge : IM_Module {
 
 	prAddSynthDefs {
 		SynthDef(\prm_huge_subOsc, {
-			| inBus, outBus, amp = 1, cutoffRatio = 2, width = 0.5, ampScalar = 6.5 |
+			| inBus, outBus, amp = 1, cutoff = 400, width = 0.5, ampScalar = 6.5, freqMul = 0.25 |
 			var input, freq, hasFreq, amplitude;
 			var osc, filter, sig;
 			var subFreq;
-			input = In.ar(inBus);
+			input = In.ar(inBus, 2);
+			input = input[0];
 			#freq, hasFreq = Tartini.kr(input);
-			subFreq = freq/4;
+			subFreq = freq * freqMul;
 			amplitude = Amplitude.ar(input, 0.01, 0.01);
 			amplitude = amplitude * ampScalar;
 			osc = VarSaw.ar(subFreq, 0.0, width);
 			//filter = LPF.ar(osc, ((subFreq)*cutoffRatio).lag2(0.05));
-			filter = LPF.ar(osc, 400);
+			filter = LPF.ar(osc, cutoff);
 			sig = filter * amplitude;
 			sig = Pan2.ar(sig, 0);
 			sig = sig * amp;
@@ -158,13 +166,20 @@ Huge : IM_Module {
 		granulator.setTrigRate(8);
 		granulator.setGrainEnvelope(\perc);
 
+		endDelay.setMix(0.25);
+		endDelay.setDelayTime(0.25);
+
+		subOscCutoff = 400;
+		subOscFreqMul = 0.25;
+
 		mixer.unMute;
 
 	}
 
 	//////// public functions:
 
-	inBus { ^input.inBus }
+	inBusMono { ^input.chanMono }
+	inBusStereo { ^input.chanStereo }
 
 	free {
 		subMixer.free;
@@ -189,6 +204,16 @@ Huge : IM_Module {
 
 	releaseFreeze {
 		freezer.releaseNote(\huge);
+	}
+
+	setSubOscCutoff { | cutoff = 400 |
+		subOscCutoff = cutoff;
+		subOsc.set(\cutoff, subOscCutoff);
+	}
+
+	setSubOscFreqMul { | mul = 0.25 |
+		subOscFreqMul = mul;
+		subOsc.set(\freqMul, subOscFreqMul);
 	}
 }
 

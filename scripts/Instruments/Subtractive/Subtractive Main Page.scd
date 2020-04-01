@@ -7,15 +7,21 @@ prm
 var page = 'subtractive';
 
 var mainGridBank = 0;
-var keyboardGridBank = 1;
+var keyboardBank = 6;
+var keyboardHoldBank = 7;
 
 var mainMixerBank = 0;
-
 var mainDeviceEncodersBank = 0;
-
 var mainMixerEncodersBank = 0;
-
 var mainSceneLaunchBank = 0;
+
+var mainBank = 0;
+var osc1Bank = 1;
+var osc2Bank = 2;
+var filterBank = 3;
+var envBank = 4;
+var lfoBank = 5;
+var keyboard = 6;
 
 var osc1WaveformResetFunc, osc2WaveformResetFunc;
 var lfo1WaveformResetFunc, lfo2WaveformResetFunc;
@@ -24,20 +30,117 @@ var makeMIDIFuncs, freeMIDIFuncs;
 var onArray, offArray;
 var midiFuncsLoaded = false;
 
+var metaBank = mainBank;
+
+var whiteKeys = [0, 2, 4, 5, 7, 9, 11, 12]+48;
+var blackKeys = [1, 3, 6, 8, 10]+48;
+var octaveMod = 0;
+
 ~apc.makePage(page);
+~apc.addGridBanks(6, page);
+~apc.addDeviceEncodersBanks(5, page);
+~apc.addMixerEncodersBanks(5, page);
 
 
+makeMIDIFuncs = { | device = nil, channel = 13 |
+	onArray = Array.fill(128, { | i |
+		MIDIFunc.noteOn({ | vel | ~prm.subtractive.playNote(i.midicps, vel.ccdbfs);
+	}, i, channel, device); });
+	offArray = Array.fill(128, { | i |
+		MIDIFunc.noteOff({ ~prm.subtractive.releaseNote(i.midicps); }, i, channel, device); });
 
-/////////////
-// Preset Dump:
-/////////////
+	midiFuncsLoaded = true;
+};
+
+freeMIDIFuncs = {
+	onArray.do({ | i | i.free; });
+	offArray.do({ | i | i.free; });
+	midiFuncsLoaded = false;
+};
+
+~apc.setSceneLaunchMonitorFunc(\midi, {
+	if( midiFuncsLoaded == true, { ~apc.turnSceneLaunchButtonGreen(4); }, { ~apc.turnSceneLaunchButtonYellow(4) });
+}, mainSceneLaunchBank, page);
+~apc.setSceneLaunchFunc(4, {
+	if( midiFuncsLoaded == true, { freeMIDIFuncs.value; }, { makeMIDIFuncs.value; });
+}, bank: mainSceneLaunchBank, page: page);
+
+
+///////////////////
+// Preset Dump: //
+/////////////////
 
 ~apc.setBankButtonFunc({ ~prm.subtractive.printAllParameters }, page: page);
+
+//////////////////////////
+//// Meta Bank Change: //
+////////////////////////
+
+~apc.setDeviceButtonsMonitorFunc(\meta, {
+	if( metaBank == mainBank, { ~apc.turnDeviceButtonOn(1) }, { ~apc.turnDeviceButtonOff(1) });
+	if( metaBank == osc1Bank, { ~apc.turnDeviceButtonOn(2) }, { ~apc.turnDeviceButtonOff(2) });
+	if( metaBank == osc2Bank, { ~apc.turnDeviceButtonOn(3) }, { ~apc.turnDeviceButtonOff(3) });
+	if( metaBank == filterBank, { ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4) });
+	if( metaBank == envBank, { ~apc.turnDeviceButtonOn(5) }, { ~apc.turnDeviceButtonOff(5) });
+	if( metaBank == lfoBank, { ~apc.turnDeviceButtonOn(6) }, { ~apc.turnDeviceButtonOff(6) });
+}, page: page);
+
+// main bank:
+~apc.setDeviceButtonFunc(1, {
+	if( ~apc.activeGridBank != keyboard, { ~apc.setActiveGridBank(mainBank); });
+	~apc.setActiveDeviceEncodersBank(mainBank);
+	~apc.setActiveMixerEncodersBank(mainBank);
+	metaBank = mainBank;
+}, page: page);
+
+// osc1 bank:
+~apc.setDeviceButtonFunc(2, {
+	if( ~apc.activeGridBank != keyboard, { ~apc.setActiveGridBank(osc1Bank); });
+	~apc.setActiveDeviceEncodersBank(osc1Bank);
+	~apc.setActiveMixerEncodersBank(osc1Bank);
+	metaBank = osc1Bank;
+}, page: page);
+
+// osc 2 bank:
+~apc.setDeviceButtonFunc(3, {
+	if( ~apc.activeGridBank != keyboard, { ~apc.setActiveGridBank(osc2Bank); });
+	~apc.setActiveDeviceEncodersBank(osc2Bank);
+	~apc.setActiveMixerEncodersBank(osc2Bank);
+	metaBank = osc2Bank;
+}, page: page);
+
+// filter bank:
+~apc.setDeviceButtonFunc(4, {
+	if( ~apc.activeGridBank != keyboard, { ~apc.setActiveGridBank(filterBank); });
+	~apc.setActiveDeviceEncodersBank(filterBank);
+	~apc.setActiveMixerEncodersBank(filterBank);
+	metaBank = filterBank;
+}, page: page);
+
+// env bank:
+~apc.setDeviceButtonFunc(5, {
+	if( ~apc.activeGridBank != keyboard, { ~apc.setActiveGridBank(envBank); });
+	~apc.setActiveDeviceEncodersBank(envBank);
+	~apc.setActiveMixerEncodersBank(envBank);
+	metaBank = envBank;
+}, page: page);
+
+// lfo:
+~apc.setDeviceButtonFunc(6, {
+	if( ~apc.activeGridBank != keyboard, { ~apc.setActiveGridBank(lfoBank); });
+	~apc.setActiveDeviceEncodersBank(lfoBank);
+	~apc.setActiveMixerEncodersBank(lfoBank);
+	metaBank = lfoBank;
+}, page: page);
+
+////// change to keyboard bank:
+
+~apc.setBankSelectFunc('down', { ~apc.setActiveGridBank(keyboard) }, page: page);
+~apc.setBankSelectFunc('up', { ~apc.setActiveGridBank(metaBank) }, page: page);
 
 ////////////////////////
 ////// Mixer Bank /////
 //////////////////////
-
 
 //////// volume:
 
@@ -141,13 +244,13 @@ var midiFuncsLoaded = false;
 ~apc.setMixerEncoderFunc(7, { | val |
 	var width = val.linlin(0, 127, 0, 1);
 	~prm.subtractive.setOsc1PulseWidth(width);
-}, mainMixerEncodersBank);
+}, mainMixerEncodersBank, page);
 
 // Osc 2 Pulse Width:
 ~apc.setMixerEncoderFunc(8, { | val |
 	var width = val.linlin(0, 127, 0, 1);
 	~prm.subtractive.setOsc2PulseWidth(width);
-}, mainMixerEncodersBank);
+}, mainMixerEncodersBank, page);
 
 
 ///////////////////////////////////////
@@ -161,7 +264,7 @@ var midiFuncsLoaded = false;
 	var lfo2Freq = ~prm.subtractive.lfo2Freq.explin(0.001, 55, 0, 127);
 	var attack = ~prm.subtractive.attackTime.explin(0.001, 10, 0, 127);
 	var decay = ~prm.subtractive.decayTime.explin(0.001, 7, 0, 127);
-	var sustain = ~prm.subtractive.sustainLevel.explin(0, 1, 0, 127);
+	var sustain = ~prm.subtractive.sustainLevel.linlin(0, 1, 0, 127);
 	var release = ~prm.subtractive.releaseTime.explin(0.001, 15, 0, 127);
 
 	~apc.setDeviceEncoderValue(1, cutoff);
@@ -212,7 +315,7 @@ var midiFuncsLoaded = false;
 
 // sustain level:
 ~apc.setDeviceEncoderFunc(7, { | val |
-	var sustain = val.linexp(0, 127, 0, 1);
+	var sustain = val.linlin(0, 127, 0, 1);
 	~prm.subtractive.setSustainLevel(sustain);
 }, mainMixerEncodersBank, page);
 
@@ -318,25 +421,127 @@ osc2WaveformResetFunc = { 4.do({ | i | ~apc.turnGridLightBlue(i+4, 4, 2, mainGri
 ~apc.setGridFunc(2, 0, { ~prm.subtractive.setFilterType('bandPass') }, bank: mainGridBank, page: page);
 
 
-makeMIDIFuncs = { | device = nil, channel = 13 |
-	onArray = Array.fill(128, { | i |
-		MIDIFunc.noteOn({ | vel | ~prm.subtractive.playNote(i.midicps, vel.ccdbfs);
-	}, i, channel, device); });
-	offArray = Array.fill(128, { | i |
-		MIDIFunc.noteOff({ ~prm.subtractive.releaseNote(i.midicps); }, i, channel, device); });
 
-	midiFuncsLoaded = true;
-};
+////////////////////
+//// Keyboard: ////
+//////////////////
 
-freeMIDIFuncs = {
-	onArray.do({ | i | i.free; });
-	offArray.do({ | i | i.free; });
-	midiFuncsLoaded = false;
-};
+//////// Normal Bank:
+8.do({ | i |
+	~apc.turnGridPurple(i, 0, bank: keyboardBank, page: page);
+	~apc.turnGridPink(i, 2, bank: keyboardBank, page: page);
+});
+~apc.turnGridPurple(1, 1, bank: keyboardBank, page: page);
+~apc.turnGridPurple(2, 1, bank: keyboardBank, page: page);
+~apc.turnGridPurple(4, 1, bank: keyboardBank, page: page);
+~apc.turnGridPurple(5, 1, bank: keyboardBank, page: page);
+~apc.turnGridPurple(6, 1, bank: keyboardBank, page: page);
+~apc.turnGridPink(1, 3, bank: keyboardBank, page: page);
+~apc.turnGridPink(2, 3, bank: keyboardBank, page: page);
+~apc.turnGridPink(4, 3, bank: keyboardBank, page: page);
+~apc.turnGridPink(5, 3, bank: keyboardBank, page: page);
+~apc.turnGridPink(6, 3, bank: keyboardBank, page: page);
 
-~apc.setSceneLaunchMonitorFunc(\midi, {
-	if( midiFuncsLoaded == true, { ~apc.turnSceneLaunchButtonGreen(4); }, { ~apc.turnSceneLaunchButtonYellow(4) });
-}, mainSceneLaunchBank, page);
-~apc.setSceneLaunchFunc(4, {
-	if( midiFuncsLoaded == true, { freeMIDIFuncs.value; }, { makeMIDIFuncs.value; });
-}, bank: mainSceneLaunchBank, page: page);
+8.do({ | i |
+	~apc.setGridFunc(i, 0, { ~
+		subtractive.playNote((whiteKeys[i] + octaveMod).midicps);
+		~apc.turnGridGreen(i, 0);
+	}, 'noteOn', keyboardBank, page);
+	~apc.setGridFunc(i, 0, {
+		~subtractive.releaseNote((whiteKeys[i] + octaveMod).midicps);
+		~apc.turnGridPurple(i, 0);
+	}, 'noteOff', keyboardBank, page);
+	~apc.setGridFunc(i, 2, {
+		~subtractive.playNote((whiteKeys[i] + 12 + octaveMod).midicps);
+		~apc.turnGridGreen(i, 2);
+	}, 'noteOn', keyboardBank, page);
+	~apc.setGridFunc(i, 2, {
+		~subtractive.releaseNote((whiteKeys[i] + 12 + octaveMod).midicps);
+		~apc.turnGridPink(i, 2);
+	}, 'noteOff', keyboardBank, page);
+});
+~apc.setGridFunc(1, 1, {
+	~subtractive.playNote((blackKeys[0] + octaveMod).midicps);
+	~apc.turnGridGreen(1, 1);
+},'noteOn', keyboardBank, page);
+~apc.setGridFunc(1, 1, {
+	~subtractive.releaseNote((blackKeys[0] + octaveMod).midicps);
+	~apc.turnGridPurple(1, 1);
+},'noteOff', keyboardBank, page);
+~apc.setGridFunc(2, 1, {
+	~subtractive.playNote((blackKeys[1] + octaveMod).midicps);
+	~apc.turnGridGreen(2, 1);
+},'noteOn', keyboardBank, page);
+~apc.setGridFunc(2, 1, {
+	~subtractive.releaseNote((blackKeys[1] + octaveMod).midicps);
+	~apc.turnGridPurple(2, 1);
+},'noteOff', keyboardBank, page);
+~apc.setGridFunc(4, 1, {
+	~subtractive.playNote((blackKeys[2] + octaveMod).midicps);
+	~apc.turnGridGreen(4, 1);
+},'noteOn', keyboardBank, page);
+~apc.setGridFunc(4, 1, {
+	~subtractive.releaseNote((blackKeys[2] + octaveMod).midicps);
+	~apc.turnGridPurple(4, 1);
+},'noteOff', keyboardBank, page);
+~apc.setGridFunc(5, 1, {
+	~subtractive.playNote((blackKeys[3] + octaveMod).midicps);
+	~apc.turnGridGreen(5, 1);
+},'noteOn', keyboardBank, page);
+~apc.setGridFunc(5, 1, {
+	~subtractive.releaseNote((blackKeys[3] + octaveMod).midicps);
+	~apc.turnGridPurple(5, 1);
+},'noteOff', keyboardBank, page);
+~apc.setGridFunc(6, 1, {
+	~subtractive.playNote((blackKeys[4] + octaveMod).midicps);
+	~apc.turnGridGreen(6, 1);
+},'noteOn', keyboardBank, page);
+~apc.setGridFunc(6, 1, {
+	~subtractive.releaseNote((blackKeys[4] + octaveMod).midicps);
+	~apc.turnGridPurple(6, 1);
+},'noteOff', keyboardBank, page);
+
+
+~apc.setGridFunc(1, 3, {
+	~subtractive.playNote((blackKeys[0] + 12 + octaveMod).midicps);
+	~apc.turnGridGreen(1, 3);
+}, 'noteOn', keyboardBank, page);
+~apc.setGridFunc(1, 3, {
+	~subtractive.releaseNote((blackKeys[0] + 12 + octaveMod).midicps);
+	~apc.turnGridPink(1, 3);
+}, 'noteOff', keyboardBank, page);
+~apc.setGridFunc(2, 3, {
+	~subtractive.playNote((blackKeys[1] + 12 + octaveMod).midicps);
+	~apc.turnGridGreen(2, 3);
+}, 'noteOn', keyboardBank, page);
+~apc.setGridFunc(2, 3, {
+	~subtractive.releaseNote((blackKeys[1] + 12 + octaveMod).midicps);
+	~apc.turnGridPink(2, 3);
+}, 'noteOff', keyboardBank, page);
+~apc.setGridFunc(4, 3, {
+	~subtractive.playNote((blackKeys[2] + 12 + octaveMod).midicps);
+	~apc.turnGridGreen(4, 3);
+}, 'noteOn', keyboardBank, page);
+~apc.setGridFunc(4, 3, {
+	~subtractive.releaseNote((blackKeys[2] + 12 + octaveMod).midicps);
+	~apc.turnGridPink(4, 3);
+}, 'noteOff', keyboardBank, page);
+~apc.setGridFunc(5, 3, {
+	~subtractive.playNote((blackKeys[3] + 12 + octaveMod).midicps);
+	~apc.turnGridGreen(5, 3);
+}, 'noteOn', keyboardBank, page);
+~apc.setGridFunc(5, 3, {
+	~subtractive.releaseNote((blackKeys[3] + 12 + octaveMod).midicps);
+	~apc.turnGridPink(5, 3);
+}, 'noteOff', keyboardBank, page);
+~apc.setGridFunc(6, 3, {
+	~subtractive.playNote((blackKeys[4] + 12 + octaveMod).midicps);
+	~apc.turnGridGreen(6, 3);
+}, 'noteOn', keyboardBank, page);
+~apc.setGridFunc(6, 3, {
+	~subtractive.releaseNote((blackKeys[4] + 12 + octaveMod).midicps);
+	~apc.turnGridPink(6, 3);
+}, 'noteOff', keyboardBank, page);
+
+
+

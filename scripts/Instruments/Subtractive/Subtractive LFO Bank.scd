@@ -63,9 +63,9 @@ var lfo1lfo2Invert = false;
 	~apc.setDeviceEncoderValue(2, waveform);
 	~apc.setDeviceEncoderValue(3, width);
 
-	~apc.setDeviceEncoderValue(4, attack);
-	~apc.setDeviceEncoderValue(5, release);
-	~apc.setDeviceEncoderValue(6, lfo2);
+	~apc.setDeviceEncoderValue(5, attack);
+	~apc.setDeviceEncoderValue(6, release);
+	~apc.setDeviceEncoderValue(7, lfo2);
 }, lfoBank, page);
 
 ~apc.setDeviceEncoderFunc(1, { | val |

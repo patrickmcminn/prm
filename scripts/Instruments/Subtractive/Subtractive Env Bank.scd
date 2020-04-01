@@ -212,11 +212,11 @@ var noiseCutoff2Invert = false;
 	{ pan1Invert = true; ~apc.turnGridWhite(1, 0) },
 	{ pan1Invert = false; ~apc.turnGridYellow(1, 0) });
 }, bank: envBank, page: page);
-~apc.setGridFunc(2, 0, { if (amp1Invert == false,
+~apc.setGridFunc(2, 0, { if (amp2Invert == false,
 	{ amp2Invert = true; ~apc.turnGridWhite(2, 0); },
-	{ amp2Invert = false; ~apc.turnGridYellow(02, 0); });
+	{ amp2Invert = false; ~apc.turnGridYellow(2, 0); });
 }, bank: envBank, page: page);
-~apc.setGridFunc(3, 0, { if( pan1Invert == false,
+~apc.setGridFunc(3, 0, { if( pan2Invert == false,
 	{ pan2Invert = true; ~apc.turnGridWhite(3, 0) },
 	{ pan2Invert = false; ~apc.turnGridYellow(3, 0) });
 }, bank: envBank, page: page);

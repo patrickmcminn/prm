@@ -10,7 +10,7 @@ Subtractive : IM_Module {
 
 	var lfo, <synthDict, <synthGroup, orderArray, <lfoBus, <maxVoices, numVoices, orderNum;
 
-	var presetDict;
+	var presetDict, <masterPresetDict, <presetPath;
 
 	var applyMode;
 
@@ -75,14 +75,17 @@ Subtractive : IM_Module {
 			synthDict = IdentityDictionary.new;
 			presetDict = IdentityDictionary.new;
 			orderArray = Array.fill(maxVoices, { nil });
-			presetDict = IdentityDictionary.new;
+			masterPresetDict = IdentityDictionary.new;
 			sequencerDict = IdentityDictionary.new;
 			sequencerClock = TempoClock.new(tempo, beats);
+			presetPath = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/Subtractive/Presets.scd".standardizePath;
 			lfoBus = Bus.control;
 			server.sync;
 			lfo = Synth(\prm_Subtractive_LFO, [\outBus, lfoBus], relGroup, \addToHead);
 			synthGroup = Group.new(lfo, \addAfter);
 			server.sync;
+
+			this.prBuildPresetDict;
 			isLoaded = true;
 
 		}

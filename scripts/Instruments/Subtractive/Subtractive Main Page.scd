@@ -8,7 +8,7 @@ var page = 'subtractive';
 
 var mainGridBank = 0;
 var keyboardBank = 6;
-var keyboardHoldBank = 7;
+//var keyboardHoldBank = 7;
 
 var mainMixerBank = 0;
 var mainDeviceEncodersBank = 0;
@@ -22,6 +22,8 @@ var filterBank = 3;
 var envBank = 4;
 var lfoBank = 5;
 var keyboard = 6;
+var presetLoad = 7;
+var presetSave = 8;
 
 var osc1WaveformResetFunc, osc2WaveformResetFunc;
 var lfo1WaveformResetFunc, lfo2WaveformResetFunc;
@@ -37,9 +39,9 @@ var blackKeys = [1, 3, 6, 8, 10]+48;
 var octaveMod = 0;
 
 ~apc.makePage(page);
-~apc.addGridBanks(6, page);
-~apc.addDeviceEncodersBanks(5, page);
-~apc.addMixerEncodersBanks(5, page);
+~apc.addGridBanks(10, page);
+~apc.addDeviceEncodersBanks(10, page);
+~apc.addMixerEncodersBanks(10, page);
 
 
 makeMIDIFuncs = { | device = nil, channel = 13 |
@@ -83,6 +85,8 @@ freeMIDIFuncs = {
 	if( metaBank == filterBank, { ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4) });
 	if( metaBank == envBank, { ~apc.turnDeviceButtonOn(5) }, { ~apc.turnDeviceButtonOff(5) });
 	if( metaBank == lfoBank, { ~apc.turnDeviceButtonOn(6) }, { ~apc.turnDeviceButtonOff(6) });
+	if( metaBank == presetLoad, { ~apc.turnDeviceButtonOn(7) }, { ~apc.turnDeviceButtonOff(7) });
+	if( metaBank == presetSave, { ~apc.turnDeviceButtonOn(8) }, { ~apc.turnDeviceButtonOff(8) });
 }, page: page);
 
 // main bank:
@@ -131,6 +135,20 @@ freeMIDIFuncs = {
 	~apc.setActiveDeviceEncodersBank(lfoBank);
 	~apc.setActiveMixerEncodersBank(lfoBank);
 	metaBank = lfoBank;
+}, page: page);
+
+~apc.setDeviceButtonFunc(7, {
+	~apc.setActiveGridBank(presetLoad);
+	~apc.setActiveDeviceEncodersBank(presetLoad);
+	~apc.setActiveDeviceEncodersBank(presetLoad);
+	metaBank = presetLoad;
+}, page: page);
+
+~apc.setDeviceButtonFunc(8, {
+	~apc.setActiveGridBank(presetSave);
+	~apc.setActiveDeviceEncodersBank(presetSave);
+	~apc.setActiveDeviceEncodersBank(presetSave);
+	metaBank = presetSave;
 }, page: page);
 
 ////// change to keyboard bank:

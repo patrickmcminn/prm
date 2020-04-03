@@ -1,0 +1,6 @@
+0;4;masterDefault;White;
+1;4;testPreset;Red;
+0;2;ohman;Blue;
+1;4;IHopeSo;Red;
+1;4;fuckit;Magenta;
+2;4;evolver;Pink;

@@ -16,7 +16,11 @@
 		if( masterPresetDict.includesKey(name),
 			{ ^"preset already exists" },
 			{
-				file.write("\n"++name++";"++array++";");
+				//file.write("\n"++name++";"++array++";");
+				file.write("\n"++name++";");
+				file.write("[");
+				array.size.do({ | i | file.write(array[i].asString++","); });
+				file.write("]");
 				file.close;
 				this.prBuildPresetDict;
 		});

@@ -6,7 +6,7 @@ prm
 to compress the world to a docile state
 */
 
-Docile : Song {
+Docile : IM_Module {
 
   var server;
   var <isLoaded;
@@ -30,7 +30,8 @@ Docile : Song {
 		send0Bus, send1Bus, send2Bus, send3Bus,
     relGroup, addAction = 'addToHead'
 		|
-    ^super.new(4, outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup: relGroup, addAction: addAction).prInit(moogDeviceName, moogPortName);
+		^super.new(4, outBus, send0Bus, send1Bus, send2Bus, send2Bus, false, relGroup, addAction).prInit(
+			modularOutBus, moogInBus, modularInBus, moogDeviceName, moogPortName);
   }
 
   prInit { |moogDeviceName, moogPortName |

@@ -30,6 +30,10 @@ var tuningNoteIsPlaying = false;
 ~apc.turnSceneLaunchButtonPurple(4, 2, page: page);
 ~apc.setSceneLaunchFunc(4, { ~apc.setPage('effects'); }, page: page);
 
+//////// Subtractive Page:
+~apc.turnSceneLaunchButtonPink(3, 2, page: page);
+~apc.setSceneLaunchFunc(3, { ~apc.setPage('subtractive'); }, page: page);
+
 /////// Grid Functions:
 'Built on a Flawed Foundation';
 
@@ -279,8 +283,6 @@ var tuningNoteIsPlaying = false;
   ~prm.beauty.setResonances(0.5.rand, 0.5.rand);
   ~apc.turnGridColor(7, 0, 128.rand+1);
 }, page: page);
-
-
 
 //////// tuning note:
 ~apc.setBankButtonFunc({

@@ -63,6 +63,7 @@ r {
 	"/System Scripts/Load System Scripts.scd".loadRelative;
 	"/Songs/Load Songs.scd".loadRelative;
 	"/Effects/Load Effects.scd".loadRelative;
+	"/Instruments/Load Instruments.scd".loadRelative;
 
 }.play;
 
@@ -97,6 +98,7 @@ r {
 	// M32:
 	~moogDevice = "Pyramid MIDI USB";
 	~moogPort = "Pyramid MIDI USB";
+	~moogIn = ~modInput[0];
 
 	// Juno 106:
 	~junoDevice = "mio10";
@@ -120,6 +122,7 @@ r {
 	"/System Scripts/Load System Scripts.scd".loadRelative;
 	"/Songs/Load Songs.scd".loadRelative;
 	"/Effects/Load Effects.scd".loadRelative;
+	"/Instruments/Load Instruments.scd".loadRelative;
 
 
 }.play;
@@ -129,8 +132,10 @@ s.makeWindow;
 Server.killAll;
 s.meter
 
-
+~prm.subtractive.playNote(220);
 
 ~foundation.moog.moog.free
 
 s.meter
+~prm.subtractive.free;
+

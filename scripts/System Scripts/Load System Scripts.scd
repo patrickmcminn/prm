@@ -6,11 +6,11 @@ Load System Scripts.scd
 //"Submixer EQ Page.scd".loadRelative;
 //"Submixer Looper Page.scd".loadRelative;
 
-"APC40 Main Page.scd".loadRelative;
-"Base Main Page.scd".loadRelative;
+try { "APC40 Main Page.scd".loadRelative; };
+try { "Base Main Page.scd".loadRelative; };
 
-"Effects Page.scd".loadRelative;
-"Base Effects Page.scd".loadRelative;
+try { "Effects Page.scd".loadRelative; };
+try { "Base Effects Page.scd".loadRelative; };
 
 //"Send Page.scd".loadRelative;
 

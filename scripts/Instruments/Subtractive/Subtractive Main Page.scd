@@ -28,10 +28,6 @@ var presetSave = 8;
 var osc1WaveformResetFunc, osc2WaveformResetFunc;
 var lfo1WaveformResetFunc, lfo2WaveformResetFunc;
 
-var makeMIDIFuncs, freeMIDIFuncs;
-var onArray, offArray;
-var midiFuncsLoaded = false;
-
 var metaBank = mainBank;
 
 var whiteKeys = [0, 2, 4, 5, 7, 9, 11, 12]+48;
@@ -43,29 +39,12 @@ var octaveMod = 0;
 ~apc.addDeviceEncodersBanks(10, page);
 ~apc.addMixerEncodersBanks(10, page);
 
+//// master funcs:
+~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
+~apc.storageDict[\loadMasterFunc].value;
 
-makeMIDIFuncs = { | device = nil, channel = 13 |
-	onArray = Array.fill(128, { | i |
-		MIDIFunc.noteOn({ | vel | ~prm.subtractive.playNote(i.midicps, vel.ccdbfs);
-	}, i, channel, device); });
-	offArray = Array.fill(128, { | i |
-		MIDIFunc.noteOff({ ~prm.subtractive.releaseNote(i.midicps); }, i, channel, device); });
 
-	midiFuncsLoaded = true;
-};
-
-freeMIDIFuncs = {
-	onArray.do({ | i | i.free; });
-	offArray.do({ | i | i.free; });
-	midiFuncsLoaded = false;
-};
-
-~apc.setSceneLaunchMonitorFunc(\midi, {
-	if( midiFuncsLoaded == true, { ~apc.turnSceneLaunchButtonGreen(4); }, { ~apc.turnSceneLaunchButtonYellow(4) });
-}, mainSceneLaunchBank, page);
-~apc.setSceneLaunchFunc(4, {
-	if( midiFuncsLoaded == true, { freeMIDIFuncs.value; }, { makeMIDIFuncs.value; });
-}, bank: mainSceneLaunchBank, page: page);
+~apc.setUserButtonFunc({ ~prm.subtractive.panic; }, 'noteOn', 0, page);
 
 
 ///////////////////

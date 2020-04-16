@@ -4,3 +4,5 @@
 1;4;IHopeSo;Red;
 1;4;fuckit;Magenta;
 2;4;evolver;Pink;
+7;4;clariDrift;LightBlue;
+2;3;triMod;Purple;

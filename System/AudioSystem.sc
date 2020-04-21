@@ -90,7 +90,7 @@ AudioSystem {
 
 			//
 
-			reverb = Valhalla.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
+			reverb = Valhalla.newStereo(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
 			/*reverb = IM_Reverb.newConvolution(masterEQ.inBus, bufName: irLibrary.irDict['3.0LongReverb'],
 				relGroup: systemGroup, addAction: \addToHead);*/
 			server.sync;

@@ -32,7 +32,7 @@ Docile_Noisies : IM_Module {
       eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
-      delayLeft = SimpleDelay.newStereo(eq.inBus, 0.14, 0.48, 0.2, relGroup: group, addAction: \addToHead);
+      delayLeft = SimpleDelay.newStereo(eq.inBus, 0.14, 0.48, 0.3, relGroup: group, addAction: \addToHead);
       while({ try { delayLeft.isLoaded } != true }, { 0.001.wait; });
 
       delayRight = SimpleDelay.newStereo(eq.inBus, 0.28571428571429, 0.48, 0.3, relGroup: group, addAction: \addToHead);
@@ -56,6 +56,8 @@ Docile_Noisies : IM_Module {
     eq.setHighPassCutoff(90);
     delayLeft.mixer.setPanBal(-1);
     delayRight.mixer.setPanBal(1);
+		delayLeft.setMix(0);
+		delayRight.setMix(0);
   }
 
   //////// public functions:

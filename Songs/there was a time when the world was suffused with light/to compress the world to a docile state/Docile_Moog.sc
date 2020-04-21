@@ -73,7 +73,7 @@ Docile_Moog : IM_Module {
     granulator.setTrigRate(35);
     granulator.setGrainEnvelope('rexpodec');
 
-    granulator.mixer.setPreVol(-18);
+    granulator.mixer.setPreVol(-21);
   }
 
   //////// public functions:

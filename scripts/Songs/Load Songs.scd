@@ -14,7 +14,7 @@ try { "Foundation APC.scd".loadRelative; };
 try { "Foundation Base.scd".loadRelative; };
 
 try { "False Self APC.scd".loadRelative; };
-try { "False Self Base.scd".loadRelative; }'
+try { "False Self Base.scd".loadRelative; };
 
 ///////////////////////////////
 //// The Phonometrician //////

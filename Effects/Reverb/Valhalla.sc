@@ -19,7 +19,7 @@ Valhalla : IM_Module {
 	}
 
 	*newStereo {
-	| outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
+		| outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
 		^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitStereo;
 	}
 
@@ -55,6 +55,38 @@ Valhalla : IM_Module {
 		}
 	}
 
+	prInitStereo {
+		server = Server.default;
+		path = "~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/Valhalla Presets/";
+		server.waitForBoot {
+			isLoaded = false;
+			bus = Bus.audio(server, 2);
+			while({ try { mixer.isLoaded } != true }, { 0.001.wait });
+
+			this.prAddSynthDef;
+
+			server.sync;
+
+			postEQ = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
+			while({ try { postEQ.isLoaded } != true }, { 0.001.wait; });
+
+			synth = VSTPluginController(Synth(\prm_valhalla_stereo,
+				[\inBus, bus, \outBus, postEQ.inBus], group, \addToHead)).open("ValhallaRoom_x64");
+			while({ try { synth.loaded } != true }, { 0.001.wait; });
+
+			preEQ = Equalizer.newStereo(bus, group, \addToHead);
+			while({ try { preEQ.isLoaded } != true }, { 0.001.wait; });
+
+			server.sync;
+
+			mixer.setPreVol(6);
+			//preEQ.mixer.setPreVol(3);
+			postEQ.mixer.setPreVol(3);
+
+			isLoaded = true;
+		};
+	}
+
 	prAddSynthDef {
 		SynthDef(\prm_valhalla, { | inBus = 0, outBus = 0, amp = 1 |
 			var input, sig;
@@ -63,7 +95,16 @@ Valhalla : IM_Module {
 			sig = sig * amp;
 			Out.ar(outBus, sig);
 		}).add;
+
+		SynthDef(\prm_valhalla_stereo, { | inBus = 0, outBus = 0, amp = 1 |
+			var input, sig;
+			input = In.ar(inBus, 2);
+			sig = VSTPlugin.ar(input, 2);
+			sig = sig * amp;
+			Out.ar(outBus, sig);
+		}).add;
 	}
+
 
 	//////// public functions:
 

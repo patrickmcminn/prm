@@ -14,23 +14,23 @@ Docile_Main : IM_Module {
   var <sampler, modularOut, modularIn;
   var isPlaying;
 
-  *new {  | outBus = 0, modularInput = 2, relGroup, addAction = 'addToHead' |
-    ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(modularInput);
+  *new {  | outBus = 0, modularOutBus, modularInBus, relGroup, addAction = 'addToHead' |
+    ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(modularOutBus, modularInBus);
   }
 
-  prInit { | modularInput = 2 |
+  prInit { | modularOutBus, modularInBus |
     server = Server.default;
     server.waitForBoot {
-      var path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/there was a time when the world was suffused with light/to compress the world to a docile state/samples/main/mainSample.wav";
+      var path = "~/Library/Application Support/SuperCollider/Extensions/prm/Songs/there was a time when the world was suffused with light/to compress the world to a docile state/samples/main/mainSample.aif".standardizePath;
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
       isPlaying = false;
 
-      modularIn = IM_HardwareIn.new(modularInput, mixer.chanMono(0), group, \addToHead);
+      modularIn = IM_HardwareIn.new(modularInBus, mixer.chanMono(0), group, \addToHead);
       while ({ try { modularIn.isLoaded } != true }, { 0.001.wait; });
 
-      modularOut = MonoHardwareSend.new(2, relGroup: group, addAction: \addToHead);
+      modularOut = MonoHardwareSend.new(modularOutBus, relGroup: group, addAction: \addToHead);
       while ({ try { modularOut.isLoaded } != true }, { 0.001.wait; });
 
       sampler = SamplePlayer.newStereo(modularOut.inBus, path, relGroup: group, addAction: \addToHead);

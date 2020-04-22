@@ -6,3 +6,4 @@
 2;4;evolver;Pink;
 7;4;clariDrift;LightBlue;
 2;3;triMod;Purple;
+7;3;darkness;White;

@@ -47,7 +47,7 @@ Darkness_Trumpet : IM_Processor {
       modularIn = IM_HardwareIn.new(modularIn, eq.inBus, group, \addToHead);
       while ({ try { modularIn.isLoaded } != true }, { 0.001.wait; });
 
-      modularOut = MonoHardwareSend.new(2, relGroup: group, addAction: \addToHead);
+      modularOut = MonoHardwareSend.new(modularOut, relGroup: group, addAction: \addToHead);
       while ({ try { modularOut.isLoaded } != true }, { 0.001.wait; });
 
       // needs to be adapted for dry/wet. Might be cool to add later.

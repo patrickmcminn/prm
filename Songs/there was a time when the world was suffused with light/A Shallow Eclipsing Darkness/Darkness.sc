@@ -24,6 +24,9 @@ Darkness : IM_Module {
 	var <drone5IsPlaying, <drone6IsPlaying, <drone7IsPlaying, <drone8IsPlaying;
 	var <drone9IsPlaying, <drone10IsPlaying;
 
+	var spudsOnArray, spudsOffArray, introVol, moogVol, trumpetVol, droneVol, spudsVol, noiseVol, highPass;
+	var <midiFuncsLoaded = false;
+
 	*new {
 		|
 		outBus, send0Bus, send1Bus, send2Bus, send3Bus,
@@ -69,8 +72,13 @@ Darkness : IM_Module {
 			spuds = Darkness_Spuds.new(mixer.chanStereo(4), group, \addToHead);
 			while({ try { spuds.isLoaded } != true }, { 0.001.wait; });
 
+
+			noise = Darkness_Noise.new(mixer.chanStereo(5), noiseInBus, group, \addToHead);
+			while({ try { noise.isLoaded } != true }, { 0.001.wait; });
+			/*
 			noise = IM_HardwareIn.new(noiseInBus, mixer.chanStereo(5), group, \addToHead);
 			while({ try { noise.isLoaded } != true }, { 0.001.wait; });
+			*/
 
 			server.sync;
 
@@ -83,8 +91,9 @@ Darkness : IM_Module {
 
 	prSetInitialMixerLevels {
 		// Intro Sample:
-		introSample.mixer.setPreVol(12);
-		introSample.mixer.setVol(-3);
+		//introSample.mixer.setPreVol(12);
+		//introSample.mixer.setVol(-3);
+		mixer.setPreVol(0, 9);
 		mixer.setSendVol(0, 0, -6);
 		mixer.setSendVol(0, 2, -24);
 		mixer.setSendVol(0, 3, 0);
@@ -99,14 +108,15 @@ Darkness : IM_Module {
 
 		// Trumpet:
 		mixer.setPreVol(2, 3);
-		trumpet.mixer.setVol(0, -9);
-		trumpet.mixer.setVol(1, -18);
+		//trumpet.mixer.setVol(0, -9);
+		trumpet.mixer.setVol(1, -9);
 		mixer.setSendVol(2, 0, -12);
 		//mixer.setSendVol(2, 2, -8);
 		//mixer.setSendVol(2, 3, 0);
 
 		// Drones:
-		drones.mixer.setVol(-3);
+		//drones.mixer.setVol(-3);
+		mixer.setPreVol(3, -3);
 		mixer.setSendVol(3, 0, 0);
 		//mixer.setSendVol(3, 2, -30);
 		//mixer.setSendVol(3, 3, 0);
@@ -151,15 +161,35 @@ Darkness : IM_Module {
 		introSample.free;
 		spuds.free;
 		noise.free;
+		this.freeMIDIFuncs;
 		this.freeModule;
 		isLoaded = false;
 	}
 
 	setReverb { | reverbInstance | reverbInstance.loadPreset('darkness'); }
 
-	makeMIDIFuncs { }
+	makeMIDIFuncs { | sequencer |
+		var seq = sequencer.uid;
+		var spudsChan = 13;
+		var volChan = 6;
+		spudsOnArray = Array.fill(128, { | i |
+			MIDIFunc.noteOn({ | vel | spuds.synth.playNote(i.midicps, vel.ccdbfs); }, i, spudsChan, seq); });
+		spudsOffArray = Array.fill(128, { | i |
+			MIDIFunc.noteOff({ spuds.synth.releaseNote(i.midicps); }, i, spudsChan, seq); });
+		midiFuncsLoaded = true;
+		introVol = MIDIFunc.cc({ | val | introSample.mixer.setVol(val.ccdbfs) }, 2, volChan, seq);
+		moogVol = MIDIFunc.cc({ | val | bass.mixer.setVol(val.ccdbfs) }, 3, volChan, seq);
+		droneVol = MIDIFunc.cc({ | val | drones.mixer.setVol(val.ccdbfs) }, 4, volChan, seq);
+		spudsVol = MIDIFunc.cc({ | val | spuds.mixer.setVol(val.ccdbfs) }, 5, volChan, seq);
+		noiseVol = MIDIFunc.cc({ | val | noise.mixer.setVol(val.ccdbfs) }, 6, volChan, seq);
+	}
 
-	freeMIDIFuncs { }
+	freeMIDIFuncs {
+		spudsOnArray.do({ | i | i.free; });
+		spudsOffArray.do({ | i | i.free; });
+		introVol.free; moogVol.free; droneVol.free; spudsVol.free; noiseVol.free;
+		midiFuncsLoaded = false;
+	}
 
 	playBassline {
 		bass.moog.playSequence(\darkness);

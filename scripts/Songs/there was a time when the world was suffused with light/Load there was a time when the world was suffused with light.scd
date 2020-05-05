@@ -23,6 +23,7 @@ page to load into the language all of the songs for this tape
 "Docile Base.scd".loadRelative;
 //"Docile Ohm.scd".loadRelative;
 
+"Darkness APC.scd".loadRelative;
 "Darkness Base.scd".loadRelative;
 //"Darkness Ohm.scd".loadRelative;
 

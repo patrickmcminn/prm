@@ -14,14 +14,24 @@ var send3 = 3;
 var mainBank = 0;
 
 ~apc.makePage(page);
+~apc.addMixerEncodersBanks(3, page);
 
 //// master funcs:
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 ~apc.storageDict[\loadMasterFunc].value;
 
 //// reverb:
-~apc.setUserButtonFunc({ ~darkess.setReverb(~prm.reverb) ; ~apc.turnUserButtonOn; }, page: page);
+~apc.setUserButtonFunc({ ~darkness.setReverb(~prm.reverb) ; ~apc.turnUserButtonOn; }, page: page);
 ~apc.setUserButtonFunc({ ~apc.turnUserButtonOff }, 'noteOff', page: page);
+
+//// MIDIFuncs:
+~apc.setSceneLaunchMonitorFunc(\midi, {
+	if( ~darkness.midiFuncsLoaded == true,
+		{ ~apc.turnSceneLaunchButtonGreen(0) }, { ~apc.turnSceneLaunchButtonYellow(0) });
+}, page: page);
+~apc.setSceneLaunchFunc(0, {
+	if( ~darkness.midiFuncsLoaded == true, { ~darkness.freeMIDIFuncs }, { ~darkness.makeMIDIFuncs(~pyr); });
+}, page: page);
 
 /////////////////
 //// Mixer: ////
@@ -83,9 +93,9 @@ var mainBank = 0;
 ////////// Input Mutes:
 ~apc.setMixerMonitorFunc(\inputMutes, {
 	if( ~darkness.trumpetInput.isMuted,
-		{ ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
+		{ ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
 }, page: page);
-~apc.setRecordEnableButtonFunc(2, { ~darkness.trumpetInput.tglMute }, page: page);
+~apc.setRecordEnableButtonFunc(3, { ~darkness.trumpetInput.tglMute }, page: page);
 
 
 ////////////////
@@ -143,35 +153,35 @@ var mainBank = 0;
 //////// spuds:
 
 ~apc.setGridMonitorFunc(\spuds, {
-	if( ~spuds.synth.filterType == 0,
+	if( ~darkness.spuds.synth.filterType == 0,
 		{ ~apc.turnGridGreen(0, 0) }, { ~apc.turnGridWhite(0, 0); });
-	if( ~spuds.synth.filterType == 1,
+	if( ~darkness.spuds.synth.filterType == 1,
 		{ ~apc.turnGridGreen(1, 0) }, { ~apc.turnGridWhite(1, 0) });
 }, mainBank, page);
-~apc.setGridFunc(0, 0, { ~spuds.synth.setFilterType('lowPass') }, bank: mainBank, page: page);
-~apc.setGridFunc(1, 0, { ~spuds.synth.setFilterType('highPass') }, bank: mainBank, page: page);
+~apc.setGridFunc(0, 0, { ~darkness.spuds.synth.setFilterType('lowPass') }, bank: mainBank, page: page);
+~apc.setGridFunc(1, 0, { ~darkness.spuds.synth.setFilterType('highPass') }, bank: mainBank, page: page);
 
 //////// Device Encoders:
 ~apc.setDeviceEncodersMonitorFunc(\main, {
 	var filterCutoff = ~darkness.spuds.synth.filterCutoff.explin(40, 20000, 0, 127);
 	var granulatorMix = ~darkness.spuds.granulator.crossfade.linlin(-1, 1, 0, 127);
 	var delayMix = ~darkness.spuds.granulator.delay.mix.linlin(0, 1, 0, 127);
-	var delayFeedback = ~darkness.spuds.granulator.delay.feedback(0, 1, 0, 127);
-
-	var highPass = ~prm.masterEQ.highPassCutoff.explin(1, 650, 0, 127);
+	var delayFeedback = ~darkness.spuds.granulator.delay.feedback.linlin(0, 1, 0, 127);
+	var noiseCutoff = ~darkness.noise.lowPass.filterCutoff.explin(20, 20000, 0, 127);
+	var highPass = ~prm.masterEQ.highPassCutoff.explin(1, 900, 0, 127);
 	~apc.setDeviceEncoderValue(1, filterCutoff);
 	~apc.setDeviceEncoderValue(2, granulatorMix);
 	~apc.setDeviceEncoderValue(3, delayMix);
 	~apc.setDeviceEncoderValue(4, delayFeedback);
-
+	~apc.setDeviceEncoderValue(5, noiseCutoff);
 	~apc.setDeviceEncoderValue(8, highPass);
 }, mainBank, page);
 
 ~apc.setDeviceEncoderFunc(1, { | val |
 	var cutoff = val.linexp(0, 127, 40, 20000);
-	~darkness.spuds.synth.setCutoff(cutoff);
+	~darkness.spuds.synth.setFilterCutoff(cutoff);
 }, mainBank, page);
-~apc.setDeviceEncoderFunc(2, { | val
+~apc.setDeviceEncoderFunc(2, { | val |
 	var mix = val.linlin(0, 127, -1, 1);
 	~darkness.spuds.granulator.setGranulatorCrossfade(mix);
 }, mainBank, page);
@@ -181,12 +191,15 @@ var mainBank = 0;
 }, mainBank, page);
 ~apc.setDeviceEncoderFunc(4, { | val |
 	var feedback = val.linlin(0, 127, 0, 1);
-	~darkness.spuds.granulator.setFeedback(feedback);
+	~darkness.spuds.granulator.delay.setFeedback(feedback);
 }, mainBank, page);
-
+~apc.setDeviceEncoderFunc(5, { | val |
+	var cutoff = val.linexp(0, 127, 20, 20000);
+	~darkness.noise.lowPass.setCutoff(cutoff);
+}, mainBank, page);
 
 //// CAREFUL!! ////
 ~apc.setDeviceEncoderFunc(8, { | val |
-	var cutoff = val.linexp(0, 127, 1, 650);
+	var cutoff = val.linexp(0, 127, 1, 900);
 	~prm.masterEQ.setHighPassCutoff(cutoff);
 }, mainBank, page); 

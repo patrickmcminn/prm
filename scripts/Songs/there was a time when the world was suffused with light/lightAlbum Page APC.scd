@@ -217,72 +217,95 @@ docileIsLoaded = false;
 ~ohm.turnGridRed(4, 1, page: page);
 */
 
-/*
 'a shallow eclipsing darkness';
-~ohm.turnGridWhite(4, 2, page: page);
-~ohm.setGridFunc(4, 2, {
-if( darknessIsLoaded == false, {
-r{
-~darknessReturns = Darkness_Returns.new(~prm.submixA, ~prm.reverb.inBus,
-relGroup: ~prm.procGroup, addAction: \addToHead);
-while({ try { ~darknessReturns.isLoaded } != true }, { 0.001.wait; });
-~darkness = Darkness.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~darknessReturns.delay.inBus,
-~darknessReturns.granulator.inBus, "UMC404HD 192k", "UMC404HD 192k", ~prm.procGroup, \addToHead);
-while({ try { ~darkness.isLoaded } != true }, { 0.001.wait; });
-~ohm.turnGridGreen(5, 2);
-~ohm.setGridFunc(5, 2, { ~ohm.setPage('darkness'); });
-darknessIsLoaded = true;
-}.play;
-},
-{
-~darkness.free;
-~darknessReturns.free;
-~ohm.setGridFunc(5, 2, {});
-~ohm.turnGridOff(5, 2);
-darknessIsLoaded = false;
-});
-}, page: page);
-*/
-
-'dissolution of color onto an infinite plane';
-~apc.turnGridPink(4, 4, page: page);
+~apc.turnGridWhite(4, 4, page: page);
 ~apc.setGridFunc(4, 4, {
-	if( dissolutionIsLoaded == false, {
-		r{
-			~dissolution = Dissolution.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
-				~prm.delay.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
-			while({ try { ~dissolution.isLoaded } != true }, { 0.001.wait; });
+	if( darknessIsLoaded == false, {
+		r {
+			~darkness = Darkness.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+				~pickupIn, ~modOutput[0], ~modInput[0], ~modInput[1], ~modInput[3], ~moogDevice, ~moogPort,
+				~prm.procGroup, \addToHead);
+			while({ try { ~darkness.isLoaded } != true }, { 0.001.wait; });
 			~apc.turnGridGreen(5, 4);
-			~apc.setGridFunc(5, 4, { ~apc.setPage('dissolution'); });
-			dissolutionIsLoaded = true;
+			~apc.setGridFunc(5, 4, { ~apc.setPage('darkness'); }, page: page);
+			darknessIsLoaded = true;
 		}.play;
 	},
 	{
-		~dissolution.free;
-		~apc.setGridFunc(5, 4, {});
+		~darkness.free;
+		~apc.setGridFunc(5, 4, { });
 		~apc.turnGridOff(5, 4);
-		dissolutionIsLoaded = false;
+		darknessIsLoaded = false;
 	});
 }, page: page);
-/*
-'dissolution of color onto an infinite plane';
-~ohm.turnGridBlue(4, 3, page: page);
-~ohm.setGridFunc(4, 3, {
-if( dissolutionIsLoaded == false, {
-r {
-~dissolution = Dissolution.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
-relGroup: ~prm.procGroup, addAction: \addToHead);
-while({ try { ~dissolution.isLoaded } != true }, { 0.001.wait; });
-~ohm.turnGridGreen(5, 3);
-~ohm.setGridFunc(5, 3, { ~ohm.setPage('dissolution'); });
-dissolutionIsLoaded = true;
-}.play;
-},
-{
-~dissolution.free;
-~ohm.setGridFunc(5, 3, {});
-~ohm.turnGridOff(5, 3);
-dissolutionIsLoaded = false;
-});
-}, page: page);
-*/
+
+			/*
+			'a shallow eclipsing darkness';
+			~ohm.turnGridWhite(4, 2, page: page);
+			~ohm.setGridFunc(4, 2, {
+			if( darknessIsLoaded == false, {
+			r{
+			~darknessReturns = Darkness_Returns.new(~prm.submixA, ~prm.reverb.inBus,
+			relGroup: ~prm.procGroup, addAction: \addToHead);
+			while({ try { ~darknessReturns.isLoaded } != true }, { 0.001.wait; });
+			~darkness = Darkness.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~darknessReturns.delay.inBus,
+			~darknessReturns.granulator.inBus, "UMC404HD 192k", "UMC404HD 192k", ~prm.procGroup, \addToHead);
+			while({ try { ~darkness.isLoaded } != true }, { 0.001.wait; });
+			~ohm.turnGridGreen(5, 2);
+			~ohm.setGridFunc(5, 2, { ~ohm.setPage('darkness'); });
+			darknessIsLoaded = true;
+			}.play;
+			},
+			{
+			~darkness.free;
+			~darknessReturns.free;
+			~ohm.setGridFunc(5, 2, {});
+			~ohm.turnGridOff(5, 2);
+			darknessIsLoaded = false;
+			});
+			}, page: page);
+			*/
+
+			'dissolution of color onto an infinite plane';
+			~apc.turnGridPink(4, 3, page: page);
+			~apc.setGridFunc(4, 3, {
+				if( dissolutionIsLoaded == false, {
+					r{
+						~dissolution = Dissolution.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+							~prm.delay.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
+						while({ try { ~dissolution.isLoaded } != true }, { 0.001.wait; });
+						~apc.turnGridGreen(5, 3);
+						~apc.setGridFunc(5, 3, { ~apc.setPage('dissolution'); });
+						dissolutionIsLoaded = true;
+					}.play;
+				},
+				{
+					~dissolution.free;
+					~apc.setGridFunc(5, 3, {});
+					~apc.turnGridOff(5, 3);
+					dissolutionIsLoaded = false;
+				});
+			}, page: page);
+			/*
+			'dissolution of color onto an infinite plane';
+			~ohm.turnGridBlue(4, 3, page: page);
+			~ohm.setGridFunc(4, 3, {
+			if( dissolutionIsLoaded == false, {
+			r {
+			~dissolution = Dissolution.new(~prm.submixA, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+			relGroup: ~prm.procGroup, addAction: \addToHead);
+			while({ try { ~dissolution.isLoaded } != true }, { 0.001.wait; });
+			~ohm.turnGridGreen(5, 3);
+			~ohm.setGridFunc(5, 3, { ~ohm.setPage('dissolution'); });
+			dissolutionIsLoaded = true;
+			}.play;
+			},
+			{
+			~dissolution.free;
+			~ohm.setGridFunc(5, 3, {});
+			~ohm.turnGridOff(5, 3);
+			dissolutionIsLoaded = false;
+			});
+			}, page: page);
+			*/
+			

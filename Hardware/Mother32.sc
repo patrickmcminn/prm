@@ -3,6 +3,11 @@ Monday, January 25th 2016
 Mother32.sc
 prm
 class to interface with the Mother32 hardware
+
+4/23/2020
+assignable out seems to cause the interpreter to freeze if mutliple instances are running
+that's my working theory at least
+especially as it ain't doing shit right now, I'm taking it out
 */
 
 Mother32 : IM_Module {
@@ -31,8 +36,10 @@ Mother32 : IM_Module {
       this.prInitMIDI(deviceName, portName);
       server.sync;
 
+			/*
       assignableOut = MoogMotherAssignableOut.new(deviceName, portName, nil, assignableCC, midiChannel, group, \addToTail);
       while({ try { assignableOut.isLoaded } != true }, { 0.001.wait; });
+			*/
 
       hardwareIn = IM_HardwareIn.new(hardwareInBus, mixer.chanMono(0), group, \addToHead);
       while({ try { hardwareIn.isLoaded } != true }, { 0.001.wait; });
@@ -57,7 +64,7 @@ Mother32 : IM_Module {
   //////// public functions:
   free {
     hardwareIn.free;
-    assignableOut.free;
+    //assignableOut.free;
     this.freeModule;
   }
 

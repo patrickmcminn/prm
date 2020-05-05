@@ -596,7 +596,11 @@ Subtractive : IM_Module {
 		*/
 	}
 
-
+	playNoteCustomOut { | outBus, freq = 220, vol = -12 |
+		try { this.releaseNote(freq); };
+		synthDict[freq] = Subtractive_Voice.newCustomOut(outBus, freq, vol, this, synthGroup, \addToTail);
+		numVoices = numVoices + 1;
+	}
 
 	releaseNote { | freq = 220 |
 		/*

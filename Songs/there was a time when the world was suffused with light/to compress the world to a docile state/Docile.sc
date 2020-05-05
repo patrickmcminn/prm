@@ -112,6 +112,7 @@ Docile : IM_Module {
 		// moog:
 		mixer.setVol(3, -4.2);
 		mixer.setSendVol(3, 0, -6);
+		mixer.setPreVol(3, 9);
 
 
 		//noisies:

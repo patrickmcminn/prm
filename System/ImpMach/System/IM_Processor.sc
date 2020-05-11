@@ -7,6 +7,12 @@ IM_Processor : IM_Module {
     ^super.new(numChans, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prProcessorInit(numInBusses);
   }
 
+	*newNoSends {
+		|numInBusses = 1, numChans = 1, outBus = 0, feedback = false, relGroup = nil, addAction = \addToHead|
+
+    ^super.newNoSends(numChans, outBus,feedback, relGroup, addAction).prProcessorInit(numInBusses);
+	}
+
   prProcessorInit { |numInBusses|
     inBus = Bus.audio(Server.default, numInBusses);
   }

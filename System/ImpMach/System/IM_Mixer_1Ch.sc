@@ -18,7 +18,7 @@ IM_Mixer_1Ch {
       relGroup, addAction);
   }
 
-	*newNoSends { |outBus = 0, feedback = false, relGroup = nil, addAction = \addToHead|
+	*newNoSends { | outBus = 0, feedback = false, relGroup = nil, addAction = \addToHead |
 		^super.new.prInitNoSends(outBus, feedback, relGroup, addAction);
   }
 
@@ -54,7 +54,7 @@ IM_Mixer_1Ch {
   }
 
 	prInitNoSends {
-		|outBus,  feedback, relGroup, addAction|
+		| outBus,  feedback, relGroup, addAction |
 
     var server = Server.default;
 
@@ -71,7 +71,7 @@ IM_Mixer_1Ch {
       myNilBus = Bus.audio(server, 2);
       server.sync;
 
-      masterChan = IM_ChannelStrip(myOutBus, myNilBus, isFeedback, group, \addToTail);
+      masterChan = IM_ChannelStrip.newNoSends(myOutBus, myNilBus, isFeedback, group, \addToTail);
 
       while ( { try { masterChan.isLoaded } != true }, { 0.001.wait } );
 

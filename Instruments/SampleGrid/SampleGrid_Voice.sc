@@ -10,11 +10,13 @@ SampleGrid_Voice : IM_Module {
 
 	var <panLow, <panHigh, <grainDurLow, <grainDurHigh, <trigRate;
 
-	var <buffer, bufferLeft, bufferRight, <isPlaying;
+	var <buffer, <isPlaying;
 
 	var <monoOrStereo;
 
 	var synth;
+
+	var oscFunc, granGroup, granSum, granTrigger, granBus;
 
 	*new { | outBus, relGroup = nil, addAction = 'addToHead' |
 		^super.newNoSends(1, outBus, false, relGroup, addAction).prInit;
@@ -34,6 +36,8 @@ SampleGrid_Voice : IM_Module {
 			while({ try { lfo.isLoaded } != true }, { 0.001.wait; });
 			*/
 
+			granGroup = Group.new(group, \addBefore);
+			granBus = Bus.audio(server, 2);
 			buffer = Buffer.alloc(server, server.sampleRate);
 
 			server.sync;
@@ -147,74 +151,67 @@ SampleGrid_Voice : IM_Module {
 			Out.ar(outBus, sig);
 		}).add;
 
-		SynthDef(\prm_SampleGrid_Voice_Granulator_Stereo, {
+		SynthDef(\prm_SampleGrid_GranularSum, {
 			|
-			outBus = 0, bufferLeft, bufferRight, panLow = -1, panHigh = 1,
-			grainDurLow = 1, grainDurHigh = 2, rate = 1,
-			startPos = 0.2, endPos = 0.6, env = -1, sync = 0, trigRate = 3,
-			attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
-			amp = 1, mix = 1, highPassCutoff = 0, lowPassCutoff = 20000, pan = 0
+			inBus = 0, outBus = 0, amp = 1,
+			attackTime = 0.01, decayTime = 0.01, sustainLevel = 1, releaseTime = 0.01, gate = 1,
+			pan = 0
 			|
-
-			var input, dry, granStereoSum;
-			var playhead, record, trigger, duration, position, envelope;
-			var panner, granulationLeft, granulationRight, granulation, lowPass, highPass, sig;
-
-			trigger = SelectX.ar(sync, [Dust.ar(trigRate), Impulse.ar(trigRate)]);
-			duration = TRand.ar(grainDurLow, grainDurHigh, trigger);
-			position = TRand.ar(startPos, endPos, trigger);
-			position = Wrap.ar(position, startPos, endPos);
-			panner = TRand.ar(panLow, panHigh, trigger);
-
-			granulationLeft = GrainBuf.ar(2, trigger: trigger, dur: duration, sndbuf: bufferLeft,
-				rate: rate, pos: position, pan: panner, envbufnum: env);
-			granulationRight = GrainBuf.ar(2, trigger: trigger, dur: duration, sndbuf: bufferRight,
-				rate: rate, pos: position, pan: panner, envbufnum: env);
-			granulation = Mix.ar([granulationLeft, granulationRight]);
-
-			highPass = HPF.ar(granulation, highPassCutoff.lag(0.3));
-			lowPass = LPF.ar(highPass, lowPassCutoff);
-
+			var input, envelope, sig;
+			input = In.ar(inBus, 2);
 			envelope = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime), gate, doneAction: 2);
-
-			sig = lowPass * envelope;
+			sig = input * envelope;
+			sig = Balance2.ar(sig[0], sig[1], pan, 3.dbamp);
 			sig = sig * amp;
-			sig = sig.softclip;
+			Out.ar(outBus, sig);
+		}).add;
+
+		SynthDef(\prm_SampleGrid_GranularTrigger, {
+			| trigRate = 3 |
+			var trigger;
+			trigger = Dust.ar(trigRate);
+			SendReply.ar(trigger, '/sampleGrid_Granular', 1);
+		}).add;
+
+		SynthDef(\prm_SampleGrid_Granular_Stereo, {
+			|
+			outBus = 0, buffer, amp = 1, rate = 1, dur = 1, startPos = 0, endPos = 1, pan = 0,
+			attackTime = 0.01, releaseTime = 0.01, highPassCutoff = 20, lowPassCutoff = 20000,
+			gate = 1
+			|
+			var playHead, player, highPass, lowPass, env, sig, sus;
+			playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
+				(BufSamples.ir(buffer)/2) * startPos, (BufSamples.ir(buffer)/2) * endPos);
+			player = BufRd.ar(2, buffer, playHead);
+			highPass = HPF.ar(player, highPassCutoff.lag(0.3));
+			lowPass = LPF.ar(highPass, lowPassCutoff);
+			sus = dur - (attackTime + releaseTime);
+			//sus = sus/rate;
+			env = EnvGen.kr(Env.linen(attackTime, sus, releaseTime, 1, -4), gate, doneAction: 2);
+			sig = lowPass * env;
+			sig = sig * amp;
 			sig = Balance2.ar(sig[0], sig[1], pan, 3.dbamp);
 			Out.ar(outBus, sig);
 		}).add;
 
-		SynthDef(\prm_SampleGrid_Voice_Granulator_Mono, {
+		SynthDef(\prm_SampleGrid_Granular_Mono, {
 			|
-			outBus = 0, buffer, panLow = -1, panHigh = 1,
-			grainDurLow = 1, grainDurHigh = 2, rate = 1,
-			startPos = 0.2, endPos = 0.6, env = -1, sync = 0, trigRate = 3,
-			attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
-			amp = 1, mix = 1, highPassCutoff = 0, lowPassCutoff = 20000, pan = 0
+			outBus = 0, buffer, amp = 1, rate = 1, dur = 1, startPos = 0, endPos = 1, pan = 0,
+			attackTime = 0.01, releaseTime = 0.01, highPassCutoff = 20, lowPassCutoff = 20000,
+			gate = 1
 			|
-
-			var input, dry, granStereoSum;
-			var playhead, record, trigger, duration, position, envelope;
-			var panner, granulationLeft, granulationRight, granulation, lowPass, highPass, sig;
-
-			trigger = SelectX.ar(sync, [Dust.ar(trigRate), Impulse.ar(trigRate)]);
-			duration = TRand.ar(grainDurLow, grainDurHigh, trigger);
-			position = TRand.ar(startPos, endPos, trigger);
-			position = Wrap.ar(position, startPos, endPos);
-			panner = TRand.ar(panLow, panHigh, trigger);
-
-			granulation = GrainBuf.ar(2, trigger: trigger, dur: duration, sndbuf: buffer,
-				rate: rate, pos: position, pan: panner, envbufnum: env);
-
-			highPass = HPF.ar(granulation, highPassCutoff.lag(0.3));
+			var playHead, player, highPass, lowPass, env, sig, sus;
+			playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
+				BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
+			player = BufRd.ar(1, buffer, playHead);
+			highPass = HPF.ar(player, highPassCutoff.lag(0.3));
 			lowPass = LPF.ar(highPass, lowPassCutoff);
-
-			envelope = EnvGen.kr(Env.adsr(attackTime, decayTime, sustainLevel, releaseTime), gate, doneAction: 2);
-
+			sus = dur - (attackTime + releaseTime);
+			//sus = sus/rate;
+			env = EnvGen.kr(Env.linen(attackTime, sus, releaseTime, 1, -4), gate, doneAction: 2);
 			sig = lowPass * env;
 			sig = sig * amp;
-			sig = sig.softclip;
-			sig = Balance2.ar(sig[0], sig[1], pan, 3.dbamp);
+			sig = Pan2.ar(sig, pan, 3.dbamp);
 			Out.ar(outBus, sig);
 		}).add;
 	}
@@ -233,9 +230,6 @@ SampleGrid_Voice : IM_Module {
 			buffer = Buffer.loadDialog(server, 0, -1, { | buf |
 				if(buf.numChannels == 1, { monoOrStereo = 'mono' }, { monoOrStereo = 'stereo' });
 				this.prSetInitialParameters;
-				if(monoOrStereo == 'stereo', {
-					bufferLeft = Buffer.readChannel(server, buffer.path, 0, -1, 0);
-					bufferRight = Buffer.readChannel(server, buffer.path, 0, -1, 1); });
 			});
 			samplePath = buffer.path;
 		}.fork(AppClock);
@@ -250,11 +244,8 @@ SampleGrid_Voice : IM_Module {
 			buffer = Buffer.read(server, path, 0, -1, { | buf |
 				if( buf.numChannels == 1, { monoOrStereo = 'mono' }, { monoOrStereo = 'stereo' });
 				//this.prSetInitialParameters;
-				if(monoOrStereo == 'stereo', {
-					bufferLeft = Buffer.readChannel(server, buffer.path, 0, -1, 0);
-					bufferRight = Buffer.readChannel(server, buffer.path, 0, -1, 1); });
+				samplePath = buffer.path;
 			});
-			samplePath = buffer.path;
 		}.fork;
 	}
 
@@ -300,10 +291,14 @@ SampleGrid_Voice : IM_Module {
 		if( playMode == 'granular', { this.playSampleGranular(vol); });
 	}
 
-	releaseSample { synth.set(\gate, 0); isPlaying = false; }
+	releaseSample { if(playMode == 'granular',
+		{ this.releaseSampleGranular; },
+		{ synth.set(\gate, 0); isPlaying = false;});
+	}
+
 	freeSample { synth.free; isPlaying = false; }
 
-	setPlayMode { | mode = 'sustaining' | playMode = mode; }
+	setPlayMode { | mode = 'sustaining' | this.releaseSample; playMode = mode; }
 	setSampleVol { | vol = -6 | sampleVol = vol; mixer.setVol(vol); }
 	setSamplePan { | pan = 0 | samplePan = pan; if(isPlaying == true, { synth.set(\pan, samplePan) }) }
 
@@ -320,14 +315,14 @@ SampleGrid_Voice : IM_Module {
 
 	///// Granular section:
 	setGrainPan { | panLow, panHigh | this.setGrainPanLow(panLow); this.setGrainPanHigh(panHigh); }
-	setGrainPanLow { | pan = -0.5 | panLow = pan; if(isPlaying == true, { synth.set(\panLow, panLow); }) }
-	setGrainPanHigh { | pan = 0.5 | panHigh = pan; if(isPlaying == true, { synth.set(\panHigh, panHigh); }) }
+	setGrainPanLow { | pan = -0.5 | panLow = pan; if(isPlaying == true, { granGroup.set(\panLow, panLow); }) }
+	setGrainPanHigh { | pan = 0.5 | panHigh = pan; if(isPlaying == true, { granGroup.set(\panHigh, panHigh); }) }
 
 	setGrainDur { |durLow, durHigh| this.setGrainDurLow(durLow); this.setGrainDurHigh(durHigh)}
-	setGrainDurLow { | dur = 1 | grainDurLow = dur; if(isPlaying == true, { synth.set(\grainDurLow, grainDurLow)})}
-	setGrainDurHigh { | dur = 2 | grainDurHigh = dur; if(isPlaying == true, { synth.set(\grainDurHigh, grainDurHigh)})}
+	setGrainDurLow { | dur = 1 | grainDurLow = dur; if(isPlaying == true, { granGroup.set(\grainDurLow, grainDurLow)})}
+	setGrainDurHigh { | dur = 2 | grainDurHigh = dur; if(isPlaying == true, { granGroup.set(\grainDurHigh, grainDurHigh)})}
 
-	setTrigRate { | rate | trigRate = rate; if(isPlaying == true, { synth.set(\trigRate, rate) }) }
+	setTrigRate { | rate | trigRate = rate; if(isPlaying == true, { granTrigger.set(\trigRate, rate) }) }
 
 
 	playSampleSustaining { | vol = -3 |
@@ -379,28 +374,51 @@ SampleGrid_Voice : IM_Module {
 	}
 
 	playSampleGranular { | vol = -3 |
+		if(isPlaying == true, { this.releaseSampleGranular });
+		// input for all synth grains:
+		granSum = Synth(\prm_SampleGrid_GranularSum,
+			[\inBus, granBus, \outBus, mixer.chanStereo, \amp, vol.dbamp,
+				\attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel,
+				\releaseTime, releaseTime, \pan, samplePan],
+			group, \addToHead);
+
+		// sends OSC triggers:
+		granTrigger = Synth(\prm_SampleGrid_GranularTrigger, [\trigRate, trigRate], group, \addToHead);
+
+		// creates OSC Def to take trigger and make synth grains:
 		if(monoOrStereo == 'stereo', {
-			synth = Synth(\prm_SampleGrid_Voice_Granulator_Stereo,
-				[
-					\outBus, mixer.chanStereo, \bufferLeft, bufferLeft, \bufferRight, bufferRight, \panLow, panLow,
-					\panHigh, panHigh, \grainDurLow, grainDurLow, \grainDurHigh, grainDurHigh,
-					\rateLow, rate, \rateHigh, rate, \startPos, startPos, \endPos, endPos,
-					\attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel,
-					\releaseTime, releaseTime, \amp, vol.dbamp, \highPassCutoff, highPassCutoff,
-					\lowPassCutoff, lowPassCutoff, \pan, samplePan
-			], group, \addToHead);
+			oscFunc = OSCFunc.new({ | msg |
+				var val = msg.at(3);
+				if( val == 1, {
+					Synth(\prm_SampleGrid_Granular_Stereo,
+						[\buffer, buffer, \outBus, granBus, \rate, rate, \dur, rrand(grainDurLow, grainDurHigh),
+							\startPos, startPos,\endPos, endPos, \pan, rrand(panLow, panHigh),
+							\highPassCutoff, highPassCutoff, \lowPassCutoff, lowPassCutoff],
+						granGroup, \addToHead);
+				});
+			}, '/sampleGrid_Granular');
 			isPlaying = true;
-		}, {
-			synth = Synth(\prm_SampleGrid_Voice_Granulator_Mono,
-				[
-					\outBus, mixer.chanStereo, \buffer, buffer, \panLow, panLow,
-					\panHigh, panHigh, \grainDurLow, grainDurLow, \grainDurHigh, grainDurHigh,
-					\rateLow, rate, \rateHigh, rate, \startPos, startPos, \endPos, endPos,
-					\attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel,
-					\releaseTime, releaseTime, \amp, vol.dbamp, \highPassCutoff, highPassCutoff,
-					\lowPassCutoff, lowPassCutoff, \pan, samplePan
-			], group, \addToHead);
+		},
+		{
+			oscFunc = OSCFunc.new({ | msg |
+				var val = msg.at(3);
+				if( val == 1, {
+					Synth(\prm_SampleGrid_Granular_Mono,
+						[\buffer, buffer, \outBus, granBus, \rate, rate, \dur, rrand(grainDurLow, grainDurHigh),
+							\startPos, startPos,\endPos, endPos, \pan, rrand(panLow, panHigh),
+							\highPassCutoff, highPassCutoff, \lowPassCutoff, lowPassCutoff],
+						granGroup, \addToHead);
+				});
+			}, '/sampleGrid_Granular');
 			isPlaying = true;
 		});
+	}
+
+	releaseSampleGranular {
+		granGroup.set(\gate, 0);
+		granSum.set(\gate, 0);
+		granTrigger.free;
+		oscFunc.free;
+		isPlaying = false;
 	}
 }

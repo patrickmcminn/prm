@@ -1,10 +1,10 @@
 SampleGrid_Voice : IM_Module {
 
 	var server, <isLoaded;
-	var <lfo;
+	//var <lfo;
 
 	var <samplePath, <sampleVol, <playMode, <lowPassCutoff, <highPassCutoff;
-	var <startPos, <endPos, <samplePan;
+	var <>startPos, <endPos, <samplePan;
 	var <attackTime, <decayTime, <sustainLevel, <releaseTime;
 	var <rate;
 
@@ -116,6 +116,7 @@ SampleGrid_Voice : IM_Module {
 			lowPass = LPF.ar(highPass, lowPassCutoff);
 			sus = ((BufSamples.ir(buffer) * endPos) - (BufSamples.ir(buffer) * startPos)) / SampleRate.ir;
 			sus = sus - (attackTime + releaseTime);
+			sus = sus/rate;
 			env = EnvGen.kr(Env.linen(attackTime, sus, releaseTime, 1, -4), gate, doneAction: 2);
 			sig = lowPass * env;
 			sig = sig * amp;
@@ -138,6 +139,7 @@ SampleGrid_Voice : IM_Module {
 			lowPass = LPF.ar(highPass, lowPassCutoff);
 			sus = ((BufSamples.ir(buffer) * endPos) - (BufSamples.ir(buffer) * startPos)) / SampleRate.ir;
 			sus = sus - (attackTime + releaseTime);
+			sus = sus/rate;
 			env = EnvGen.kr(Env.linen(attackTime, sus, releaseTime, 1, -4), gate, doneAction: 2);
 			sig = lowPass * env;
 			sig = sig * amp;
@@ -148,7 +150,7 @@ SampleGrid_Voice : IM_Module {
 		SynthDef(\prm_SampleGrid_Voice_Granulator_Stereo, {
 			|
 			outBus = 0, bufferLeft, bufferRight, panLow = -1, panHigh = 1,
-			grainDurLow = 1, grainDurHigh = 2, rateLow = 1, rateHigh = 1,
+			grainDurLow = 1, grainDurHigh = 2, rate = 1,
 			startPos = 0.2, endPos = 0.6, env = -1, sync = 0, trigRate = 3,
 			attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
 			amp = 1, mix = 1, highPassCutoff = 0, lowPassCutoff = 20000, pan = 0
@@ -156,13 +158,12 @@ SampleGrid_Voice : IM_Module {
 
 			var input, dry, granStereoSum;
 			var playhead, record, trigger, duration, position, envelope;
-			var panner, rate, granulationLeft, granulationRight, granulation, lowPass, highPass, sig;
+			var panner, granulationLeft, granulationRight, granulation, lowPass, highPass, sig;
 
 			trigger = SelectX.ar(sync, [Dust.ar(trigRate), Impulse.ar(trigRate)]);
 			duration = TRand.ar(grainDurLow, grainDurHigh, trigger);
 			position = TRand.ar(startPos, endPos, trigger);
 			position = Wrap.ar(position, startPos, endPos);
-			rate = TRand.ar(rateLow, rateHigh, trigger);
 			panner = TRand.ar(panLow, panHigh, trigger);
 
 			granulationLeft = GrainBuf.ar(2, trigger: trigger, dur: duration, sndbuf: bufferLeft,
@@ -186,7 +187,7 @@ SampleGrid_Voice : IM_Module {
 		SynthDef(\prm_SampleGrid_Voice_Granulator_Mono, {
 			|
 			outBus = 0, buffer, panLow = -1, panHigh = 1,
-			grainDurLow = 1, grainDurHigh = 2, rateLow = 1, rateHigh = 1,
+			grainDurLow = 1, grainDurHigh = 2, rate = 1,
 			startPos = 0.2, endPos = 0.6, env = -1, sync = 0, trigRate = 3,
 			attackTime = 0.05, decayTime = 0.05, sustainLevel = 1, releaseTime = 0.05, gate = 1,
 			amp = 1, mix = 1, highPassCutoff = 0, lowPassCutoff = 20000, pan = 0
@@ -194,13 +195,12 @@ SampleGrid_Voice : IM_Module {
 
 			var input, dry, granStereoSum;
 			var playhead, record, trigger, duration, position, envelope;
-			var panner, rate, granulationLeft, granulationRight, granulation, lowPass, highPass, sig;
+			var panner, granulationLeft, granulationRight, granulation, lowPass, highPass, sig;
 
 			trigger = SelectX.ar(sync, [Dust.ar(trigRate), Impulse.ar(trigRate)]);
 			duration = TRand.ar(grainDurLow, grainDurHigh, trigger);
 			position = TRand.ar(startPos, endPos, trigger);
 			position = Wrap.ar(position, startPos, endPos);
-			rate = TRand.ar(rateLow, rateHigh, trigger);
 			panner = TRand.ar(panLow, panHigh, trigger);
 
 			granulation = GrainBuf.ar(2, trigger: trigger, dur: duration, sndbuf: buffer,
@@ -237,7 +237,29 @@ SampleGrid_Voice : IM_Module {
 					bufferLeft = Buffer.readChannel(server, buffer.path, 0, -1, 0);
 					bufferRight = Buffer.readChannel(server, buffer.path, 0, -1, 1); });
 			});
+			samplePath = buffer.path;
 		}.fork(AppClock);
+	}
+
+	loadSampleByPath { | path |
+		if(isPlaying == true, { this.freeSample; });
+		{
+			buffer.free;
+			server.sync;
+			buffer = Buffer.read(server, path, 0, -1, { | buf |
+				if( buf.numChannels == 1, { monoOrStereo = 'mono' }, { monoOrStereo = 'stereo' });
+				//this.prSetInitialParameters;
+				if(monoOrStereo == 'stereo', {
+					bufferLeft = Buffer.readChannel(server, buffer.path, 0, -1, 0);
+					bufferRight = Buffer.readChannel(server, buffer.path, 0, -1, 1); });
+			});
+			samplePath = buffer.path;
+		}.fork;
+	}
+
+	setSamplePath { | path |
+		samplePath = path;
+		this.loadSampleByPath(samplePath);
 	}
 
 	setPosGUI { | windowName = "sample" |

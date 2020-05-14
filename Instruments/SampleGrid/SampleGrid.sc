@@ -1,14 +1,19 @@
 SampleGrid : IM_Processor {
 
 	var server, <isLoaded;
+	var <isRecording;
 	var <numSlots, <samplerArray, <parameterArray;
 
 	var <masterPresetDict;
 
 	var <presetPath, presetDict;
 
+	var <recordPath, <recordBufferStereo, <recordBufferMono, <bufferLength, recSynth;
+
+	var recFileName;
+
 	*new { | outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
-		^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
+		^super.new(2, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
 	}
 
 	prInit {
@@ -17,7 +22,13 @@ SampleGrid : IM_Processor {
 			isLoaded = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
+			this.prAddSynthDef;
+
+			server.sync;
+
+			isRecording = false;
 			numSlots = 16;
+			bufferLength = 2097152;
 
 			samplerArray = Array.fill(numSlots, { SampleGrid_Voice.new(mixer.chanStereo, group, \addToHead); });
 			while({ try { samplerArray[15].isLoaded } != true}, { 0.001.wait; });
@@ -26,11 +37,30 @@ SampleGrid : IM_Processor {
 
 			masterPresetDict = IdentityDictionary.new;
 			presetPath = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/SampleGrid/Sample Grid Presets.scd".standardizePath;
+			recordPath = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/SampleGrid/Recorded Samples/".standardizePath;
+
+			recordBufferStereo = Buffer.alloc(server, 2097152, 2);
+			recordBufferMono = Buffer.alloc(server, 2097152, 1);
+
 
 			this.prBuildPresetDict;
 
 			isLoaded = true;
 		}
+	}
+
+	prAddSynthDef {
+		SynthDef(\prm_SampleGrid_Record_Stereo, { | inBus, buffer |
+			var input, record;
+			input = In.ar(inBus, 2);
+			DiskOut.ar(buffer, input);
+		}).add;
+
+		SynthDef(\prm_SampleGrid_Record_Mono, { | inBus, buffer |
+			var input, record;
+			input = In.ar(inBus, 1);
+			DiskOut.ar(buffer, input);
+		}).add;
 	}
 
 	prMakePresetDictionary { | dict, sampler |
@@ -67,9 +97,10 @@ SampleGrid : IM_Processor {
 		});
 	}
 
+
 	prSetAllParameters { | dictArray |
 		dictArray.do({ | dict, i |
-			this.loadSampleByPath(i, dict[\samplePath]);
+			this.loadSampleByPath(i, dict[\SamplePath]);
 			this.setPos(i, dict[\StartPos], dict[\EndPos]);
 			this.setPlayMode(i, dict[\PlayMode]);
 			this.setSampleVol(i, dict[\SampleVol]);
@@ -85,30 +116,6 @@ SampleGrid : IM_Processor {
 			this.setGrainDur(i, dict[\GrainDurLow], dict[\GrainDurHigh]);
 			this.setTrigRate(i, dict[\TrigRate]);
 		});
-		/*
-		dictArray[0].postln;
-		("
-		//this.interpret("samplerArray[0].setGrainPanHigh(-0.5)");
-		/*
-		dictArray[0].keysValuesDo({ | key, value |
-		var val;
-		[key, value].postln;
-		if( value.isNumber == false, { val = "'"++value++"'" }, { val = value; });
-		//("this.set"++key++"(0, "++val++");").interpret;
-		});
-		*/
-		//this.setGrainPanHigh(0, -0.5);
-		/*
-		dictArray.do({ | dict |
-		dict.keysValuesDo({ | key, value |
-		var val;
-		//[key, value].postln;
-		if( value.isNumber == false, { val = "'"++value++"'" }, { val = value; });
-		("this.set"++key++"(0, "++val++")").interpret;
-		});
-		});
-		*/
-		*/
 	}
 
 	//////// public functions:
@@ -117,38 +124,57 @@ SampleGrid : IM_Processor {
 
 	}
 
-	printPresetFilePath { this.presetPath.postln; }
+	//////// recording:
 
-	writePreset { | name |
-		var array = Array.newClear(parameterArray.size);
-		var file = File(this.presetPath, "a");
-		this.prBuildPresetDict;
-		this.prPopulatePresetDictionaries;
-		if( masterPresetDict.includesKey(name),
-			{ ^"preset already exists" },
-			{
-				// separate Dictionaries into Pairs in Arrays:
-				parameterArray.do({ | dict, i | array[i] = dict.getPairs; });
-				// make into psuedo-symbols so that when they're a String later they can be interpreted:
-				array.do({ | subArray, i |
-					subArray.do({ | item, i |
-						if( item.isNumber == false, { subArray[i] = "'"++item++"'"; });
-					});
-				});
-				file.write("\n"++name++";");
-				array.do({ | array | file.write(array.asString++";"); });
-				file.close;
-				this.prBuildPresetDict;
-		});
+	recordSampleStereo {
+		recFileName = recordPath++"sampleRec"++1000000.rand++".aiff";
+		recordBufferStereo.write(recFileName, "aiff", "int16", 0, 0, true);
+		//server.sync;
+		recSynth = Synth(\prm_SampleGrid_Record_Stereo, [\inBus, inBus, \buffer, recordBufferStereo], group, \addToHead);
+		isRecording = true;
+		recFileName.postln;
 	}
 
-	readPreset { | name |
-		var pArray;
-		this.prBuildPresetDict;
-		this.prSetAllParameters(masterPresetDict[name]);
+	stopRecordingStereo {
+		{
+			recSynth.free;
+			recordBufferStereo.close;
+			recordBufferStereo.free;
+			server.sync;
+			recordBufferStereo = Buffer.alloc(server, 2097152, 2);
+			isRecording = false;
+		}.fork;
+	}
+
+	stopRecordingLoadSlot { | slot = 0, monoOrStereo = 'stereo' |
+		if( monoOrStereo == 'stereo', { this.stopRecordingStereo }, { this.stopRecordingMono });
+		this.loadRecordedToSlot(slot);
 
 	}
 
+	recordSampleMono {
+		recFileName = recordPath++"sampleRec"++1000000.rand++".aiff";
+		recordBufferMono.write(recFileName, "aiff", "int16", 0, 0, true);
+		recSynth = Synth(\prm_SampleGrid_Record_Mono, [\inBus, inBus, \buffer, recordBufferMono], group, \addToHead);
+		isRecording = true;
+	}
+
+	stopRecordingMono {
+		{
+			recSynth.free;
+			recordBufferMono.close;
+			recordBufferMono.free;
+			server.sync;
+			recordBufferMono = Buffer.alloc(server, 2097152, 1);
+			isRecording = false;
+		}.fork;
+	}
+
+	loadRecordedToSlot { | slot |
+		this.loadSampleByPath(0, recFileName);
+	}
+
+	setRecordPath { | path | recordPath = path; }
 
 	getSampleName { | slot | ^parameterArray[slot][\SampleName]; }
 	setSampleName { | slot, name | parameterArray[slot][\SampleName] = name; }
@@ -170,10 +196,10 @@ SampleGrid : IM_Processor {
 	/////////// convenience functions:
 
 	loadSample { | slot | samplerArray[slot].loadSample; }
-	loadSampleByPath { | slot, path | samplerArray[slot].loadSampleByPath; }
+	loadSampleByPath { | slot, path | samplerArray[slot].loadSampleByPath(path); }
 	setPosGUI { | slot | samplerArray[slot].setPosGUI(parameterArray[slot][\name]); }
 
-	playSample { | slot | samplerArray[slot].playSample }
+	playSample { | slot, vol = -3 | samplerArray[slot].playSample(vol); }
 	releaseSample { | slot | samplerArray[slot].releaseSample; }
 
 	setPos { | slot, startPos, endPos | samplerArray[slot].setPos(startPos, endPos); }
@@ -206,6 +232,37 @@ SampleGrid : IM_Processor {
 
 	//////// presets:
 
+	printPresetFilePath { this.presetPath.postln; }
+
+	writePreset { | name |
+		var array = Array.newClear(parameterArray.size);
+		var file = File(this.presetPath, "a");
+		this.prBuildPresetDict;
+		this.prPopulatePresetDictionaries;
+		if( masterPresetDict.includesKey(name),
+			{ ^"preset already exists" },
+			{
+				// separate Dictionaries into Pairs in Arrays:
+				parameterArray.do({ | dict, i | array[i] = dict.getPairs; });
+				// make into psuedo-symbols so that when they're a String later they can be interpreted:
+				array.do({ | subArray, i |
+					subArray.do({ | item, i |
+						if( item.isNumber == false, { subArray[i] = "'"++item++"'"; });
+					});
+				});
+				file.write("\n"++name++";");
+				array.do({ | array | file.write(array.asString++";"); });
+				file.close;
+				this.prBuildPresetDict;
+		});
+	}
+
+	readPreset { | name |
+		var pArray;
+		this.prBuildPresetDict;
+		this.prSetAllParameters(masterPresetDict[name]);
+
+	}
 
 }
 

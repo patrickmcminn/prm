@@ -70,7 +70,7 @@ SampleGrid_Voice : IM_Module {
 			|
 			var playHead, player, highPass, lowPass, env, sig;
 			playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
-				BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
+				(BufSamples.ir(buffer)/2) * startPos, (BufSamples.ir(buffer)/2) * endPos);
 			player = BufRd.ar(2, buffer, playHead, loop);
 			highPass = HPF.ar(player, highPassCutoff.lag(0.3));
 			lowPass = LPF.ar(highPass, lowPassCutoff);
@@ -110,11 +110,11 @@ SampleGrid_Voice : IM_Module {
 			|
 			var playHead, player, highPass, lowPass, env, sig, sus;
 			playHead = Phasor.ar(0, BufRateScale.kr(buffer) * rate,
-				BufSamples.ir(buffer) * startPos, BufSamples.ir(buffer) * endPos);
+				(BufSamples.ir(buffer)/2) * startPos, (BufSamples.ir(buffer)/2) * endPos);
 			player = BufRd.ar(2, buffer, playHead, loop);
 			highPass = HPF.ar(player, highPassCutoff.lag(0.3));
 			lowPass = LPF.ar(highPass, lowPassCutoff);
-			sus = ((BufSamples.ir(buffer) * endPos) - (BufSamples.ir(buffer) * startPos)) / SampleRate.ir;
+			sus = (((BufSamples.ir(buffer)/2) * endPos) - ((BufSamples.ir(buffer)/2) * startPos)) / SampleRate.ir;
 			sus = sus - (attackTime + releaseTime);
 			sus = sus/rate;
 			env = EnvGen.kr(Env.linen(attackTime, sus, releaseTime, 1, -4), gate, doneAction: 2);
@@ -246,6 +246,7 @@ SampleGrid_Voice : IM_Module {
 		{
 			buffer.free;
 			server.sync;
+			//buffer = Buffer.read(server, path);
 			buffer = Buffer.read(server, path, 0, -1, { | buf |
 				if( buf.numChannels == 1, { monoOrStereo = 'mono' }, { monoOrStereo = 'stereo' });
 				//this.prSetInitialParameters;
@@ -293,17 +294,17 @@ SampleGrid_Voice : IM_Module {
 	setStartPos { | pos  = 0 | startPos = pos; if( isPlaying == true, { synth.set(\startPos, pos); }); }
 	setEndPos { | pos = 1 | endPos = pos; if( isPlaying == true, { synth.set(\endPos, pos); }); }
 
-	playSample {
-		if( playMode == 'sustaining', { this.playSampleSustaining; });
-		if( playMode == 'oneShot', { this.playSampleOneShot; });
-		if( playMode == 'granular', { this.playSampleGranular; });
+	playSample { | vol = -3 |
+		if( playMode == 'sustaining', { this.playSampleSustaining(vol); });
+		if( playMode == 'oneShot', { this.playSampleOneShot(vol); });
+		if( playMode == 'granular', { this.playSampleGranular(vol); });
 	}
 
 	releaseSample { synth.set(\gate, 0); isPlaying = false; }
 	freeSample { synth.free; isPlaying = false; }
 
 	setPlayMode { | mode = 'sustaining' | playMode = mode; }
-	setSampleVol { | vol = -6 | sampleVol = vol; if(isPlaying==true, { synth.set(\amp, sampleVol.dbamp) }) }
+	setSampleVol { | vol = -6 | sampleVol = vol; mixer.setVol(vol); }
 	setSamplePan { | pan = 0 | samplePan = pan; if(isPlaying == true, { synth.set(\pan, samplePan) }) }
 
 	setAttackTime { | time = 0.01 | attackTime = time; if( isPlaying == true, { synth.set(\attackTime, attackTime); });}
@@ -329,11 +330,11 @@ SampleGrid_Voice : IM_Module {
 	setTrigRate { | rate | trigRate = rate; if(isPlaying == true, { synth.set(\trigRate, rate) }) }
 
 
-	playSampleSustaining {
+	playSampleSustaining { | vol = -3 |
 		if(monoOrStereo == 'stereo', {
 			synth = Synth(\prm_SampleGrid_Voice_Sustaining_Stereo,
 				[
-					\outBus, mixer.chanStereo, \amp, sampleVol.dbamp, \buffer, buffer, \rate, rate,
+					\outBus, mixer.chanStereo, \amp, vol.dbamp, \buffer, buffer, \rate, rate,
 					\startPos, startPos, \endPos, endPos, \attackTime, attackTime, \decayTime, decayTime,
 					\sustainLevel, sustainLevel, \releaseTime, releaseTime,
 					\highPassCutoff, highPassCutoff, \lowPassCutoff, lowPassCutoff, \pan, samplePan
@@ -344,7 +345,7 @@ SampleGrid_Voice : IM_Module {
 		{
 			synth = Synth(\prm_SampleGrid_Voice_Sustaining_Mono,
 				[
-					\outBus, mixer.chanStereo, \amp, sampleVol.dbamp, \buffer, buffer, \rate, rate,
+					\outBus, mixer.chanStereo, \amp, vol.dbamp, \buffer, buffer, \rate, rate,
 					\startPos, startPos, \endPos, endPos, \attackTime, attackTime, \decayTime, decayTime,
 					\sustainLevel, sustainLevel, \releaseTime, releaseTime,
 					\highPassCutoff, highPassCutoff, \lowPassCutoff, lowPassCutoff, \pan, samplePan
@@ -355,11 +356,11 @@ SampleGrid_Voice : IM_Module {
 	}
 
 
-	playSampleOneShot {
+	playSampleOneShot { | vol = -3 |
 		if(monoOrStereo == 'stereo', {
 			synth = Synth(\prm_SampleGrid_Voice_OneShot_Stereo,
 				[
-					\outBus, mixer.chanStereo, \amp, sampleVol.dbamp, \buffer, buffer,
+					\outBus, mixer.chanStereo, \amp, vol.dbamp, \buffer, buffer,
 					\rate, rate, \startPos, startPos, \endPos, endPos,
 					\attackTime, attackTime, \decayTime, decayTime,
 					\releaseTime, releaseTime, \highPassCutoff, highPassCutoff, \lowPassCutoff, lowPassCutoff,
@@ -368,7 +369,7 @@ SampleGrid_Voice : IM_Module {
 		}, {
 			synth = Synth(\prm_SampleGrid_Voice_OneShot_Mono,
 				[
-					\outBus, mixer.chanStereo, \amp, sampleVol.dbamp, \buffer, buffer,
+					\outBus, mixer.chanStereo, \amp, vol.dbamp, \buffer, buffer,
 					\rate, rate, \startPos, startPos, \endPos, endPos,
 					\attackTime, attackTime, \decayTime, decayTime,
 					\releaseTime, releaseTime, \highPassCutoff, highPassCutoff, \lowPassCutoff, lowPassCutoff,
@@ -377,7 +378,7 @@ SampleGrid_Voice : IM_Module {
 		});
 	}
 
-	playSampleGranular {
+	playSampleGranular { | vol = -3 |
 		if(monoOrStereo == 'stereo', {
 			synth = Synth(\prm_SampleGrid_Voice_Granulator_Stereo,
 				[
@@ -385,7 +386,7 @@ SampleGrid_Voice : IM_Module {
 					\panHigh, panHigh, \grainDurLow, grainDurLow, \grainDurHigh, grainDurHigh,
 					\rateLow, rate, \rateHigh, rate, \startPos, startPos, \endPos, endPos,
 					\attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel,
-					\releaseTime, releaseTime, \amp, sampleVol.dbamp, \highPassCutoff, highPassCutoff,
+					\releaseTime, releaseTime, \amp, vol.dbamp, \highPassCutoff, highPassCutoff,
 					\lowPassCutoff, lowPassCutoff, \pan, samplePan
 			], group, \addToHead);
 			isPlaying = true;
@@ -396,7 +397,7 @@ SampleGrid_Voice : IM_Module {
 					\panHigh, panHigh, \grainDurLow, grainDurLow, \grainDurHigh, grainDurHigh,
 					\rateLow, rate, \rateHigh, rate, \startPos, startPos, \endPos, endPos,
 					\attackTime, attackTime, \decayTime, decayTime, \sustainLevel, sustainLevel,
-					\releaseTime, releaseTime, \amp, sampleVol.dbamp, \highPassCutoff, highPassCutoff,
+					\releaseTime, releaseTime, \amp, vol.dbamp, \highPassCutoff, highPassCutoff,
 					\lowPassCutoff, lowPassCutoff, \pan, samplePan
 			], group, \addToHead);
 			isPlaying = true;

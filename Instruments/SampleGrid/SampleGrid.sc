@@ -6,7 +6,7 @@ SampleGrid : IM_Processor {
 
 	var <masterPresetDict;
 
-	var <presetPath, presetDict;
+	var <presetPath, presetDict, clipboard;
 
 	var <recordPath, <recordBufferStereo, <recordBufferMono, <bufferLength, recSynth;
 
@@ -43,7 +43,7 @@ SampleGrid : IM_Processor {
 			recordBufferMono = Buffer.alloc(server, 2097152, 1);
 
 
-			this.prBuildPresetDict;
+			this.prPopulatePresetDictionaries;
 
 			isLoaded = true;
 		}
@@ -52,13 +52,13 @@ SampleGrid : IM_Processor {
 	prAddSynthDef {
 		SynthDef(\prm_SampleGrid_Record_Stereo, { | inBus, buffer |
 			var input, record;
-			input = In.ar(inBus, 2);
+			input = InFeedback.ar(inBus, 2);
 			DiskOut.ar(buffer, input);
 		}).add;
 
 		SynthDef(\prm_SampleGrid_Record_Mono, { | inBus, buffer |
 			var input, record;
-			input = In.ar(inBus, 1);
+			input = InFeedback.ar(inBus, 1);
 			DiskOut.ar(buffer, input);
 		}).add;
 	}
@@ -118,21 +118,55 @@ SampleGrid : IM_Processor {
 		});
 	}
 
+	prSetSlotParameters { | slot |
+		var dict = parameterArray.at(slot);
+		this.loadSampleByPath(slot, dict[\SamplePath]);
+		this.setPos(slot, dict[\StartPos], dict[\EndPos]);
+		this.setPlayMode(slot, dict[\PlayMode]);
+		this.setSampleVol(slot, dict[\SampleVol]);
+		this.setSamplePan(slot, dict[\SamplePan]);
+		this.setAttackTime(slot, dict[\AttackTime]);
+		this.setDecayTime(slot, dict[\DecayTime]);
+		this.setSustainLevel(slot, dict[\SustainLevel]);
+		this.setReleaseTime(slot, dict[\ReleaseTime]);
+		this.setLowPassCutoff(slot, dict[\LowPassCutoff]);
+		this.setHighPassCutoff(slot, dict[\HighPassCutoff]);
+		this.setRate(slot, dict[\Rate]);
+		this.setGrainPan(slot, dict[\GrainPanLow], dict[\GrainPanHigh]);
+		this.setGrainDur(slot, dict[\GrainDurLow], dict[\GrainDurHigh]);
+		this.setTrigRate(slot, dict[\TrigRate]);
+	}
+
 	//////// public functions:
 
 	free {
+		samplerArray.do({ | samp | samp.free; });
+		this.freeProcessor;
+	}
 
+	copySlot { | slot |
+		this.prMakePresetDictionary(parameterArray[slot], samplerArray[slot]);
+		clipboard = parameterArray[slot];
+	}
+
+	pasteSlot { | slot |
+		if( clipboard.notNil, {
+			parameterArray[slot] = clipboard;
+			this.prSetSlotParameters(slot);
+		});
 	}
 
 	//////// recording:
 
 	recordSampleStereo {
-		recFileName = recordPath++"sampleRec"++1000000.rand++".aiff";
-		recordBufferStereo.write(recFileName, "aiff", "int16", 0, 0, true);
-		//server.sync;
-		recSynth = Synth(\prm_SampleGrid_Record_Stereo, [\inBus, inBus, \buffer, recordBufferStereo], group, \addToHead);
-		isRecording = true;
-		recFileName.postln;
+		if( isRecording == false, {
+			recFileName = recordPath++"sampleRec"++1000000.rand++".aiff";
+			recordBufferStereo.write(recFileName, "aiff", "int16", 0, 0, true);
+			//server.sync;
+			recSynth = Synth(\prm_SampleGrid_Record_Stereo, [\inBus, inBus, \buffer, recordBufferStereo], group, \addToHead);
+			isRecording = true;
+			recFileName.postln;
+		}, { "already recording".postln; });
 	}
 
 	stopRecordingStereo {
@@ -153,10 +187,12 @@ SampleGrid : IM_Processor {
 	}
 
 	recordSampleMono {
-		recFileName = recordPath++"sampleRec"++1000000.rand++".aiff";
-		recordBufferMono.write(recFileName, "aiff", "int16", 0, 0, true);
-		recSynth = Synth(\prm_SampleGrid_Record_Mono, [\inBus, inBus, \buffer, recordBufferMono], group, \addToHead);
-		isRecording = true;
+		if( isRecording == false, {
+			recFileName = recordPath++"sampleRec"++1000000.rand++".aiff";
+			recordBufferMono.write(recFileName, "aiff", "int16", 0, 0, true);
+			recSynth = Synth(\prm_SampleGrid_Record_Mono, [\inBus, inBus, \buffer, recordBufferMono], group, \addToHead);
+			isRecording = true;
+		}, { "already recording".postln; });
 	}
 
 	stopRecordingMono {
@@ -171,7 +207,7 @@ SampleGrid : IM_Processor {
 	}
 
 	loadRecordedToSlot { | slot |
-		this.loadSampleByPath(0, recFileName);
+		this.loadSampleByPath(slot, recFileName);
 	}
 
 	setRecordPath { | path | recordPath = path; }
@@ -179,18 +215,20 @@ SampleGrid : IM_Processor {
 	getSampleName { | slot | ^parameterArray[slot][\SampleName]; }
 	setSampleName { | slot, name | parameterArray[slot][\SampleName] = name; }
 	setSampleNameGUI { | slot |
-		var window, colorPicker, text, colorText, textField, goButton;
-		window = Window.new("sampler name at slot"+slot, Rect((100.rand+400),(100.rand+400),225,50));
-		text = StaticText.new(window).string_("sample name:");
-		textField = TextField.new(window);
-		goButton = Button.new(window).action_({
-			[textField.string].postln;
-			this.setSampleName(slot, textField.string);
-			window.close;
-		});
-		goButton.string = "Add Name";
-		window.layout = VLayout(VLayout(text, textField, goButton));
-		window.front;
+		{
+			var window, colorPicker, text, colorText, textField, goButton;
+			window = Window.new("sampler name at slot"+slot, Rect((100.rand+400),(100.rand+400),225,50));
+			text = StaticText.new(window).string_("sample name:");
+			textField = TextField.new(window);
+			goButton = Button.new(window).action_({
+				[textField.string].postln;
+				this.setSampleName(slot, textField.string);
+				window.close;
+			});
+			goButton.string = "Add Name";
+			window.layout = VLayout(VLayout(text, textField, goButton));
+			window.front;
+		}.fork(AppClock);
 	}
 
 	/////////// convenience functions:
@@ -230,6 +268,30 @@ SampleGrid : IM_Processor {
 
 	setTrigRate { | slot, rate = 3 | samplerArray[slot].setTrigRate(rate); }
 
+	////////// convenience getters:
+
+	samplePath { | slot | ^samplerArray[slot].samplePath; }
+	sampleVol { | slot | ^samplerArray[slot].sampleVol; }
+	playMode { | slot | ^samplerArray[slot].playMode; }
+	lowPassCutoff { | slot | ^samplerArray[slot].lowPassCutoff }
+	highPassCutoff { | slot | ^samplerArray[slot].highPassCutoff }
+	startPos { | slot | ^samplerArray[slot].startPos }
+	endPos { | slot | ^samplerArray[slot].endPos }
+	samplePan { | slot | ^samplerArray[slot].samplePan }
+	attackTime { | slot | ^samplerArray[slot].attackTime }
+	decayTime { | slot | ^samplerArray[slot].decayTime }
+	sustainLevel { | slot | ^samplerArray[slot].sustainLevel }
+	releaseTime { | slot | ^samplerArray[slot].releaseTime }
+	rate { | slot | ^samplerArray[slot].rate; }
+	panLow { | slot | ^samplerArray[slot].panLow; }
+	panHigh { | slot | ^samplerArray[slot].panHigh }
+	grainDurLow { | slot | ^samplerArray[slot].grainDurLow }
+	grainDurHigh { | slot | ^samplerArray[slot].grainDurHigh }
+	trigRate { | slot | ^samplerArray[slot].trigRate }
+	buffer { | slot | ^samplerArray[slot].buffer }
+	isPlaying { | slot | ^samplerArray[slot].isPlaying }
+	monoOrStereo { | slot | ^samplerArray[slot].monoOrStereo }
+
 	//////// presets:
 
 	printPresetFilePath { this.presetPath.postln; }
@@ -251,7 +313,12 @@ SampleGrid : IM_Processor {
 					});
 				});
 				file.write("\n"++name++";");
-				array.do({ | array | file.write(array.asString++";"); });
+				//array.do({ | subArray | subArray.do({ | i |  file.write(array.asString++";"); });
+				array.do({ | subArray |
+					file.write("[");
+					subArray.do({ | item | file.write(item.asString++","); });
+					file.write("];");
+				});
 				file.close;
 				this.prBuildPresetDict;
 		});

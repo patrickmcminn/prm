@@ -94,7 +94,6 @@ r {
 
 	//// MIDI Devices:
 
-
 	// M32:
 	~moogDevice = "Pyramid MIDI USB";
 	~moogPort = "Pyramid MIDI USB";

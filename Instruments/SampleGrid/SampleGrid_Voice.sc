@@ -38,7 +38,8 @@ SampleGrid_Voice : IM_Module {
 
 			granGroup = Group.new(group, \addBefore);
 			granBus = Bus.audio(server, 2);
-			buffer = Buffer.alloc(server, server.sampleRate);
+			buffer = Buffer.alloc(server, server.sampleRate, 1);
+			monoOrStereo = 'mono';
 
 			server.sync;
 
@@ -47,7 +48,7 @@ SampleGrid_Voice : IM_Module {
 	}
 
 	prSetInitialParameters {
-		sampleVol = -6;
+		sampleVol = -6; samplePan = 0;
 		playMode = 'oneShot';
 		lowPassCutoff = 20000; highPassCutoff = 20;
 		startPos = 0; endPos = 1;
@@ -55,6 +56,7 @@ SampleGrid_Voice : IM_Module {
 		rate = 1; isPlaying = false;
 		grainDurLow = 1; grainDurHigh = 2; trigRate = 3;
 		panLow = -0.5; panHigh = 0.5;
+		samplePath = nil;
 	}
 
 	prAddSynthDefs {
@@ -219,6 +221,7 @@ SampleGrid_Voice : IM_Module {
 	//////// public functions:
 	free {
 		if( isPlaying == true, { synth.free; });
+		granGroup.free; granBus.free;
 		this.freeModule;
 	}
 
@@ -230,23 +233,28 @@ SampleGrid_Voice : IM_Module {
 			buffer = Buffer.loadDialog(server, 0, -1, { | buf |
 				if(buf.numChannels == 1, { monoOrStereo = 'mono' }, { monoOrStereo = 'stereo' });
 				this.prSetInitialParameters;
+				samplePath = buffer.path;
 			});
-			samplePath = buffer.path;
 		}.fork(AppClock);
 	}
 
 	loadSampleByPath { | path |
 		if(isPlaying == true, { this.freeSample; });
-		{
+		if( path.notNil, {
+			{
+				buffer.free;
+				server.sync;
+				//buffer = Buffer.read(server, path);
+				buffer = Buffer.read(server, path, 0, -1, { | buf |
+					if( buf.numChannels == 1, { monoOrStereo = 'mono' }, { monoOrStereo = 'stereo' });
+					//this.prSetInitialParameters;
+					samplePath = buffer.path;
+				});
+			}.fork;
+		}, {
 			buffer.free;
-			server.sync;
-			//buffer = Buffer.read(server, path);
-			buffer = Buffer.read(server, path, 0, -1, { | buf |
-				if( buf.numChannels == 1, { monoOrStereo = 'mono' }, { monoOrStereo = 'stereo' });
-				//this.prSetInitialParameters;
-				samplePath = buffer.path;
-			});
-		}.fork;
+			buffer = Buffer.alloc(server, server.sampleRate, 1);
+		});
 	}
 
 	setSamplePath { | path |
@@ -255,27 +263,29 @@ SampleGrid_Voice : IM_Module {
 	}
 
 	setPosGUI { | windowName = "sample" |
-		{
-			var window = Window.new(windowName, Rect(200, 300, 1040, 200));
-			var view = SoundFileView.new(window, Rect(20, 20, 1000, 120));
+		if(buffer.path.notNil, {
+			{
+				var window = Window.new(windowName, Rect(200, 300, 1040, 200));
+				var view = SoundFileView.new(window, Rect(20, 20, 1000, 120));
 
-			view.soundfile = buffer;
-			view.read(0, buffer.numFrames);
-			view.refresh;
-			view.gridResolution(0.1);
-			view.gridColor = Color.magenta;
-			view.timeCursorColor = Color.white;
-			view.setSelectionColor(0, Color.white);
-			view.mouseUpAction = {
-				var start = view.selections[0][0];
-				var length = view.selections[0][1];
-				var startPos = start/buffer.numFrames;
-				var endPos = (start + length)/buffer.numFrames;
-				this.setPos(startPos, endPos);
-				[startPos, endPos].postln;
-			};
-			window.front;
-		}.fork(AppClock);
+				view.soundfile = buffer;
+				view.read(0, buffer.numFrames);
+				view.refresh;
+				view.gridResolution(0.1);
+				view.gridColor = Color.magenta;
+				view.timeCursorColor = Color.white;
+				view.setSelectionColor(0, Color.white);
+				view.mouseUpAction = {
+					var start = view.selections[0][0];
+					var length = view.selections[0][1];
+					var startPos = start/buffer.numFrames;
+					var endPos = (start + length)/buffer.numFrames;
+					this.setPos(startPos, endPos);
+					[startPos, endPos].postln;
+				};
+				window.front;
+			}.fork(AppClock);
+		});
 	}
 
 	setPos { | startPos = 0, endPos = 1 |
@@ -291,9 +301,11 @@ SampleGrid_Voice : IM_Module {
 		if( playMode == 'granular', { this.playSampleGranular(vol); });
 	}
 
-	releaseSample { if(playMode == 'granular',
-		{ this.releaseSampleGranular; },
-		{ synth.set(\gate, 0); isPlaying = false;});
+	releaseSample {
+		if(playMode == 'granular',
+			{ this.releaseSampleGranular; },
+			{ if( playMode == 'sustaining', { synth.set(\gate, 0); isPlaying = false; });
+		});
 	}
 
 	freeSample { synth.free; isPlaying = false; }

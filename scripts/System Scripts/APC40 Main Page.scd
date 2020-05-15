@@ -26,6 +26,10 @@ var tuningNoteIsPlaying = false;
 
 ~apc.addMixerEncodersBanks(3, page);
 
+//////// Sampler Page:
+~apc.turnSceneLaunchButtonPurple(2, 2, page: page);
+~apc.setSceneLaunchFunc(2, { ~apc.setPage('sampler') }, page: page);
+
 //////// Effects Page:
 ~apc.turnSceneLaunchButtonPurple(4, 2, page: page);
 ~apc.setSceneLaunchFunc(4, { ~apc.setPage('effects'); }, page: page);
@@ -232,57 +236,6 @@ var tuningNoteIsPlaying = false;
 
 });
 
-//// beauty buttons:
-
-// delay:
-~apc.turnGridWhite(4, 1, page: page);
-~apc.setGridFunc(4, 1, {
-  ~prm.beauty.setDelayTimes(rrand(0.001, 0.1), rrand(0.001, 0.1),
-    rrand(0.001, 0.1), rrand(0.001, 0.1));
-  ~apc.turnGridColor(4, 1, 128.rand+1);
-}, page: page);
-
-// pans:
-~apc.turnGridCyan(5, 1, page: page);
-~apc.setGridFunc(5, 1, {
-  ~prm.beauty.setPans(rrand(-1.0, 1.0), rrand(-1.0, 1.0), rrand(-1.0, 1.0), rrand(-1.0, 1.0));
-  ~apc.turnGridColor(5, 1, 128.rand+1);
-}, page: page);
-
-// averages:
-~apc.turnGridPink(6, 1, page: page);
-~apc.setGridFunc(6, 1, {
-  ~prm.beauty.setAverages(10000.rand, 15000.rand);
-  ~apc.turnGridColor(6, 1, 128.rand+1);
-}, page: page);
-
-// smooths:
-~apc.turnGridPurple(7, 1, page: page);
-~apc.setGridFunc(7, 1, {
-  ~prm.beauty.setSmooths(500.rand, 500.rand);
-  ~apc.turnGridColor(7, 1, 128.rand+1);
-}, page: page);
-
-// low pass cutoffs:
-~apc.turnGridBlue(5, 0, page: page);
-~apc.setGridFunc(5, 0, {
-  ~prm.beauty.setLowPassCutoffs(4000.rand + 200, 4000.rand + 300);
-  ~apc.turnGridColor(5, 0, 128.rand+1);
-}, page: page);
-
-// high pass cutoffs:
-~apc.turnGridMagenta(6, 0, page: page);
-~apc.setGridFunc(6, 0, {
-  ~prm.beauty.setHighPassCutoffs(350.rand, 350.rand);
-  ~apc.turnGridColor(6, 0, 128.rand+1);
-}, page: page);
-
-// resonances:
-~apc.turnGridYellowGreen(7, 0, page: page);
-~apc.setGridFunc(7, 0, {
-  ~prm.beauty.setResonances(0.5.rand, 0.5.rand);
-  ~apc.turnGridColor(7, 0, 128.rand+1);
-}, page: page);
 
 //////// tuning note:
 ~apc.setBankButtonFunc({

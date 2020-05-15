@@ -13,7 +13,9 @@ AudioSystem {
 	var <isLoaded;
 	var <procGroup, systemGroup;
 	var hardwareOut, <systemMixer, <cmix;
-	var <irLibrary;
+	var <irLibrary, <splitter;
+
+	var <sampler;
 
 	var <reverb, <granulator, <modularSend, <delay;
 	var <splitter;
@@ -77,7 +79,10 @@ AudioSystem {
 			server.sync;
 			while ( { try { systemMixer.isLoaded} != true }, { 0.001.wait } );
 
-			masterEQ = Equalizer.newStereo(systemMixer.inBus(0), systemGroup, \addToHead);
+			splitter = Splitter.newStereo(2, [systemMixer.inBus(0), nil], false, systemGroup, \addToHead);
+			while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
+
+			masterEQ = Equalizer.newStereo(splitter.inBus, systemGroup, \addToHead);
 			while({ try { masterEQ.isLoaded } != true }, { 0.001.wait; });
 
 			irLibrary = IM_IRLibrary.new("~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses");
@@ -156,10 +161,15 @@ AudioSystem {
 			moogInput = IM_HardwareIn.new(moogInBus, moog.chanMono(0), procGroup, \addToHead);
 			while({ try { moogInput.isLoaded } != true }, { 0.001.wait; });
 
+
+			sampler = SampleGrid.new(cmix.chanStereo(6), relGroup: procGroup, addAction: \addToHead);
+			while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
+			/*
 			beauty = Beauty.newMono(cmix.chanStereo(6), relGroup: procGroup, addAction: \addToHead);
 			while({ try { beauty.isLoaded } != true }, { 0.001.wait; });
 			beautyIn = IM_HardwareIn.new(pickupInBus, beauty.inBus, procGroup, \addToHead);
 			while({ try { beautyIn.isLoaded } != true }, { 0.001.wait; });
+			*/
 
 			modular2 = IM_HardwareIn.new(plaitsInBus, cmix.chanMono(4), procGroup, \addToHead);
 			while({ try { modular2.isLoaded } != true }, { 0.001.wait; });
@@ -181,6 +191,8 @@ AudioSystem {
 			cmix.setSendVol(6, 0, -12);
 
 			cmix.setSendVol(7, 0, -6);
+
+			splitter.setOutBus(1, sampler.inBus);
 
 
 			songBook = IdentityDictionary.new;

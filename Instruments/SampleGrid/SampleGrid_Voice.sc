@@ -257,6 +257,20 @@ SampleGrid_Voice : IM_Module {
 		});
 	}
 
+	loadSampleByBuffer { | buf |
+		buf.path;
+		if(isPlaying == true, { this.freeSample; });
+		{
+			buffer.free;
+			server.sync;
+			buffer = buf;
+			server.sync;
+			if( buf.numChannels == 1, { monoOrStereo = 'mono' }, { monoOrStereo = 'stereo' });
+			samplePath = buffer.path;
+			samplePath.postln;
+		}.fork;
+	}
+
 	setSamplePath { | path |
 		samplePath = path;
 		this.loadSampleByPath(samplePath);

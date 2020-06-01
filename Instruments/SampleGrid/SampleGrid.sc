@@ -8,7 +8,7 @@ SampleGrid : IM_Processor {
 
 	var <presetPath, presetDict, clipboard;
 
-	var <recordPath, <recordBufferStereo, <recordBufferMono, <bufferLength, recSynth;
+	var <recordPath, <trimPath, <recordBufferStereo, <recordBufferMono, <bufferLength, recSynth;
 
 	var recFileName;
 
@@ -41,10 +41,11 @@ SampleGrid : IM_Processor {
 			masterPresetDict = IdentityDictionary.new;
 			presetPath = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/SampleGrid/Sample Grid Presets.scd".standardizePath;
 			recordPath = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/SampleGrid/Recorded Samples/".standardizePath;
+			trimPath = "~/Library/Application Support/SuperCollider/Extensions/prm/Instruments/SampleGrid/Trimmed Samples/".standardizePath;
+
 
 			recordBufferStereo = Buffer.alloc(server, 2097152, 2);
 			recordBufferMono = Buffer.alloc(server, 2097152, 1);
-
 
 			this.prPopulatePresetDictionaries;
 
@@ -195,7 +196,10 @@ SampleGrid : IM_Processor {
 
 	recordSampleMono {
 		if( isRecording == false, {
-			recFileName = recordPath++"sampleRec"++1000000.rand++".aiff";
+			var date, stamp;
+			date = Date.getDate;
+			stamp = date.stamp;
+			recFileName = recordPath++"sampleRec"++stamp++".aiff";
 			recordBufferMono.write(recFileName, "aiff", "int16", 0, 0, true);
 			recSynth = Synth(\prm_SampleGrid_Record_Mono, [\inBus, inBus, \buffer, recordBufferMono], group, \addToHead);
 			isRecording = true;
@@ -218,6 +222,27 @@ SampleGrid : IM_Processor {
 	}
 
 	setRecordPath { | path | recordPath = path; }
+
+	trimSample { | slot |
+		var sampler, startFrame, numFrames;
+		var date, stamp, path, name;
+		sampler = samplerArray[slot];
+		startFrame = (sampler.buffer.numFrames /* * sampler.buffer.numChannels*/) * sampler.startPos;
+		numFrames = ((sampler.buffer.numFrames /* * sampler.buffer.numChannels*/) * sampler.endPos) - startFrame;
+		startFrame.postln; numFrames.postln;
+		date = Date.getDate;
+		stamp = date.stamp;
+		name = this.getSampleName(slot);
+		path = trimPath++name++stamp++"TRIMMED"++".aiff";
+		sampler.buffer.write(path, "aiff", "int24", numFrames, startFrame, false, {
+			server.sync;
+			sampler.loadSampleByPath(path);
+			server.sync;
+			sampler.setPos(0, 1);
+		}.fork);
+	}
+
+	setTrimPath { | path | trimPath = path; }
 
 	getSampleName { | slot | ^parameterArray[slot][\SampleName]; }
 	setSampleName { | slot, name | parameterArray[slot][\SampleName] = name; }

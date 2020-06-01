@@ -123,7 +123,6 @@ r {
 	"/Effects/Load Effects.scd".loadRelative;
 	"/Instruments/Load Instruments.scd".loadRelative;
 
-
 }.play;
 
 s.makeWindow;

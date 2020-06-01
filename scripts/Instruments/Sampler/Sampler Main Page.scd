@@ -73,6 +73,16 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 ~apc.setDeviceButtonFunc(7, { activeBank = loadPreset; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 ~apc.setDeviceButtonFunc(8, {activeBank = writePreset;  ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 
+///////// MIDI:
+
+~apc.setSceneLaunchMonitorFunc(4, {
+	if( ~prm.sampler.midiLoaded == true,
+		{ ~apc.turnSceneLaunchButtonGreen(4); },
+		{ ~apc.turnSceneLaunchButtonPurple(4); })
+}, main, page);
+~apc.setSceneLaunchFunc(4, {
+	if( ~prm.sampler.midiLoaded == true, { ~prm.sampler.freeMIDIFuncs }, { ~prm.sampler.makeMIDIFuncs(~pyr, 13); });
+}, 'noteOn', main, page);
 
 /////////////////////////
 ///// COPY + PASTE: ////
@@ -211,6 +221,9 @@ editResetFunc.value;
 
 loadResetFunc = 4.do({ | column | 4.do({ | row | ~apc.turnGridLightBlue(column+4, 4-row, bank: load, page: page); }); });
 
+~apc.turnPanButtonOn(main, page);
+~apc.setPanButtonFunc({ ~prm.sampler.loadSampleGridGUI; }, 'noteOn', main, page);
+
 ~apc.setGridMonitorFunc(\load, {
 	16.do({ | slot |
 		if( ~prm.sampler.samplePath(slot) == nil,
@@ -274,24 +287,19 @@ nameResetFunc.value;
 	}, 'noteOff', name, page);
 });
 
-//////////////////////////
-/////// Copy Mode: //////
-////////////////////////
-
-
 
 ////// grid parameter edits:
 
 
 //////// Pos GUI:
-~apc.turnSceneLaunchButtonWhite(4, bank: main, page: page);
-~apc.setSceneLaunchFunc(4, {
+~apc.turnSceneLaunchButtonWhite(3, bank: main, page: page);
+~apc.setSceneLaunchFunc(3, {
 	if(activeSlot.isInteger, { ~prm.sampler.setPosGUI(activeSlot); });
 	activeSlot.postln;
-	~apc.turnSceneLaunchButtonGreen(4);
+	~apc.turnSceneLaunchButtonGreen(3);
 }, 'noteOn', main, page);
-~apc.setSceneLaunchFunc(4, {
-	~apc.turnSceneLaunchButtonWhite(4);
+~apc.setSceneLaunchFunc(3, {
+	~apc.turnSceneLaunchButtonWhite(3);
 }, 'noteOff', main, page);
 
 ///////// play mode:
@@ -484,8 +492,9 @@ nameResetFunc.value;
 
 // pre amp:
 
-////////////// presets:
-
+/////////////////////////
+/////// presets: ///////
+///////////////////////
 
 path = "~/Library/Application Support/SuperCollider/Extensions/prm/scripts/Instruments/Sampler/Sampler Preset Loader.scd".standardizePath;
 

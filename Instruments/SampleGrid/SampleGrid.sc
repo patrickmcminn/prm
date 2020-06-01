@@ -12,6 +12,8 @@ SampleGrid : IM_Processor {
 
 	var recFileName;
 
+	var <noteOnArray, <noteOffArray, <ccArray, <midiLoaded;
+
 	*new { | outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
 		^super.new(2, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
 	}
@@ -29,6 +31,7 @@ SampleGrid : IM_Processor {
 			isRecording = false;
 			numSlots = 16;
 			bufferLength = 2097152;
+			midiLoaded = false;
 
 			samplerArray = Array.fill(numSlots, { SampleGrid_Voice.new(mixer.chanStereo, group, \addToHead); });
 			while({ try { samplerArray[15].isLoaded } != true}, { 0.001.wait; });
@@ -141,6 +144,7 @@ SampleGrid : IM_Processor {
 
 	free {
 		samplerArray.do({ | samp | samp.free; });
+		this.freeMIDIFuncs;
 		this.freeProcessor;
 	}
 
@@ -160,7 +164,10 @@ SampleGrid : IM_Processor {
 
 	recordSampleStereo {
 		if( isRecording == false, {
-			recFileName = recordPath++"sampleRec"++1000000.rand++".aiff";
+			var date, stamp;
+			date = Date.getDate;
+			stamp = date.stamp;
+			recFileName = recordPath++"sampleRec"++stamp++".aiff";
 			recordBufferStereo.write(recFileName, "aiff", "int16", 0, 0, true);
 			//server.sync;
 			recSynth = Synth(\prm_SampleGrid_Record_Stereo, [\inBus, inBus, \buffer, recordBufferStereo], group, \addToHead);
@@ -235,6 +242,24 @@ SampleGrid : IM_Processor {
 
 	loadSample { | slot | samplerArray[slot].loadSample; }
 	loadSampleByPath { | slot, path | samplerArray[slot].loadSampleByPath(path); }
+	loadSampleGridGUI {
+		{
+			var window = Window.new('Sample Grid', Rect(200, 300, 450, 450));
+			var gridArray = Array.fill(16, { | i |
+				DragSink(window).minHeight_(100).minWidth_(100).background_(Color.magenta).object_(this.samplePath(i));
+			});
+			gridArray.do ({ | sink, i | sink.receiveDragHandler_({
+				sink.object = View.currentDrag.value;
+				this.loadSampleByPath(i, sink.object); });
+			});
+			window.layout = GridLayout.rows(
+				[gridArray[0], gridArray[1], gridArray[2], gridArray[3]],
+				[gridArray[4], gridArray[5], gridArray[6], gridArray[7]],
+				[gridArray[8], gridArray[9], gridArray[10], gridArray[11]],
+				[gridArray[12], gridArray[13], gridArray[14], gridArray[15]]);
+			window.front;
+		}.fork(AppClock);
+	}
 	setPosGUI { | slot | samplerArray[slot].setPosGUI(parameterArray[slot][\name]); }
 
 	playSample { | slot, vol = -3 | samplerArray[slot].playSample(vol); }
@@ -328,7 +353,72 @@ SampleGrid : IM_Processor {
 		var pArray;
 		this.prBuildPresetDict;
 		this.prSetAllParameters(masterPresetDict[name]);
+	}
 
+	//////////////////////////
+	//// MIDI Functions: ////
+	////////////////////////
+
+	makeMIDIFuncs { | device, channel = 13 |
+		var seq = device.uid;
+		noteOnArray = Array.fill(16, {  | i |
+			MIDIFunc.noteOn({ | vel |
+				this.playSample(i, vel.ccdbfs(-36, 3)) }, i+60, channel, seq);
+		});
+		noteOffArray = Array.fill(16, { | i |
+			MIDIFunc.noteOff({ | vel | this.releaseSample(i); }, i+60, channel, seq);
+		});
+		ccArray = Array.newClear(112);
+		16.do({ | i | this.makeSlotCC(i, i*7, channel, seq); });
+		midiLoaded = true;
+	}
+
+	freeMIDIFuncs {
+		noteOnArray.do({ | i | i.free; });
+		noteOffArray.do({ | i | i.free; });
+		ccArray.do({ | i | i.free; });
+		midiLoaded = false;
+	}
+
+
+	makeSlotCC { | slot = 0, ccOffset = 0, channel, seq |
+		var off = ccOffset;
+		ccArray[off] = MIDIFunc.cc({ | val |
+			this.setSampleVol(slot, val.ccdbfs(-36, 18));
+		}, off, channel, seq);
+		ccArray[off+1] = MIDIFunc.cc({ | val |
+			var pan = val.linlin(0, 127, -1, 1);
+			this.setSamplePan(slot, pan);
+		}, off+1, channel, seq);
+		ccArray[off+2] = MIDIFunc.cc({ | val |
+			var cutoff = val.linexp(0, 127, 100, 20000);
+			this.setLowPassCutoff(slot, cutoff);
+		}, off+2, channel, seq);
+		ccArray[off+3] = MIDIFunc.cc({ | val |
+			var cutoff = val.linexp(0, 127, 10, 6000);
+			this.setHighPassCutoff(slot, cutoff);
+		}, off+3, channel, seq);
+		ccArray[off+4] = MIDIFunc.cc({ | val |
+			var pos = val.linlin(0, 127, 0, 1);
+			this.setStartPos(slot, pos);
+		}, off+4, channel, seq);
+		ccArray[off+5] = MIDIFunc.cc({ | val |
+			var pos = val.linlin(0, 127, 0, 1);
+			this.setEndPos(slot, pos);
+		}, off+5, channel, seq);
+		ccArray[off+6] = MIDIFunc.cc({ | val |
+			var rate = val.linlin(0, 127, 0.0125, 4);
+			if( val<7, {
+				switch(val,
+					0, { this.setRate(slot, 0.0125); },
+					1, { this.setRate(slot, 0.125); },
+					2, { this.setRate(slot, 0.25); },
+					3, { this.setRate(slot, 0.5); },
+					4, { this.setRate(slot, 1); },
+					5, { this.setRate(slot, 2); },
+					6, { this.setRate(slot, 4); });
+			}, { this.setRate(slot, rate); });
+		}, off+6, channel, seq);
 	}
 
 }

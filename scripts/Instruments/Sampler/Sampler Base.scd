@@ -82,24 +82,3 @@ activeBank = main;
 		});
 	}, 'noteOn', record, page);
 });
-
-
-~base.setPage('sampler');
-
-~base.setGridFunc(4, 0, { | vel | vel.postln; });
-
-~base.turnControlButtonBlue(1, 'left');
-
-~base.turnControlButtonGreen(1, 'right');
-
-~base.turnGridMagenta(
-
-	(slot%4)+4, 4-((slot/4).asInt)
-
-	~base = Base.new;
-
-
-
-
-
-	~base

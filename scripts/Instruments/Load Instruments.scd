@@ -5,3 +5,6 @@ prm
 */
 
 "/Subtractive/Load Subtractive.scd".loadRelative;
+
+"/Sampler/Sampler Base.scd".loadRelative;
+"/Sampler/Sampler Main Page.scd".loadRelative;

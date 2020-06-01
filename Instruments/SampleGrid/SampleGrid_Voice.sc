@@ -271,7 +271,6 @@ SampleGrid_Voice : IM_Module {
 				view.soundfile = buffer;
 				view.read(0, buffer.numFrames);
 				view.refresh;
-				view.gridResolution(0.1);
 				view.gridColor = Color.magenta;
 				view.timeCursorColor = Color.white;
 				view.setSelectionColor(0, Color.white);
@@ -283,6 +282,7 @@ SampleGrid_Voice : IM_Module {
 					this.setPos(startPos, endPos);
 					[startPos, endPos].postln;
 				};
+				view.gridResolution(0.1);
 				window.front;
 			}.fork(AppClock);
 		});
@@ -338,6 +338,7 @@ SampleGrid_Voice : IM_Module {
 
 
 	playSampleSustaining { | vol = -3 |
+		if( isPlaying == true, { try { this.releaseSample } });
 		if(monoOrStereo == 'stereo', {
 			synth = Synth(\prm_SampleGrid_Voice_Sustaining_Stereo,
 				[

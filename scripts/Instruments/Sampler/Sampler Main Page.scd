@@ -5,7 +5,7 @@ prm
 */
 
 var page = 'sampler';
-var main = 0;
+
 var activeSlot = nil;
 
 /*
@@ -27,12 +27,14 @@ var slot15Bank = 15;
 var slot16Bank = 16;
 */
 
+var main = 0;
 var load = 1;
 var name = 2;
-var copy = 3;
-var paste = 4;
-var loadPreset = 5;
-var writePreset = 6;
+var trim = 3;
+var copy = 4;
+var paste = 5;
+var loadPreset = 6;
+var writePreset = 7;
 
 var activeBank = main;
 
@@ -45,7 +47,7 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 ~apc.makePage(page);
 //~apc.addMixerEncodersBanks(16, page);
 //~apc.addDeviceEncodersBanks(16, page);
-~apc.addGridBanks(7, page);
+~apc.addGridBanks(8, page);
 
 //// master funcs:
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
@@ -56,6 +58,7 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 	if( activeBank == main, { ~apc.turnDeviceButtonOn(1) }, { ~apc.turnDeviceButtonOff(1); });
 	if( activeBank == load, { ~apc.turnDeviceButtonOn(2) }, { ~apc.turnDeviceButtonOff(2); });
 	if( activeBank == name, { ~apc.turnDeviceButtonOn(3) }, { ~apc.turnDeviceButtonOff(3); });
+	if( activeBank == trim, { ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4); });
 
 	if( activeBank == copy, { ~apc.turnDeviceButtonOn(5) }, { ~apc.turnDeviceButtonOff(5) });
 
@@ -66,6 +69,7 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 ~apc.setDeviceButtonFunc(1, { activeBank = main; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 ~apc.setDeviceButtonFunc(2, { activeBank = load; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 ~apc.setDeviceButtonFunc(3, { activeBank = name; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
+~apc.setDeviceButtonFunc(4, { activeBank = trim; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 
 ~apc.setDeviceButtonFunc(5, { activeBank = copy; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 ~apc.setDeviceButtonFunc(6, { activeBank = paste; ~apc.setActiveGridBank(activeBank) }, bank: main, page: page);
@@ -113,13 +117,27 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 	}, 'noteOff', paste, page);
 });
 
+/////////////////
+///// TRIM: ////
+///////////////
+
+4.do({ | column | 4.do({ | row | ~apc.turnGridWhite(column+4, row+1, bank: trim, page: page); }); });
+
+16.do({ | slot |
+	~apc.setGridFunc((slot%4)+4, ((slot/4).asInt+1), {
+		~prm.sampler.trimSample(slot);
+		~apc.turnGridGreen((slot%4)+4, ((slot/4).asInt+1));
+	}, 'noteOn', trim, page);
+	~apc.setGridFunc((slot%4)+4, ((slot/4).asInt+1), {
+		~apc.turnGridWhite((slot%4)+4, ((slot/4).asInt+1));
+	}, 'noteOff', trim, page);
+});
 
 ////////////////////////
 //// Main Grid: ///////
 //////////////////////
 
-
-5.do({ | i |
+6.do({ | i |
 	4.do({ | column | 4.do({ | row | ~apc.turnGridMagenta(column, row+1, bank: i, page: page); }); });
 });
 
@@ -504,8 +522,8 @@ colorReset = {
 		var column = array[line][0];
 		var row = array[line][1];
 		var color = (array[line][3]).asSymbol;
-		("~apc.turnGrid" ++ color ++ "(" ++ column ++ "," ++ row ++ ", bank: 5, page: 'sampler');").interpret;
 		("~apc.turnGrid" ++ color ++ "(" ++ column ++ "," ++ row ++ ", bank: 6, page: 'sampler');").interpret;
+		("~apc.turnGrid" ++ color ++ "(" ++ column ++ "," ++ row ++ ", bank: 7, page: 'sampler');").interpret;
 	});
 };
 
@@ -570,7 +588,7 @@ addPreset = { | column, row, key, color |
 			s.sync;
 			colorReset.value;
 			~apc.turnGridGreen(column, row, 2, loadPreset, page);
-			("~apc.turnGrid" ++ color ++ "(" ++ column ++ "," ++ row ++ ", bank: 6, page: 'sampler');").interpret;
+			("~apc.turnGrid" ++ color ++ "(" ++ column ++ "," ++ row ++ ", bank: 7, page: 'sampler');").interpret;
 		}.fork;
 	);
 };

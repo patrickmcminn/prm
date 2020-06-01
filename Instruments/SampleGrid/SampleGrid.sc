@@ -253,10 +253,10 @@ SampleGrid : IM_Processor {
 				this.loadSampleByPath(i, sink.object); });
 			});
 			window.layout = GridLayout.rows(
-				[gridArray[0], gridArray[1], gridArray[2], gridArray[3]],
-				[gridArray[4], gridArray[5], gridArray[6], gridArray[7]],
+				[gridArray[12], gridArray[13], gridArray[14], gridArray[15]],
 				[gridArray[8], gridArray[9], gridArray[10], gridArray[11]],
-				[gridArray[12], gridArray[13], gridArray[14], gridArray[15]]);
+				[gridArray[4], gridArray[5], gridArray[6], gridArray[7]],
+				[gridArray[0], gridArray[1], gridArray[2], gridArray[3]]);
 			window.front;
 		}.fork(AppClock);
 	}

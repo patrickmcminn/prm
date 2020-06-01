@@ -63,7 +63,7 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 	if( activeBank == writePreset, { ~apc.turnDeviceButtonOn(8) }, { ~apc.turnDeviceButtonOff(8); });
 }, main, page);
 
-~apc.setDeviceButtonFunc(1, { activeBank = main;  ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
+~apc.setDeviceButtonFunc(1, { activeBank = main; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 ~apc.setDeviceButtonFunc(2, { activeBank = load; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 ~apc.setDeviceButtonFunc(3, { activeBank = name; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 
@@ -71,7 +71,7 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 ~apc.setDeviceButtonFunc(6, { activeBank = paste; ~apc.setActiveGridBank(activeBank) }, bank: main, page: page);
 
 ~apc.setDeviceButtonFunc(7, { activeBank = loadPreset; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
-~apc.setDeviceButtonFunc(8, {activeBank = writePreset;  ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
+~apc.setDeviceButtonFunc(8, {activeBank = writePreset; ~apc.setActiveGridBank(activeBank); }, bank: main, page: page);
 
 ///////// MIDI:
 
@@ -88,28 +88,28 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 ///// COPY + PASTE: ////
 ///////////////////////
 
-4.do({ | column | 4.do({ | row | ~apc.turnGridYellow(column+4, 4-row, bank: copy, page: page); }); });
-4.do({ | column | 4.do({ | row | ~apc.turnGridYellowGreen(column+4, 4-row, bank: paste, page: page); }); });
+4.do({ | column | 4.do({ | row | ~apc.turnGridYellow(column+4, row+1, bank: copy, page: page); }); });
+4.do({ | column | 4.do({ | row | ~apc.turnGridYellowGreen(column+4, row+1, bank: paste, page: page); }); });
 
 16.do({ | slot |
-	~apc.setGridFunc((slot%4)+4, 4-((slot/4).asInt), {
+	~apc.setGridFunc((slot%4)+4, ((slot/4).asInt+1), {
 		~prm.sampler.copySlot(slot);
-		~apc.turnGridGreen((slot%4)+4, 4-((slot/4).asInt));
+		~apc.turnGridGreen((slot%4)+4, ((slot/4).asInt+1));
 	}, 'noteOn', copy, page);
-	~apc.setGridFunc((slot%4)+4, 4-((slot/4).asInt), {
+	~apc.setGridFunc((slot%4)+4, ((slot/4).asInt+1), {
 		//~prm.sampler.copySlot(slot);
-		~apc.turnGridYellow((slot%4)+4, 4-((slot/4).asInt));
+		~apc.turnGridYellow((slot%4)+4, ((slot/4).asInt+1));
 	}, 'noteOff', copy, page);
 });
 
 16.do({ | slot |
-	~apc.setGridFunc((slot%4)+4, 4-((slot/4).asInt), {
+	~apc.setGridFunc((slot%4)+4, ((slot/4).asInt+1), {
 		~prm.sampler.pasteSlot(slot);
-		~apc.turnGridGreen((slot%4)+4, 4-((slot/4).asInt));
+		~apc.turnGridGreen((slot%4)+4, ((slot/4).asInt+1));
 	}, 'noteOn', paste, page);
-	~apc.setGridFunc((slot%4)+4, 4-((slot/4).asInt), {
+	~apc.setGridFunc((slot%4)+4, ((slot/4).asInt+1), {
 		//~prm.sampler.copySlot(slot);
-		~apc.turnGridYellowGreen((slot%4)+4, 4-((slot/4).asInt));
+		~apc.turnGridYellowGreen((slot%4)+4, ((slot/4).asInt+1));
 	}, 'noteOff', paste, page);
 });
 
@@ -120,26 +120,26 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 
 
 5.do({ | i |
-	4.do({ | column | 4.do({ | row | ~apc.turnGridMagenta(column, 4-row, bank: i, page: page); }); });
+	4.do({ | column | 4.do({ | row | ~apc.turnGridMagenta(column, row+1, bank: i, page: page); }); });
 });
 
 6.do({ | bank |
 	/////// Play the Sampler:
 	4.do({ | i |
-		~apc.setGridFunc(i, 4, { ~prm.sampler.playSample(i, -3); ~apc.turnGridGreen(i, 4); }, 'noteOn', bank, page);
-		~apc.setGridFunc(i, 4, { ~prm.sampler.releaseSample(i); ~apc.turnGridMagenta(i, 4);  }, 'noteOff', bank, page);
+		~apc.setGridFunc(i, 1, { ~prm.sampler.playSample(i, -3); ~apc.turnGridGreen(i, 1); }, 'noteOn', bank, page);
+		~apc.setGridFunc(i, 1, { ~prm.sampler.releaseSample(i); ~apc.turnGridMagenta(i, 1);  }, 'noteOff', bank, page);
 	});
 	4.do({ | i |
-		~apc.setGridFunc(i, 3, { ~prm.sampler.playSample(i+4, -3); ~apc.turnGridGreen(i, 3);}, 'noteOn', bank, page);
-		~apc.setGridFunc(i, 3, { ~prm.sampler.releaseSample(i+4); ~apc.turnGridMagenta(i, 3); }, 'noteOff', bank, page);
+		~apc.setGridFunc(i, 2, { ~prm.sampler.playSample(i+4, -3); ~apc.turnGridGreen(i, 2);}, 'noteOn', bank, page);
+		~apc.setGridFunc(i, 2, { ~prm.sampler.releaseSample(i+4); ~apc.turnGridMagenta(i, 2); }, 'noteOff', bank, page);
 	});
 	4.do({ | i |
-		~apc.setGridFunc(i, 2, { ~prm.sampler.playSample(i+8, -3); ~apc.turnGridGreen(i, 2);}, 'noteOn', bank, page);
-		~apc.setGridFunc(i, 2, { ~prm.sampler.releaseSample(i+8); ~apc.turnGridMagenta(i, 2); }, 'noteOff', bank, page);
+		~apc.setGridFunc(i, 3, { ~prm.sampler.playSample(i+8, -3); ~apc.turnGridGreen(i, 3);}, 'noteOn', bank, page);
+		~apc.setGridFunc(i, 3, { ~prm.sampler.releaseSample(i+8); ~apc.turnGridMagenta(i, 3); }, 'noteOff', bank, page);
 	});
 	4.do({ | i |
-		~apc.setGridFunc(i, 1, { ~prm.sampler.playSample(i+12, -3); ~apc.turnGridGreen(i, 1);}, 'noteOn', bank, page);
-		~apc.setGridFunc(i, 1, { ~prm.sampler.releaseSample(i+12); ~apc.turnGridMagenta(i, 1); }, 'noteOff', bank, page);
+		~apc.setGridFunc(i, 4, { ~prm.sampler.playSample(i+12, -3); ~apc.turnGridGreen(i, 4);}, 'noteOn', bank, page);
+		~apc.setGridFunc(i, 4, { ~prm.sampler.releaseSample(i+12); ~apc.turnGridMagenta(i, 4); }, 'noteOff', bank, page);
 	})
 });
 
@@ -161,7 +161,7 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 
 ///// choose sample to edit:
 editResetFunc = {
-	4.do({ | column | 4.do({ | row | ~apc.turnGridBlue(column+4, 4-row, bank: main, page: page); }); });
+	4.do({ | column | 4.do({ | row | ~apc.turnGridBlue(column+4, row+1, bank: main, page: page); }); });
 	~apc.turnSceneLaunchButtonBlue(0, page: page);
 };
 
@@ -169,7 +169,7 @@ editResetFunc.value;
 
 ~apc.setGridMonitorFunc(\edit, {
 	if(activeSlot.isInteger,
-		{  ~apc.turnGridGreen((activeSlot%4)+4, 4-((activeSlot/4).asInt)); },
+		{  ~apc.turnGridGreen((activeSlot%4)+4, (activeSlot/4).asInt+1); },
 		{ ~apc.turnSceneLaunchButtonGreen(0) }
 	);
 }, main, page);
@@ -182,7 +182,7 @@ editResetFunc.value;
 }, bank: main, page: page);
 
 4.do({ | i |
-	~apc.setGridFunc(i+4, 4, {
+	~apc.setGridFunc(i+4, 1, {
 		activeSlot = i;
 		//	~apc.setActiveDeviceEncodersBank(i+1);
 		//~apc.setActiveMixerEncodersBank(i+1);
@@ -190,7 +190,7 @@ editResetFunc.value;
 	}, bank: main, page: page);
 });
 4.do({ | i |
-	~apc.setGridFunc(i+4, 3, {
+	~apc.setGridFunc(i+4, 2, {
 		activeSlot = i+4;
 		//	~apc.setActiveDeviceEncodersBank(i+5);
 		//~apc.setActiveMixerEncodersBank(i+5);
@@ -198,7 +198,7 @@ editResetFunc.value;
 	}, bank: main, page: page);
 });
 4.do({ | i |
-	~apc.setGridFunc(i+4, 2, {
+	~apc.setGridFunc(i+4, 3, {
 		activeSlot = i+8;
 		//	~apc.setActiveDeviceEncodersBank(i+9);
 		//~apc.setActiveMixerEncodersBank(i+9);
@@ -206,7 +206,7 @@ editResetFunc.value;
 	}, bank: main, page: page);
 });
 4.do({ | i |
-	~apc.setGridFunc(i+4, 1, {
+	~apc.setGridFunc(i+4, 4, {
 		activeSlot = i+12;
 		//~apc.setActiveDeviceEncodersBank(i+13);
 		//~apc.setActiveMixerEncodersBank(i+13);
@@ -219,7 +219,7 @@ editResetFunc.value;
 /////// Load Sample: //////
 //////////////////////////
 
-loadResetFunc = 4.do({ | column | 4.do({ | row | ~apc.turnGridLightBlue(column+4, 4-row, bank: load, page: page); }); });
+loadResetFunc = 4.do({ | column | 4.do({ | row | ~apc.turnGridLightBlue(column+4, row+1, bank: load, page: page); }); });
 
 ~apc.turnPanButtonOn(main, page);
 ~apc.setPanButtonFunc({ ~prm.sampler.loadSampleGridGUI; }, 'noteOn', main, page);
@@ -227,32 +227,23 @@ loadResetFunc = 4.do({ | column | 4.do({ | row | ~apc.turnGridLightBlue(column+4
 ~apc.setGridMonitorFunc(\load, {
 	16.do({ | slot |
 		if( ~prm.sampler.samplePath(slot) == nil,
-			{ ~apc.turnGridLightBlue((slot%4)+4, 4-((slot/4).asInt)); },
-			{ ~apc.turnGridGreen((slot%4)+4, 4-((slot/4).asInt)); });
+			{ ~apc.turnGridLightBlue((slot%4)+4, ((slot/4).asInt+1)); },
+			{ ~apc.turnGridGreen((slot%4)+4, ((slot/4).asInt+1)); });
 	});
 }, load, page);
 
 4.do({ | i |
-	~apc.setGridFunc(i+4, 4, {
+	~apc.setGridFunc(i+4, 1, {
 		~prm.sampler.loadSample(i);
-		~apc.turnGridGreen(i+4, 4);
+		~apc.turnGridGreen(i+4, 1);
 	}, 'noteOn', load, page);
-	~apc.setGridFunc(i+4, 4, {
-		~apc.turnGridLightBlue(i+4, 4);
-	}, 'noteOff', load, page);
-});
-4.do({ | i |
-	~apc.setGridFunc(i+4, 3, {
-		~prm.sampler.loadSample(i+4);
-		~apc.turnGridGreen(i+4, 3);
-	}, 'noteOn', load, page);
-	~apc.setGridFunc(i+4, 3, {
-		~apc.turnGridLightBlue(i+4, 3);
+	~apc.setGridFunc(i+4, 1, {
+		~apc.turnGridLightBlue(i+4, 1);
 	}, 'noteOff', load, page);
 });
 4.do({ | i |
 	~apc.setGridFunc(i+4, 2, {
-		~prm.sampler.loadSample(i+8);
+		~prm.sampler.loadSample(i+4);
 		~apc.turnGridGreen(i+4, 2);
 	}, 'noteOn', load, page);
 	~apc.setGridFunc(i+4, 2, {
@@ -260,12 +251,21 @@ loadResetFunc = 4.do({ | column | 4.do({ | row | ~apc.turnGridLightBlue(column+4
 	}, 'noteOff', load, page);
 });
 4.do({ | i |
-	~apc.setGridFunc(i+4, 1, {
-		~prm.sampler.loadSample(i+12);
-		~apc.turnGridGreen(i+4, 1);
+	~apc.setGridFunc(i+4, 3, {
+		~prm.sampler.loadSample(i+8);
+		~apc.turnGridGreen(i+4, 3);
 	}, 'noteOn', load, page);
-	~apc.setGridFunc(i+4, 1, {
-		~apc.turnGridLightBlue(i+4, 1);
+	~apc.setGridFunc(i+4, 3, {
+		~apc.turnGridLightBlue(i+4, 3);
+	}, 'noteOff', load, page);
+});
+4.do({ | i |
+	~apc.setGridFunc(i+4, 4, {
+		~prm.sampler.loadSample(i+12);
+		~apc.turnGridGreen(i+4, 4);
+	}, 'noteOn', load, page);
+	~apc.setGridFunc(i+4, 4, {
+		~apc.turnGridLightBlue(i+4, 4);
 	}, 'noteOff', load, page);
 });
 
@@ -273,17 +273,17 @@ loadResetFunc = 4.do({ | column | 4.do({ | row | ~apc.turnGridLightBlue(column+4
 /////// Name Sample: //////
 //////////////////////////
 
-nameResetFunc = 4.do({ | column | 4.do({ | row | ~apc.turnGridCyan(column+4, 4-row, bank: name, page: page); }); });
+nameResetFunc = 4.do({ | column | 4.do({ | row | ~apc.turnGridCyan(column+4, row+1, bank: name, page: page); }); });
 nameResetFunc.value;
 
 16.do({ | slot |
 	//~apc.turnGridLightBlue((slot%4)+4, 4-((slot/4).asInt))
-	~apc.setGridFunc((slot%4)+4, 4-((slot/4).asInt), {
+	~apc.setGridFunc((slot%4)+4, ((slot/4).asInt+1), {
 		~prm.sampler.setSampleNameGUI(slot);
-		~apc.turnGridGreen((slot%4)+4, 4-((slot/4).asInt));
+		~apc.turnGridGreen((slot%4)+4, ((slot/4).asInt+1));
 	}, 'noteOn', name, page);
-	~apc.setGridFunc((slot%4)+4, 4-((slot/4).asInt), {
-		~apc.turnGridCyan((slot%4)+4, 4-((slot/4).asInt));
+	~apc.setGridFunc((slot%4)+4, ((slot/4).asInt+1), {
+		~apc.turnGridCyan((slot%4)+4, ((slot/4).asInt+1));
 	}, 'noteOff', name, page);
 });
 

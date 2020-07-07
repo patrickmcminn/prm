@@ -265,6 +265,7 @@ SampleGrid : IM_Processor {
 
 	/////////// convenience functions:
 
+	clearSample { | slot | samplerArray[slot].clearSample; }
 	loadSample { | slot | samplerArray[slot].loadSample; }
 	loadSampleByPath { | slot, path | samplerArray[slot].loadSampleByPath(path); }
 	loadSampleGridGUI {

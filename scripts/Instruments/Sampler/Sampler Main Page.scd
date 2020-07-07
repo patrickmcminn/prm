@@ -308,6 +308,17 @@ nameResetFunc.value;
 
 ////// grid parameter edits:
 
+//// clear sample:
+~apc.turnRecordEnableButtonOn(8, page: page);
+~apc.setRecordEnableButtonFunc(8, {
+	if( activeSlot.notNil, {
+		~prm.sampler.clearSample(activeSlot);
+		~apc.turnTrackSelectButtonOn(8, page: page);
+	});
+}, 'noteOn', page: page);
+~apc.setRecordEnableButtonFunc(8, { ~apc.turnTrackSelectButtonOff(8, page: page);
+}, type: 'noteOff', bank: 'active', page: page);
+
 
 //////// Pos GUI:
 ~apc.turnSceneLaunchButtonWhite(3, bank: main, page: page);

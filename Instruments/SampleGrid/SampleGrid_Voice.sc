@@ -225,6 +225,17 @@ SampleGrid_Voice : IM_Module {
 		this.freeModule;
 	}
 
+	clearSample {
+		if(isPlaying == true, { this.freeSample; });
+		{
+			buffer.free;
+			server.sync;
+			buffer = Buffer.alloc(server, server.sampleRate, 1);
+			samplePath = nil;
+			monoOrStereo = 'mono';
+		}.fork(AppClock);
+	}
+
 	loadSample {
 		if(isPlaying == true, { this.freeSample; });
 		{

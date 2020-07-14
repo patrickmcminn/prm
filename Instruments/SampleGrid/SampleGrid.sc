@@ -6,7 +6,7 @@ SampleGrid : IM_Processor {
 
 	var <masterPresetDict;
 
-	var <presetPath, presetDict, clipboard;
+	var <presetPath, presetDict, <clipboard;
 
 	var <recordPath, <trimPath, <recordBufferStereo, <recordBufferMono, <bufferLength, recSynth;
 
@@ -151,12 +151,16 @@ SampleGrid : IM_Processor {
 
 	copySlot { | slot |
 		this.prMakePresetDictionary(parameterArray[slot], samplerArray[slot]);
-		clipboard = parameterArray[slot];
+		//clipboard = parameterArray[slot];
+		clipboard = Dictionary.new;
+		clipboard.putAll(parameterArray[slot]);
 	}
 
 	pasteSlot { | slot |
 		if( clipboard.notNil, {
-			parameterArray[slot] = clipboard;
+			//parameterArray[slot] = clipboard;
+			parameterArray[slot] = Dictionary.new;
+			parameterArray[slot].putAll(clipboard);
 			this.prSetSlotParameters(slot);
 		});
 	}

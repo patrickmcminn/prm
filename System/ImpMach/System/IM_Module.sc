@@ -75,6 +75,14 @@ IM_Module {
     );
   }
 
+	setRelGroup { | target, addAction = 'addToHead' |
+		switch(addAction,
+			\addToHead, { group.moveToHead(target); },
+			\addToTail, { group.moveToTail(target); },
+			\addBefore, { group.moveBefore(target) },
+			\addAfter, { group.moveAfter(target) });
+	}
+
   isMuted { | chan = 0 |
     if( mixer.class == IM_Mixer_1Ch,
       { ^mixer.isMuted },

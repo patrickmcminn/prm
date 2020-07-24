@@ -17,7 +17,8 @@ CV_LFO {
     ^super.new.prInit(outBus, freq, waveform, rangeLow, rangeHigh, relGroup, addAction);
   }
 
-  prInit {  | outBus, freq = 1, waveform = 'sine', rangeLow = -1, rangeHigh = 1, relGroup = nil, addAction = 'addToHead' |
+  prInit {
+		| outBus, freq = 1, waveform = 'sine', rangeLow = -0.25, rangeHigh = 0.25, relGroup = nil, addAction = 'addToHead' |
     var server = Server.default;
     var wave;
     server.waitForBoot {

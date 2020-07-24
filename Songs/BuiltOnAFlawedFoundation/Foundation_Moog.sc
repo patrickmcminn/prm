@@ -2,6 +2,10 @@
 Monday, June 19th 2017
 Foundation_Moog.sc
 prm
+
+edited to accept Pyramid input 3/3/2020
+leaving in MIDI file for redundancy
+and legacy, whatever legacy actually means
 */
 
 Foundation_Moog : IM_Module {
@@ -11,12 +15,16 @@ Foundation_Moog : IM_Module {
 	var mainMidiFile, endMidiFile, midiOut;
 	var <mainSequenceIsPlaying = false;
 	var <endSequenceIsPlaying = false;
+	var sequencer, channel;
+	var mHighPass, mLowPass;
 
-	*new { | inBus = 3, outBus = 0, moogDeviceName, moogPortName, relGroup = nil, addAction = 'addToHead' |
-		^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(inBus, moogDeviceName, moogPortName);
+	*new {
+		| inBus = 3, outBus = 0, moogDeviceName, moogPortName,
+		seq = nil, seqChan = 0,  relGroup = nil, addAction = 'addToHead' |
+		^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(inBus, moogDeviceName, moogPortName, seq, seqChan);
 	}
 
-	prInit { | inBus, moogDeviceName, moogPortName |
+	prInit { | inBus, moogDeviceName, moogPortName, seq, seqChan |
 		server = Server.default;
 		server.waitForBoot {
 			var path1 = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/BuiltOnAFlawedFoundation/samples/MoogMIDI.mid";
@@ -24,6 +32,9 @@ Foundation_Moog : IM_Module {
 
 			isLoaded = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+
+			sequencer = seq.uid;
+			channel = seqChan;
 
 			mainMidiFile = SimpleMIDIFile.read(path1);
 			endMidiFile = SimpleMIDIFile.read(path2);
@@ -52,8 +63,27 @@ Foundation_Moog : IM_Module {
 
 			delay.setMix(0.35);
 
+			this.prMakeMIDIFuncs;
+
 			isLoaded = true;
 		}
+	}
+
+	prMakeMIDIFuncs {
+		/*
+		onArray = Array.fill(128, { | i |
+			MIDIFunc.noteOn({ moog.playNote(i.midicps) }, i, channel, sequencer); });
+		offArray = Array.fill(128, { | i |
+			MIDIFunc.noteOff({ | i | moog.releaseNote(i.midicps) }, i, channel, sequencer); });
+		*/
+		mHighPass = MIDIFunc.cc({ | val |
+			var cutoff = val.linexp(0, 127, 20, 1310);
+			eq.setHighPassCutoff(cutoff);
+		}, 20, channel, sequencer);
+		mLowPass = MIDIFunc.cc( { | val |
+			var cutoff = val.linexp(0, 127, 3010, 20000);
+			eq.setLowPassCutoff(cutoff);
+		}, 21, channel, sequencer);
 	}
 
 	//////// public functions:
@@ -61,6 +91,8 @@ Foundation_Moog : IM_Module {
 	free {
 		midiOut.free;
 		moog.free;
+		//onArray.do({ | i | i.free; });
+		//offArray.do({ | i | i.free; });
 		this.freeModule;
 		isLoaded = false;
 	}

@@ -9,6 +9,12 @@ IM_Module {
       feedback, relGroup, addAction);
   }
 
+	*newNoSends {
+		|numChans = 1, outBus = 0, feedback = false, relGroup = nil, addAction = \addToHead|
+
+    ^super.new.prModuleInitNoSends(numChans, outBus, feedback, relGroup, addAction);
+	}
+
   prModuleInit { |numChans, outBus, send0Bus, send1Bus, send2Bus, send3Bus,
     feedback, relGroup, addAction|
 
@@ -27,6 +33,23 @@ IM_Module {
 
     };
   }
+
+	prModuleInitNoSends {
+		|numChans, outBus, feedback, relGroup, addAction|
+
+    var server = Server.default;
+
+    server.waitForBoot {
+      group = Group(relGroup, addAction);
+      server.sync;
+
+      if( numChans == 1,
+				{ mixer = IM_Mixer_1Ch.newNoSends(outBus, feedback, group, \addToTail) },
+        { mixer = IM_Mixer.newNoSends(numChans, outBus, feedback, group, \addToTail) }
+      );
+
+    };
+	}
 
   freeModule {
     fork {
@@ -51,6 +74,14 @@ IM_Module {
       { mixer.setVol(chan, db, lagTime) }
     );
   }
+
+	setRelGroup { | target, addAction = 'addToHead' |
+		switch(addAction,
+			\addToHead, { group.moveToHead(target); },
+			\addToTail, { group.moveToTail(target); },
+			\addBefore, { group.moveBefore(target) },
+			\addAfter, { group.moveAfter(target) });
+	}
 
   isMuted { | chan = 0 |
     if( mixer.class == IM_Mixer_1Ch,

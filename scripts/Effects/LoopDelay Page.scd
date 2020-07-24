@@ -135,7 +135,7 @@ var divResetFunc, posResetFunc, rateResetFunc;
 	~loopDelay.delayNetwork.setPitchShiftArray([0, 0, -12, -12, 12, -5, -5, 7]); }, page: page);
 // diatonic cluster:
 ~apc.setGridFunc(6, 3, {
-	~loopDelay.delayNetwork.setPitchShiftArray([-5, -3, -2, 0, 2, 3, 5, 7]); }, page: page);
+	~loopDelay.delayNetwork.setPitchShiftArray([-5, 4, 2, 0, -12, 7, -5, -12]); }, page: page);
 // microtonal fuck you:
 ~apc.setGridFunc(7, 3, {
 	~loopDelay.delayNetwork.setPitchShiftArray([-0.1, 0, 0.1, -0.5, 0.5, 0.3, 0.25, -0.25]); }, page: page);

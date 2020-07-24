@@ -38,28 +38,11 @@ var send7 = 7;
 
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 
-//////// Modular Clock:
-~apc.setPanButtonFunc({
-  ~foundation.modularClock.togglePlay;
-  if( ~foundation.modularClock.isPlaying,
-    { ~apc.turnPanButtonOn }, { ~apc.turnPanButtonOff });
-}, page: page);
 
+//////// reverb preset:
 
-//////// Metronome:
-~apc.addPageLoadFunction(\metronome, {
-  ~foundation.clock.schedAbs(~foundation.clock.beats.ceil, { | beat |
-    ~foundation.clock.playNextBar({
-      ~apc.turnSendsButtonOn(page: page);
-      { ~apc.turnSendsButtonOff(page: page) }.defer(0.1);
-    });
-    ~apc.turnMetronomeButtonOn(page: page);
-    { ~apc.turnMetronomeButtonOff(page: page); }.defer(0.1);
-    1;
-  });
-}, page: page);
-
-
+~apc.turnSceneLaunchButtonBlue(0, 2, page: page);
+~apc.setSceneLaunchFunc(0, { ~prm.reverb.loadPreset('foundation'); ~apc.turnSceneLaunchButtonGreen(0) }, page: page);
 
 /////////////////////
 //// main grid: ////
@@ -67,80 +50,27 @@ var send7 = 7;
 
 //////// locations:
 //////// buffer record:
-// active:
-~apc.setGridMonitorFunc(\bufs, {
-  if( ~foundation.songBuffers.isLoaded, { ~apc.turnGridGreen(0, 4) }, { ~apc.turnGridRed(0, 4); });
-}, bank: mainGridBank, page: page);
-~apc.setGridFunc(0, 4, {
-  if( ~foundation.songBuffers.isLoaded, { ~foundation.songBuffers.free; });
-}, bank: mainGridBank, page: page);
-
 //// buffers:
 ~apc.turnGridBlue (1, 4, bank: mainGridBank, page: page);
-~apc.turnGridCyan(2, 4, bank: mainGridBank, page: page);
-~apc.turnGridMagenta(3, 4, bank: mainGridBank, page: page);
+~apc.turnGridBlue(1, 3, bank: mainGridBank, page: page);
+~apc.turnGridBlue(1, 2, bank: mainGridBank, page: page);
 // low d:
 ~apc.setGridFunc(1, 4, { ~foundation.songBuffers.recordLowDBuffer; ~apc.turnGridGreen(1, 4); },
   bank: mainGridBank, page: page);
 // a:
-~apc.setGridFunc(2, 4, { ~foundation.songBuffers.recordABuffer; ~apc.turnGridGreen(2, 4); },
+~apc.setGridFunc(1, 3, { ~foundation.songBuffers.recordABuffer; ~apc.turnGridGreen(2, 4); },
   bank: mainGridBank, page: page);
 // high d:
-~apc.setGridFunc(3, 4, { ~foundation.songBuffers.recordHighDBuffer; ~apc.turnGridGreen(3, 4); },
+~apc.setGridFunc(1, 2, { ~foundation.songBuffers.recordHighDBuffer; ~apc.turnGridGreen(3, 4); },
   bank: mainGridBank, page: page);
 
-/////////////////////////
-//// BIG GO BUTTON: ////
-///////////////////////
-~apc.setSceneLaunchMonitorFunc(\arrival, {
-  if( ~foundation.arrivalIsPlaying,
-    { ~apc.turnSceneLaunchButtonWhite(1) }, { ~apc.turnSceneLaunchButtonGreen(1, 0); });
-}, bank: mainGridBank, page: page);
-~apc.setSceneLaunchFunc(1, { ~foundation.playMainSequence; }, bank: mainGridBank, page: page);
 
 /////// 1 - moog:
 ~apc.setClipStopFunc(1, { ~foundation.moog.free; ~apc.turnClipStopButtonOff(1) }, bank: mixerBank1, page: page);
 
-~apc.setGridMonitorFunc(\moogMain, {
-  if( ~foundation.moog.mainSequenceIsPlaying == true,
-    { ~apc.turnGridGreen(0, 3) }, { ~apc.turnGridYellow(0, 3); });
-}, bank: mixerBank1, page: page);
-~apc.setGridFunc(0, 3,  { ~foundation.moog.playEndSection }, bank: mixerBank1, page: page);
-
-// end sequence:
-~apc.setGridMonitorFunc(\moogEnd,  { if( ~foundation.moog.endSequenceIsPlaying,
-  { ~apc.turnGridGreen(0, 2) }, { ~apc.turnGridPurple(0, 2); });
-}, bank: mixerBank1, page: page);
-~apc.setGridFunc(0, 2, { ~foundation.moog.playEndSection }, bank: mixerBank1, page: page);
-
-
 /////// 2 - Clean Trumpet:
 ~apc.setClipStopFunc(2,
   {  ~foundation.cleanTrumpet.free; ~apc.turnClipStopButtonOff(2) }, bank: mixerBank1, page: page);
-
-//////// buffer record:
-// active:
-~apc.setGridMonitorFunc(\bufs, {
-  if( ~foundation.songBuffers.isLoaded, { ~apc.turnGridGreen(1, 4) }, { ~apc.turnGridRed(1, 4); });
-}, bank: mainGridBank, page: page);
-~apc.setGridFunc(1, 4, {
-  if( ~foundation.songBuffers.isLoaded, { ~foundation.songBuffers.free; });
-}, bank: mainGridBank, page: page);
-
-//// buffers:
-~apc.turnGridBlue (1, 3, bank: mainGridBank, page: page);
-~apc.turnGridCyan(1, 2, bank: mainGridBank, page: page);
-~apc.turnGridMagenta(1, 1, bank: mainGridBank, page: page);
-// low d:
-~apc.setGridFunc(1, 3, { ~foundation.songBuffers.recordLowDBuffer; ~apc.turnGridGreen(1, 3); },
-  bank: mainGridBank, page: page);
-// a:
-~apc.setGridFunc(1, 2, { ~foundation.songBuffers.recordABuffer; ~apc.turnGridGreen(1, 2); },
-  bank: mainGridBank, page: page);
-// high d:
-~apc.setGridFunc(1, 1, { ~foundation.songBuffers.recordHighDBuffer; ~apc.turnGridGreen(1, 1); },
-  bank: mainGridBank, page: page);
-
 
 /////// 3 - Distorted Trumpet:
 ~apc.setClipStopFunc(3, { ~foundation.trumpet.free; ~apc.turnClipStopButtonOff(3) },
@@ -151,23 +81,11 @@ var send7 = 7;
 ~apc.setClipStopFunc(4, { ~foundation.bassSection.free; ~apc.turnClipStopButtonOff(4) },
   bank: mixerBank1, page: page);
 // arrival:
-~apc.setGridMonitorFunc(\bassArrival, { if( ~foundation.bassSection.arrivalSequenceIsPlaying,
-  { ~apc.turnGridGreen(3, 3) }, { ~apc.turnGridYellow(3, 3) });
-}, bank: mixerBank1, page: page);
-// main sequence:
-~apc.setGridMonitorFunc(\bassMain, { if( ~foundation.bassSection.mainSequenceIsPlaying,
-  { ~apc.turnGridGreen(3, 2) }, { ~apc.turnGridPink(3, 2); });
-}, bank: mixerBank1, page: page);
 
 /////// 5 - chord synth:
 // free:
 ~apc.setClipStopFunc(5, { ~foundation.chordSynth.free; ~apc.turnClipStopButtonOff(5) },
   bank: mixerBank1, page: page);
-// main:
-~apc.setGridMonitorFunc(\chordSynthMain, { if( ~foundation.chordSynth.mainSequenceIsPlaying,
-  { ~apc.turnGridGreen(4, 3); }, { ~apc.turnGridYellow(4, 3) });
-}, bank: mixerBank1, page: page);
-
 
 ////// 6 - SC:
 // free:
@@ -175,16 +93,16 @@ var send7 = 7;
   bank: mixerBank1, page: page);
 // trem:
 ~apc.setGridMonitorFunc(\scTrem, {if( ~foundation.sc.tremIsPlaying,
-  { ~apc.turnGridGreen(5, 2); }, { ~apc.turnGridMagenta(5, 2); });
+  { ~apc.turnGridGreen(5, 4); }, { ~apc.turnGridMagenta(5, 4, 1); });
 }, bank: mixerBank1, page: page);
-~apc.setGridFunc(5, 2, { if( ~foundation.sc.tremIsPlaying,
+~apc.setGridFunc(5, 4, { if( ~foundation.sc.tremIsPlaying,
   { ~foundation.sc.releaseTremolo }, { ~foundation.sc.playTremolo });
 }, bank: mixerBank1, page: page);
 // chords:
 ~apc.setGridMonitorFunc(\scChords, { if( ~foundation.sc.chordsIsPlaying,
-  { ~apc.turnGridGreen(5, 1) }, { ~apc.turnGridBlue(5, 1); });
+  { ~apc.turnGridGreen(5, 3) }, { ~apc.turnGridMagenta(5, 3, 1); });
 }, bank: mixerBank1, page: page);
-~apc.setGridFunc(5, 1, { if( ~foundation.sc.chordsIsPlaying,
+~apc.setGridFunc(5, 3, { if( ~foundation.sc.chordsIsPlaying,
   { ~foundation.sc.releaseChords }, { ~foundation.sc.playChords });
 }, bank: mixerBank1, page: page);
 
@@ -202,28 +120,28 @@ var send7 = 7;
 }, bank: mixerBank1, page: page);
 // warp 2:
 ~apc.setGridMonitorFunc(\warp2, { if( ~foundation.warps.warp2IsPlaying,
-  { ~apc.turnGridGreen(6, 3) }, { ~apc.turnGridPurple(6, 3, 1) });
+  { ~apc.turnGridGreen(6, 3) }, { ~apc.turnGridPink(6, 3, 1) });
 }, bank: mixerBank1, page: page);
 ~apc.setGridFunc(6, 3, { if( ~foundation.warps.warp2IsPlaying,
   {~foundation.warps.releaseWarp2  }, { ~foundation.warps.playWarp2 });
 }, bank: mixerBank1, page: page);
 // warp 3:
 ~apc.setGridMonitorFunc(\warp3, {  if( ~foundation.warps.warp3IsPlaying,
-  { ~apc.turnGridGreen(6, 2) }, { ~apc.turnGridMagenta(6, 2, 1); });
+  { ~apc.turnGridGreen(6, 2) }, { ~apc.turnGridPink(6, 2, 1); });
 }, bank: mixerBank1, page: page);
 ~apc.setGridFunc(6, 2, { if( ~foundation.warps.warp3IsPlaying,
   {~foundation.warps.releaseWarp3  }, { ~foundation.warps.playWarp3 });
 }, bank: mixerBank1, page: page);
 // warp 4:
 ~apc.setGridMonitorFunc(\warp4, { if( ~foundation.warps.warp4IsPlaying,
-  { ~apc.turnGridGreen(6, 1) }, { ~apc.turnGridYellow(6, 1, 1); });
+  { ~apc.turnGridGreen(6, 1) }, { ~apc.turnGridPink(6, 1, 1); });
 }, bank: mixerBank1, page: page);
 ~apc.setGridFunc(6, 1, { if( ~foundation.warps.warp4IsPlaying,
   {~foundation.warps.releaseWarp4  }, { ~foundation.warps.playWarp4 });
 }, bank: mixerBank1, page: page);
 // warp 5:
 ~apc.setGridMonitorFunc(\warp5, {  if( ~foundation.warps.warp5IsPlaying,
-  { ~apc.turnGridGreen(6, 0) }, { ~apc.turnGridBlue(6, 0, 1); });
+  { ~apc.turnGridGreen(6, 0) }, { ~apc.turnGridPink(6, 0, 1); });
 }, bank: mixerBank1, page: page);
 ~apc.setGridFunc(6, 0, { if( ~foundation.warps.warp5IsPlaying,
   {~foundation.warps.releaseWarp5  }, { ~foundation.warps.playWarp5 });
@@ -235,9 +153,9 @@ var send7 = 7;
 ~apc.setClipStopFunc(8, { ~foundation.endTrumpets.free; ~apc.turnClipStopButtonOff(8) },
   bank: mixerBank1, page: page);
 ~apc.setGridMonitorFunc(\endTrumpets, { if( ~foundation.endTrumpets.endSequenceIsPlaying,
-  { ~apc.turnGridGreen(7, 0) }, { ~apc.turnGridBlue(7, 0) });
+  { ~apc.turnGridGreen(7, 4) }, { ~apc.turnGridBlue(7, 0) });
 }, bank: mixerBank1, page: page);
-~apc.setGridFunc(7, 0, { if( ~foundation.endTrumpets.endSequenceIsPlaying,
+~apc.setGridFunc(7, 4, { if( ~foundation.endTrumpets.endSequenceIsPlaying,
   { ~foundation.endTrumpets.stopEndSequence; }, { ~foundation.endTrumpets.playEndSequence });
 }, bank: mixerBank1, page: page);
 
@@ -248,17 +166,10 @@ var send7 = 7;
 // 10 - distorted trumpets:
 ~apc.setClipStopFunc(2, { ~foundation.distTrumpets.free; ~apc.turnClipStopButtonOff(2); },
   bank: mixerBank2, page: page);
-~apc.setGridMonitorFunc(\distTrumpets, { if( ~foundation.distTrumpets.arrivalSequenceIsPlaying,
-  { ~apc.turnGridGreen(1, 3); }, { ~apc.turnGridYellow(1, 3, 1) });
-}, bank: mixerBank2, page: page);
 
 // 11 - cellos:
 ~apc.setClipStopFunc(3, { ~foundation.cellos.free; ~apc.turnClipStopButtonOff(3); },
   bank: mixerBank2, page: page);
-~apc.setGridMonitorFunc(\cellos, { if( ~foundation.cellos.mainSequenceIsPlaying,
-  { ~apc.turnGridGreen(2, 2) }, { ~apc.turnGridPink(2, 2, 1); });
-}, bank: mixerBank2, page: page);
-
 
 /////////////////////
 // Bank Change: ////
@@ -277,13 +188,10 @@ var send7 = 7;
     { ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4) });
 }, page: page);
 
-
-
 ~apc.setDeviceButtonFunc(1, { ~apc.setActiveMixerEncodersBank(send0+sendMod); }, page: page);
 ~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1+sendMod);  }, page: page);
 ~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2+sendMod); }, page: page);
 ~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3+sendMod); }, page: page);
-
 
 //// Mixer Bank Change:
 
@@ -370,10 +278,10 @@ var send7 = 7;
   bank: mixerBank1, page: page);
 // clean trumpet input:
 ~apc.setMixerMonitorFunc(\cleanTptInput, {
-  if( ~foundation.cleanTrumpetInput.isMuted,
+  if( ~foundation.cleanTrumpet.trumpet.isMuted,
     { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
 }, bank: mixerBank1, page: page);
-~apc.setRecordEnableButtonFunc(2, { ~foundation.cleanTrumpetInput.tglMute },
+~apc.setRecordEnableButtonFunc(2, { ~foundation.cleanTrumpet.trumpet.tglMute },
   bank: mixerBank1, page: page);
 // dist trumpet input:
 ~apc.setMixerMonitorFunc(\distTptInput, {
@@ -421,8 +329,6 @@ var send7 = 7;
 
 });
 
-
-
 ///////////////////////////
 //// Device Encoders: ////
 /////////////////////////
@@ -456,3 +362,81 @@ var send7 = 7;
   var fb = val.linlin(0, 127, 0, 0.95);
   ~foundationDelay.setFeedback(fb);
 }, page: page);
+
+/*
+
+//////// Modular Clock:
+~apc.setPanButtonFunc({
+  ~foundation.modularClock.togglePlay;
+  if( ~foundation.modularClock.isPlaying,
+    { ~apc.turnPanButtonOn }, { ~apc.turnPanButtonOff });
+}, page: page);
+
+
+//////// Metronome:
+~apc.addPageLoadFunction(\metronome, {
+  ~foundation.clock.schedAbs(~foundation.clock.beats.ceil, { | beat |
+    ~foundation.clock.playNextBar({
+      ~apc.turnSendsButtonOn(page: page);
+      { ~apc.turnSendsButtonOff(page: page) }.defer(0.1);
+    });
+    ~apc.turnMetronomeButtonOn(page: page);
+    { ~apc.turnMetronomeButtonOff(page: page); }.defer(0.1);
+    1;
+  });
+}, page: page);
+
+/////////////////////////
+//// BIG GO BUTTON: ////
+///////////////////////
+~apc.setSceneLaunchMonitorFunc(\arrival, {
+  if( ~foundation.arrivalIsPlaying,
+    { ~apc.turnSceneLaunchButtonWhite(1) }, { ~apc.turnSceneLaunchButtonGreen(1, 0); });
+}, bank: mainGridBank, page: page);
+~apc.setSceneLaunchFunc(1, { ~foundation.playMainSequence; }, bank: mainGridBank, page: page);
+
+
+~apc.setGridMonitorFunc(\moogMain, {
+  if( ~foundation.moog.mainSequenceIsPlaying == true,
+    { ~apc.turnGridGreen(0, 3) }, { ~apc.turnGridYellow(0, 3); });
+}, bank: mixerBank1, page: page);
+~apc.setGridFunc(0, 3,  { ~foundation.moog.playEndSection }, bank: mixerBank1, page: page);
+
+// end sequence:
+~apc.setGridMonitorFunc(\moogEnd,  { if( ~foundation.moog.endSequenceIsPlaying,
+  { ~apc.turnGridGreen(0, 2) }, { ~apc.turnGridPurple(0, 2); });
+}, bank: mixerBank1, page: page);
+~apc.setGridFunc(0, 2, { ~foundation.moog.playEndSection }, bank: mixerBank1, page: page);
+
+
+~apc.setGridMonitorFunc(\bassArrival, { if( ~foundation.bassSection.arrivalSequenceIsPlaying,
+  { ~apc.turnGridGreen(3, 3) }, { ~apc.turnGridYellow(3, 3) });
+}, bank: mixerBank1, page: page);
+// main sequence:
+~apc.setGridMonitorFunc(\bassMain, { if( ~foundation.bassSection.mainSequenceIsPlaying,
+  { ~apc.turnGridGreen(3, 2) }, { ~apc.turnGridPink(3, 2); });
+}, bank: mixerBank1, page: page);
+
+
+// active:
+/*
+~apc.setGridMonitorFunc(\bufs, {
+  if( ~foundation.songBuffers.isLoaded, { ~apc.turnGridGreen(0, 4) }, { ~apc.turnGridRed(0, 4); });
+}, bank: mainGridBank, page: page);
+~apc.setGridFunc(0, 4, {
+  if( ~foundation.songBuffers.isLoaded, { ~foundation.songBuffers.free; });
+}, bank: mainGridBank, page: page);
+*/
+
+
+~apc.setGridMonitorFunc(\chordSynthMain, { if( ~foundation.chordSynth.mainSequenceIsPlaying,
+  { ~apc.turnGridGreen(4, 3); }, { ~apc.turnGridYellow(4, 3) });
+}, bank: mixerBank1, page: page);
+
+~apc.setGridMonitorFunc(\distTrumpets, { if( ~foundation.distTrumpets.arrivalSequenceIsPlaying,
+  { ~apc.turnGridGreen(1, 3); }, { ~apc.turnGridYellow(1, 3, 1) });
+}, bank: mixerBank2, page: page);
+
+~apc.setGridMonitorFunc(\cellos, { if( ~foundation.cellos.mainSequenceIsPlaying,
+  { ~apc.turnGridGreen(2, 2) }, { ~apc.turnGridPink(2, 2, 1); });
+}, bank: mixerBank2, page: page);

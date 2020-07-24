@@ -328,6 +328,7 @@ Sampler : IM_Module {
     var amp = vol.dbamp;
     if( monoOrStereo == 'stereo',
       {
+				try { this.releaseSampleSustaining(name); };
         samplerDict[name] = Synth(\prm_Sampler_Stereo_ADSR,
           [
             \outBus, mixer.chanStereo(0), \buffer, bufferArray[sampleNum], \rate, rate, \startPos, startPos, \endPos, endPos,
@@ -339,6 +340,7 @@ Sampler : IM_Module {
           group, \addToHead);
       },
       {
+				try { this.releaseSampleSustaining(name); };
         samplerDict[name] = Synth(\prm_Sampler_Mono_ADSR,
           [
             \outBus, mixer.chanMono(0), \buffer, bufferArray[sampleNum], \rate, rate, \startPos, startPos, \endPos, endPos,
@@ -397,6 +399,7 @@ Sampler : IM_Module {
     var amp = vol.dbamp;
     if( monoOrStereo == 'stereo',
       {
+				try{ this.releaseSampleDrifting(name) };
         samplerDict[name] = Synth(\prm_Sampler_Stereo_Drift, [
           \outBus, mixer.chanStereo(0), \buffer, bufferArray[sampleNum],
           \rate, rate, \loop, 1, \posShiftFreq, posShiftFreq, \startPosLow, startPosLow,
@@ -409,6 +412,7 @@ Sampler : IM_Module {
           group, \addToHead);
       },
       {
+				try{ this.releaseSampleDrifting(name) };
         samplerDict[name] = Synth(\prm_Sampler_Mono_Drift, [
           \outBus, mixer.chanMono(0), \buffer, bufferArray[sampleNum],
           \rate, rate, \loop, 1, \posShiftFreq, posShiftFreq, \startPosLow, startPosLow,

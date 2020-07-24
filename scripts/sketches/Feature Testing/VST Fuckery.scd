@@ -1,14 +1,3 @@
-x = CV_Gate.new(32);
-
-x.makeTrig(1, 0.1);
-
-x.makeGate(-0.3);
-x.releaseGate;
-
-
-x.gateIsHigh;
-x.free;
-
 VSTPlugin
 
 VSTPlugin.search
@@ -44,7 +33,9 @@ SynthDef(\plugin, { | inBus = 0, outBus = 0 |
 	sig = Out.ar(outBus, vst);
 }).add;
 
-~fx = VSTPluginController(Synth(\plugin, [\outBus, 0])).open("Decapitator");
+~fx = VSTPluginController(Synth(\plugin, [\outBus, 0])).open("LittlePlate");
 ~fx.free;
 
 ~fx.loaded;
+
+~fx.gui

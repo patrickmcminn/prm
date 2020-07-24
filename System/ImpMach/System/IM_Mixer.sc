@@ -26,6 +26,10 @@ IM_Mixer {
       relGroup, addAction);
   }
 
+	*newNoSends { | numChans = 1, outBus = 0, feedback = false, relGroup = nil, addAction = \addToHead|
+		^super.new.prInitNoSends(numChans, outBus, feedback, relGroup, addAction);
+	}
+
   prInit { |numChans, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback,
     relGroup, addAction|
 
@@ -60,12 +64,44 @@ IM_Mixer {
     };
   }
 
+	prInitNoSends { | numChans = 1, outBus = 0, feedback = false, relGroup = nil, addAction = \addToHead|
+		var server = Server.default;
+
+    isLoaded = false;
+    myOutBus = outBus;
+
+    isFeedback = feedback;
+    channelList = List.newClear(0);
+
+    server.waitForBoot {
+      group = Group(relGroup, addAction);
+      myNilBus = Bus.audio(server, 2);
+      server.sync;
+
+      masterChan = IM_ChannelStrip.newNoSends(myOutBus, myNilBus, isFeedback, group, \addToTail);
+      while ( { try { masterChan.isLoaded } != true }, { 0.001.wait } );
+
+      numChans.do { this.addStripNoSends };
+
+      channelList.do { |chan|
+        while ( { try { chan.isLoaded } != true }, { 0.001.wait } );
+      };
+
+      isLoaded = true;
+    };
+
+	}
+
   addStrip {
     channelList.add(
       IM_ChannelStrip.new(masterChan.inBusStereo, mySend0Bus, mySend1Bus, mySend2Bus,
         mySend3Bus, myNilBus, isFeedback, group)
     );
   }
+
+	addStripNoSends {
+		channelList.add(IM_ChannelStrip.newNoSends(masterChan.inBusStereo, myNilBus, isFeedback, group));
+	}
 
   // NOT WORKING: when you remove a channel and add it back, messages to it stop working
   // Is the list not shrinking?

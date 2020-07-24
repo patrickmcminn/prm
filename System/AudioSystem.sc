@@ -3,6 +3,9 @@ Monday, November 10th 2014
 adapted from IM_AudioSystem in ImpMach
 by Jonah Beram and Patrick McMinn
 prm
+
+2/26/2020
+moving over to Valhalla VST
 */
 
 AudioSystem {
@@ -10,7 +13,9 @@ AudioSystem {
 	var <isLoaded;
 	var <procGroup, systemGroup;
 	var hardwareOut, <systemMixer, <cmix;
-	var <irLibrary;
+	var <irLibrary, <splitter;
+
+	var <sampler;
 
 	var <reverb, <granulator, <modularSend, <delay;
 	var <splitter;
@@ -74,7 +79,10 @@ AudioSystem {
 			server.sync;
 			while ( { try { systemMixer.isLoaded} != true }, { 0.001.wait } );
 
-			masterEQ = Equalizer.newStereo(systemMixer.inBus(0), systemGroup, \addToHead);
+			splitter = Splitter.newStereo(2, [systemMixer.inBus(0), nil], false, systemGroup, \addToHead);
+			while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
+
+			masterEQ = Equalizer.newStereo(splitter.inBus, systemGroup, \addToHead);
 			while({ try { masterEQ.isLoaded } != true }, { 0.001.wait; });
 
 			irLibrary = IM_IRLibrary.new("~/Library/Application Support/SuperCollider/Extensions/prm/Effects/Reverb/ImpulseResponses");
@@ -85,21 +93,28 @@ AudioSystem {
 
 			///////// RETURN FX:
 
-			reverb = IM_Reverb.newConvolution(masterEQ.inBus, bufName: irLibrary.irDict['3.0LongReverb'],
-				relGroup: systemGroup, addAction: \addToHead);
+			//
+
+			reverb = Valhalla.newStereo(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
+			/*reverb = IM_Reverb.newConvolution(masterEQ.inBus, bufName: irLibrary.irDict['3.0LongReverb'],
+				relGroup: systemGroup, addAction: \addToHead);*/
 			server.sync;
 			while( { try { reverb.isLoaded } != true }, { 0.001.wait; });
-			reverb.setPreAmp(-6.dbamp);
+
+			//reverb.setPreAmp(-6.dbamp);
+
 			// pre eq:
 			reverb.preEQ.setHighPassCutoff(180);
-			reverb.preEQ.setLowPassCutoff(15000);
+			//reverb.preEQ.setLowPassCutoff(15000);
 			// post eq:
 			reverb.postEQ.setLowGain(-9);
-			reverb.postEQ.setHighGain(3);
+			//reverb.postEQ.setHighGain(3);
 			reverb.postEQ.setLowFreq(250);
 			reverb.postEQ.setPeak1Freq(496.6);
 			reverb.postEQ.setPeak1RQ(3);
 			reverb.postEQ.setPeak1Gain(-5);
+
+			reverb.loadPreset('longTrumpet');
 
 			granulator = GranularDelay.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
 			server.sync;
@@ -119,7 +134,7 @@ AudioSystem {
 
 			/////////// DEFAULT INPUTS:
 
-			cmix = IM_Mixer.new(7, this.audioIn,
+			cmix = IM_Mixer.new(8, this.audioIn,
 				reverb.inBus, granulator.inBus, modularSend.inBus, delay.inBus, false, procGroup, \addToHead);
 			while({ try { cmix.isLoaded } != true }, { 0.001.wait; });
 
@@ -146,10 +161,15 @@ AudioSystem {
 			moogInput = IM_HardwareIn.new(moogInBus, moog.chanMono(0), procGroup, \addToHead);
 			while({ try { moogInput.isLoaded } != true }, { 0.001.wait; });
 
+
+			sampler = SampleGrid.new(cmix.chanStereo(6), relGroup: procGroup, addAction: \addToHead);
+			while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
+			/*
 			beauty = Beauty.newMono(cmix.chanStereo(6), relGroup: procGroup, addAction: \addToHead);
 			while({ try { beauty.isLoaded } != true }, { 0.001.wait; });
 			beautyIn = IM_HardwareIn.new(pickupInBus, beauty.inBus, procGroup, \addToHead);
 			while({ try { beautyIn.isLoaded } != true }, { 0.001.wait; });
+			*/
 
 			modular2 = IM_HardwareIn.new(plaitsInBus, cmix.chanMono(4), procGroup, \addToHead);
 			while({ try { modular2.isLoaded } != true }, { 0.001.wait; });
@@ -157,6 +177,8 @@ AudioSystem {
 			modular3 = IM_HardwareIn.new(noiseInBus, cmix.chanMono(5), procGroup, \addToHead);
 			while({ try { modular3.isLoaded } != true }, { 0.001.wait; });
 
+			subtractive = Subtractive.new(cmix.chanStereo(7), relGroup: procGroup, addAction: \addToHead);
+			while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
 
 
 			// reverb!
@@ -167,6 +189,10 @@ AudioSystem {
 			cmix.setSendVol(4, 0, -12);
 			cmix.setSendVol(5, 0, -9);
 			cmix.setSendVol(6, 0, -12);
+
+			cmix.setSendVol(7, 0, -6);
+
+			splitter.setOutBus(1, sampler.inBus);
 
 
 			songBook = IdentityDictionary.new;

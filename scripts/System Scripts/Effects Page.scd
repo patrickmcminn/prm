@@ -19,6 +19,7 @@ var delay = 3;
 var tuningNoteIsPlaying = false;
 
 var loopDelayIsLoaded = false;
+var hugeIsLoaded = false;
 
 var envReset;
 
@@ -67,12 +68,36 @@ var envReset;
 	});
 }, page: page);
 
+// huge:
+
+~apc.turnGridYellow(0, 3, page: page);
+~apc.setGridFunc(0, 3, {
+	if( hugeIsLoaded == false,
+		{
+			r{
+				~huge = Huge.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus,
+					~prm.modularSend.inBus, ~prm.delay.inBus, ~prm.procGroup, \addToHead);
+				while({ try { ~huge.isLoaded } != true }, { 0.001.wait; });
+				~hugeInput = IM_HardwareIn.new(~pickupIn, ~huge.inBusMono, ~prm.procGroup, \addToHead);
+				while({ try { ~hugeInput.isLoaded } != true }, { 0.001.wait; });
+				~apc.turnGridGreen(1, 3);
+				~apc.setGridFunc(1, 3, { ~apc.setPage('huge') }, page: page);
+			}.play;
+		},
+		{
+			~huge.free;
+			~hugeInput.free;
+			~apc.setGridFunc(1, 3, { }, page: page);
+			~apc.turnGridOff(1, 3);
+	});
+}, page: page);
+
 
 ///////////////////////////////////
 ////// Convenience Mixer: ////////
 /////////////////////////////////
 
-7.do({ | i |
+8.do({ | i |
 	// vol:
 	~apc.setFaderFunc(i+1, { | val | ~prm.cmix.setVol(i, val.ccdbfs); }, page: page);
 	// toggle mute:

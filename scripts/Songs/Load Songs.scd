@@ -10,26 +10,25 @@ prm
 /////////////////////
 
 
-"Foundation APC.scd".loadRelative;
-"Foundation Base.scd".loadRelative;
+try { "Foundation APC.scd".loadRelative; };
+try { "Foundation Base.scd".loadRelative; };
 
-"False Self APC.scd".loadRelative;
-"False Self Base.scd".loadRelative;
-
+try { "False Self APC.scd".loadRelative; };
+try { "False Self Base.scd".loadRelative; };
 
 ///////////////////////////////
 //// The Phonometrician //////
 /////////////////////////////
-"WhereTheBirds APC.scd".loadRelative;
-"Connections APC.scd".loadRelative;
-"Connections Base.scd".loadRelative;
+try { "WhereTheBirds APC.scd".loadRelative; };
+try { "Connections APC.scd".loadRelative; };
+try { "Connections Base.scd".loadRelative; };
 
 ///////////////////////////////
 //////// Digressions /////////
 /////////////////////////////
 
-"Habit APC.scd".loadRelative;
-"Habit Base.scd".loadRelative;
+try { "Habit APC.scd".loadRelative; };
+try { "Habit Base.scd".loadRelative; };
 
 /*
 // Ohm:

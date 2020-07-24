@@ -6,62 +6,81 @@ prm
 
 Foundation_SC : IM_Module {
 
-  var server, <isLoaded;
-  var <sampler;
-  var <tremIsPlaying, <chordsIsPlaying;
+	var server, <isLoaded;
+	var <sampler;
+	var <tremIsPlaying, <chordsIsPlaying;
+	var <sequencer, <channel;
+	var tremOn, tremOff, chordsOn, chordsOff;
 
-  *new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
-  }
+	*new { | outBus = 0, seq, chan = 11, relGroup = nil, addAction = 'addToHead' |
+		^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(seq, chan);
+	}
 
-  prInit {
-    server = Server.default;
-    server.waitForBoot {
-      var path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/BuiltOnAFlawedFoundation/samples/SC/";
-      var sampleArray = (path ++ "*").pathMatch;
+	prInit { | seq, chan |
+		server = Server.default;
+		server.waitForBoot {
+			var path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/BuiltOnAFlawedFoundation/samples/SC/";
+			var sampleArray = (path ++ "*").pathMatch;
 
-      isLoaded = false;
-      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+			isLoaded = false;
+			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      sampler = Sampler.newStereo(mixer.chanStereo(0), sampleArray, relGroup: group, addAction: \addToHead);
-      while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
+			sampler = Sampler.newStereo(mixer.chanStereo(0), sampleArray, relGroup: group, addAction: \addToHead);
+			while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
 
-      server.sync;
+			server.sync;
 
-      sampler.setAttackTime(7);
-      sampler.setReleaseTime(7);
+			sampler.setAttackTime(7);
+			sampler.setReleaseTime(7);
 
-      tremIsPlaying = false;
-      chordsIsPlaying = false;
+			tremIsPlaying = false;
+			chordsIsPlaying = false;
 
-      mixer.setPreVol(6);
+			sequencer = seq.uid;
+			channel = chan;
+			this.prMakeMIDIFuncs;
 
-      isLoaded = true;
-    }
-  }
+			mixer.setPreVol(6);
 
-  //////// public functions:
-  free {
-    sampler.free;
-    this.freeModule;
-    isLoaded = false;
-  }
+			isLoaded = true;
+		}
+	}
 
-  playTremolo {
-    sampler.playSampleSustaining(\trem, 1, -3);
-    tremIsPlaying = true;
-  }
-  releaseTremolo {
-    sampler.releaseSampleSustaining(\trem);
-    tremIsPlaying = false;
-  }
+	prMakeMIDIFuncs {
+		tremOn = MIDIFunc.noteOn({ this.playTremolo }, 60, channel, sequencer);
+		tremOff = MIDIFunc.noteOff({ this.releaseTremolo }, 60, channel, sequencer);
+		chordsOn = MIDIFunc.noteOn({ this.playChords }, 61, channel, sequencer);
+		chordsOff = MIDIFunc.noteOff({ this.releaseChords }, 61, channel, sequencer);
+	}
 
-  playChords {
-    sampler.playSampleSustaining(\chords, 0);
-    chordsIsPlaying = true;
-  }
-  releaseChords {
-    sampler.releaseSampleSustaining(\chords);
-    chordsIsPlaying = false;
-  }
+	prFreeMIDIFuncs {
+		tremOn.free; tremOff.free;
+		chordsOn.free; chordsOff.free;
+	}
+
+	//////// public functions:
+	free {
+		sampler.free;
+		this.prFreeMIDIFuncs;
+		this.freeModule;
+		isLoaded = false;
+	}
+
+	playTremolo {
+		sampler.playSampleSustaining(\trem, 1, -3);
+		tremIsPlaying = true;
+	}
+	releaseTremolo {
+		sampler.releaseSampleSustaining(\trem);
+		tremIsPlaying = false;
+	}
+
+	playChords {
+		sampler.playSampleSustaining(\chords, 0);
+		chordsIsPlaying = true;
+	}
+	releaseChords {
+		sampler.releaseSampleSustaining(\chords);
+		chordsIsPlaying = false;
+	}
 }

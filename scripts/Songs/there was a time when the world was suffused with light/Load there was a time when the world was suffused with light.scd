@@ -19,9 +19,11 @@ page to load into the language all of the songs for this tape
 "wasntKnownBase.scd".loadRelative;
 //"wasntKnownOhm.scd".loadRelative;
 
+"Docile APC.scd".loadRelative;
 "Docile Base.scd".loadRelative;
 //"Docile Ohm.scd".loadRelative;
 
+"Darkness APC.scd".loadRelative;
 "Darkness Base.scd".loadRelative;
 //"Darkness Ohm.scd".loadRelative;
 

@@ -2,7 +2,7 @@
 February 20th 2020
 
 sketches for a performance system for
-And There Was a Warm Glow
+And There Was a Soft Glow
 
 prm
 */
@@ -23,6 +23,9 @@ MIDIIn.connectAll;
 ~mixer = IM_Mixer.new(8, ~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus,
 	~prm.modularSend.inBus, ~prm.delay.inBus,
 	relGroup: ~prm.procGroup, addAction: \addToHead);
+
+
+~prm.reverb.loadPreset('SoftGlow');
 );
 
 
@@ -103,6 +106,7 @@ var path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Exten
 ~sub1.setFilterEnvAttackTime(0.16);
 ~sub1.setFilterEnvPeakRatio(1.2);
 ~sub1.setFilterEnvDecayTime(0.835);
+~sub1.setFilterEnvLoop(true);
 
 
 // sub 2:
@@ -181,8 +185,10 @@ MIDIFunc.noteOn({ ~sampler.playSampleSustaining(\loop3, 2, -6); }, 62, 11);
 MIDIFunc.noteOff({ ~sampler.releaseSampleSustaining(\loop3); }, 62, 11);
 
 // sub 1:
-~sub1On = Array.fill(127, { | i | MIDIFunc.noteOn({ ~sub1.playNote(i.midicps) }, i, 8); });
+~sub1On = Array.fill(127, { | i |
+	MIDIFunc.noteOn({ | vel | ~sub1.playNote(i.midicps, vel.ccdbfs) }, i, 8); });
 ~sub1Off = Array.fill(127, { | i | MIDIFunc.noteOff({ ~sub1.releaseNote(i.midicps) }, i, 8); });
+~sub1Vol = MIDIFunc.cc({ | cc | ~sub1.mixer.setVol(cc.ccdbfs) }, 7, 8);
 
 /*
 ~sub1On = Array.fill(127, { | note, vel | MIDIFunc.noteOn({ ~sub1.playNote(note.midicps, vel.ccdbfs) },
@@ -192,8 +198,10 @@ note, 8); });
 */
 
 // sub 2:
-~sub2On = Array.fill(127, { | i | MIDIFunc.noteOn({ ~sub2.playNote(i.midicps) }, i, 9); });
+~sub2On = Array.fill(127, { | i |
+	MIDIFunc.noteOn({ | vel | ~sub2.playNote(i.midicps, vel.ccdbfs) }, i, 9); });
 ~sub2Off = Array.fill(127, { | i | MIDIFunc.noteOff({ ~sub2.releaseNote(i.midicps) }, i, 9); });
+~sub2Vol = MIDIFunc.cc({ | cc | ~sub2.mixer.setVol(cc.ccdbfs) }, 7, 9);
 
 // moog:
 ~moogOn = Array.fill(127, { | i | MIDIFunc.noteOn({ ~moog1.playNote(i.midicps) }, i, 0); });
@@ -206,3 +214,45 @@ note, 8); });
 
 );
 
+~cvGate1 = CV_Gate.new(37, ~prm.procGroup);
+~cvGate1.makeTrig
+
+~cv
+
+~cvEnv1 = CV_EnvPerc.new(38, ~prm.procGroup);
+
+~cvEnv2 = CV_EnvPerc.new(39, ~prm.procGroup);
+
+MIDIFunc.noteOn({ ~cvGate1.makeTrig }, 63, 15);
+MIDIFunc.noteOn({ ~cvEnv1.triggerEnvelope; }, 61, 15);
+MIDIFunc.noteOn({ ~cvEnv2.triggerEnvelope; }, 62, 15);
+
+
+~mixer.setSendVol(5, 0, -12);
+
+
+
+~prm.reverb.preEQ.mixer.setPreVol(0);
+~prm.reverb.postEQ.mixer.setPreVol(3);
+
+
+~prm.reverb.synth.gui
+
+~prm.reverb.savePreset('SoftGlow');
+
+
+
+~verb = IM_Reverb.new(~mixer.chanStereo(4), damp: 0.8, relGroup: ~prm.procGroup, addAction: \addToHead);
+~dist = Decapitator.new(~mixer.chanStereo(4), relGroup: ~prm.procGroup, addAction: \addToHead);
+~moog2 = IM_HardwareIn(~modInput[0], ~dist.inBus, ~prm.procGroup, \addToHead);
+
+~dist.postEQ.setLowPassCutoff(1400);
+
+~dist.setDistortionGain(1000);
+
+~dist.setDistortionGain(1);
+
+~dist.mixer.setPreVol(-12);
+
+
+~dist.makeGUI

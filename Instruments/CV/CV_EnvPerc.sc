@@ -9,7 +9,7 @@ CV_EnvPerc {
 	var <isLoaded, server;
 	var out, rG, action;
 
-	var attackTime, releaseTime, envLevel, envCurve;
+	var <attackTime, <releaseTime, <level, <curve;
 
 	*new { | outBus, relGroup, addAction = 'addToHead' |
 		^super.new.prInit(outBus, relGroup, addAction);
@@ -28,8 +28,8 @@ CV_EnvPerc {
 
 			attackTime = 0.05;
 			releaseTime = 0.5;
-			envLevel = 0.5;
-			envCurve = -4;
+			level = 0.5;
+			curve = -4;
 
 			isLoaded = true;
 		}
@@ -50,15 +50,17 @@ CV_EnvPerc {
 		isLoaded = false;
 	}
 
-	triggerEnvelope {
+	trigger {
 		var synth;
 		if(isLoaded == true, { Synth(\prm_CV_EnvPerc,
 			[\outBus, out, \attackTime, attackTime, \releaseTime, releaseTime,
-				\envLevel, envLevel, \envCurve, envCurve], rG, action); });
+				\envLevel, level, \envCurve, curve], rG, action); });
 	}
+
+	setOutBus { | outBus | out = outBus }
 
 	setAttackTime { | time = 0.05 | attackTime = time; }
 	setReleaseTime { | time = 0.5 | releaseTime = time; }
-	setEnvLevel { | level = 0.5 | envLevel = level; }
-	setEnvCurve { | curve = -4 | envCurve = curve; }
+	setLevel { | l = 0.5 | level = l; }
+	setCurve { | c = -4 | curve = c; }
 }

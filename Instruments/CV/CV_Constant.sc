@@ -59,4 +59,6 @@ CV_Constant {
     synth.set(\value, value);
   }
 
+	setOutBus { | outBus | out = outBus; synth.set(\outBus, outBus); }
+
 }

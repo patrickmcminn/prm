@@ -74,5 +74,9 @@ CV_Gate {
 
 	releaseGate {
 		gateIsHigh = false;
-		gate.set(\gate, 0); }
+		gate.set(\gate, 0);
+	}
+
+	setOutBus { | outBus | out = outBus }
+
 }

@@ -107,8 +107,11 @@ r {
 	~k2500RDevice = "mio10";
 	~k2500RPort = "DIN 3";
 
+	/*
 	~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
 		~modOutput[0]);
+	*/
+	~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput, ~modOutput);
 
 	while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
@@ -138,3 +141,6 @@ s.meter
 ~prm.subtractive.free;
 
 s.makeWindow
+
+~prm.isLoaded;
+~prm.mod4.isLoaded;

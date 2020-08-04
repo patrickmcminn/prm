@@ -17,7 +17,7 @@ CV_Suite {
 	var <gate1, <gate2, <constant1, <constant2;
 	var <freq1, <freq2, <pitchGate1, <pitchGate2;
 
-	var nilBus;
+	var <nilBus;
 	var <group;
 
 	*new {

@@ -130,11 +130,8 @@ s.makeWindow;
 Server.killAll;
 s.meter
 
-~prm.subtractive.playNote(220);
-
-~foundation.moog.moog.free
-
 s.meter
-~prm.subtractive.free;
 
 s.makeWindow
+
+~prm.reverb.makeGUI;

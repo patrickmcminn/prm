@@ -15,7 +15,7 @@ AudioSystem {
 	var hardwareOut, <systemMixer, <cmix;
 	var <irLibrary, <splitter;
 
-	var <sampler;
+	var <sampler, <cv;
 
 	var <reverb, <granulator, <modularSend, <delay;
 	var <splitter;
@@ -179,6 +179,9 @@ AudioSystem {
 
 			subtractive = Subtractive.new(cmix.chanStereo(7), relGroup: procGroup, addAction: \addToHead);
 			while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
+
+			cv = CV_Suite.new(procGroup, \addToHead);
+			while({ try { cv.isLoaded } != true }, { 0.001.wait; });
 
 
 			// reverb!

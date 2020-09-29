@@ -34,6 +34,8 @@ AudioSystem {
 	var <mod1, <mod2, <mod3, <mod4;
 	var <sampler, <subtractive;
 
+	var <threeAndFour, <five, <six, <sevenAndEight;
+
 	*new {
 		| numOutputs = 2, micInput, pickupInput, modInArray, modOutArray |
 		^super.new.prInit(numOutputs = 2, micInput, pickupInput, modInArray, modOutArray);
@@ -71,10 +73,6 @@ AudioSystem {
 			// Fix input checking: a numOutputs of 1 will result 0.5 passed to Array.fill
 			masterOutArray = Array.fill(numOutputs / 2, { |index| index * 2 });
 
-			// trying to create copies for a headphone mix.
-			// taking it out. no good!
-			//monitorMixer = IM_MasterMixer.new([0, 1], systemGroup);
-			//while({ try { monitorMixer.isLoaded } != true }, { 0.001.wait; });
 
 			systemMixer = IM_MasterMixer.new([0, 1], systemGroup);
 			// while( { try { systemMixer.inBus(0) } == nil }, { 0.001.wait });
@@ -115,7 +113,6 @@ AudioSystem {
 			reverb.postEQ.setPeak1RQ(3);
 			reverb.postEQ.setPeak1Gain(-5);
 
-			//reverb.loadPreset('longTrumpet');
 			reverb.loadPreset('prmDefault');
 
 			granulator = GranularDelay.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
@@ -136,32 +133,18 @@ AudioSystem {
 
 			/////////// DEFAULT INPUTS:
 
-			cmix = IM_Mixer.new(8, this.audioIn,
+			cmix = IM_Mixer.new(12, this.audioIn,
 				reverb.inBus, granulator.inBus, modularSend.inBus, delay.inBus, false, procGroup, \addToHead);
 			while({ try { cmix.isLoaded } != true }, { 0.001.wait; });
 
 			// utilities come in muted:
-			8.do({ | chan | cmix.mute(chan); });
+			12.do({ | chan | cmix.mute(chan); });
 
 			microphone = IM_HardwareIn.new(micInput, cmix.chanMono(0), procGroup, \addToHead);
 			while({ try { microphone.isLoaded } != true }, { 0.001.wait; });
 
-			/*
-			microphone = IM_Mixer_1Ch.new(cmix.chanStereo(0), relGroup: procGroup, addAction: \addToHead);
-			while({ try { microphone.isLoaded } != true }, { 0.001.wait; });
-			micInput = IM_HardwareIn.new(micInBus, microphone.chanMono(0), procGroup, \addToHead);
-			while({ try { micInput.isLoaded } != true }, { 0.001.wait; });
-			*/
-
 			pickup = IM_HardwareIn.new(pickupInput, cmix.chanMono(1), procGroup, \addToHead);
 			while({ try { pickup.isLoaded } != true }, { 0.001.wait; });
-
-			/*
-			pickup = IM_Mixer_1Ch.new(cmix.chanStereo(1), relGroup: procGroup, addAction: \addToHead);
-			while({ try { pickup.isLoaded } != true }, { 0.001.wait; });
-			pickupInput = IM_HardwareIn.new(pickupInBus, pickup.chanMono, procGroup, \addToHead);
-			while({ try { pickupInput.isLoaded } != true }, { 0.001.wait; });
-			*/
 
 			mod1 = IM_HardwareIn.new(modIn1, cmix.chanMono(2), procGroup, \addToHead);
 			while({ try { mod1.isLoaded } != true }, { 0.001.wait; });
@@ -175,38 +158,23 @@ AudioSystem {
 			mod4 = IM_HardwareIn.new(modIn4, cmix.chanMono(5), procGroup, \addToHead);
 			while({ try { mod4.isLoaded } != true }, { 0.001.wait; });
 
-			/*
-			modular = IM_Mixer_1Ch.new(cmix.chanStereo(2), relGroup: procGroup, addAction: \addToHead);
-			while( { try { modular.isLoaded } != true }, { 0.001.wait; });
-			modularInput = IM_HardwareIn.new(morphageneInBus, modular.chanMono, procGroup, \addToHead);
-			while({ try { modularInput.isLoaded } != true }, { 0.001.wait; });
-
-
-			moog = IM_Mixer_1Ch.new(cmix.chanStereo(3), relGroup: procGroup, addAction: \addToHead);
-			while({ try { moog.isLoaded } != true }, { 0.001.wait; });
-			moogInput = IM_HardwareIn.new(moogInBus, moog.chanMono(0), procGroup, \addToHead);
-			while({ try { moogInput.isLoaded } != true }, { 0.001.wait; });
-
-			modular2 = IM_HardwareIn.new(plaitsInBus, cmix.chanMono(4), procGroup, \addToHead);
-			while({ try { modular2.isLoaded } != true }, { 0.001.wait; });
-
-			modular3 = IM_HardwareIn.new(noiseInBus, cmix.chanMono(5), procGroup, \addToHead);
-			while({ try { modular3.isLoaded } != true }, { 0.001.wait; });
-
-			*/
-
 			sampler = SampleGrid.new(cmix.chanStereo(6), relGroup: procGroup, addAction: \addToHead);
 			while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
 
-			/*
-			beauty = Beauty.newMono(cmix.chanStereo(6), relGroup: procGroup, addAction: \addToHead);
-			while({ try { beauty.isLoaded } != true }, { 0.001.wait; });
-			beautyIn = IM_HardwareIn.new(pickupInBus, beauty.inBus, procGroup, \addToHead);
-			while({ try { beautyIn.isLoaded } != true }, { 0.001.wait; });
-			*/
-
 			subtractive = Subtractive.new(cmix.chanStereo(7), relGroup: procGroup, addAction: \addToHead);
 			while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
+
+			threeAndFour = IM_HardwareIn.newStereo(2, cmix.chanStereo(8), procGroup, \addToHead);
+			while({ try { threeAndFour.isLoaded } != true }, { 0.001.wait; });
+
+			five = IM_HardwareIn.new(4, cmix.chanMono(9), procGroup, \addToHead);
+			while({ try { five.isLoaded } != true }, { 0.001.wait; });
+
+			six = IM_HardwareIn.new(5, cmix.chanMono(10), procGroup, \addToHead);
+			while({ try { six.isLoaded } != true }, { 0.001.wait; });
+
+			sevenAndEight = IM_HardwareIn.newStereo(6, cmix.chanStereo(11), procGroup, \addToHead);
+			while({ try { sevenAndEight.isLoaded } != true }, { 0.001.wait; });
 
 			// reverb!
 			cmix.setSendVol(0, 0, -3);
@@ -220,9 +188,6 @@ AudioSystem {
 			cmix.setSendVol(7, 0, -6);
 
 			splitter.setOutBus(1, sampler.inBus);
-
-
-			//songBook = IdentityDictionary.new;
 
 			isLoaded = true;
 

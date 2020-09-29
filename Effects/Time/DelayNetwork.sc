@@ -53,9 +53,9 @@ DelayNetwork : IM_Module {
 
 			server.sync;
 
-			splitter = Splitter.newMono(2, [dry.chanMono(0), delayBus],
-				relGroup: group, addAction: \addToHead);
-			while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
+			//splitter = Splitter.newMono(2, [dry.chanMono(0), delayBus],
+				//relGroup: group, addAction: \addToHead);
+			//while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
 			isLoaded = true;
 		};
@@ -148,7 +148,7 @@ DelayNetwork : IM_Module {
 			Synth(\prm_delayNetwork_mono,
 				[
 					\inBus, delayBus, \outBus, subMixer.chanMono(i),
-					\maxDelay, maxDelay, \delayTime, rrand(delayTimeLow, delayTimeHigh),
+					\maxDelayTime, maxDelay, \delayTime, rrand(delayTimeLow, delayTimeHigh),
 					\feedback, 0.2, \shiftAmount, shift
 			], group, \addToHead);
 		});
@@ -161,7 +161,7 @@ DelayNetwork : IM_Module {
 			Synth(\prm_delayNetwork_stereo,
 				[
 					\inBus, delayBus, \outBus, subMixer.chanStereo(i),
-					\maxDelay, maxDelay, \delayTime, rrand(delayTimeLow, delayTimeHigh),
+					\maxDelayTime, maxDelay, \delayTime, rrand(delayTimeLow, delayTimeHigh),
 					\feedback, 0.2, \shiftAmount, shift
 			], group, \addToHead);
 		});
@@ -170,7 +170,7 @@ DelayNetwork : IM_Module {
 
 	//////// Public Functions:
 
-	inBus { ^splitter.inBus; }
+	inBus { ^delayBus }
 
 	free {
 		isLoaded = false;

@@ -287,35 +287,35 @@ envReset.value;
 
 //// Reverb:
 ~apc.setDeviceEncodersMonitorFunc(\verbEQ, {
-	var postLow, postHigh, preLow, preHigh;
-	postLow = ~prm.reverb.postEQ.lowPassCutoff.explin(200, 20000, 0, 127);
+	var preDelay, decayTime, highCut, postHigh;
+	preDelay = ~prm.reverb.preDelay.explin(0.0000001, 500, 0, 127);
+	decayTime = ~prm.reverb.decayTime.explin(0.1, 100, 0, 127);
+	highCut = ~prm.reverb.highCut.explin(100, 15000, 0, 127);
 	postHigh = ~prm.reverb.postEQ.highPassCutoff.explin(40, 4500, 0, 127);
-	preLow = ~prm.reverb.preEQ.lowPassCutoff.explin(200, 20000, 0, 127);
-	preHigh = ~prm.reverb.preEQ.highPassCutoff.explin(40, 4500, 0, 127);
-	~apc.setDeviceEncoderValue(1, postLow, reverb, page);
-	~apc.setDeviceEncoderValue(2, postHigh, reverb, page);
-	~apc.setDeviceEncoderValue(3, preLow, reverb, page);
-	~apc.setDeviceEncoderValue(4, preHigh, reverb, page);
+	~apc.setDeviceEncoderValue(1, decayTime, reverb, page);
+	~apc.setDeviceEncoderValue(2, highCut, reverb, page);
+	~apc.setDeviceEncoderValue(3, preDelay, reverb, page);
+	~apc.setDeviceEncoderValue(4, postHigh, reverb, page);
 }, bank: reverb, page: page);
-// post EQ Low Pass:
+// decay time:
 ~apc.setDeviceEncoderFunc(1, { | val |
-	var cutoff = val.linexp(0, 127, 200, 20000);
-	~prm.reverb.postEQ.setLowPassCutoff(cutoff);
+	var time = val.linexp(0, 127, 0.1, 100);
+	~prm.reverb.setDecayTime(time);
 }, reverb, page);
-// post EQ High Pass:
+// high cut :
 ~apc.setDeviceEncoderFunc(2, { | val |
-	var cutoff = val.linexp(0, 127, 40, 4500);
-	~prm.reverb.postEQ.setHighPassCutoff(cutoff);
+	var cut = val.linexp(0, 127, 100, 15000);
+	~prm.reverb.setHighCut(cut);
 }, reverb, page);
-// pre EQ Low Pass:
+// pre delay:
 ~apc.setDeviceEncoderFunc(3, { | val |
-	var cutoff = val.linexp(0, 127, 200, 20000);
-	~prm.reverb.preEQ.setLowPassCutoff(cutoff);
+	var delay = val.linexp(0, 127, 0.0000001, 500);
+	~prm.reverb.setPreDelay(delay);
 }, reverb, page);
-// pre EQ High Pass:
+// post reverb highpass:
 ~apc.setDeviceEncoderFunc(4, { | val |
 	var cutoff = val.linexp(0, 127, 40, 4500);
-	~prm.reverb.preEQ.setHighPassCutoff(cutoff);
+	~prm.reverb.postEQ.setHighPassCutoff(cutoff);
 }, reverb, page);
 
 //// Granulator:

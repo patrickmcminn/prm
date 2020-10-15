@@ -149,7 +149,7 @@ freeMIDIFuncs = {
 /*
 what are you looking to do?
 
--- 1st 4 knobs are regulard sends to the system
+-- 1st 4 knobs are regular sends to the system
 -- that means, without bank changes, you have 12 knobs to work with
 -- what do you absolutely need?
 

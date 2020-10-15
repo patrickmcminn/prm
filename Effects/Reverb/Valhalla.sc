@@ -111,6 +111,7 @@ Valhalla : IM_Module {
 		}).add;
 	}
 
+	// really not working yet for some reason
 	prPopulateParameters {
 		synth.get(\HighCut, { | val |
 			highCut = val.linlin(0.0, 1.0, 100, 15000);
@@ -164,7 +165,7 @@ Valhalla : IM_Module {
 	setDecayTime { | decay = 1.5 |
 		var dec;
 		decayTime = decay;
-		dec = decayTime.linlin(0, 100, 0.0, 1.0);
+		dec = decayTime.linlin(0.1, 100, 0.0, 1.0);
 		synth.set(\decay, dec);
 	}
 
@@ -172,6 +173,7 @@ Valhalla : IM_Module {
 		var c;
 		highCut = cut;
 		c = highCut.linlin(100, 15000, 0.0, 1.0);
+		c = c.lag(0.1);
 		synth.set(\HighCut, c);
 	}
 

@@ -119,6 +119,13 @@ SynthDef(\
 		Out.ar(outBus, sig);
 	}).add;
 
+
+	SynthDef(\prm_concatGendyUnpitched, {
+		|
+		inBus, outBus, amp
+
+
+
 (
 {
 var concat, control, input;

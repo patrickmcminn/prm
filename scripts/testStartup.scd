@@ -39,25 +39,24 @@ r {
 	~micIn = 0;
 	~pickupIn = 1;
 
-
 	~modInput = Array.fill(4, { | i | 10 + i });
 	~modOutput = Array.fill(8, { | i | 12 + i });
 
 	//// MIDI Devices:
 
-
 	// M32:
 	~moogDevice = "Pyramid MIDI USB";
 	~moogPort = "Pyramid MIDI USB";
 
+
 	//~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modOutput[0]);
-	~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
-		~modOutput[0]);
+		~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput, ~modOutput);
 
 	while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
 	try { ~apc = APC40Mk2.new; };
 	try { ~base = Base.new; };
+	try { ~pyr = MIDIIn.findPort("Pyramid MIDI USB", "Pyramid MIDI USB");};
 
 	"/Global Functions/Load Global Functions.scd".loadRelative;
 	"/System Scripts/Load System Scripts.scd".loadRelative;
@@ -72,6 +71,7 @@ r {
 //// Studio: ////
 ////////////////
 
+(
 r {
 	//// Audio Inputs:
 	~micIn = 0;
@@ -107,14 +107,18 @@ r {
 	~k2500RDevice = "mio10";
 	~k2500RPort = "DIN 3";
 
-	~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
-		~modOutput[0]);
+	~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput, ~modOutput);
 
 	while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
+	s.sync;
+
 	try { ~apc = APC40Mk2.new; };
+	s.sync;
 	try { ~base = Base.new; };
-	try { ~pyr = MIDIIn.findPort("Pyramid MIDI USB", "Pyramid MIDI USB");}
+	s.sync;
+	try { ~pyr = MIDIIn.findPort("Pyramid MIDI USB", "Pyramid MIDI USB");};
+	s.sync;
 
 
 	"/Global Functions/Load Global Functions.scd".loadRelative;
@@ -124,14 +128,35 @@ r {
 	"/Instruments/Load Instruments.scd".loadRelative;
 
 }.play;
+)
 
 s.makeWindow;
 
 Server.killAll;
 s.meter
 
+~prm.subtractive.playNote(220);
+
+~foundation.moog.moog.free
+
 s.meter
+~prm.subtractive.free;
 
 s.makeWindow
 
-~prm.reverb.makeGUI;
+~prm.subtractive;
+
+~prm.isLoaded;
+
+
+~prm.reverb.makeGUI
+
+~prm.sampler.rate(4);
+
+(9/8)/4
+~prm.sampler.setRate(4, (9/8)/8);
+~prm.sampler.setRate(9, 4);
+
+~prm.cmix.setPreVol(2, 6);
+~prm.cmix.setPanBal(4, -1);
+~prm.cmix.setPanBal(5, 1);

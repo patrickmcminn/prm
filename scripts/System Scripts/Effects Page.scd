@@ -21,6 +21,8 @@ var tuningNoteIsPlaying = false;
 var loopDelayIsLoaded = false;
 var hugeIsLoaded = false;
 
+var concIsLoaded = false;
+
 var envReset;
 
 ~apc.makePage(page);
@@ -89,6 +91,31 @@ var envReset;
 			~hugeInput.free;
 			~apc.setGridFunc(1, 3, { }, page: page);
 			~apc.turnGridOff(1, 3);
+	});
+}, page: page);
+
+// concaterwaul:
+
+~apc.turnGridCyan(0, 2, page: page);
+~apc.setGridFunc(0, 2, {
+	if( concIsLoaded == false,
+		{
+			r{
+				~conc = Concaterwaul.newMono(~prm.audioIn,
+					~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+					false, ~prm.procGroup, \addToHead);
+				while({ try { ~conc.isLoaded } != true }, { 0.001.wait; });
+				~concInput = IM_HardwareIn.new(1, ~conc.inBus, ~prm.procGroup, \addToHead);
+				while({ try { ~concInput.isLoaded } != true }, { 0.001.wait; });
+				~apc.turnGridGreen(1, 2);
+				~apc.setGridFunc(1, 2, { ~apc.setPage('concaterwaul') }, page: page);
+			}.play;
+		},
+		{
+			~conc.free;
+			~concInput.free;
+			~apc.setGridFunc(1, 2, { }, page: page);
+			~apc.turnGridOff(1, 2);
 	});
 }, page: page);
 
@@ -287,35 +314,35 @@ envReset.value;
 
 //// Reverb:
 ~apc.setDeviceEncodersMonitorFunc(\verbEQ, {
-	var postLow, postHigh, preLow, preHigh;
-	postLow = ~prm.reverb.postEQ.lowPassCutoff.explin(200, 20000, 0, 127);
+	var preDelay, decayTime, highCut, postHigh;
+	preDelay = ~prm.reverb.preDelay.explin(0.0000001, 500, 0, 127);
+	decayTime = ~prm.reverb.decayTime.explin(0.1, 100, 0, 127);
+	highCut = ~prm.reverb.highCut.explin(100, 15000, 0, 127);
 	postHigh = ~prm.reverb.postEQ.highPassCutoff.explin(40, 4500, 0, 127);
-	preLow = ~prm.reverb.preEQ.lowPassCutoff.explin(200, 20000, 0, 127);
-	preHigh = ~prm.reverb.preEQ.highPassCutoff.explin(40, 4500, 0, 127);
-	~apc.setDeviceEncoderValue(1, postLow, reverb, page);
-	~apc.setDeviceEncoderValue(2, postHigh, reverb, page);
-	~apc.setDeviceEncoderValue(3, preLow, reverb, page);
-	~apc.setDeviceEncoderValue(4, preHigh, reverb, page);
+	~apc.setDeviceEncoderValue(1, decayTime, reverb, page);
+	~apc.setDeviceEncoderValue(2, highCut, reverb, page);
+	~apc.setDeviceEncoderValue(3, preDelay, reverb, page);
+	~apc.setDeviceEncoderValue(4, postHigh, reverb, page);
 }, bank: reverb, page: page);
-// post EQ Low Pass:
+// decay time:
 ~apc.setDeviceEncoderFunc(1, { | val |
-	var cutoff = val.linexp(0, 127, 200, 20000);
-	~prm.reverb.postEQ.setLowPassCutoff(cutoff);
+	var time = val.linexp(0, 127, 0.1, 100);
+	~prm.reverb.setDecayTime(time);
 }, reverb, page);
-// post EQ High Pass:
+// high cut :
 ~apc.setDeviceEncoderFunc(2, { | val |
-	var cutoff = val.linexp(0, 127, 40, 4500);
-	~prm.reverb.postEQ.setHighPassCutoff(cutoff);
+	var cut = val.linexp(0, 127, 100, 15000);
+	~prm.reverb.setHighCut(cut);
 }, reverb, page);
-// pre EQ Low Pass:
+// pre delay:
 ~apc.setDeviceEncoderFunc(3, { | val |
-	var cutoff = val.linexp(0, 127, 200, 20000);
-	~prm.reverb.preEQ.setLowPassCutoff(cutoff);
+	var delay = val.linexp(0, 127, 0.0000001, 500);
+	~prm.reverb.setPreDelay(delay);
 }, reverb, page);
-// pre EQ High Pass:
+// post reverb highpass:
 ~apc.setDeviceEncoderFunc(4, { | val |
 	var cutoff = val.linexp(0, 127, 40, 4500);
-	~prm.reverb.preEQ.setHighPassCutoff(cutoff);
+	~prm.reverb.postEQ.setHighPassCutoff(cutoff);
 }, reverb, page);
 
 //// Granulator:

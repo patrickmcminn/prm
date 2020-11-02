@@ -11,6 +11,16 @@ var send1 = 1;
 var send2 = 2;
 var send3 = 3;
 
+var send01 = 4;
+var send11 = 5;
+var send21 = 6;
+var send31 = 7;
+
+var activeCMix = 0;
+
+var cmix0 = 0;
+var cmix1 = 1;
+
 var foundationIsLoaded = false;
 var falseSelfIsLoaded = false;
 
@@ -24,7 +34,9 @@ var tuningNoteIsPlaying = false;
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 ~apc.storageDict[\loadMasterFunc].value;
 
-~apc.addMixerEncodersBanks(3, page);
+~apc.addMixerEncodersBanks(7, page);
+~apc.addDeviceButtonsBanks(1, page);
+~apc.addMixerBanks(1, page);
 
 //////// Sampler Page:
 ~apc.turnSceneLaunchButtonPurple(2, 2, page: page);
@@ -185,22 +197,22 @@ var tuningNoteIsPlaying = false;
 
 8.do({ | i |
   // vol:
-  ~apc.setFaderFunc(i+1, { | val | ~prm.cmix.setVol(i, val.ccdbfs); }, page: page);
+  ~apc.setFaderFunc(i+1, { | val | ~prm.cmix.setVol(i, val.ccdbfs); }, bank: cmix0, page: page);
   // toggle mute:
-  ~apc.setTrackSelectFunc(i+1, { ~prm.cmix.tglMute(i); }, page: page);
+  ~apc.setTrackSelectFunc(i+1, { ~prm.cmix.tglMute(i); }, bank: cmix0, page: page);
   ~apc.setMixerMonitorFunc("mute"++i.asSymbol, {
     if( ~prm.cmix.isMuted(i), { ~apc.turnTrackSelectButtonOff(i+1) }, { ~apc.turnTrackSelectButtonOn(i+1); });
-  }, page: page);
+  }, bank: cmix0, page: page);
   // sends pre/post:
   ~apc.setCrossfaderSelectFunc(i+1, {
     if( ~prm.cmix.preOrPost(i) == 'post',
       { ~prm.cmix.setSendPre(i); }, { ~prm.cmix.setSendPost(i) });
-  }, page: page);
+  }, bank: cmix0, page: page);
   ~apc.setMixerMonitorFunc("preOrPost"++i.asSymbol, {
     if( ~prm.cmix.preOrPost(i) == 'post',
       { ~apc.turnCrossfaderSelectButtonOrange(i+1) },
       { ~apc.turnCrossfaderSelectButtonYellow(i+1) });
-  }, page: page);
+  }, bank: cmix0, page: page);
 
   //// sends:
   ~apc.setMixerEncoderFunc(i+1, { | val | ~prm.cmix.setSendVol(i, 0, val.ccdbfs); }, bank: send0, page: page);
@@ -227,14 +239,67 @@ var tuningNoteIsPlaying = false;
       { ~apc.turnDeviceButtonOn(3) }, { ~apc.turnDeviceButtonOff(3) });
     if( ~apc.activeMixerEncodersBank == send3,
       { ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4) });
-  }, page: page);
+  }, bank: cmix0, page: page);
 
-  ~apc.setDeviceButtonFunc(1, { ~apc.setActiveMixerEncodersBank(send0); }, page: page);
-  ~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1);  }, page: page);
-  ~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2); }, page: page);
-  ~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); }, page: page);
+  ~apc.setDeviceButtonFunc(1, { ~apc.setActiveMixerEncodersBank(send0); }, bank: cmix0, page: page);
+  ~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1);  }, bank: cmix0, page: page);
+  ~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2); }, bank: cmix0, page: page);
+  ~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); }, bank: cmix0, page: page);
 
 });
+
+// ext ins:
+
+~apc.setMixerMonitorFunc(\cMix0Enable, {
+	if( ~prm.microphone.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
+	if( ~prm.pickup.isMuted, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
+	if( ~prm.mod1.isMuted, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
+	if( ~prm.mod2.isMuted, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
+	if( ~prm.mod3.isMuted, { ~apc.turnRecordEnableButtonOff(5) }, { ~apc.turnRecordEnableButtonOn(5) });
+	if( ~prm.mod4.isMuted, { ~apc.turnRecordEnableButtonOff(6) }, { ~apc.turnRecordEnableButtonOn(6) });
+}, bank: cmix0, page: page);
+
+~apc.setRecordEnableButtonFunc(1, { ~prm.microphone.tglMute; }, bank: cmix0, page: page);
+~apc.setRecordEnableButtonFunc(2, { ~prm.pickup.tglMute; }, bank: cmix0, page: page);
+~apc.setRecordEnableButtonFunc(3, { ~prm.mod1.tglMute; }, bank: cmix0, page: page);
+~apc.setRecordEnableButtonFunc(4, { ~prm.mod2.tglMute; }, bank: cmix0, page: page);
+~apc.setRecordEnableButtonFunc(5, { ~prm.mod3.tglMute; }, bank: cmix0, page: page);
+~apc.setRecordEnableButtonFunc(6, { ~prm.mod4.tglMute; }, bank: cmix0, page: page);
+
+
+//////// second mixer page:
+~apc.mapMixer(~prm.cmix, 4, 8, 0, send01, send11, send21, send31, cmix1, page);
+~apc.mapSendBanks(\cmix1, send01, send11, send21, send31, cmix1, page);
+
+~apc.setMixerMonitorFunc(\cmix1Enable, {
+	if( ~prm.threeAndFour.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
+	if( ~prm.five.isMuted, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
+	if( ~prm.six.isMuted, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
+	if( ~prm.sevenAndEight.isMuted, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
+}, bank: cmix1, page: page);
+~apc.setRecordEnableButtonFunc(1, { ~prm.threeAndFour.tglMute }, bank: cmix1, page: page);
+~apc.setRecordEnableButtonFunc(2, { ~prm.fix.tglMute }, bank: cmix1, page: page);
+~apc.setRecordEnableButtonFunc(3, { ~prm.six.tglMute }, bank: cmix1, page: page);
+~apc.setRecordEnableButtonFunc(4, { ~prm.sevenAndEight.tglMute }, bank: cmix1, page: page);
+
+
+//////// Page Change:
+
+~apc.turnDeviceButtonOn(5, cmix0, page);
+~apc.setDeviceButtonFunc(6, {
+	activeCMix = 1;
+	~apc.setActiveMixerBank(activeCMix);
+	~apc.setActiveDeviceButtonsBank(activeCMix);
+	~apc.setActiveMixerEncodersBank(send01);
+}, bank: cmix0, page: page);
+
+~apc.turnDeviceButtonOn(6, cmix1, page);
+~apc.setDeviceButtonFunc(5, {
+	activeCMix = 0;
+	~apc.setActiveMixerBank(activeCMix);
+	~apc.setActiveDeviceButtonsBank(activeCMix);
+	~apc.setActiveMixerEncodersBank(send0);
+}, bank: cmix1, page: page);
 
 
 //////// tuning note:

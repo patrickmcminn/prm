@@ -122,8 +122,8 @@ IM_ChannelStrip {
 			input = In.ar(inBus, 2);
 			input = input * preAmp;
 
-			monoInput = Pan2.ar(input[0], panBal);
-			stereoInput = Balance2.ar(input[0], input[1], panBal);
+			monoInput = Pan2.ar(input[0], panBal, 3.dbamp);
+			stereoInput = Balance2.ar(input[0], input[1], panBal, 3.dbamp);
 
 			monoOrStereoSig = (monoInput * (1-monoOrStereo)) + (stereoInput * monoOrStereo);
 			// adjusts for weird drop in volume:
@@ -156,8 +156,8 @@ IM_ChannelStrip {
 			input = InFeedback.ar(inBus, 2);
 			input = input * preAmp;
 
-			monoInput = Pan2.ar(input[0], panBal);
-			stereoInput = Balance2.ar(input[0], input[1], panBal);
+			monoInput = Pan2.ar(input[0], panBal, 3.dbamp);
+			stereoInput = Balance2.ar(input[0], input[1], panBal, 3.dbamp);
 
 			monoOrStereoSig = (monoInput * (1-monoOrStereo)) + (stereoInput * monoOrStereo);
 			sig = monoOrStereoSig * amp * (1 - mute);
@@ -185,8 +185,8 @@ IM_ChannelStrip {
 			input = In.ar(inBus, 2);
 			input = input * preAmp;
 
-			monoInput = Pan2.ar(input[0], panBal);
-			stereoInput = Balance2.ar(input[0], input[1], panBal);
+			monoInput = Pan2.ar(input[0], panBal, 3.dbamp);
+			stereoInput = Balance2.ar(input[0], input[1], panBal, 3.dbamp);
 
 			monoOrStereoSig = (monoInput * (1-monoOrStereo)) + (stereoInput * monoOrStereo);
 			// adjusts for weird drop in volume:
@@ -207,8 +207,8 @@ IM_ChannelStrip {
 			input = InFeedback.ar(inBus, 2);
 			input = input * preAmp;
 
-			monoInput = Pan2.ar(input[0], panBal);
-			stereoInput = Balance2.ar(input[0], input[1], panBal);
+			monoInput = Pan2.ar(input[0], panBal, 3.dbamp);
+			stereoInput = Balance2.ar(input[0], input[1], panBal, 3.dbamp);
 
 			monoOrStereoSig = (monoInput * (1-monoOrStereo)) + (stereoInput * monoOrStereo);
 			sig = monoOrStereoSig * amp * (1 - mute);

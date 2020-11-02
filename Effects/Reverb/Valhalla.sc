@@ -13,6 +13,8 @@ Valhalla : IM_Module {
 	var <preEQ, <postEQ;
 	var path;
 
+	var <highCut, <decayTime, <mix, <preDelay;
+
 	*new {
 		| outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
 		^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -47,6 +49,8 @@ Valhalla : IM_Module {
 
 			server.sync;
 
+			this.prPopulateParameters;
+
 			mixer.setPreVol(6);
 			//preEQ.mixer.setPreVol(3);
 			postEQ.mixer.setPreVol(3);
@@ -79,6 +83,8 @@ Valhalla : IM_Module {
 
 			server.sync;
 
+			this.prPopulateParameters;
+
 			mixer.setPreVol(6);
 			//preEQ.mixer.setPreVol(3);
 			postEQ.mixer.setPreVol(3);
@@ -105,6 +111,21 @@ Valhalla : IM_Module {
 		}).add;
 	}
 
+	// really not working yet for some reason
+	prPopulateParameters {
+		synth.get(\HighCut, { | val |
+			highCut = val.linlin(0.0, 1.0, 100, 15000);
+		});
+		synth.get(\decay, { | val |
+			decayTime = val.linlin(0.0, 1.0, 0.1, 100);
+		});
+		synth.get(\mix, { | val |
+			mix = val;
+		});
+		synth.get(\predelay, { | val |
+			preDelay = val.linlin(0.0, 1.0, 0, 500);
+		});
+	}
 
 	//////// public functions:
 
@@ -120,6 +141,7 @@ Valhalla : IM_Module {
 
 	loadPreset { | name = \default |
 		synth.readProgram(path ++ name ++ ".fxp");
+		this.prPopulateParameters;
 	}
 
 	savePreset { | name = \default |
@@ -127,5 +149,34 @@ Valhalla : IM_Module {
 	}
 
 	makeGUI { ^synth.gui }
+
+	setMix { | m = 1.0 |
+		mix = m;
+		synth.set(\mix, mix);
+	}
+
+	setPreDelay { | delay = 0.0 |
+		var del;
+		preDelay = delay;
+		del = preDelay.linlin(0, 500, 0.0, 1.0);
+		synth.set(\predelay, del);
+	}
+
+	setDecayTime { | decay = 1.5 |
+		var dec;
+		decayTime = decay;
+		dec = decayTime.linlin(0.1, 100, 0.0, 1.0);
+		synth.set(\decay, dec);
+	}
+
+	setHighCut { | cut = 4500 |
+		var c;
+		highCut = cut;
+		c = highCut.linlin(100, 15000, 0.0, 1.0);
+		c = c.lag(0.1);
+		synth.set(\HighCut, c);
+	}
+
+
 
 }

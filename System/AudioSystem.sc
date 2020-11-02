@@ -6,6 +6,10 @@ prm
 
 2/26/2020
 moving over to Valhalla VST
+
+8/4/2020
+cleaning up
+making cMixer a bit more generic
 */
 
 AudioSystem {
@@ -15,41 +19,41 @@ AudioSystem {
 	var hardwareOut, <systemMixer, <cmix;
 	var <irLibrary, <splitter;
 
-	var <sampler, <cv;
+	var modIn1, modIn2, modIn3, modIn4;
+	var modOut1;
 
 	var <reverb, <granulator, <modularSend, <delay;
 	var <splitter;
-	var <microphone, <micInput, <pickup, <pickupInput, <modular, modularInput,  <moog, <moogInput;
-	var <modular2, <modularInput2, <modular3, <modularInput3;
 	var <beauty, <beautyIn;
-	var <subtractive;
 	var <songBook;
 	var <server;
 
 	var <masterEQ;
 
-	var micIn, pickupIn, moogIn, morphageneIn, modularOut;
+	var <microphone, <pickup;
+	var <mod1, <mod2, <mod3, <mod4;
+	var <sampler, <subtractive;
+
+	var <threeAndFour, <five, <six, <sevenAndEight;
 
 	*new {
-		|
-		numOutputs = 2, micInBus, pickupInBus, moogInBus,
-		morphageneInBus, plaitsInBus, noiseInBus, modularOutBus
-		|
-		^super.new.prInit(numOutputs,micInBus, pickupInBus, moogInBus, morphageneInBus,
-			plaitsInBus, noiseInBus, modularOutBus);
+		| numOutputs = 2, micInput, pickupInput, modInArray, modOutArray |
+		^super.new.prInit(numOutputs = 2, micInput, pickupInput, modInArray, modOutArray);
 	}
 
 	prInit {
-		|
-		numOutputs,micInBus, pickupInBus, moogInBus, morphageneInBus,
-		plaitsInBus, noiseInBus, modularOutBus
-		|
+		| numOutputs = 2, micInput, pickupInput, modInArray, modOutArray |
+
 		server = Server.default;
 
 		this.prSetServerOptions(server, 64, 131072, 1024, nil);
 
-		micIn = micInBus; pickupIn = pickupInBus; moogIn = moogInBus; morphageneIn = morphageneInBus;
-		modularOut = modularOutBus;
+		modIn1 = modInArray[0];
+		modIn2 = modInArray[1];
+		modIn3 = modInArray[2];
+		modIn4 = modInArray[3];
+
+		modOut1 = modOutArray[0];
 
 		server.waitForBoot {
 			var masterOutArray;
@@ -69,10 +73,6 @@ AudioSystem {
 			// Fix input checking: a numOutputs of 1 will result 0.5 passed to Array.fill
 			masterOutArray = Array.fill(numOutputs / 2, { |index| index * 2 });
 
-			// trying to create copies for a headphone mix.
-			// taking it out. no good!
-			//monitorMixer = IM_MasterMixer.new([0, 1], systemGroup);
-			//while({ try { monitorMixer.isLoaded } != true }, { 0.001.wait; });
 
 			systemMixer = IM_MasterMixer.new([0, 1], systemGroup);
 			// while( { try { systemMixer.inBus(0) } == nil }, { 0.001.wait });
@@ -92,7 +92,6 @@ AudioSystem {
 			server.sync;
 
 			///////// RETURN FX:
-
 			//
 
 			reverb = Valhalla.newStereo(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
@@ -114,7 +113,7 @@ AudioSystem {
 			reverb.postEQ.setPeak1RQ(3);
 			reverb.postEQ.setPeak1Gain(-5);
 
-			reverb.loadPreset('longTrumpet');
+			reverb.loadPreset('prmDefault');
 
 			granulator = GranularDelay.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
 			server.sync;
@@ -123,7 +122,7 @@ AudioSystem {
 			granulator.delay.setMix(0);
 
 			// send out to modular system
-			modularSend = MonoHardwareSend.new(modularOut, relGroup: systemGroup, addAction: \addToHead);
+			modularSend = MonoHardwareSend.new(modOut1, relGroup: systemGroup, addAction: \addToHead);
 			while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 
 			// delay:
@@ -134,55 +133,48 @@ AudioSystem {
 
 			/////////// DEFAULT INPUTS:
 
-			cmix = IM_Mixer.new(8, this.audioIn,
+			cmix = IM_Mixer.new(12, this.audioIn,
 				reverb.inBus, granulator.inBus, modularSend.inBus, delay.inBus, false, procGroup, \addToHead);
 			while({ try { cmix.isLoaded } != true }, { 0.001.wait; });
 
 			// utilities come in muted:
-			cmix.mute(0); cmix.mute(1); cmix.mute(2); cmix.mute(3); cmix.mute(4); cmix.mute(5); cmix.mute(6);
+			12.do({ | chan | cmix.mute(chan); });
 
-			microphone = IM_Mixer_1Ch.new(cmix.chanStereo(0), relGroup: procGroup, addAction: \addToHead);
+			microphone = IM_HardwareIn.new(micInput, cmix.chanMono(0), procGroup, \addToHead);
 			while({ try { microphone.isLoaded } != true }, { 0.001.wait; });
-			micInput = IM_HardwareIn.new(micInBus, microphone.chanMono(0), procGroup, \addToHead);
-			while({ try { micInput.isLoaded } != true }, { 0.001.wait; });
 
-			pickup = IM_Mixer_1Ch.new(cmix.chanStereo(1), relGroup: procGroup, addAction: \addToHead);
+			pickup = IM_HardwareIn.new(pickupInput, cmix.chanMono(1), procGroup, \addToHead);
 			while({ try { pickup.isLoaded } != true }, { 0.001.wait; });
-			pickupInput = IM_HardwareIn.new(pickupInBus, pickup.chanMono, procGroup, \addToHead);
-			while({ try { pickupInput.isLoaded } != true }, { 0.001.wait; });
 
-			modular = IM_Mixer_1Ch.new(cmix.chanStereo(2), relGroup: procGroup, addAction: \addToHead);
-			while( { try { modular.isLoaded } != true }, { 0.001.wait; });
-			modularInput = IM_HardwareIn.new(morphageneInBus, modular.chanMono, procGroup, \addToHead);
-			while({ try { modularInput.isLoaded } != true }, { 0.001.wait; });
+			mod1 = IM_HardwareIn.new(modIn1, cmix.chanMono(2), procGroup, \addToHead);
+			while({ try { mod1.isLoaded } != true }, { 0.001.wait; });
 
-			moog = IM_Mixer_1Ch.new(cmix.chanStereo(3), relGroup: procGroup, addAction: \addToHead);
-			while({ try { moog.isLoaded } != true }, { 0.001.wait; });
-			moogInput = IM_HardwareIn.new(moogInBus, moog.chanMono(0), procGroup, \addToHead);
-			while({ try { moogInput.isLoaded } != true }, { 0.001.wait; });
+			mod2 = IM_HardwareIn.new(modIn2, cmix.chanMono(3), procGroup, \addToHead);
+			while({ try { mod2.isLoaded } != true }, { 0.001.wait; });
 
+			mod3 = IM_HardwareIn.new(modIn3, cmix.chanMono(4), procGroup, \addToHead);
+			while({ try { mod3.isLoaded } != true }, { 0.001.wait; });
+
+			mod4 = IM_HardwareIn.new(modIn4, cmix.chanMono(5), procGroup, \addToHead);
+			while({ try { mod4.isLoaded } != true }, { 0.001.wait; });
 
 			sampler = SampleGrid.new(cmix.chanStereo(6), relGroup: procGroup, addAction: \addToHead);
 			while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
-			/*
-			beauty = Beauty.newMono(cmix.chanStereo(6), relGroup: procGroup, addAction: \addToHead);
-			while({ try { beauty.isLoaded } != true }, { 0.001.wait; });
-			beautyIn = IM_HardwareIn.new(pickupInBus, beauty.inBus, procGroup, \addToHead);
-			while({ try { beautyIn.isLoaded } != true }, { 0.001.wait; });
-			*/
-
-			modular2 = IM_HardwareIn.new(plaitsInBus, cmix.chanMono(4), procGroup, \addToHead);
-			while({ try { modular2.isLoaded } != true }, { 0.001.wait; });
-
-			modular3 = IM_HardwareIn.new(noiseInBus, cmix.chanMono(5), procGroup, \addToHead);
-			while({ try { modular3.isLoaded } != true }, { 0.001.wait; });
 
 			subtractive = Subtractive.new(cmix.chanStereo(7), relGroup: procGroup, addAction: \addToHead);
 			while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
 
-			cv = CV_Suite.new(procGroup, \addToHead);
-			while({ try { cv.isLoaded } != true }, { 0.001.wait; });
+			threeAndFour = IM_HardwareIn.newStereo(2, cmix.chanStereo(8), procGroup, \addToHead);
+			while({ try { threeAndFour.isLoaded } != true }, { 0.001.wait; });
 
+			five = IM_HardwareIn.new(4, cmix.chanMono(9), procGroup, \addToHead);
+			while({ try { five.isLoaded } != true }, { 0.001.wait; });
+
+			six = IM_HardwareIn.new(5, cmix.chanMono(10), procGroup, \addToHead);
+			while({ try { six.isLoaded } != true }, { 0.001.wait; });
+
+			sevenAndEight = IM_HardwareIn.newStereo(6, cmix.chanStereo(11), procGroup, \addToHead);
+			while({ try { sevenAndEight.isLoaded } != true }, { 0.001.wait; });
 
 			// reverb!
 			cmix.setSendVol(0, 0, -3);
@@ -196,9 +188,6 @@ AudioSystem {
 			cmix.setSendVol(7, 0, -6);
 
 			splitter.setOutBus(1, sampler.inBus);
-
-
-			songBook = IdentityDictionary.new;
 
 			isLoaded = true;
 
@@ -234,13 +223,11 @@ AudioSystem {
 			while( { systemMixer.group != nil }, { 0.001.wait } );
 
 			systemGroup.free;
+			procGroup.deepFreeMsg;
 			procGroup.free;
 			//songBook.free;
 
 			hardwareOut = nil;
-
-			modularInput = nil;
-			modular = nil;
 
 			reverb = nil;
 			granulator = nil;

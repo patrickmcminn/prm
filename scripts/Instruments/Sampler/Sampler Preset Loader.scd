@@ -1,3 +1,13 @@
 0;4;clear;White;
 7;4;808ish;Purple;
 0;3;sineFun;LightBlue;
+7;2;midSong;LightBlue;
+7;2;MidSong2;LightBlue;
+7;2;MidSong3;LightBlue;
+7;3;midSongSept;Yellow;
+7;3;midSong10;Yellow;
+7;3;midSongNChord;Yellow;
+7;3;midSongDraft1;Yellow;
+7;1;midSongDraft2;Yellow;
+7;1;MidSongDM7;Yellow;
+7;1;midSongDMBm;Yellow;

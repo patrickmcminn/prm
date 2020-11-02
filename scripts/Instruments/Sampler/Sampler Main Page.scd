@@ -85,7 +85,7 @@ var addPreset, makeGUI, populateWriteFuncs, presetLoad;
 		{ ~apc.turnSceneLaunchButtonPurple(4); })
 }, main, page);
 ~apc.setSceneLaunchFunc(4, {
-	if( ~prm.sampler.midiLoaded == true, { ~prm.sampler.freeMIDIFuncs }, { ~prm.sampler.makeMIDIFuncs(~pyr, 13); });
+	if( ~prm.sampler.midiLoaded == true, { ~prm.sampler.freeMIDIFuncs }, { ~prm.sampler.makeMIDIFuncs(~pyr, 12); });
 }, 'noteOn', main, page);
 
 /////////////////////////

@@ -16,6 +16,3 @@ try { "Base Effects Page.scd".loadRelative; };
 
 //"Base Submixer EQ Page.scd".loadRelative;
 //"Base Submixer Looper Page.scd".loadRelative;
-
-
-s.meter

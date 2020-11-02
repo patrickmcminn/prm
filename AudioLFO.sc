@@ -11,50 +11,38 @@ CV_LFO {
   var <isLoaded;
   var <synth;
   var group;
+  var lfoWaveform;
 
-	var <out, <frequency, <waveform, <pulseWidth, <rangeLow, <rangeHigh;
-
-  *new { | outBus = 0, freq = 1, wave = 'sine', rangeLo = -0.25, rangeHi = 0.25, relGroup = nil, addAction = 'addToHead' |
-    ^super.new.prInit(outBus, freq, wave, rangeLo, rangeHi, relGroup, addAction);
+  *new { | outBus = 0, freq = 1, waveform = 'sine', rangeLow = -1, rangeHigh = 1, relGroup = nil, addAction = 'addToHead' |
+    ^super.new.prInit(outBus, freq, waveform, rangeLow, rangeHigh, relGroup, addAction);
   }
 
-  prInit {  | outBus, freq = 1, wave = 'sine', rangeLo = -1, rangeHi = 1, relGroup = nil, addAction = 'addToHead' |
+  prInit {
+		| outBus, freq = 1, waveform = 'sine', rangeLow = -0.25, rangeHigh = 0.25, relGroup = nil, addAction = 'addToHead' |
     var server = Server.default;
+    var wave;
     server.waitForBoot {
       isLoaded = false;
       this.prAddSynthDef;
       server.sync;
       group = Group.new(relGroup, addAction);
-
-			this.prSetInitialParameters(outBus, freq, wave, rangeLo, rangeHi);
-
+      switch ( waveform,
+        'sine', { lfoWaveform = 0 },
+        'saw', { lfoWaveform = 1 },
+        'revSaw', { lfoWaveform = 2 },
+        'rect', { lfoWaveform = 3 },
+        'sampleAndHold', { lfoWaveform = 4 },
+        'noise', { lfoWaveform = 5 }
+      );
       server.sync;
-
       synth = Synth(\prm_AudioLFO,
-        [\outBus, out, \freq, frequency, \lfoWaveform, waveform,
+        [\outBus, outBus, \freq, freq, \lfoWaveform, lfoWaveform,
           \rangeLow, rangeLow, \rangeHigh, rangeHigh], group, \addToHead);
       while({ synth == nil }, { 0.001.wait; });
-
-			isLoaded = true;
+      this.setWaveform(waveform);
+      isLoaded = true;
     };
   }
-
-	prSetInitialParameters { | outBus, freq, wave, rangeLo, rangeHi |
-
-		out = outBus;
-		frequency = freq;
-		switch ( wave,
-        'sine', { waveform = 0 },
-        'saw', { waveform = 1 },
-        'revSaw', { waveform = 2 },
-        'rect', { waveform = 3 },
-        'sampleAndHold', { waveform = 4 },
-        'noise', { waveform = 5 }
-      );
-		pulseWidth = 0.5;
-		rangeLow = rangeLo;
-		rangeHigh = rangeHi;
-	}
 
   prAddSynthDef {
     SynthDef(\prm_AudioLFO, {
@@ -82,28 +70,28 @@ CV_LFO {
     group = nil;
   }
 
-  setOutBus { | outBus = 0 | out = outBus; synth.set(\outBus, out); }
+  setOutBus { | outBus = 0 | synth.set(\outBus, outBus); }
 
-  setWaveform { | wave = 'sine' |
-    if( wave.isInteger || wave.isFloat, { waveform = wave; synth.set(\lfoWaveform, waveform) },
+  setWaveform { | waveform = 'sine' |
+    if( waveform.isInteger || waveform.isFloat, { synth.set(\lfoWaveform, waveform) },
       {
-        switch(wave,
-          { 'sine' }, { waveform = 0; synth.set(\lfoWaveform, waveform); },
-          { 'saw' }, { waveform = 1; synth.set(\lfoWaveform, waveform); },
-          { 'revSaw' }, { waveform = 2;  synth.set(\lfoWaveform, waveform); },
-          { 'rect' }, {  waveform = 3; synth.set(\lfoWaveform, waveform); },
-          { 'sampleAndHold' }, { waveform = 4; synth.set(\lfoWaveform, waveform); },
-          { 'noise' }, { waveform = 5; synth.set(\lfoWaveform, waveform); }
+        switch(waveform,
+          { 'sine' }, { synth.set(\lfoWaveform, 0); },
+          { 'saw' }, { synth.set(\lfoWaveform, 1); },
+          { 'revSaw' }, { synth.set(\lfoWaveform, 2); },
+          { 'rect' }, { synth.set(\lfoWaveform, 3); },
+          { 'sampleAndHold' }, { synth.set(\lfoWaveform, 4); },
+          { 'noise' }, { synth.set(\lfoWaveform, 5); }
         );
     });
   }
-  setFrequency { | freq = 1 | frequency = freq; synth.set(\freq, frequency); }
-  setPulseWidth { | pw = 0.5 | pulseWidth = pw; synth.set(\lfoPulseWidth, pulseWidth); }
+  setFrequency { | freq = 1 | synth.set(\freq, freq); }
+  setPulseWidth { | pw = 0.5 | synth.set(\lfoPulseWidth, pw); }
 
   setRange { | rangeLo = -1, rangeHi = 1 |
     this.setRangeLow(rangeLo);
     this.setRangeHigh(rangeHi);
   }
-  setRangeLow { | rangeLo = -0.25 | rangeLow = rangeLo; synth.set(\rangeLow, rangeLow); }
-  setRangeHigh { | rangeHi = 0.25 | rangeHigh = rangeHi; synth.set(\rangeHigh, rangeHigh);}
+  setRangeLow { | rangeLo = -1 | synth.set(\rangeLow, rangeLo); }
+  setRangeHigh { | rangeHi = 1 | synth.set(\rangeHigh, rangeHi);}
 }

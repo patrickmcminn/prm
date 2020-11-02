@@ -37,6 +37,7 @@ IM_MasterStrip {
       amp = amp.lag(ampLagTime);
       input = In.ar(inBus, 2);
       sig = Balance2.ar(input[0], input[1], balance, amp * (1 - mute));
+			sig = sig * 3.dbamp;
       // hey here's a limiter
       sig = Limiter.ar(sig, 1.0, 0.005);
 

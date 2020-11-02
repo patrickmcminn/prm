@@ -155,6 +155,8 @@ Huge : IM_Module {
 
 		eq.setPeak1Freq(300);
 		eq.setPeak1Gain(-3);
+		eq.setPeak2Freq(650);
+		eq.setPeak2Gain(-3);
 		eq.setLowFreq(110);
 		eq.setLowGain(3);
 

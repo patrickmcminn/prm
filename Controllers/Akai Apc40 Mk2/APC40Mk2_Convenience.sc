@@ -19,7 +19,7 @@ prm
 				{ this.turnDeviceButtonOn(3, deviceButtonsBank, page) }, { ~apc.turnDeviceButtonOff(3, deviceButtonsBank, page) });
 			if( this.activeMixerEncodersBank == (send3Bank),
 				{ this.turnDeviceButtonOn(4, deviceButtonsBank, page) }, { ~apc.turnDeviceButtonOff(4, deviceButtonsBank, page) });
-		}, page: page);
+		}, bank: deviceButtonsBank, page: page);
 
 		this.setDeviceButtonFunc(1, { this.setActiveMixerEncodersBank(send0Bank); }, bank: deviceButtonsBank, page: page);
 		this.setDeviceButtonFunc(2, { this.setActiveMixerEncodersBank(send1Bank);  }, bank: deviceButtonsBank, page: page);

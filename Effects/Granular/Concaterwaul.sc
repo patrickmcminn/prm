@@ -13,6 +13,14 @@ Concaterwaul : IM_Module {
 	var dryBus, glitchBus, unPitchBus, pitchBus;
 	var <lfo, lfoGroup, <splitter;
 
+	var <isFrozen, <glitchAmpIsTracking;
+	var <freqMul1, <freqMul2, <freqMul3, <freqMul4, <freqMul5;
+	var <detune;
+	var <glitchLength, <glitchModRange;
+	var <unPitchLength, <unPitchModRange, <pitchLength, <pitchModRange;
+
+	var <baseFreq, <baseModFreq, <glitchAmpMod, <unPitchAmpMod;
+
 	*newMono { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, feedback = false, relGroup = nil, addAction = 'addToHead' |
 		^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, feedback, relGroup, addAction).prInitMono;
 	}
@@ -108,7 +116,7 @@ Concaterwaul : IM_Module {
 			subMixer = IM_Mixer.newNoSends(4, postEQ.inBus, false, group, \addToHead);
 			while({ try { subMixer.isLoaded } != true }, { 0.001.wait; });
 
-			lfo = LFO.new(1, 'noise', relGroup: lfoGroup, addAction: \addToHead);
+			lfo = LFO.new(3, 'noise', relGroup: lfoGroup, addAction: \addToHead);
 			while({ try { lfo.isLoaded } != true }, { 0.001.wait; });
 			/*
 			glitchEQ = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
@@ -149,10 +157,21 @@ Concaterwaul : IM_Module {
 	}
 
 	prSetInitialParameters {
+
+		isFrozen = false; glitchAmpIsTracking = false;
+		freqMul1 = 1; freqMul2 = 1; freqMul3 = 1; freqMul4 = 0.5; freqMul5 = 2;
+		detune = 0.05;
+		glitchLength = 0.3; glitchModRange = 0.1;
+		unPitchLength = 0.05; unPitchModRange = 0.01;
+		pitchLength = 0.1; pitchModRange = 0.05;
+
+		baseFreq = 400; baseModFreq = 1;
+		glitchAmpMod = 0.5; unPitchAmpMod = 2;
+
 		subMixer.setPreVol(0, -12);
 		subMixer.setPreVol(1, -12);
 		subMixer.setPreVol(2, -12);
-		subMixer.setPreVol(3, -128);
+		subMixer.setPreVol(3, -12);
 		preEQ.setHighPassCutoff(100);
 		subMixer.setVol(0, -21);
 		subMixer.setVol(1, -6);
@@ -223,7 +242,6 @@ Concaterwaul : IM_Module {
 			inBus, outBus, amp = 1, matchBus,
 			freqMul1 = 1, freqMul2 = 1, freqMul3 = 1, freqMul4 = 0.5, freqMul5 = 2,
 			drift = 0.005,
-			inputAmpModFreq = 2.1, baseModFreq = 1,
 			matchLength = 0.1, matchLengthRange = 0.05, freeze = 0,
 			ampTrackMod = 6,
 			storeSize = 1, seekTime = 1, seekDur = 1
@@ -245,13 +263,13 @@ Concaterwaul : IM_Module {
 			gendy2 = Gendy3.ar(3, 5, 1.0, 1.0, (frequency * freqMul2 * (1+drift)),
 				amplitude.range(0.02, 0.04), amplitude.range(0.0009, 0.01), 12);
 			//0.5, 0.5, 5);
-			gendy3 = Gendy3.ar(3, 5, 1.0, 1.0, (frequency * freqMul2 * (1-drift)),
+			gendy3 = Gendy3.ar(3, 5, 1.0, 1.0, (frequency * freqMul3 * (1-drift)),
 				amplitude.range(0.02, 0.04), amplitude.range(0.001, 0.012), 12);
 			//0.5, 0.5, 5);
-			gendy4 = Gendy3.ar(3, 5, 1.0, 1.0, (frequency * freqMul2 * (1+(drift*2))),
+			gendy4 = Gendy3.ar(3, 5, 1.0, 1.0, (frequency * freqMul4 * (1+(drift*2))),
 				amplitude.range(0.03, 0.02), amplitude.range(0.0001, 0.011), 12);
 			//0.5, 0.5, 5);
-			gendy5 = Gendy3.ar(3, 5, 1.0, 1.0, (frequency * freqMul2 * (1-(drift*2))),
+			gendy5 = Gendy3.ar(3, 5, 1.0, 1.0, (frequency * freqMul5 * (1-(drift*2))),
 				amplitude.range(0.01, 0.02), amplitude.range(0.001, 0.0101), 12);
 			//0.5, 0.5, 5);
 			input = Mix([gendy1, gendy2, gendy3, gendy4, gendy5]);
@@ -280,5 +298,46 @@ Concaterwaul : IM_Module {
 	}
 
 	inBus { ^preEQ.inBus }
+
+	freeze {
+		isFrozen = true;
+		glitch.set(\freeze, 1);
+		unPitch.set(\freeze, 1);
+		pitch.set(\freeze, 1);
+	}
+	unFreeze {
+		isFrozen = false;
+		glitch.set(\freeze, 0);
+		unPitch.set(\freeze, 0);
+		pitch.set(\freeze, 0);
+	}
+	toggleFreeze { if( isFrozen == true, { this.unFreeze }, { this.freeze }); }
+
+	glitchTrackAmp { glitchAmpIsTracking = true; glitch.set(\ampTrack, 1); }
+	glitchUnTrackAmp { glitchAmpIsTracking = false; glitch.set(\ampTrack, 0); }
+	toggleGlitchTrackAmp { if( glitchAmpIsTracking == true, { this.glitchUnTrackAmp }, { this.glitchTrackAmp }); }
+
+	setFreqMul1 { | mul = 1 | freqMul1 = mul; pitch.set(\freqMul1, freqMul1); }
+	setFreqMul2 { | mul = 1 | freqMul2 = mul; pitch.set(\freqMul2, freqMul2); }
+	setFreqMul3 { | mul = 1 | freqMul3 = mul; pitch.set(\freqMul3, freqMul3); }
+	setFreqMul4 { | mul = 1 | freqMul4 = mul; pitch.set(\freqMul4, freqMul4); }
+	setFreqMul5 { | mul = 1 | freqMul5 = mul; pitch.set(\freqMul5, freqMul5); }
+
+	setDetune { | d = 0.005 | detune = d; pitch.set(\drift, d); }
+
+	setGlitchLength { | length = 0.3 | glitchLength = length; glitch.set(\matchLength, glitchLength); }
+	setGlitchModRange { | range = 0.1 | glitchModRange = range; glitch.set(\matchLengthRange, glitchModRange); }
+
+	setUnPitchLength { | length = 0.05 | unPitchLength = length; unPitch.set(\matchLength, unPitchLength); }
+	setUnPitchModRange { | range = 0.01 | unPitchModRange = range; unPitch.set(\matchLengthRange, unPitchModRange); }
+
+	setPitchLength { | length = 0.1 | pitchLength = length; pitch.set(\matchLength, pitchLength); }
+	setPitchModRange { | range = 0.05 | pitchModRange = range; pitch.set(\matchLengthRange, pitchModRange); }
+
+	setBaseFreq { | freq = 400 | baseFreq = freq; unPitch.set(\baseFreq, baseFreq); }
+	setBaseModFreq { | freq = 1 | baseModFreq = freq; unPitch.set(\baseModFreq, baseModFreq); }
+
+	setGlitchAmpMod { | freq = 0.5 | glitchAmpMod = freq; glitch.set(\controlAmpModFreq, glitchAmpMod); }
+	setUnPitchAmpMod { | freq = 2 | unPitchAmpMod = freq; unPitch.set(\inputAmpModFreq, unPitchAmpMod); }
 
 }

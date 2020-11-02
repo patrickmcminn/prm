@@ -78,32 +78,33 @@ x = Synth(\test, [\inBus, 0, \buffer, ~buf, \outBus, 0]);
 {
 	var concat, control, input, amp;
 
-	var freq;
+	var freq, hasFreq;
 
 
 	control=SoundIn.ar(1);
 
-	freq = Tartini.kr(control);
-
+	# freq, hasFreq = Tartini.kr(control);
+			freq.poll;
 	amp=Amplitude.ar(control);
 
-	input= SinOsc.ar(2)*
+	input=
 	Mix(Gendy3.ar(
 		3,
 		5,
 		1.0,
 		1.0,
-		[freq, freq/2, freq*1.1],
+		[freq, freq/2, freq*2],
 		MouseY.kr(0.01,0.05),
 		MouseY.kr(0.001,0.016),
-		5,mul:0.1));
+		12,mul:0.1));
 
-	concat= Concat.ar(control,input,1.0,1.0,1.0,MouseX.kr(0.0,0.1),0,1.0,0.0,1.0,1.0);
+	concat= Concat.ar(control,input,1.0,1.0,1.0,MouseX.kr(0,0.1),0,1.0,0.0,1.0,1.0);
 
 	Out.ar(0,Pan2.ar(10*concat*amp,0.0))}.play
 )
 
 
+	{ Gendy3.ar(freq: 110); }.play
 
 	SynthDef(\prm_concatGlitch, {
 		|
@@ -200,4 +201,43 @@ amp=Amplitude.ar(control);
 concat= Concat.ar(control,input,1.0,1.0,1.0,MouseX.kr(0.0,0.1),0,1.0,0.0,1.0,1.0);
 
 Out.ar(0,Pan2.ar(10*concat*amp,0.0))}.play
+
+
+
+(
+{
+var concat, control, input;
+
+control= Saw.ar(SinOsc.kr(LFNoise0.kr(MouseY.kr(0.01,1),3,4.5),0,10,MouseY.kr(12,100)));
+
+//input=PlayBuf.ar(1,b.bufnum,BufRateScale.kr(b.bufnum), loop:1);
+	input = SoundIn.ar(1);
+
+concat= Concat.ar(control,input,2.0,2.0,2.0,MouseX.kr(0.01,0.1),0,MouseY.kr(0.0,1.0),1.0,0.5);
+
+Out.ar(0,Pan2.ar(concat,0.0))}.play
+)
+
+
+
+
+
+
+
+
+(
+{
+var concat, control, input, amp;
+
+input= SinOsc.ar(2)*
+Mix(Gendy3.ar(3,5,1.0,1.0,(Array.fill(5,{LFNoise0.kr(1.3.rand,1,2)})*MouseY.kr(100,3780,'exponential')),MouseY.kr(0.01,0.05),MouseY.kr(0.001,0.016),5,mul:0.1));
+
+	control=SoundIn.ar(1);
+
+amp=Amplitude.ar(control);
+
+concat= Concat.ar(control,input,1.0,1.0,1.0,MouseX.kr(0.0,0.1),0,1.0,0.0,1.0,1.0);
+
+Out.ar(0,Pan2.ar(10*concat*amp,0.0))}.play
+)
 	

@@ -21,6 +21,8 @@ var tuningNoteIsPlaying = false;
 var loopDelayIsLoaded = false;
 var hugeIsLoaded = false;
 
+var concIsLoaded = false;
+
 var envReset;
 
 ~apc.makePage(page);
@@ -89,6 +91,31 @@ var envReset;
 			~hugeInput.free;
 			~apc.setGridFunc(1, 3, { }, page: page);
 			~apc.turnGridOff(1, 3);
+	});
+}, page: page);
+
+// concaterwaul:
+
+~apc.turnGridCyan(0, 2, page: page);
+~apc.setGridFunc(0, 2, {
+	if( concIsLoaded == false,
+		{
+			r{
+				~conc = Concaterwaul.newMono(~prm.audioIn,
+					~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+					false, ~prm.procGroup, \addToHead);
+				while({ try { ~conc.isLoaded } != true }, { 0.001.wait; });
+				~concInput = IM_HardwareIn.new(1, ~conc.inBus, ~prm.procGroup, \addToHead);
+				while({ try { ~concInput.isLoaded } != true }, { 0.001.wait; });
+				~apc.turnGridGreen(1, 2);
+				~apc.setGridFunc(1, 2, { ~apc.setPage('concaterwaul') }, page: page);
+			}.play;
+		},
+		{
+			~conc.free;
+			~concInput.free;
+			~apc.setGridFunc(1, 2, { }, page: page);
+			~apc.turnGridOff(1, 2);
 	});
 }, page: page);
 

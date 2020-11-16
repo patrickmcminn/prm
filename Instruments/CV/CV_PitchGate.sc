@@ -20,6 +20,9 @@ CV_PitchGate {
 		server.waitForBoot {
 			isLoaded = false;
 
+			freqOut = freqOutBus;
+			gateOut = gateOutBus;
+
 			group = Group.new(relGroup, addAction);
 
 			freq = CV_Freq.new(freqOut, 0, group, 'addToHead');
@@ -27,9 +30,6 @@ CV_PitchGate {
 
 			gate = CV_Gate.new(gateOut, group, \addToHead);
 			while({ try { gate.isLoaded } != true }, { 0.001.wait; });
-
-			freqOut = freqOutBus;
-			gateOut = gateOutBus;
 
 			server.sync;
 

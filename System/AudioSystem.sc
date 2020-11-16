@@ -34,7 +34,7 @@ AudioSystem {
 	var <mod1, <mod2, <mod3, <mod4;
 	var <sampler, <subtractive, <cv;
 
-	var <threeAndFour, <five, <six, <sevenAndEight;
+	var <three, <four, <fiveAndSix, <sevenAndEight;
 
 	*new {
 		| numOutputs = 2, micInput, pickupInput, modInArray, modOutArray |
@@ -165,20 +165,20 @@ AudioSystem {
 			subtractive = Subtractive.new(cmix.chanStereo(7), relGroup: procGroup, addAction: \addToHead);
 			while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
 
-			cv = CV_Suite.new(~prm.procGroup, \addToHead);
-			while({ try { cv.isLoaded } != true }, { 0.001.wait; });
+			three = IM_HardwareIn.new(2, cmix.chanMono(8), procGroup, \addToHead);
+			while({ try { three.isLoaded } != true }, { 0.001.wait; });
 
-			threeAndFour = IM_HardwareIn.newStereo(2, cmix.chanStereo(8), procGroup, \addToHead);
-			while({ try { threeAndFour.isLoaded } != true }, { 0.001.wait; });
+			four = IM_HardwareIn.new(3, cmix.chanMono(9), procGroup, \addToHead);
+			while({ try { four.isLoaded } != true }, { 0.001.wait; });
 
-			five = IM_HardwareIn.new(4, cmix.chanMono(9), procGroup, \addToHead);
-			while({ try { five.isLoaded } != true }, { 0.001.wait; });
-
-			six = IM_HardwareIn.new(5, cmix.chanMono(10), procGroup, \addToHead);
-			while({ try { six.isLoaded } != true }, { 0.001.wait; });
+			fiveAndSix = IM_HardwareIn.newStereo(4, cmix.chanStereo(10), procGroup, \addToHead);
+			while({ try { fiveAndSix.isLoaded } != true }, { 0.001.wait; });
 
 			sevenAndEight = IM_HardwareIn.newStereo(6, cmix.chanStereo(11), procGroup, \addToHead);
 			while({ try { sevenAndEight.isLoaded } != true }, { 0.001.wait; });
+
+			cv = CV_Suite.new(~prm.procGroup, \addToHead);
+			while({ try { cv.isLoaded } != true }, { 0.001.wait; });
 
 			// reverb!
 			cmix.setSendVol(0, 0, -3);

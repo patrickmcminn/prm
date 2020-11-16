@@ -7,7 +7,7 @@ prm
 CV_EnvPerc {
 
 	var <isLoaded, server;
-	var out, rG, action;
+	var <out, rG, action;
 
 	var <attackTime, <releaseTime, <level, <curve;
 
@@ -30,6 +30,7 @@ CV_EnvPerc {
 			releaseTime = 0.5;
 			level = 0.5;
 			curve = -4;
+			out = outBus;
 
 			isLoaded = true;
 		}
@@ -57,7 +58,7 @@ CV_EnvPerc {
 				\envLevel, level, \envCurve, curve], rG, action); });
 	}
 
-	setOutBus { | outBus | out = outBus }
+	setOutBus { | outBus | out = outBus; }
 
 	setAttackTime { | time = 0.05 | attackTime = time; }
 	setReleaseTime { | time = 0.5 | releaseTime = time; }

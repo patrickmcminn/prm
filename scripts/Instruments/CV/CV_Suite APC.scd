@@ -189,14 +189,14 @@ var pitchGate = 8;
 
 // output:
 ~apc.setGridMonitorFunc(\lfo1Output, {
-	if( ~prm.cv.lfo1.out == ~modOutput[0], { ~apc.turnGridGreen(0, 2, 2) }, { ~apc.turnGridCyan(0, 2, 1) });
-	if( ~prm.cv.lfo1.out == ~modOutput[1], { ~apc.turnGridGreen(1, 2, 2) }, { ~apc.turnGridCyan(1, 2, 1) });
-	if( ~prm.cv.lfo1.out == ~modOutput[2], { ~apc.turnGridGreen(2, 2, 2) }, { ~apc.turnGridCyan(2, 2, 1) });
-	if( ~prm.cv.lfo1.out == ~modOutput[3], { ~apc.turnGridGreen(3, 2, 2) }, { ~apc.turnGridCyan(3, 2, 1) });
-	if( ~prm.cv.lfo1.out == ~modOutput[4], { ~apc.turnGridGreen(4, 2, 2) }, { ~apc.turnGridCyan(4, 2, 1) });
-	if( ~prm.cv.lfo1.out == ~modOutput[5], { ~apc.turnGridGreen(5, 2, 2) }, { ~apc.turnGridCyan(5, 2, 1) });
-	if( ~prm.cv.lfo1.out == ~modOutput[6], { ~apc.turnGridGreen(6, 2, 2) }, { ~apc.turnGridCyan(6, 2, 1) });
-	if( ~prm.cv.lfo1.out == ~modOutput[7], { ~apc.turnGridGreen(7, 2, 2) }, { ~apc.turnGridCyan(7, 2, 1) });
+	if( ~prm.cv.lfo1.out == ~modOutput[0], { ~apc.turnGridGreen(0, 2, 2) }, { ~apc.turnGridPink(0, 2, 1) });
+	if( ~prm.cv.lfo1.out == ~modOutput[1], { ~apc.turnGridGreen(1, 2, 2) }, { ~apc.turnGridPink(1, 2, 1) });
+	if( ~prm.cv.lfo1.out == ~modOutput[2], { ~apc.turnGridGreen(2, 2, 2) }, { ~apc.turnGridPink(2, 2, 1) });
+	if( ~prm.cv.lfo1.out == ~modOutput[3], { ~apc.turnGridGreen(3, 2, 2) }, { ~apc.turnGridPink(3, 2, 1) });
+	if( ~prm.cv.lfo1.out == ~modOutput[4], { ~apc.turnGridGreen(4, 2, 2) }, { ~apc.turnGridPink(4, 2, 1) });
+	if( ~prm.cv.lfo1.out == ~modOutput[5], { ~apc.turnGridGreen(5, 2, 2) }, { ~apc.turnGridPink(5, 2, 1) });
+	if( ~prm.cv.lfo1.out == ~modOutput[6], { ~apc.turnGridGreen(6, 2, 2) }, { ~apc.turnGridPink(6, 2, 1) });
+	if( ~prm.cv.lfo1.out == ~modOutput[7], { ~apc.turnGridGreen(7, 2, 2) }, { ~apc.turnGridPink(7, 2, 1) });
 }, lfo12, page);
 8.do({ | i | ~apc.setGridFunc(i, 2, { ~prm.cv.lfo1.setOutBus(~modOutput[i]); }, bank: lfo12, page: page); });
 ~apc.turnGridRed(7, 3, 1, lfo12, page);

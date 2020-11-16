@@ -32,7 +32,7 @@ AudioSystem {
 
 	var <microphone, <pickup;
 	var <mod1, <mod2, <mod3, <mod4;
-	var <sampler, <subtractive;
+	var <sampler, <subtractive, <cv;
 
 	var <threeAndFour, <five, <six, <sevenAndEight;
 
@@ -126,7 +126,8 @@ AudioSystem {
 			while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 
 			// delay:
-			delay = SimpleDelay.newStereo(masterEQ.inBus, 1.5, 0.35, 10, relGroup: systemGroup, addAction: \addToHead);
+			delay = SimpleDelay.newStereo(masterEQ.inBus, 1.5, 0.35, 10, send0Bus: reverb.inBus,
+				relGroup: systemGroup, addAction: \addToHead);
 			while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 			delay.setMix(1);
 
@@ -163,6 +164,9 @@ AudioSystem {
 
 			subtractive = Subtractive.new(cmix.chanStereo(7), relGroup: procGroup, addAction: \addToHead);
 			while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
+
+			cv = CV_Suite.new(~prm.procGroup, \addToHead);
+			while({ try { cv.isLoaded } != true }, { 0.001.wait; });
 
 			threeAndFour = IM_HardwareIn.newStereo(2, cmix.chanStereo(8), procGroup, \addToHead);
 			while({ try { threeAndFour.isLoaded } != true }, { 0.001.wait; });

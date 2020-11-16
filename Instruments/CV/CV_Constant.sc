@@ -14,7 +14,7 @@ CV_Constant {
   var synth;
   var <value;
 
-  var out, rG, action;
+  var <out, rG, action;
 
   *new { | outBus = 0, initialValue = 0, relGroup, addAction = 'addToHead' |
     ^super.new.prInit(outBus, initialValue, relGroup, addAction);
@@ -28,6 +28,7 @@ CV_Constant {
       out = outBus;
       rG = relGroup;
       action = addAction;
+			out = outBus;
       this.prAddSynthDef;
 
       server.sync;

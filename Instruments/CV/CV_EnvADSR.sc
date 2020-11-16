@@ -7,7 +7,7 @@ prm
 CV_EnvADSR {
 
 	var <isLoaded, server;
-	var out, rG, action;
+	var <out, rG, action;
 
 	var env;
 
@@ -37,6 +37,8 @@ CV_EnvADSR {
 			curve = -4;
 			peakLevel = 0.5;
 			polarity = 1;
+
+			out = outBus;
 
 			isTriggered = false;
 
@@ -79,7 +81,7 @@ CV_EnvADSR {
 
 	release { if(isLoaded == true, { env.set(\gate, 0); isTriggered = false; }); }
 
-	setOutBus { | outBus = 0 | out = outBus }
+	setOutBus { | outBus = 0 | out = outBus; }
 
 	setAttackTime { | attack = 0.05 | attackTime = attack; }
 	setDecayTime { | decay = 0.3 | decayTime = decay; }

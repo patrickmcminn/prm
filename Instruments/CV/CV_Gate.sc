@@ -12,7 +12,7 @@ CV_Gate {
 
 	var <isLoaded, server;
 
-	var out, rG, action;
+	var <out, rG, action;
 	var gate;
 	var <gateIsHigh;
 
@@ -31,6 +31,8 @@ CV_Gate {
 			this.prAddSynthDefs;
 
 			server.sync;
+
+			out = outBus;
 
 			isLoaded = true;
 		}
@@ -77,6 +79,6 @@ CV_Gate {
 		gate.set(\gate, 0);
 	}
 
-	setOutBus { | outBus | out = outBus }
+	setOutBus { | outBus | out = outBus; }
 
 }

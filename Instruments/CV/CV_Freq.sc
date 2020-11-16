@@ -10,6 +10,7 @@ CV_Freq {
 	var <isLoaded;
 	var <synth;
 	var <frequency;
+	var <out;
 
 	*new {
 		| outBus = 0, freq = 220, relGroup = nil, addAction = 'addToHead' |
@@ -28,6 +29,7 @@ CV_Freq {
 			server.sync;
 
 			frequency = freq;
+			out = outBus;
 			synth = Synth(\prm_cv_freq,
 				[\outBus, outBus, \freq, freq, \gate, 1, \lag, 0],
 				group, \addToHead);
@@ -58,6 +60,6 @@ CV_Freq {
 
 	setFreq { | freq = 220 | frequency = freq; synth.set(\freq, frequency); }
 
-	setOutBus { | outBus | synth.set(\outBus, outBus); }
+	setOutBus { | outBus | out = outBus; synth.set(\outBus, outBus); }
 
 } 

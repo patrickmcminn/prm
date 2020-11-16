@@ -414,11 +414,18 @@ envReset.value;
 
 //// Delay:
 ~apc.setDeviceEncodersMonitorFunc(\delay, {
-	var time, fb;
+	var time, fb, verb, gran, mod;
 	time = ~prm.delay.delayTime.explin(0.05, 6, 0, 127);
 	fb = ~prm.delay.feedback.linlin(0, 1, 0, 127);
+	verb = ~prm.delay.mixer.sendVol(0).dbfsCC;
+	gran = ~prm.delay.mixer.sendVol(1).dbfsCC;
+	mod = ~prm.delay.mixer.sendVol(2).dbfsCC;
 	~apc.setDeviceEncoderValue(1, time, delay, page);
 	~apc.setDeviceEncoderValue(2, fb, delay, page);
+
+	~apc.setDeviceEncoderValue(5, verb, delay, page);
+	~apc.setDeviceEncoderValue(6, gran, delay, page);
+	~apc.setDeviceEncoderValue(7, mod, delay, page);
 }, delay, page);
 // delay time:
 ~apc.setDeviceEncoderFunc(1, { | val |
@@ -429,5 +436,15 @@ envReset.value;
 ~apc.setDeviceEncoderFunc(2, { | val |
 	var fb = val.linlin(0, 127, 0, 1);
 	~prm.delay.setFeedback(fb);
+}, delay, page);
+
+~apc.setDeviceEncoderFunc(5, { | val |
+	~prm.delay.mixer.setSendVol(0, val.ccdbfs);
+}, delay, page);
+~apc.setDeviceEncoderFunc(6, { | val |
+	~prm.delay.mixer.setSendVol(1, val.ccdbfs);
+}, delay, page);
+~apc.setDeviceEncoderFunc(7, { | val |
+	~prm.delay.mixer.setSendVol(2, val.ccdbfs);
 }, delay, page);
 

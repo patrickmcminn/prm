@@ -126,7 +126,8 @@ AudioSystem {
 			while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 
 			// delay:
-			delay = SimpleDelay.newStereo(masterEQ.inBus, 1.5, 0.35, 10, send0Bus: reverb.inBus,
+			delay = SimpleDelay.newStereo(masterEQ.inBus, 1.5, 0.35, 10,
+				send0Bus: reverb.inBus, send1Bus: granulator.inBus, send2Bus: modularSend.inBus,
 				relGroup: systemGroup, addAction: \addToHead);
 			while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 			delay.setMix(1);

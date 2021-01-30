@@ -87,6 +87,7 @@ IM_Granulator : IM_Processor {
 
 			input = In.ar(inBus, 2);
 			granStereoSum = Mix.ar([input[0], input[1]]) * 1;
+			granStereoSum = granStereoSum.softclip;
 
 			buffer = LocalBuf(server.sampleRate * bufLength, 1);
 			buffer.clear;

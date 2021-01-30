@@ -59,10 +59,10 @@ FoundationTrumpet : IM_Module {
 
 		// Distortion:
 		distortion.postEQ.setLowPassCutoff(3910);
-		distortion.postEQ.setHighPassCutoff(150);
+		distortion.postEQ.setHighPassCutoff(250);
 
 		// Granulator:
-		granulator.granulator.setCrossfade(0.348.linlin(0, 1, -1, 1));
+		granulator.granulator.setCrossfade(0.1.linlin(0, 1, -1, 1));
 		granulator.setGrainDur(0.1, 0.2);
 		granulator.setTrigRate(18);
 		granulator.setDelayTime(0.2);

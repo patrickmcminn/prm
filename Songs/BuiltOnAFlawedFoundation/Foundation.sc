@@ -135,16 +135,19 @@ Foundation : IM_Module {
 	}
 
 	prSetInitialParameters {
+		/// turn inputs down:
+		11.do({ | chan | mixer.setPreVol(chan, -12); });
+
 		//moog:
 		mixer.setVol(0, -7);
-		mixer.setSendVol(0, 0, -21);
-		mixer.setSendVol(0, 1, -16.2);
+		mixer.setSendVol(0, 0, -18);
+		mixer.setSendVol(0, 1, -40);
 		mixer.setSendVol(0, 3, -23);
 
 		//chord synth:
 		mixer.setVol(4, -3);
 		mixer.setSendVol(4, 0, -15);
-		mixer.setSendVol(4, 1, -21);
+		mixer.setSendVol(4, 1, -30);
 
 		// sc:
 		mixer.setVol(5, -3);
@@ -163,26 +166,26 @@ Foundation : IM_Module {
 
 		// Clean Trumpet:
 		mixer.setVol(1, -12);
-		mixer.setPreVol(1, 6);
+		mixer.setPreVol(1, 0);
 		mixer.setSendVol(1, 0, -6);
-		mixer.setSendVol(1, 1, -9);
+		mixer.setSendVol(1, 1, -40);
 
 		// distorted trumpet:
 		trumpet.input.mute;
 		mixer.setVol(2, -3);
 		mixer.setSendVol(2, 0, -12);
-		mixer.setSendVol(2, 1, -15);
+		mixer.setSendVol(2, 1, -70);
 		mixer.setSendVol(2, 3, -6);
 
 		// trumpet section:
 		mixer.setVol(8, -3);
 		mixer.setSendVol(8, 0, -13.6);
-		mixer.setSendVol(8, 1, -15);
+		mixer.setSendVol(8, 1, -24);
 
 		// distorted Trumpets:
 		mixer.setVol(9, -9);
 		mixer.setSendVol(9, 0, -9);
-		mixer.setSendVol(9, 1, -15);
+		mixer.setSendVol(9, 1, -24);
 		mixer.setSendVol(9, 3, -9);
 
 		// end trumpets:

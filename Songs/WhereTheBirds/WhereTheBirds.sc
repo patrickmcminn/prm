@@ -79,6 +79,9 @@ WhereTheBirds : IM_Module {
   }
 
   prSetInitialParameters {
+		// prevent clipping:
+		7.do({ | chan | mixer.setPreVol(chan, -12) });
+
     // bed:
     mixer.setVol(0, -6);
     mixer.setSendVol(0, 0, 0);
@@ -93,7 +96,7 @@ WhereTheBirds : IM_Module {
     // bass:
     mixer.setVol(3, -9);
     mixer.setSendVol(3, 0, -24);
-    mixer.setPreVol(3, 3);
+    mixer.setPreVol(3, -9);
     // noise synth:
     mixer.setVol(4, -3);
     mixer.setSendVol(4, 0, -6);
@@ -104,7 +107,7 @@ WhereTheBirds : IM_Module {
     // mic:
     //mixer.mute(6);
     mic.input.mute;
-    mixer.setPreVol(6, 3);
+    mixer.setPreVol(6, -9);
     mixer.setSendVol(6, 0, -3);
 
   }

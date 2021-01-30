@@ -51,10 +51,10 @@ WhereTheBirds_Bed : IM_Module {
 
     mixer.setPreVol(-9);
 
-    synth.setAttackTime(2);
+    synth.setAttackTime(5);
     synth.setReleaseTime(1.5);
-    synth.setFilterDrive(2);
-    synth.setFilterCutoff(1100);
+    synth.setFilterDrive(1);
+    synth.setFilterCutoff(900);
     synth.setOsc1Waveform(1);
     synth.setOsc2Waveform(1.5);
     synth.setOsc1Octave(3);
@@ -69,7 +69,7 @@ WhereTheBirds_Bed : IM_Module {
 
     granulator.setGranulatorCrossfade(-0.75);
     granulator.setDelayMix(0);
-    granulator.setTrigRate(32);
+    granulator.setTrigRate(5);
     granulator.setGrainDur(0.5, 1.5);
     granulator.setPan(-0.75, 0.75);
 

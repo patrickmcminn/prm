@@ -120,7 +120,6 @@ r {
 	try { ~pyr = MIDIIn.findPort("Pyramid MIDI USB", "Pyramid MIDI USB");};
 	s.sync;
 
-
 	"/Global Functions/Load Global Functions.scd".loadRelative;
 	"/System Scripts/Load System Scripts.scd".loadRelative;
 	"/Songs/Load Songs.scd".loadRelative;
@@ -130,33 +129,12 @@ r {
 }.play;
 )
 
+
 s.makeWindow;
 
 Server.killAll;
 s.meter
 
-~prm.subtractive.playNote(220);
-
-~foundation.moog.moog.free
-
-s.meter
-~prm.subtractive.free;
-
-s.makeWindow
-
-~prm.subtractive;
-
-~prm.isLoaded;
-
 
 ~prm.reverb.makeGUI
-
-~prm.sampler.rate(4);
-
-(9/8)/4
-~prm.sampler.setRate(4, (9/8)/8);
-~prm.sampler.setRate(9, 4);
-
-~prm.cmix.setPreVol(2, 6);
-~prm.cmix.setPanBal(4, -1);
-~prm.cmix.setPanBal(5, 1);
+~prm.reverb.savePreset('birds');

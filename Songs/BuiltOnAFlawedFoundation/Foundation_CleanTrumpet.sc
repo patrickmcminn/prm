@@ -79,6 +79,11 @@ Foundation_CleanTrumpet : IM_Module {
 		delay1.setFilterCutoff(1000);
 
 		// mixer:
+		// delay pre vols:
+		mixer.setPreVol(1, -6);
+		mixer.setPreVol(2, -6);
+		mixer.setPreVol(3, -6);
+
 		mixer.setVol(1, -5);
 		mixer.setPanBal(1, -0.25);
 		mixer.setVol(2, -5);

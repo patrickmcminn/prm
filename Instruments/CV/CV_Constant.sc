@@ -12,7 +12,7 @@ CV_Constant {
   var <isLoaded;
   var server;
   var synth;
-  var <value;
+  var <value, <lag;
 
   var <out, rG, action;
 
@@ -55,7 +55,8 @@ CV_Constant {
     synth.free;
   }
 
-  setValue { | value = 0, lag = 0.001 |
+  setValue { | val = 0, lag = 0.001 |
+		value = val;
     synth.set(\lag, lag);
     synth.set(\value, value);
   }

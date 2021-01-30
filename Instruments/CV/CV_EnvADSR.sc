@@ -83,16 +83,31 @@ CV_EnvADSR {
 
 	setOutBus { | outBus = 0 | out = outBus; }
 
-	setAttackTime { | attack = 0.05 | attackTime = attack; }
-	setDecayTime { | decay = 0.3 | decayTime = decay; }
-	setSustainLevel { | level = 0.5 | sustainLevel = level; }
-	setReleaseTime { | release = 0.3 | releaseTime = release; }
+	setAttackTime { | attack = 0.05 |
+		attackTime = attack;
+		if( isTriggered == true, { env.set(\attackTime, attackTime); } );
+	}
+	setDecayTime { | decay = 0.3 |
+		decayTime = decay;
+		if( isTriggered == true, { env.set(\decayTime, decayTime); });
+	}
+	setSustainLevel { | level = 0.5 |
+		sustainLevel = level;
+		if( isTriggered == true, { env.set(\sustainLevel, sustainLevel); });
+	}
+	setReleaseTime { | release = 0.3 |
+		releaseTime = release;
+		if( isTriggered == true, { env.set(\releaseTime, releaseTime); });
+	}
 
 	setPeakLevel { | level |
 		peakLevel = level;
 		if( isTriggered == true, { env.set(\peakLevel, peakLevel); });
 	}
-	setCurve { | c = -4 | curve = c; }
+	setCurve { | c = -4 |
+		curve = c;
+		if(isTriggered == true, { env.set(\curve, curve); });
+	}
 	setPolarity { | pol = 1 |
 		polarity = pol;
 		if( isTriggered == true, { env.set(\polarity, polarity); });

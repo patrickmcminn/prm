@@ -35,12 +35,20 @@ var encoderBank1 = 0;
   });
 }, page: page);
 
+/*
 //////// Modular Clock:
 ~apc.setPanButtonFunc({
   ~birds.modularClock.togglePlay;
   if( ~birds.modularClock.isPlaying,
     { ~apc.turnPanButtonOn }, { ~apc.turnPanButtonOff });
 }, page: page);
+*/
+
+///////// Reverb:
+~apc.setUserButtonFunc({
+	~prm.reverb.loadPreset('birds');
+	~apc.turnUserButtonOn;
+}, 'noteOn', 0, page);
 
 /////////////////////
 // Bank Change: ////

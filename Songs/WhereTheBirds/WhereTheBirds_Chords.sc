@@ -18,13 +18,9 @@ chord values:
 0.13 - m
 0.19 - m7
 
-
 0.38 - M9
-0.42 - M7
+0.42 - M7s
 0.5 - M
-
-
-
 */
 
 WhereTheBirds_Chords : IM_Module {

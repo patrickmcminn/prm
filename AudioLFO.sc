@@ -36,18 +36,23 @@ CV_LFO {
         'sampleAndHold', { waveform = 4 },
         'noise', { waveform = 5 }
       );
-      server.sync;
-      synth = Synth(\prm_AudioLFO,
-        [\outBus, outBus, \freq, freq, \lfoWaveform, waveform,
-          \rangeLow, rangeLow, \rangeHigh, rangeHigh], group, \addToHead);
-      while({ synth == nil }, { 0.001.wait; });
-      this.setWaveform(waveform);
 			out = outBus;
 			frequency = freq;
 			rangeLow = rangeLo;
 			rangeHigh = rangeHi;
 			pulseWidth = 0.5;
-      isLoaded = true;
+
+			server.sync;
+
+			synth = Synth(\prm_AudioLFO,
+        [\outBus, outBus, \freq, freq, \lfoWaveform, waveform,
+          \rangeLow, rangeLow, \rangeHigh, rangeHigh], group, \addToHead);
+      while({ synth == nil }, { 0.001.wait; });
+      this.setWaveform(waveform);
+
+			server.sync;
+
+			isLoaded = true;
     };
   }
 
@@ -59,8 +64,8 @@ CV_LFO {
       lfoSaw = LFSaw.ar(freq, 1);
       lfoRevSaw = LFSaw.ar(freq, 1) * -1;
       lfoRect = LFPulse.ar(freq, width: lfoPulseWidth).range(-1, 1).lag2(0.05);
-      lfoNoise0 = LFNoise0.ar(freq);
-      lfoNoise2 = LFNoise2.ar(freq);
+      lfoNoise0 = LFDNoise0.ar(freq);
+      lfoNoise2 = LFDNoise1.ar(freq);
       lfo = SelectX.ar(lfoWaveform, [lfoSine, lfoSaw, lfoRevSaw, lfoRect, lfoNoise0, lfoNoise2]);
       lfo = lfo.range(rangeLow, rangeHigh);
       Out.ar(outBus, lfo);

@@ -14,7 +14,7 @@ CV_Suite {
 
 	var <lfo1, <lfo2, <lfo3, <lfo4;
 	var <trigEnv1, <trigEnv2, <gateEnv1, <gateEnv2;
-	var <gate1, <gate2, <constant1, <constant2;
+	var <gate1, <gate2, <constant1, <constant2, <constant3, <constant4;
 	var <freq1, <freq2, <pitchGate1, <pitchGate2;
 
 	var <nilBus;
@@ -70,6 +70,12 @@ CV_Suite {
 			constant2 = CV_Constant.new(nilBus, 0, group, \addToHead);
 			while( { try { constant2.isLoaded } != true},  { 0.001.wait; });
 
+			constant3 = CV_Constant.new(nilBus, 0, group, \addToHead);
+			while( { try { constant3.isLoaded } != true},  { 0.001.wait; });
+
+			constant4 = CV_Constant.new(nilBus, 0, group, \addToHead);
+			while( { try { constant4.isLoaded } != true},  { 0.001.wait; });
+
 			freq1 = CV_Freq.new(nilBus, 0, group, \addToHead);
 			while( { try { freq1.isLoaded } != true }, { 0.001.wait; });
 
@@ -90,8 +96,9 @@ CV_Suite {
 
 	free {
 		lfo1.free; lfo2.free; lfo3.free; lfo4.free;
-		trigEnv1; trigEnv2; gateEnv1; gateEnv2;
-		gate1; gate2; constant1; constant2;
+		trigEnv1.free; trigEnv2.free; gateEnv1.free; gateEnv2.free;
+		gate1.free; gate2.free;
+		constant1.free; constant2.free; constant3.free; constant4.free;
 		freq1; freq2; pitchGate1; pitchGate2;
 	}
 

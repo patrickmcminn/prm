@@ -16,6 +16,8 @@ var granulator = 1;
 var modular = 2;
 var delay = 3;
 
+var main = 0;
+
 var tuningNoteIsPlaying = false;
 
 var loopDelayIsLoaded = false;
@@ -23,7 +25,7 @@ var hugeIsLoaded = false;
 
 var concIsLoaded = false;
 
-var envReset;
+var envReset, rateReset;
 
 ~apc.makePage(page);
 
@@ -181,7 +183,6 @@ var envReset;
 
 });
 
-
 //// grainEnv buttons:
 envReset = {
 	~apc.turnGridBlue(4, 4, 1, page: page);
@@ -195,7 +196,7 @@ envReset = {
 envReset.value;
 
 ~apc.setGridMonitorFunc(\grainEnv, {
-	var env = ~prm.granulator.grainEnv;
+	var env = ~prm.granulator.grainEnvelope;
 	switch( env,
 		'hann', { envReset.value; ~apc.turnGridGreen(4, 4, page: page); },
 		'gabor', { envReset.value; ~apc.turnGridGreen(5, 4, page: page); },
@@ -214,8 +215,252 @@ envReset.value;
 ~apc.setGridFunc(5, 3, { ~prm.granulator.setGrainEnvelope('expodec'); }, page: page);
 ~apc.setGridFunc(6, 3, { ~prm.granulator.setGrainEnvelope('rexpodec'); }, page: page);
 
+rateReset = { 4.do({ | i | ~apc.turnGridYellow(i+4, 1, 1, main, page); }); };
+rateReset.value;
+
+~apc.setGridMonitorFunc(\granulator, {
+	var freeze, sync;
+	var rate = ~prm.granulator.rateLow;
+	freeze = ~prm.granulator.isFrozen;
+	sync = ~prm.granulator.sync;
+	if( freeze == true, { ~apc.turnGridRed(4, 2) }, { ~apc.turnGridWhite(4, 2) });
+	if( sync == 0, { ~apc.turnGridCyan(5, 2) }, { ~apc.turnGridGreen(5, 2) });
+	switch( rate,
+		1, { rateReset.value; ~apc.turnGridGreen(4, 1, 2); },
+		0.5, { rateReset.value; ~apc.turnGridGreen(5, 1, 2); },
+		0.25, { rateReset.value; ~apc.turnGridGreen(6, 1, 2); },
+		2, { rateReset.value; ~apc.turnGridGreen(7, 1, 2); }
+	);
+}, page: page);
+~apc.turnGridLightBlue(6, 2, 1, main, page);
+
+// toggle freeze:
+~apc.setGridFunc(4, 2, { ~prm.granulator.toggleFreeze; }, bank: main, page: page);
+// toggle sync:
+~apc.setGridFunc(5, 2, { ~prm.granulator.toggleSync }, bank: main, page: page);
+// normalizes grain size to grainDurLow, turns sync on, sets pans to 0.
+~apc.setGridFunc(6, 2, {
+	var size = ~prm.granulator.grainDurLow;
+	~prm.granulator.setGrainDur(size, size);
+	~prm.granulator.turnSyncOn;
+	~prm.granulator.setPan(0, 0);
+	~apc.turnGridLightBlue(6, 2, 2);
+}, bank: main, page: page);
+~apc.setGridFunc(6, 2, { ~apc.turnGridLightBlue(6, 2, 1); }, 'noteOff', bank: main, page: page);
+
+//// grain rates:
+// 1:
+~apc.setGridFunc(4, 1, { ~prm.granulator.setRate(1, 1); }, bank: main, page: page);
+// 0.5:
+~apc.setGridFunc(5, 1, { ~prm.granulator.setRate(0.5, 0.5); }, bank: main, page: page);
+// 0.25:
+~apc.setGridFunc(6, 1, { ~prm.granulator.setRate(0.25, 0.25); }, bank: main, page: page);
+// 2:
+~apc.setGridFunc(7, 1, { ~prm.granulator.setRate(2, 2); }, bank: main, page: page);
 
 
+////////////////////////////////
+////// Device Encoders: ///////
+//////////////////////////////
+
+///////////////////
+// Bank Change: //
+/////////////////
+
+//// send bank changes:
+~apc.setDeviceButtonsMonitorFunc(\effects, {
+	if( ~apc.activeDeviceEncodersBank == reverb,
+		{ ~apc.turnDeviceButtonOn(5) }, { ~apc.turnDeviceButtonOff(5) });
+	if( ~apc.activeDeviceEncodersBank  == granulator,
+		{ ~apc.turnDeviceButtonOn(6) }, { ~apc.turnDeviceButtonOff(6) });
+	if( ~apc.activeDeviceEncodersBank  == modular,
+		{ ~apc.turnDeviceButtonOn(7) }, { ~apc.turnDeviceButtonOff(7) });
+	if( ~apc.activeDeviceEncodersBank == delay,
+		{ ~apc.turnDeviceButtonOn(8) }, { ~apc.turnDeviceButtonOff(8) });
+}, page: page);
+
+~apc.setDeviceButtonFunc(5, { ~apc.setActiveDeviceEncodersBank(reverb); }, page: page);
+~apc.setDeviceButtonFunc(6, { ~apc.setActiveDeviceEncodersBank(granulator);  }, page: page);
+~apc.setDeviceButtonFunc(7, { ~apc.setActiveDeviceEncodersBank(modular); }, page: page);
+~apc.setDeviceButtonFunc(8, { ~apc.setActiveDeviceEncodersBank(delay); }, page: page);
+
+
+
+~apc.setDeviceButtonsMonitorFunc(\sends, {
+	if( ~apc.activeMixerEncodersBank == send0,
+		{ ~apc.turnDeviceButtonOn(1) }, { ~apc.turnDeviceButtonOff(1) });
+	if( ~apc.activeMixerEncodersBank  == send1,
+		{ ~apc.turnDeviceButtonOn(2) }, { ~apc.turnDeviceButtonOff(2) });
+	if( ~apc.activeMixerEncodersBank  == send2,
+		{ ~apc.turnDeviceButtonOn(3) }, { ~apc.turnDeviceButtonOff(3) });
+	if( ~apc.activeMixerEncodersBank == send3,
+		{ ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4) });
+}, page: page);
+
+~apc.setDeviceButtonFunc(1, { ~apc.setActiveMixerEncodersBank(send0); }, page: page);
+~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1);  }, page: page);
+~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2); }, page: page);
+~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); }, page: page);
+
+//// Reverb:
+~apc.setDeviceEncodersMonitorFunc(\verbEQ, {
+	var preDelay, decayTime, highCut, postHigh;
+	var granVerb;
+	preDelay = ~prm.reverb.preDelay.explin(0.0000001, 500, 0, 127);
+	decayTime = ~prm.reverb.decayTime.explin(0.1, 100, 0, 127);
+	highCut = ~prm.reverb.highCut.explin(100, 15000, 0, 127);
+	postHigh = ~prm.reverb.postEQ.highPassCutoff.explin(40, 4500, 0, 127);
+	granVerb = ~prm.granulator.mixer.sendVol(0).dbfsCC;
+
+	~apc.setDeviceEncoderValue(1, decayTime, reverb, page);
+	~apc.setDeviceEncoderValue(2, highCut, reverb, page);
+	~apc.setDeviceEncoderValue(3, preDelay, reverb, page);
+	~apc.setDeviceEncoderValue(4, postHigh, reverb, page);
+
+	~apc.setDeviceEncoderValue(5, granVerb, reverb, page);
+}, bank: reverb, page: page);
+// decay time:
+~apc.setDeviceEncoderFunc(1, { | val |
+	var time = val.linexp(0, 127, 0.1, 100);
+	~prm.reverb.setDecayTime(time);
+}, reverb, page);
+// high cut :
+~apc.setDeviceEncoderFunc(2, { | val |
+	var cut = val.linexp(0, 127, 100, 15000);
+	~prm.reverb.setHighCut(cut);
+}, reverb, page);
+// pre delay:
+~apc.setDeviceEncoderFunc(3, { | val |
+	var delay = val.linexp(0, 127, 0.0000001, 500);
+	~prm.reverb.setPreDelay(delay);
+}, reverb, page);
+// post reverb highpass:
+~apc.setDeviceEncoderFunc(4, { | val |
+	var cutoff = val.linexp(0, 127, 40, 4500);
+	~prm.reverb.postEQ.setHighPassCutoff(cutoff);
+}, reverb, page);
+
+// granulator to reverb send:
+~apc.setDeviceEncoderFunc(5, { | val |
+	~prm.granulator.mixer.setSendVol(0, val.ccdbfs);
+}, reverb, page);
+
+//// Granulator:
+~apc.setDeviceEncodersMonitorFunc(\granulator, {
+	var grainDurLow, grainDurHigh, trigRate, cutoff;
+	var level, delayTime, feedback, pan;
+	grainDurLow = ~prm.granulator.grainDurLow.explin(0.005, 2.5, 0, 127);
+	grainDurHigh = ~prm.granulator.grainDurHigh.explin(0.01, 2.7, 0, 127);
+	trigRate = ~prm.granulator.trigRate.linlin(1, 64, 0, 127);
+	cutoff = ~prm.granulator.filterCutoff.explin(150, 20000, 0, 127);
+	level = ~prm.granulator.delayLevel.linlin(0, 1, 0, 127);
+	delayTime = ~prm.granulator.delayTime.linlin(0.01, 5, 0, 127);
+	feedback = ~prm.granulator.feedback.linlin(0, 1, 0, 127);
+	pan = ~prm.granulator.panHigh.linlin(0, 1, 0, 127);
+	~apc.setDeviceEncoderValue(1, grainDurLow, granulator, page);
+	~apc.setDeviceEncoderValue(2, grainDurHigh, granulator, page);
+	~apc.setDeviceEncoderValue(3, trigRate, granulator, page);
+	~apc.setDeviceEncoderValue(4, cutoff, granulator, page);
+	~apc.setDeviceEncoderValue(5, level, granulator, page);
+	~apc.setDeviceEncoderValue(6, delayTime, granulator, page);
+	~apc.setDeviceEncoderValue(7, feedback, granulator, page);
+	~apc.setDeviceEncoderValue(8, pan, granulator, page);
+}, granulator, page);
+
+// grainDur Low:
+~apc.setDeviceEncoderFunc(1, { | val |
+	var grainDur = val.linexp(0, 127, 0.005, 2.5);
+	~prm.granulator.setGrainDurLow(grainDur);
+}, granulator, page);
+// grainDur High:
+~apc.setDeviceEncoderFunc(2, { | val |
+	var grainDur = val.linexp(0, 127, 0.01, 2.7);
+	~prm.granulator.setGrainDurHigh(grainDur);
+}, granulator, page);
+// trigRate:
+~apc.setDeviceEncoderFunc(3, { | val |
+	var rate = val.linlin(0, 127, 1, 64);
+	~prm.granulator.setTrigRate(rate);
+}, granulator, page);
+// cutoff:
+~apc.setDeviceEncoderFunc(4, { | val |
+	var cutoff = val.linexp(0, 127, 150, 20000);
+	~prm.granulator.setFilterCutoff(cutoff);
+}, granulator, page);
+// delay level:
+~apc.setDeviceEncoderFunc(5, { | val |
+	var level = val.linlin(0, 127, 0, 1);
+	~prm.granulator.setDelayLevel(level);
+}, granulator, page);
+//delayTime:
+~apc.setDeviceEncoderFunc(6, { | val |
+	var delay = val.linlin(0, 127, 0.01, 5);
+	~prm.granulator.setDelayTime(delay);
+}, granulator, page);
+//feedback:
+~apc.setDeviceEncoderFunc(7, { | val |
+	var feedback = val.linlin(0, 127, 0, 1);
+	~prm.granulator.setFeedback(feedback);
+}, granulator, page);
+// pan:
+~apc.setDeviceEncoderFunc(8, { | val |
+	var panLow = val.linlin(0, 127, 0, -1);
+	var panHigh = val.linlin(0, 127, 0, 1);
+	~prm.granulator.setPanLow(panLow);
+	~prm.granulator.setPanHigh(panHigh);
+}, granulator, page);
+
+//// Modular Send:
+
+//// Delay:
+~apc.setDeviceEncodersMonitorFunc(\delay, {
+	var time, fb, verb, gran, mod, granVerb;
+	time = ~prm.delay.delayTime.explin(0.05, 6, 0, 127);
+	fb = ~prm.delay.feedback.linlin(0, 1, 0, 127);
+	verb = ~prm.delay.mixer.sendVol(0).dbfsCC;
+	gran = ~prm.delay.mixer.sendVol(1).dbfsCC;
+	mod = ~prm.delay.mixer.sendVol(2).dbfsCC;
+	granVerb = ~prm.granulator.mixer.sendVol(0).dbfsCC;
+
+	~apc.setDeviceEncoderValue(1, time, delay, page);
+	~apc.setDeviceEncoderValue(2, fb, delay, page);
+
+	~apc.setDeviceEncoderValue(5, verb, delay, page);
+	~apc.setDeviceEncoderValue(6, gran, delay, page);
+	~apc.setDeviceEncoderValue(7, mod, delay, page);
+	~apc.setDeviceEncoderValue(8, granVerb, delay, page);
+}, delay, page);
+
+// delay time:
+~apc.setDeviceEncoderFunc(1, { | val |
+	var time = val.linexp(0, 127, 0.05, 6);
+	~prm.delay.setDelayTime(time);
+}, delay, page);
+// feedback:
+~apc.setDeviceEncoderFunc(2, { | val |
+	var fb = val.linlin(0, 127, 0, 1);
+	~prm.delay.setFeedback(fb);
+}, delay, page);
+
+// delay sends:
+~apc.setDeviceEncoderFunc(5, { | val |
+	~prm.delay.mixer.setSendVol(0, val.ccdbfs);
+}, delay, page);
+~apc.setDeviceEncoderFunc(6, { | val |
+	~prm.delay.mixer.setSendVol(1, val.ccdbfs);
+}, delay, page);
+~apc.setDeviceEncoderFunc(7, { | val |
+	~prm.delay.mixer.setSendVol(2, val.ccdbfs);
+}, delay, page);
+
+
+// granulator reverb send:
+~apc.setDeviceEncoderFunc(8, { | val |
+	~prm.granulator.mixer.setSendVol(0, val.ccdbfs);
+}, delay, page);
+
+
+/*
 //// beauty buttons:
 
 // delay:
@@ -267,184 +512,6 @@ envReset.value;
 	~prm.beauty.setResonances(0.5.rand, 0.5.rand);
 	~apc.turnGridColor(7, 0, 128.rand+1);
 }, page: page);
+*/
 
-
-////////////////////////////////
-////// Device Encoders: ///////
-//////////////////////////////
-
-///////////////////
-// Bank Change: //
-/////////////////
-
-//// send bank changes:
-~apc.setDeviceButtonsMonitorFunc(\effects, {
-	if( ~apc.activeDeviceEncodersBank == reverb,
-		{ ~apc.turnDeviceButtonOn(5) }, { ~apc.turnDeviceButtonOff(5) });
-	if( ~apc.activeDeviceEncodersBank  == granulator,
-		{ ~apc.turnDeviceButtonOn(6) }, { ~apc.turnDeviceButtonOff(6) });
-	if( ~apc.activeDeviceEncodersBank  == modular,
-		{ ~apc.turnDeviceButtonOn(7) }, { ~apc.turnDeviceButtonOff(7) });
-	if( ~apc.activeDeviceEncodersBank == delay,
-		{ ~apc.turnDeviceButtonOn(8) }, { ~apc.turnDeviceButtonOff(8) });
-}, page: page);
-
-~apc.setDeviceButtonFunc(5, { ~apc.setActiveDeviceEncodersBank(reverb); }, page: page);
-~apc.setDeviceButtonFunc(6, { ~apc.setActiveDeviceEncodersBank(granulator);  }, page: page);
-~apc.setDeviceButtonFunc(7, { ~apc.setActiveDeviceEncodersBank(modular); }, page: page);
-~apc.setDeviceButtonFunc(8, { ~apc.setActiveDeviceEncodersBank(delay); }, page: page);
-
-
-
-~apc.setDeviceButtonsMonitorFunc(\sends, {
-	if( ~apc.activeMixerEncodersBank == send0,
-		{ ~apc.turnDeviceButtonOn(1) }, { ~apc.turnDeviceButtonOff(1) });
-	if( ~apc.activeMixerEncodersBank  == send1,
-		{ ~apc.turnDeviceButtonOn(2) }, { ~apc.turnDeviceButtonOff(2) });
-	if( ~apc.activeMixerEncodersBank  == send2,
-		{ ~apc.turnDeviceButtonOn(3) }, { ~apc.turnDeviceButtonOff(3) });
-	if( ~apc.activeMixerEncodersBank == send3,
-		{ ~apc.turnDeviceButtonOn(4) }, { ~apc.turnDeviceButtonOff(4) });
-}, page: page);
-
-~apc.setDeviceButtonFunc(1, { ~apc.setActiveMixerEncodersBank(send0); }, page: page);
-~apc.setDeviceButtonFunc(2, { ~apc.setActiveMixerEncodersBank(send1);  }, page: page);
-~apc.setDeviceButtonFunc(3, { ~apc.setActiveMixerEncodersBank(send2); }, page: page);
-~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); }, page: page);
-
-//// Reverb:
-~apc.setDeviceEncodersMonitorFunc(\verbEQ, {
-	var preDelay, decayTime, highCut, postHigh;
-	preDelay = ~prm.reverb.preDelay.explin(0.0000001, 500, 0, 127);
-	decayTime = ~prm.reverb.decayTime.explin(0.1, 100, 0, 127);
-	highCut = ~prm.reverb.highCut.explin(100, 15000, 0, 127);
-	postHigh = ~prm.reverb.postEQ.highPassCutoff.explin(40, 4500, 0, 127);
-	~apc.setDeviceEncoderValue(1, decayTime, reverb, page);
-	~apc.setDeviceEncoderValue(2, highCut, reverb, page);
-	~apc.setDeviceEncoderValue(3, preDelay, reverb, page);
-	~apc.setDeviceEncoderValue(4, postHigh, reverb, page);
-}, bank: reverb, page: page);
-// decay time:
-~apc.setDeviceEncoderFunc(1, { | val |
-	var time = val.linexp(0, 127, 0.1, 100);
-	~prm.reverb.setDecayTime(time);
-}, reverb, page);
-// high cut :
-~apc.setDeviceEncoderFunc(2, { | val |
-	var cut = val.linexp(0, 127, 100, 15000);
-	~prm.reverb.setHighCut(cut);
-}, reverb, page);
-// pre delay:
-~apc.setDeviceEncoderFunc(3, { | val |
-	var delay = val.linexp(0, 127, 0.0000001, 500);
-	~prm.reverb.setPreDelay(delay);
-}, reverb, page);
-// post reverb highpass:
-~apc.setDeviceEncoderFunc(4, { | val |
-	var cutoff = val.linexp(0, 127, 40, 4500);
-	~prm.reverb.postEQ.setHighPassCutoff(cutoff);
-}, reverb, page);
-
-//// Granulator:
-~apc.setDeviceEncodersMonitorFunc(\granulator, {
-	var grainDurLow, grainDurHigh, trigRate, cutoff;
-	var mix, delayTime, feedback, pan;
-	grainDurLow = ~prm.granulator.granulator.grainDurLow.explin(0.005, 3, 0, 127);
-	grainDurHigh = ~prm.granulator.granulator.grainDurHigh.explin(0.01, 3.5, 0, 127);
-	trigRate = ~prm.granulator.granulator.trigRate.linlin(1, 64, 0, 127);
-	cutoff = ~prm.granulator.granulator.filterCutoff.explin(150, 20000, 0, 127);
-	mix = ~prm.granulator.delay.mix.linlin(0, 1, 0, 127);
-	delayTime = ~prm.granulator.delay.delayTime.linlin(0.01, 5, 0, 127);
-	feedback = ~prm.granulator.delay.feedback.linlin(0, 1, 0, 127);
-	pan = ~prm.granulator.granulator.panHigh.linlin(0, 1, 0, 127);
-	~apc.setDeviceEncoderValue(1, grainDurLow, granulator, page);
-	~apc.setDeviceEncoderValue(2, grainDurHigh, granulator, page);
-	~apc.setDeviceEncoderValue(3, trigRate, granulator, page);
-	~apc.setDeviceEncoderValue(4, cutoff, granulator, page);
-	~apc.setDeviceEncoderValue(5, mix, granulator, page);
-	~apc.setDeviceEncoderValue(6, delayTime, granulator, page);
-	~apc.setDeviceEncoderValue(7, feedback, granulator, page);
-	~apc.setDeviceEncoderValue(8, pan, granulator, page);
-}, granulator, page);
-
-// grainDur Low:
-~apc.setDeviceEncoderFunc(1, { | val |
-	var grainDur = val.linexp(0, 127, 0.005, 3);
-	~prm.granulator.setGrainDurLow(grainDur);
-}, granulator, page);
-// grainDur High:
-~apc.setDeviceEncoderFunc(2, { | val |
-	var grainDur = val.linexp(0, 127, 0.01, 3.5);
-	~prm.granulator.setGrainDurHigh(grainDur);
-}, granulator, page);
-// trigRate:
-~apc.setDeviceEncoderFunc(3, { | val |
-	var rate = val.linlin(0, 127, 1, 64);
-	~prm.granulator.setTrigRate(rate);
-}, granulator, page);
-// cutoff:
-~apc.setDeviceEncoderFunc(4, { | val |
-	var cutoff = val.linexp(0, 127, 150, 20000);
-	~prm.granulator.setGranulatorFilterCutoff(cutoff);
-}, granulator, page);
-// mix:
-~apc.setDeviceEncoderFunc(5, { | val |
-	var mix = val.linlin(0, 127, 0, 1);
-	~prm.granulator.delay.setMix(mix);
-}, granulator, page);
-//delayTime:
-~apc.setDeviceEncoderFunc(6, { | val |
-	var delay = val.linlin(0, 127, 0.01, 5);
-	~prm.granulator.setDelayTime(delay);
-}, granulator, page);
-//feedback:
-~apc.setDeviceEncoderFunc(7, { | val |
-	var feedback = val.linlin(0, 127, 0, 1);
-	~prm.granulator.setFeedback(feedback);
-}, granulator, page);
-// pan:
-~apc.setDeviceEncoderFunc(8, { | val |
-	var panLow = val.linlin(0, 127, 0, -1);
-	var panHigh = val.linlin(0, 127, 0, 1);
-	~prm.granulator.setPanLow(panLow);
-	~prm.granulator.setPanHigh(panHigh);
-}, granulator, page);
-
-//// Modular Send:
-
-//// Delay:
-~apc.setDeviceEncodersMonitorFunc(\delay, {
-	var time, fb, verb, gran, mod;
-	time = ~prm.delay.delayTime.explin(0.05, 6, 0, 127);
-	fb = ~prm.delay.feedback.linlin(0, 1, 0, 127);
-	verb = ~prm.delay.mixer.sendVol(0).dbfsCC;
-	gran = ~prm.delay.mixer.sendVol(1).dbfsCC;
-	mod = ~prm.delay.mixer.sendVol(2).dbfsCC;
-	~apc.setDeviceEncoderValue(1, time, delay, page);
-	~apc.setDeviceEncoderValue(2, fb, delay, page);
-
-	~apc.setDeviceEncoderValue(5, verb, delay, page);
-	~apc.setDeviceEncoderValue(6, gran, delay, page);
-	~apc.setDeviceEncoderValue(7, mod, delay, page);
-}, delay, page);
-// delay time:
-~apc.setDeviceEncoderFunc(1, { | val |
-	var time = val.linexp(0, 127, 0.05, 6);
-	~prm.delay.setDelayTime(time);
-}, delay, page);
-// feedback:
-~apc.setDeviceEncoderFunc(2, { | val |
-	var fb = val.linlin(0, 127, 0, 1);
-	~prm.delay.setFeedback(fb);
-}, delay, page);
-
-~apc.setDeviceEncoderFunc(5, { | val |
-	~prm.delay.mixer.setSendVol(0, val.ccdbfs);
-}, delay, page);
-~apc.setDeviceEncoderFunc(6, { | val |
-	~prm.delay.mixer.setSendVol(1, val.ccdbfs);
-}, delay, page);
-~apc.setDeviceEncoderFunc(7, { | val |
-	~prm.delay.mixer.setSendVol(2, val.ccdbfs);
-}, delay, page);
 

@@ -164,7 +164,7 @@ IM_MultiShift : IM_Processor {
     );
     */
 
-    drySynth = Synth(\prm_drySynth_mono, [\inBus, inBus, \outBus, mixer.chanMono], group, \addToHead);
+    drySynth = Synth(\prm_drySynth_mono, [\inBus, inBus, \outBus, mixer.chanMono, \amp, dryAmp], group, \addToHead);
   }
 
   prMakeSynthsStereo { | shiftArray = 0, dryAmp = 0 |
@@ -191,7 +191,7 @@ IM_MultiShift : IM_Processor {
         }.fork;
       }
     );
-    drySynth = Synth(\prm_drySynth_stereo, [\inBus, inBus, \outBus, mixer.chanMono], group, \addToHead);
+    drySynth = Synth(\prm_drySynth_stereo, [\inBus, inBus, \outBus, mixer.chanMono, \amp, dryAmp], group, \addToHead);
   }
 
   //////// Public Functions
@@ -208,6 +208,12 @@ IM_MultiShift : IM_Processor {
     shiftSynthArray.at(synth).set(\shift, shift);
     ^shift;
   }
+
+	setShiftVol { | synth = 0, vol = 0 |
+		shiftSynthArray.at(synth).set(\amp, vol.dbamp);
+	}
+
+	setDryVol { | vol = 0 | drySynth.set(\amp, vol.dbamp); }
 
   setShiftArray { | shiftArray = 0 |
     shiftSynthArray.do({ | synth, index | synth.set(\shift, shiftArray.at(index)); });

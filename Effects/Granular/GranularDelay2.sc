@@ -277,6 +277,9 @@ GranularDelay2 : IM_Processor {
 		sync = s;
 		synth.set(\sync, sync);
 	}
+	turnSyncOff { sync = 0; synth.set(\sync, sync); }
+	turnSyncOn { sync = 1; synth.set(\sync, sync); }
+	toggleSync { if( sync == 1, { this.turnSyncOff }, { this.turnSyncOn }); }
 
 	setFilterCutoff { | cutoff = 20000 |
 		filterCutoff = cutoff;

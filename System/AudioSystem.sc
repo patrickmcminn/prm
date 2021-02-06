@@ -115,11 +115,16 @@ AudioSystem {
 
 			reverb.loadPreset('prmDefault');
 
-			granulator = GranularDelay.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
+			//granulator = GranularDelay.new(masterEQ.inBus, relGroup: systemGroup, addAction: \addToHead);
+			granulator = GranularDelay2.new(masterEQ.inBus, reverb.inBus, nil, nil, nil,
+				relGroup: systemGroup, addAction: \addToHead);
 			server.sync;
 			while( {  try { granulator.isLoaded } != true }, { 0.001.wait; });
-			granulator.granulator.setCrossfade(1);
-			granulator.delay.setMix(0);
+			granulator.setPosMod(0.5);
+			granulator.setDelayTime(1);
+			granulator.setDelayLevel(0.75);
+			granulator.setFeedback(0.3);
+			granulator.mixer.setSendVol(0, -12);
 
 			// send out to modular system
 			modularSend = MonoHardwareSend.new(modOut1, relGroup: systemGroup, addAction: \addToHead);

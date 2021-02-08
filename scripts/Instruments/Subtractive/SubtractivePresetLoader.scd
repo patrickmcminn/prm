@@ -12,3 +12,4 @@
 0;0;plague2;Red;
 0;0;plague2-2;Red;
 0;0;plague2-3;Red;
+0;0;plague3-4;Red;

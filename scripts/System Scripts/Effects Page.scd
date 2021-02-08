@@ -232,8 +232,9 @@ rateReset.value;
 		2, { rateReset.value; ~apc.turnGridGreen(7, 1, 2); }
 	);
 }, page: page);
-~apc.turnGridLightBlue(6, 2, 1, main, page);
 
+
+~apc.turnGridLightBlue(6, 2, 1, main, page);
 // toggle freeze:
 ~apc.setGridFunc(4, 2, { ~prm.granulator.toggleFreeze; }, bank: main, page: page);
 // toggle sync:

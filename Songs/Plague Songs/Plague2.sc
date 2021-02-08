@@ -163,6 +163,9 @@ Plague2 : IM_Module {
 		granulator.setRate(0.25, 0.25);
 		granulator.setGrainDur(1, 1.75);
 		granulator.setGrainEnvelope('hanning');
+		granuator.setDelayTime(2);
+		granulator.setDelayLevel(0.95);
+		granulator.setFeedback(0.7);
 	}
 
 	resetGranulator { | granulator |

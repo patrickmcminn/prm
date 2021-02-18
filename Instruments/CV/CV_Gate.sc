@@ -69,6 +69,8 @@ CV_Gate {
 			rG, action);
 	}
 
+	toggleGate { | val = 0.5 | if( gateIsHigh, { this.releaseGate },  { this.makeGate(val); }); }
+
 	makeGate { | value = 0.5 |
 		gateIsHigh = true;
 		gate = Synth(\prm_gateGate, [\outBus, out, \gateVal, value], rG, action);

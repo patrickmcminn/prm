@@ -9,7 +9,4 @@
 7;3;darkness;White;
 7;0;ver sacrum;Yellow;
 7;2;midnightSong;LightBlue;
-0;0;plague2;Red;
-0;0;plague2-2;Red;
-0;0;plague2-3;Red;
-0;0;plague3-4;Red;
+0;0;plague2-4;Red;

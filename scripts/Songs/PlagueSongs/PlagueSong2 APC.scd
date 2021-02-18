@@ -13,7 +13,7 @@ var delay = 3;
 
 var main = 0;
 
-var shiftResetFunc;
+var shiftResetFunc, shiftVolResetFunc;
 
 var rateReset;
 
@@ -22,10 +22,13 @@ var rateReset;
 ~apc.makePage(page);
 ~apc.addMixerEncodersBanks(3, page);
 
+~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
+
 
 //////// mixer:
 
 ~apc.mapMixer(~p2.mixer, 6, 0, 0, verb, gran, mod, delay, main, page);
+~apc.mapSendBanks(\main, verb, gran, mod, delay, main, page);
 
 /////// record enables:
 ~apc.setDeviceEncodersMonitorFunc(\record, {
@@ -41,15 +44,27 @@ var rateReset;
 // shift:
 ~apc.setRecordEnableButtonFunc(2, { ~p2.tptInput.tglMute }, bank: main, page: page);
 
+////// granulator volume:
+~apc.setFaderFunc(8, { | val |
+	~prm.granulator.mixer.setVol(val.ccdbfs);
+}, main, page);
+
 ////////////////////
 //// Presets: /////
 //////////////////
 
+~apc.turnSceneLaunchButtonYellow(0, 2, main, page);
+~apc.turnSceneLaunchButtonBlue(1, 2, main, page);
+~apc.turnSceneLaunchButtonWhite(2, 2, main, page);
+
 //// song granulator:
-~apc.setSceneLaunchFunc(0, { ~p2.setGranulatorPreset; ~apc.turnSceneLaunchButtonGreen(0);
+~apc.setSceneLaunchFunc(0, { ~p2.setGranulatorPreset(~prm.granulator); ~apc.turnSceneLaunchButtonGreen(0);
 }, bank: main, page: page);
 //// chorale preset:
-~apc.setSceneLaunchFunc(1, { ~p2.setChoralePreset; ~apc.turnSceneLaunchButtonGreen(1);
+~apc.setSceneLaunchFunc(1, { ~p2.setChoralePreset(~prm.reverb); ~apc.turnSceneLaunchButtonGreen(1);
+}, bank: main, page: page);
+//// normal verb:
+~apc.setSceneLaunchFunc(2, { ~prm.reverb.setDecayTime(4); ~apc.turnSceneLaunchButtonGreen(2);
 }, bank: main, page: page);
 
 
@@ -82,7 +97,7 @@ shiftResetFunc = { 5.do({ | i | ~apc.turnGridPurple(i, 4, 2, bank: main, page: p
 ~apc.setGridFunc(4, 4, { ~p2.setMinorChordShift; }, bank: main, page: page);
 
 ///// granulator:
-rateReset = { 4.do({ | i | ~apc.turnGridYellow(i+4, 1, 1, main, page); }); };
+rateReset = { 4.do({ | i | ~apc.turnGridYellow(i, 2, 1, main, page); }); };
 rateReset.value;
 
 ~apc.setGridMonitorFunc(\granulator, {
@@ -113,17 +128,44 @@ rateReset.value;
 // 2:
 ~apc.setGridFunc(3, 2, { ~prm.granulator.setRate(2, 2); }, bank: main, page: page);
 
+///// arbhar gate signal:
+~apc.setGridMonitorFunc(\arbGate, {
+	if( ~p2.arbGate.gateIsHigh, { ~apc.turnGridGreen(0, 0) }, { ~apc.turnGridLightBlue(0, 0); });
+}, bank: main, page: page);
+~apc.setGridFunc(0, 0, { ~p2.arbGate.toggleGate; }, bank: main, page: page);
+
+
+//////// shifter pre vol:
+shiftVolResetFunc = { 4.do({ | i | ~apc.turnGridBlue(i+4, 0, 1, main, page); }); };
+shiftVolResetFunc.value;
+
+~apc.setGridMonitorFunc(\shiftPreVol, {
+	var vol = ~p2.tptEQ.mixer.vol;
+	switch(vol,
+		-3, { shiftVolResetFunc.value; ~apc.turnGridGreen(4, 0, 2); },
+		0, { shiftVolResetFunc.value; ~apc.turnGridGreen(5, 0, 2); },
+		3, { shiftVolResetFunc.value; ~apc.turnGridGreen(6, 0, 2); },
+		6, { shiftVolResetFunc.value; ~apc.turnGridGreen(7, 0, 2); });
+}, main, page);
+
+~apc.setGridFunc(4, 0, { ~p2.tptEQ.mixer.setVol(-3); }, bank: main, page: page);
+~apc.setGridFunc(5, 0, { ~p2.tptEQ.mixer.setVol(0); }, bank: main, page: page);
+~apc.setGridFunc(6, 0, { ~p2.tptEQ.mixer.setVol(3); }, bank: main, page: page);
+~apc.setGridFunc(7, 0, { ~p2.tptEQ.mixer.setVol(6); }, bank: main, page: page);
+
 ////////////////////////////
 //// Device Encoders: /////
 //////////////////////////
 
 ~apc.setDeviceEncodersMonitorFunc(\main, {
 	var subCutoff = ~p2.subtractive.filterCutoff.explin(150, 20000, 0, 127);
-	var granCutoff = ~p2.subtractive.filterCutoff.explin(150, 20000, 0, 127);
+	var granCutoff = ~prm.granulator.filterCutoff.explin(150, 20000, 0, 127);
 	var durLow = ~prm.granulator.grainDurLow.linlin(0.005, 2.5, 0, 127);
 	var durHigh = ~prm.granulator.grainDurHigh.linlin(0.01, 2.75, 0, 127);
 	var delayLevel = ~prm.granulator.delayLevel.linlin(0, 1, 0, 127);
 	var feedback = ~prm.granulator.feedback.linlin(0, 1, 0, 127);
+	var plaitsVol = ~p2.plaitsVol.value.linlin(0, 0.5, 0, 127);
+	var delayMix = ~p2.delayMix.value.linlin(0, 0.5, 0, 127);
 
 	~apc.setDeviceEncoderValue(1, subCutoff);
 	~apc.setDeviceEncoderValue(2, granCutoff);
@@ -131,6 +173,8 @@ rateReset.value;
 	~apc.setDeviceEncoderValue(4, durHigh);
 	~apc.setDeviceEncoderValue(5, delayLevel);
 	~apc.setDeviceEncoderValue(6, feedback);
+	~apc.setDeviceEncoderValue(7, plaitsVol);
+	~apc.setDeviceEncoderValue(8, delayMix);
 
 }, main, page);
 
@@ -168,6 +212,18 @@ rateReset.value;
 ~apc.setDeviceEncoderFunc(6, { | val |
 	var feedback = val.linlin(0, 127, 0, 1);
 	~prm.granulator.setFeedback(feedback);
+}, main, page);
+
+// plaits vol CV constant:
+~apc.setDeviceEncoderFunc(7, { | val |
+	var cv = val.linlin(0, 127, 0, 0.5);
+	~p2.plaitsVol.setValue(cv);
+}, main, page);
+
+// delay mix CV constant:
+~apc.setDeviceEncoderFunc(8, { | val |
+	var cv = val.linlin(0, 127, 0, 0.5);
+	~p2.delayMix.setValue(cv);
 }, main, page);
 
 

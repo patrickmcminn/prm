@@ -55,10 +55,14 @@ Plague Songs 2
 
 ~prm.reverb.makeGUI;
 
+(
+~p2 = Plague2.new(~prm.audioIn, ~micIn, ~pickupIn, ~pyr, ~modOutput[0], ~modOutput[1], ~modOutput[4], ~modOutput[5], ~modOutput[6], ~modOutput[7], ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,~prm.procGroup, \addToHead);
+)
 
-~p2 = Plague2.new(~prm.audioIn, ~micIn, ~pickupIn, ~pyr, ~modOutput[0], ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
-	~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
-	~prm.procGroup, \addToHead);
+~p2.isLoaded;
+
+~p2.subtractive.playNote(220);
+~p2.subtractive.releaseNote(220);
 
 ~p2.tptShift;
 ~p2.isLoaded;
@@ -66,4 +70,17 @@ Plague Songs 2
 ~p2.mixer.tglMute(3)
 
 ~p2.subtractive.readPreset('plague2-3');
+
+~apc.setPage('plague2');
+
+-3.dbfsCC;
+
+s.meter
+
+~p2.tptEQ.mixer.tglMute;
+
+~p2.mixer.setSendVol(2, 0, -12);
+
+~prm.reverb.makeGUI;
+
 

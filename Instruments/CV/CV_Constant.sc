@@ -12,7 +12,8 @@ CV_Constant {
   var <isLoaded;
   var server;
   var synth;
-  var <value, <lag;
+  var <value;
+	//var <lag;
 
   var <out, rG, action;
 
@@ -44,8 +45,9 @@ CV_Constant {
       | outBus = 0, value = 0, gate = 1, lag = 0.001 |
       var sig;
       sig = EnvGen.ar(Env.cutoff(0, 1.0), gate, doneAction: 2);
-      sig = sig * value;
-      sig = Lag2.ar(sig, lag);
+			sig = sig * Lag2.kr(value, lag);
+			//sig = sig.lag(lag);
+      //sig = Lag2.ar(sig, lag);
       Out.ar(outBus, sig);
     }).add;
   }
@@ -57,7 +59,7 @@ CV_Constant {
 
   setValue { | val = 0, lag = 0.001 |
 		value = val;
-    synth.set(\lag, lag);
+		synth.set(\lag, lag);
     synth.set(\value, value);
   }
 

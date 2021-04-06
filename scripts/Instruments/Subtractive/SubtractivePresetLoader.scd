@@ -10,3 +10,4 @@
 7;0;ver sacrum;Yellow;
 7;2;midnightSong;LightBlue;
 0;0;plague2-4;Red;
+0;1;plague3-1;LightBlue;

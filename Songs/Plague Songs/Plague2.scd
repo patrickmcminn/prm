@@ -74,13 +74,25 @@ Plague Songs 2
 ~apc.setPage('plague2');
 
 -3.dbfsCC;
-
+3
 s.meter
-
+s.makeWindow;
 ~p2.tptEQ.mixer.tglMute;
 
 ~p2.mixer.setSendVol(2, 0, -12);
 
+
+~p2.mixer.setPanBal(3, -0.25);
+~p2.mixer.setPanBal(4, 0.5);
+~p2.mixer.setPanBal(5, -0.75);
+
 ~prm.reverb.makeGUI;
+
+
+~p2.mixer.sendVol(5)
+
+~prm.reverb.setDecayTime(8);
+
+
 
 

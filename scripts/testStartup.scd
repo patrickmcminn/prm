@@ -133,11 +133,3 @@ r {
 s.makeWindow;
 
 
-Server.killAll;
-s.meter
-
-
-~prm.reverb.makeGUI
-~prm.reverb.savePreset('birds');
-
-~prm.subtractive.readPreset('plague2-2');

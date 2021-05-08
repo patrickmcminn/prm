@@ -36,10 +36,10 @@ var main = 0;
 ~base.setGridMonitorFunc(0, 0, {
 	var shard, env, arbhar, lubadh;
 
-	shard = ~p4.shardEnv.isTriggered;
+	shard = ~p4.shardEnv.gateIsHigh;
 	env = ~p4.envelope.isTriggered;
 	arbhar = ~p4.arbharEnv.isTriggered;
-	lubadh = ~p4.lubadhEnv.isTriggered;
+	lubadh = ~p4.lubadhEnv.gateIsHigh;
 
 	if( shard, { ~base.turnGridGreen(0, 0) }, { ~base.turnGridWhite(0, 0) });
 	if( env, { ~base.turnGridGreen(1, 0) }, { ~base.turnGridWhite(1, 0) });
@@ -48,8 +48,8 @@ var main = 0;
 }, main, page);
 
 // shard env:
-~base.setGridFunc(0, 0, { ~p4.shardEnv.trigger; }, 'noteOn', main, page);
-~base.setGridFunc(0, 0, { ~p4.shardEnv.release; }, 'noteOff', main, page);
+~base.setGridFunc(0, 0, { if( ~p4.shardEnv.gateIsHigh == false, { ~p4.shardEnv.makeGate; });}, 'noteOn', main, page);
+~base.setGridFunc(0, 0, { ~p4.shardEnv.releaseGate; }, 'noteOff', main, page);
 
 // env 2:
 ~base.setGridFunc(1, 0, { ~p4.envelope.trigger; }, 'noteOn', main, page);
@@ -60,5 +60,5 @@ var main = 0;
 ~base.setGridFunc(2, 0, { ~p4.arbharEnv.release; }, 'noteOff', main, page);
 
 // lubadh env:
-~base.setGridFunc(3, 0, { ~p4.lubadhEnv.trigger; }, 'noteOn', main, page);
-~base.setGridFunc(3, 0, { ~p4.lubadhEnv.release; }, 'noteOff', main, page); 
+~base.setGridFunc(3, 0, { if( ~p4.lubadhEnv.gateIsHigh == false, { ~p4.lubadhEnv.makeGate; })}, 'noteOn', main, page);
+~base.setGridFunc(3, 0, { ~p4.lubadhEnv.releaseGate; }, 'noteOff', main, page); 

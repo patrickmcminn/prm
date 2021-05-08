@@ -69,7 +69,7 @@ IM_MultiShift : IM_Processor {
   prAddSynthDef {
 
     SynthDef(\prm_MultiShift_pitchShifter, {
-      | inBus, outBus, amp = 1, shift = 0, windowSize = 0.1, pitchDispersion = 0, timeDispersion = 0.05, mute = 1|
+      | inBus, outBus, amp = 1, shift = 0, windowSize = 0.05, pitchDispersion = 0, timeDispersion = 0.05, mute = 1|
       var input, interval, pitchShift, sig;
       input = In.ar(inBus);
       interval = exp(0.057762265 * shift);
@@ -80,7 +80,7 @@ IM_MultiShift : IM_Processor {
     }).add;
 
     SynthDef(\prm_MultiShift_pitchShifter_stereo, {
-      | inBus, outBus, amp = 1, shift = 0, windowSize = 0.1, pitchDispersion = 0, timeDispersion = 0.05, mute = 1|
+      | inBus, outBus, amp = 1, shift = 0, windowSize = 0.05, pitchDispersion = 0, timeDispersion = 0.05, mute = 1|
       var input, interval, pitchShift, sig;
       input = In.ar(inBus, 2);
       interval = exp(0.057762265 * shift);

@@ -1,10 +1,10 @@
 /*
-Monday, April 5th 2021
-Plague4APC.scd
+Monday, April 30th 2021
+Plague6APC.scd
 prm
 */
 
-var page = 'plague4';
+var page = 'plague6';
 
 var verb = 0;
 var gran = 1;
@@ -13,78 +13,41 @@ var delay = 3;
 
 var main = 0;
 
-var rateReset, envReset, tremReset;
+var envReset, rateReset;
 
 ~apc.makePage(page);
 ~apc.addMixerEncodersBanks(3, page);
 
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 
-//////// mixer:
-
-~apc.mapMixer(~p4.mixer, 5, 0, 0, verb, gran, mod, delay, main, page);
+~apc.mapMixer(~p6.mixer, 4, 0, 0, verb, gran, mod, delay, main, page);
 ~apc.mapSendBanks(\main, verb, gran, mod, delay, main, page);
 
-//////// grid:
-
-tremReset = { 4.do({ | i | ~apc.turnGridLightBlue(i, 4, 1, main, page); }); };
-
-/*
-~apc.setGridMonitorFunc(\tremSpeed, {
-	var base = 136/60;
-	var speed = ~p4.tremolo.frequency;
-	switch(speed,
-		(base * 2), { tremReset.value; ~apc.turnGridGreen(0, 4) },
-		(base * 8/3), { tremReset.value; ~apc.turnGridGreen(1, 4) },
-		(base * 3), { tremReset.value; ~apc.turnGridGreen(2, 4) },
-		(base * 4),{ tremReset.value; ~apc.turnGridGreen(3, 4) });
+/////// record enables:
+~apc.setGridMonitorFunc(\recEnable, {
+	if( ~p6.dry.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1); });
+	if( ~p6.multiShiftInput.isMuted, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2); });
+	if( ~p6.delNetInput.isMuted, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3); });
+	if( ~p6.concatInput.isMuted, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4); });
 }, main, page);
-*/
-~apc.setGridMonitorFunc(\tremSpeed, {
-	var base = 136/60;
-	//var speed = ~p4.tremolo.frequency;
-	if( ~p4.tremolo.frequency == (base*2), { tremReset.value;  ~apc.turnGridGreen(0, 4) });
-	if( ~p4.tremolo.frequency == (base*8/3), { tremReset.value; ~apc.turnGridGreen(1, 4) });
-	if( ~p4.tremolo.frequency == (base*3), { tremReset.value; ~apc.turnGridGreen(2, 4) });
-	if( ~p4.tremolo.frequency == (base*4), { tremReset.value; ~apc.turnGridGreen(3, 4) });
-}, main, page);
+~apc.setRecordEnableButtonFunc(1, { ~p6.dry.tglMute }, bank: main, page: page);
+~apc.setRecordEnableButtonFunc(2, { ~p6.multiShiftInput.tglMute }, bank: main, page: page);
+~apc.setRecordEnableButtonFunc(3, { ~p6.delNetInput.tglMute }, bank: main, page: page);
+~apc.setRecordEnableButtonFunc(4, { ~p6.concatInput.tglMute }, bank: main, page: page);
 
-~apc.setGridFunc(0, 4, {
-	var base = 136/60; ~p4.tremolo.setFrequency(base * 2);
-}, bank: main, page: page);
-~apc.setGridFunc(1, 4, {
-	var base = 136/60; ~p4.tremolo.setFrequency(base * 8/3);
-}, bank: main, page: page);
-~apc.setGridFunc(2, 4, {
-	var base = 136/60; ~p4.tremolo.setFrequency(base * 3);
-}, bank: main, page: page);
-~apc.setGridFunc(3, 4, {
-	var base = 136/60; ~p4.tremolo.setFrequency(base * 4);
-}, bank: main, page: page);
+//////// concat:
 
+//////// Concat SubMixer:
 
-~apc.setGridMonitorFunc(\envs, {
-	var shard, env, arbhar, lubadh;
-
-	shard = ~p4.shardEnv.gateIsHigh;
-	env = ~p4.envelope.isTriggered;
-	arbhar = ~p4.arbharEnv.isTriggered;
-	lubadh = ~p4.lubadhEnv.gateIsHigh;
-
-	if( shard, { ~apc.turnGridGreen(0, 0) }, { ~apc.turnGridWhite(0, 0) });
-	if( env, { ~apc.turnGridGreen(1, 0) }, { ~apc.turnGridWhite(1, 0) });
-	if( arbhar, { ~apc.turnGridGreen(2, 0) }, { ~apc.turnGridWhite(2, 0) });
-	if( lubadh, { ~apc.turnGridGreen(3, 0) }, { ~apc.turnGridWhite(3, 0) });
-}, main, page);
-
-~apc.setGridFunc(0, 0, { ~p4.shardEnv.toggleGate; }, 'noteOn', main, page);
-~apc.setGridFunc(1, 0, { if( ~p4.envelope.isTriggered,
-	{ ~p4.envelope.release }, { ~p4.envelope.trigger; });
-}, 'noteOn', main, page);
-~apc.setGridFunc(2, 0, { if( ~p4.arbharEnv.isTriggered,
-	{ ~p4.arbharEnv.release }, { ~p4.arbharEnv.trigger; });
-}, 'noteOn', main, page);
-~apc.setGridFunc(3, 0, { ~p4.lubadhEnv.toggleGate }, 'noteOn', main, page);
+4.do({ | i |
+	// vol:
+	~apc.setFaderFunc(i+5, { | val | ~p6.concat.subMixer.setVol(i, val.ccdbfs); }, bank: main, page: page);
+	// toggle mute:
+	~apc.setTrackSelectFunc(i+5, { ~p6.concat.subMixer.tglMute(i); }, bank: main, page: page);
+	~apc.setMixerMonitorFunc("mute"++i.asSymbol, {
+		if( ~p6.concat.subMixer.isMuted(i), { ~apc.turnTrackSelectButtonOff(i+5) }, { ~apc.turnTrackSelectButtonOn(i+5); });
+	}, bank: main, page: page);
+});
 
 
 
@@ -169,36 +132,22 @@ rateReset.value;
 //// Encoders: ////
 //////////////////
 
-~apc.setMixerEncodersMonitorFunc(\highPass, {
-	var cutoff = ~p4.granEQ.highPassCutoff.explin(20, 4500, 0, 127);
-	~apc.setMixerEncoderValue(8, cutoff);
-}, main, page);
-~apc.setMixerEncoderFunc(8, { | val |
-	var cutoff = val.linexp(0, 127, 20, 4500);
-	~p4.granEQ.setHighPassCutoff(cutoff);
-}, main, page);
-
-
 //// Granulator:
 ~apc.setDeviceEncodersMonitorFunc(\granulator, {
 	var grainDurLow, grainDurHigh, trigRate, cutoff;
-	var level, delayTime, feedback, pan;
+	var glitch, glitchMod;
 	grainDurLow = ~prm.granulator.grainDurLow.explin(0.005, 2.5, 0, 127);
 	grainDurHigh = ~prm.granulator.grainDurHigh.explin(0.01, 2.7, 0, 127);
 	trigRate = ~prm.granulator.trigRate.linlin(1, 64, 0, 127);
 	cutoff = ~prm.granulator.filterCutoff.explin(150, 20000, 0, 127);
-	level = ~prm.granulator.delayLevel.linlin(0, 1, 0, 127);
-	delayTime = ~prm.granulator.delayTime.linlin(0.01, 5, 0, 127);
-	feedback = ~prm.granulator.feedback.linlin(0, 1, 0, 127);
-	pan = ~prm.granulator.panHigh.linlin(0, 1, 0, 127);
+	glitch = ~p6.concat.glitchLength.linlin(0.05, 3, 0, 127);
+	glitchMod = ~p6.concat.glitchModRange.linlin(0.01, 1, 0, 127);
 	~apc.setDeviceEncoderValue(1, grainDurLow, main, page);
 	~apc.setDeviceEncoderValue(2, grainDurHigh, main, page);
 	~apc.setDeviceEncoderValue(3, trigRate, main, page);
 	~apc.setDeviceEncoderValue(4, cutoff, main, page);
-	~apc.setDeviceEncoderValue(5, level, main, page);
-	~apc.setDeviceEncoderValue(6, delayTime, main, page);
-	~apc.setDeviceEncoderValue(7, feedback, main, page);
-	~apc.setDeviceEncoderValue(8, pan, main, page);
+	~apc.setDeviceEncoderValue(5, glitch, main, page);
+	~apc.setDeviceEncoderValue(6, glitchMod, main, page);
 }, main, page);
 
 // grainDur Low:
@@ -221,25 +170,12 @@ rateReset.value;
 	var cutoff = val.linexp(0, 127, 150, 20000);
 	~prm.granulator.setFilterCutoff(cutoff);
 }, main, page);
-// delay level:
+// glitch length:
 ~apc.setDeviceEncoderFunc(5, { | val |
-	var level = val.linlin(0, 127, 0, 1);
-	~prm.granulator.setDelayLevel(level);
+	var length = val.linlin(0, 127, 0.05, 3);
+	~p6.concat.setGlitchLength(length);
 }, main, page);
-//delayTime:
 ~apc.setDeviceEncoderFunc(6, { | val |
-	var delay = val.linlin(0, 127, 0.01, 5);
-	~prm.granulator.setDelayTime(delay);
-}, main, page);
-//feedback:
-~apc.setDeviceEncoderFunc(7, { | val |
-	var feedback = val.linlin(0, 127, 0, 1);
-	~prm.granulator.setFeedback(feedback);
-}, main, page);
-// pan:
-~apc.setDeviceEncoderFunc(8, { | val |
-	var panLow = val.linlin(0, 127, 0, -1);
-	var panHigh = val.linlin(0, 127, 0, 1);
-	~prm.granulator.setPanLow(panLow);
-	~prm.granulator.setPanHigh(panHigh);
-}, main, page);
+	var mod = val.linlin(0, 127, 0.01, 1);
+	~p6.concat.setGlitchModRange(mod);
+}, main, page); 

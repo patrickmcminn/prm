@@ -55,7 +55,7 @@ Habit_Moog : IM_Module {
 
   prMakeSequence1 {
     var part1, part2, part3, part4, part5;
-    part1 = Pseq([13, 13, 8, 6, \r, 1, -4, -6, -8, -3, -11, -1, 6, 1], 1);
+    part1 = Pseq([13, 13, 8, 6, \r, 1, -4, -6, -8, -3, -11, -1, 6, 1], inf);
     part2 = Pseq([13, \r, 13, \r, 8, 6, 1, \r, -4, -6, -8, \r, -3, -11, -1, 6, 1], 1);
     part3 = Pseq([1, -4, -6], 1);
     part4 = Pseq([Pseq([1], 4), Pseq([-4], 8), 6], 1);
@@ -69,14 +69,19 @@ Habit_Moog : IM_Module {
       Pseq([2, 2, 4], 1),
       Pseq([Pseq([0.5], 4), Pseq([0.25], 8), 4]),
     ], inf));
-    synth.addKey(\habit_sequence1, \note, Prand([part1, part1, part1, part2, part2, part3, part3, part3, part3, part4], inf));
+		//synth.addKey(\habit_sequence1, \dur, 0.5);
+    /*
+		synth.addKey(\habit_sequence1, \note, Prand([part1, part1, part1, part2, part2, part3, part3, part3, part3, part4], inf));
+		*/
+		synth.addKey(\habit_sequence1, \note, part1);
     synth.addKey(\habit_sequence1, \notePlaying, Pfunc({ |ev| notePlaying = ev[\note]%12; }));
   }
 
   prMakeSequence2 {
     var part1, part2, part3, part4, part5;
     part1 = Pseq([13, 13, 8, 6, \r, 1, -4, -6, -8, -3, -11, -1, 6, 1], 1);
-    part2 = Pseq([13, \r, 13, \r, 8, 6, 1, \r, -4, -6, -8, \r, -3, -11, -1, 6, 1], 1);
+    //part2 = Pseq([13, \r, 13, \r, 8, 6, 1, \r, -4, -6, -8, \r, -3, -11, -1, 6, 1], 1);
+		part2 = Pseq([13, \r, 13, \r, 8, 6, 1, \r, -4, -6, -8, \r, -3, -11, -1, 6, 1], inf);
     part3 = Pseq([1, -4, -6], 1);
     part4 = Pseq([Pseq([1], 4), Pseq([-4], 8), 6], 1);
     synth.addKey(\habit_sequence2, \octave, 4);
@@ -88,7 +93,10 @@ Habit_Moog : IM_Module {
       Pseq([4, 4, 8], 1),
       Pseq([Pseq([ Pseq([ Pseq([1], 4), Pseq([0.5], 8)], 6), Pseq([0.25], 16), Pseq([0.5], 8),  Pseq([1], 4), Pseq([0.5], 8)], 1), 16], 1)
     ], inf));
+		/*
     synth.addKey(\habit_sequence2, \note, Prand([part1, part1, part1, part2, part2, part3, part3, part3, part3, part4], inf));
+		*/
+		synth.addKey(\habit_sequence2, \note, part2);
     synth.addKey(\habit_sequence2, \notePlaying, Pfunc({ |ev| notePlaying = ev[\note]%12; }));
   }
 
@@ -108,7 +116,8 @@ Habit_Moog : IM_Module {
 
   prMakeSequence4 {
     var part1, part2, part3, part4, part5;
-    part1 = Pseq([1, \r, 1, -4, -6, \r, -11, \r, -16, -18, -20, -15, \r, -23, -13, \r, -6, \r, -11], 1);
+    //part1 = Pseq([1, \r, 1, -4, -6, \r, -11, \r, -16, -18, -20, -15, \r, -23, -13, \r, -6, \r, -11], 1);
+		part1 = Pseq([1, \r, 1, -4, -6, \r, -11, \r, -16, -18, -20, -15, \r, -23, -13, \r, -6, \r, -11], inf);
     part2 = Pseq([1, \r, 1, \r, -4, -6, \r, -11, -16, \r, -18, -20, \r, -15, -23, \r, -13, \r, -6, -11], 1);
     part3 = Pseq([-11, -16, -18], 1);
     part4 = Pseq([-11, -16, -18], 1);
@@ -122,7 +131,10 @@ Habit_Moog : IM_Module {
       Pseq([2, 2, 4], 1),
       Pseq([Pseq([0.5], 4), Pseq([0.25], 8), 4], 1)
     ], inf));
+		/*
     synth.addKey(\habit_sequence4, \note, Prand([part1, part1, part1, part1, part2, part2, part2, part2, part3, part4], inf));
+		*/
+		synth.addKey(\habit_sequence4, \note, part1);
     synth.addKey(\habit_sequence4, \notePlaying, Pfunc({ |ev| notePlaying = ev[\note]%12; }));
   }
 
@@ -137,16 +149,16 @@ Habit_Moog : IM_Module {
   prMakeSectionEnd {
     synth.addKey(\habit_sectionEnd, \octave, 4);
     synth.addKey(\habit_sectionEnd, \legato, 0.99);
-    synth.addKey(\habit_sectionEnd, \dur, Pseq([1.25, 0.5, 2.5, 1.25, 0.25, 2.5, 1.5, 2, 0.75, 1.25, 2, 2, 1.25, 0.25, 2.5, 0.5, 0.75, 2.25, 0.5, 2.25, 1.25, 0.5, 2.5, 1.25, 0.25, 2.5, 1.5, 2, 0.75, 2.5, 0.25, 3.75, 4.25, 2, 5.25, 1.25, 1.25, 4.5, 0.75, 4.75, Pseq([0.25], 23), 2.75, 2.25, 1.25, 0.5, 2.75, 1.25, 2.5, 1.75, 1.75, 0.5, 2.5, 0.25, 3.5, 4.75, 2.25, 1.25, 5.25, 2.75, 5, 3.25, 4, 1.25, 4.75,  0.75, 7.5, 5.75, 4, 6.25, 3, 9.75, 0.25, 6.25, 6.5, 12, 4, 1, 4.75, 0.75, 7.5, 5.75, 4, 6.25, 0.25, 2.75, 9.75, 0.25, 6.25, 6.5, 11.75, 12, 4, 1.5, 4.75, 0.5, 7.5, 0.25, 5.25, 4, 0.25, 6.25, 3.25, 9.75, 6.25, 0.25, 6.5, 12, 4, 3.5, 3.5, 1.5, 4.75, 0.5, 7.5, 0.25, 5.5, 4, 0.25, 6.25, 3.25, 9.75, 6.25, 0.25, 6.5, 12, 4, 3.5, 4, 1.5, 4.75, 0.5, 7.5, 5.5, 4, 0.25, 6.25, 3.25, 9.75, 6.25, 0.25, 6.25, 12, 4], 1));
-    synth.addKey(\habit_sectionEnd, \note, Pseq([1, \r, 1, 1, \r, 1, \r, 1, \r, 1, 1, 1, 1, \r, 1, 1, \r, 1, \r, 1, 1, \r, 1, 1, \r, 1, \r, 1, \r, -11, \r, -23, -11, -11, -11, 1, \r, -23, \r, 1, 1, 1, 1, 1, 1, 1, \r, 1, 1, 1, 1, 1, \r, 1, \r, 1, 1, 1, 1, 1, 1, 1, 1, \r, -23, -23, \r, -23, -23, -23, \r, 1, \r, 1, \r, -23, -23, 1, \r, 1, 1, 1, \r, 1, \r, 1, \r, 1, 1, 1, 1, 1, 1, \r, 1, 1, -11, -11, \r, -11, \r, -11, -11, -11, -11, \r, -11, -11, \r, -11, -11, -11, -11, -11, \r, -11, \r, -11, \r, -11, -11, \r, -11, -11, -11, -11, \r, -11, -11, -11, \r, -23, \r, -23, \r, -23, \r, -23, -23, \r, -23, -23, -23, -23, \r, -23, -23, -23, \r, -23, \r, -23, \r, -23, \r, -23, -23, \r, -23, -23, -23, -23, \r, -23, -23, -23], 1));
+    synth.addKey(\habit_sectionEnd, \dur, Pseq([4, 3.5, 3.5, 1.5, 4.75, 0.5, 7.5, 0.25, 5.5, 5.5, 4, 0.25, 6.25, 3.25, 9.75, 6.25, 0.25, 6.25, 5.5, 4], 1));
+    synth.addKey(\habit_sectionEnd, \note, Pseq([\r, -23, \r, -23, \r, -23, \r, -23, -23, \r, -23, -23, -23, -23, \r, -23, \r, -23, -23, -23], 1));
     synth.addKey(\habit_sectionEnd, \notePlaying, Pfunc({ |ev| notePlaying = ev[\note]%12; }));
   }
 
   prMakePieceEnd {
     synth.addKey(\habit_pieceEnd, \octave, 4);
     synth.addKey(\habit_pieceEnd, \legato, 0.99);
-    synth.addKey(\habit_pieceEnd, \dur, Pseq([1.25, 0.5, 2.5, 1.25, 0.25, 2.5, 1.5, 2, 0.75, 1.25, 2, 2, 1.25, 0.25, 2.5, 0.5, 0.75, 2.25, 0.5, 2.25, 1.25, 0.5, 2.5, 1.25, 0.25, 2.5, 1.5, 2, 0.75, 2.5, 0.25, 3.75, 4.25, 2, 5.25, 1.25, 1.25, 4.5, 0.75, 4.75, Pseq([0.25], 23), 2.75, 2.25, 1.25, 0.5, 2.75, 1.25, 2.5, 1.75, 1.75, 0.5, 2.5, 0.25, 3.5, 4.75, 2.25, 1.25, 5.25, 2.75, 5, 3.25, 4, 1.25, 4.75,  0.75, 7.5, 5.75, 4, 6.25, 3, 9.75, 0.25, 6.25, 6.5, 12, 4, 1, 4.75, 0.75, 7.5, 5.75, 4, 6.25, 0.25, 2.75, 9.75, 0.25, 6.25, 6.5, 11.75, 12, 4, 1.5, 4.75, 0.5, 7.5, 0.25, 5.25, 4, 0.25, 6.25, 3.25, 9.75, 6.25, 0.25, 6.5, 12, 4, 3.5, 3.5, 1.5, 4.75, 0.5, 7.5, 0.25, 5.5, 4, 0.25, 6.25, 3.25, 9.75, 6.25, 0.25, 6.5, 12, 4, 3.5, 4, 1.5, 4.75, 0.5, 7.5, 5.5, 4, 0.25, 6.25, 3.25, 9.75, 6.25, 0.25, 6.25, 12, 4], 1));
-    synth.addKey(\habit_pieceEnd, \note, Pseq([1, \r, 1, 1, \r, 1, \r, 1, \r, 1, 1, 1, 1, \r, 1, 1, \r, 1, \r, 1, 1, \r, 1, 1, \r, 1, \r, 1, \r, -11, \r, -23, -11, -11, -11, 1, \r, -23, \r, 1, 1, 1, 1, 1, 1, 1, \r, 1, 1, 1, 1, 1, \r, 1, \r, 1, 1, 1, 1, 1, 1, 1, 1, \r, -23, -23, \r, -23, -23, -23, \r, 1, \r, 1, \r, -23, -23, 1, \r, 1, 1, 1, \r, 1, \r, 1, \r, 1, 1, 1, 1, 1, 1, \r, 1, 1, -11, -11, \r, -11, \r, -11, -11, -11, -11, \r, -11, -11, \r, -11, -11, -11, -11, -11, \r, -11, \r, -11, \r, -11, -11, \r, -11, -11, -11, -11, \r, -11, -11, -11, \r, -23, \r, -23, \r, -23, \r, -23, -23, \r, -23, -23, -23, -23, \r, -23, -23, -23, \r, -23, \r, -23, \r, -23, \r, -23, -23, \r, -23, -23, -23, -23, \r, -23, -23, -23], 1));
+    synth.addKey(\habit_pieceEnd, \dur, Pseq([1.25, 0.5, 2.5, 1.25, 0.25, 2.5, 1.5, 2, 0.75, 1.25, 2, 2, 1.25, 0.25, 2.5, 0.5, 0.75, 2.25, 0.5, 2.25, 1.25, 0.5, 2.5, 1.25, 0.25, 2.5, 1.5, 2, 0.75, 2.5, 0.25, 3.75, 4.25, 2, 5.25, 1.25, 1.25, 4.5, 0.75, 4.75, 2.75, 2.25, 1.25, 0.5, 2.75, 1.25, 2.5, 1.75, 1.75, 0.5, 2.5, 0.25, 3.5, 4.75, 2.25, 1.25, 5.25, 2.75, 5, 3.25, 4, 1.25, 4.75,  0.75, 7.5, 5.75, 4, 6.25, 3, 9.75, 0.25, 6.25, 6.5, 12, 4, 1, 4.75, 0.75, 7.5, 5.75, 4, 6.25], 1));
+    synth.addKey(\habit_pieceEnd, \note, Pseq([1, \r, 1, 1, \r, 1, \r, 1, \r, 1, 1, 1, 1, \r, 1, 1, \r, 1, \r, 1, 1, \r, 1, 1, \r, 1, \r, 1, \r, -11, \r, -23, -11, -11, -11, 1, \r, -23, \r, 1, 1, 1, \r, 1, \r, -23, -23, 1, \r, 1, 1, 1, \r, 1, \r, 1, \r, 1, 1, 1, 1, 1, 1, \r, 1, 1, -11, -11, \r, -11, \r, -11, -11, -11, -11, \r, -11, -11, \r, -11, -11, -11, -11, -11, \r, -11, \r, -11, \r, -11, -11, \r, -11, \r, -23, -23, \r, -23, -23, -23, -23, \r, -23, -23, -23], 1));
     synth.addKey(\habit_pieceEnd, \notePlaying, Pfunc({ |ev| notePlaying = ev[\note]%12; }));
   }
 
@@ -160,78 +172,99 @@ Habit_Moog : IM_Module {
   }
 
   playSequence1 { | clock |
-    synth.stopSequence(\habit_sequence2);
-    synth.stopSequence(\habit_sequence3);
-    synth.stopSequence(\habit_sequence4);
-    synth.stopSequence(\habit_sectionEndLoop);
-    synth.stopSequence(\habit_sectionEnd);
-    synth.stopSequence(\habit_pieceEnd);
-    synth.playSequence(\habit_sequence1, clock);
-    sequencePlaying = 'sequence1';
+		/*
+			synth.stopSequence(\habit_sequence2);
+			synth.stopSequence(\habit_sequence3);
+			synth.stopSequence(\habit_sequence4);
+			synth.stopSequence(\habit_sectionEndLoop);
+			synth.stopSequence(\habit_sectionEnd);
+			synth.stopSequence(\habit_pieceEnd);
+		*/
+		this.stopAllSequences;
+		synth.playSequence(\habit_sequence1, clock);
+		sequencePlaying = 'sequence1';
   }
 
   playSequence2 { | clock |
+		/*
     synth.stopSequence(\habit_sequence1);
     synth.stopSequence(\habit_sequence3);
     synth.stopSequence(\habit_sequence4);
     synth.stopSequence(\habit_sectionEndLoop);
     synth.stopSequence(\habit_sectionEnd);
     synth.stopSequence(\habit_pieceEnd);
+		*/
+		this.stopAllSequences;
     synth.playSequence(\habit_sequence2, clock);
     sequencePlaying = 'sequence2';
   }
 
   playSequence3 { | clock |
+		/*
     synth.stopSequence(\habit_sequence1);
     synth.stopSequence(\habit_sequence2);
     synth.stopSequence(\habit_sequence4);
     synth.stopSequence(\habit_sectionEndLoop);
     synth.stopSequence(\habit_sectionEnd);
     synth.stopSequence(\habit_pieceEnd);
+		*/
+		this.stopAllSequences;
     synth.playSequence(\habit_sequence3, clock);
     sequencePlaying = 'sequence3';
   }
 
   playSequence4 { | clock |
+		/*
     synth.stopSequence(\habit_sequence1);
     synth.stopSequence(\habit_sequence2);
     synth.stopSequence(\habit_sequence3);
     synth.stopSequence(\habit_sectionEndLoop);
     synth.stopSequence(\habit_sectionEnd);
     synth.stopSequence(\habit_pieceEnd);
+		*/
+		this.stopAllSequences;
     synth.playSequence(\habit_sequence4, clock);
     sequencePlaying = 'sequence4';
   }
 
   playSectionEndLoop { | clock |
+		/*
     synth.stopSequence(\habit_sequence1);
     synth.stopSequence(\habit_sequence2);
     synth.stopSequence(\habit_sequence3);
     synth.stopSequence(\habit_sequence4);
     synth.stopSequence(\habit_sectionEnd);
     synth.stopSequence(\habit_pieceEnd);
+		*/
+		this.stopAllSequences;
     synth.playSequence(\habit_sectionEndLoop, clock);
     sequencePlaying = 'sectionEndLoop';
   }
 
   playSectionEnd { | clock |
+		/*
     synth.stopSequence(\habit_sequence1);
     synth.stopSequence(\habit_sequence2);
     synth.stopSequence(\habit_sequence3);
     synth.stopSequence(\habit_sequence4);
     synth.stopSequence(\habit_sectionEndLoop);
     synth.stopSequence(\habit_pieceEnd);
+		*/
+		this.stopAllSequences;
     synth.playSequence(\habit_sectionEnd, clock);
     sequencePlaying = 'sectionEnd';
   }
 
   playPieceEnd { | clock |
+		/*
     synth.stopSequence(\habit_sequence1);
     synth.stopSequence(\habit_sequence2);
     synth.stopSequence(\habit_sequence3);
     synth.stopSequence(\habit_sequence4);
     synth.stopSequence(\habit_sectionEndLoop);
     synth.stopSequence(\habit_sectionEnd);
+		*/
+		this.stopAllSequences;
     synth.playSequence(\habit_pieceEnd, clock);
     sequencePlaying = 'pieceEnd';
   }
@@ -245,6 +278,7 @@ Habit_Moog : IM_Module {
     synth.stopSequence(\habit_sectionEnd);
     synth.stopSequence(\habit_pieceEnd);
     sequencePlaying = 'none';
+		synth.allNotesOff;
   }
 
 }

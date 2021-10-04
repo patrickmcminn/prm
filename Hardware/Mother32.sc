@@ -77,6 +77,8 @@ Mother32 : IM_Module {
     midiOutPort.noteOff(midiChannel, freq.cpsmidi);
   }
 
+	allNotesOff { midiOutPort.allNotesOff(midiChannel); }
+
   makeSequence { | name |
     {
       sequencerDict[name] = IM_PatternSeq.new(name, group, \addToHead);

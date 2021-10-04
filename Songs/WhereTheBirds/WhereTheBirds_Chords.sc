@@ -158,6 +158,16 @@ WhereTheBirds_Chords : IM_Module {
     isLoaded = false;
   }
 
+	setDrone {
+		this.setFreq(66.midicps);
+		this.setChordValue(0);
+		this.setInversionValue(0);
+	}
+
+	setChord1 {
+
+	}
+
   setFreq { | freq = 220 |
     frequency = freq;
     synth.set(\freq, frequency);

@@ -66,3 +66,5 @@ StereoChorus
 
 ~p6.mixer.vol(3);
 ~p6.mixer.muteMaster
+
+s.makeWindow

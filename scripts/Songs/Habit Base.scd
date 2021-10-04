@@ -48,7 +48,7 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 ////////////////////////
 
 /////// main mixer:
-
+/*
 ~base.setFaderMode(1, 'whiteFill', bank: mainMixBank, page: page);
 ~base.setFaderMode(2, 'magentaFill', bank: mainMixBank, page: page);
 ~base.setFaderMode(3, 'magentaFill', bank: mainMixBank, page: page);
@@ -72,24 +72,24 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
     ~habit.songMixer.setVol(i, val.ccdbfs);
   }, bank: mainMixBank, page: page);
 });
-
+*/
 
 //////// Trumpet Looper SubMix:
 
-4.do({ | i | ~base.setFaderMode(i+5, 'cyanFill', bank: mainMixBank, page: page); });
+4.do({ | i | ~base.setFaderMode(i+1, 'cyanFill', bank: mainMixBank, page: page); });
 4.do({ | i |
-  ~base.setTouchButtonMonitorFunc(i+5, {
+  ~base.setTouchButtonMonitorFunc(i+1, {
     if( ~habit.trumpetLoopers.submixer.isMuted(i),
-      { ~base.turnTouchButtonRed(i+4) }, { ~base.turnTouchButtonGreen(i+4) });
+      { ~base.turnTouchButtonRed(i+1) }, { ~base.turnTouchButtonGreen(i+1) });
   }, bank: mainMixBank, page: page);
 });
 4.do({ | i |
-  ~base.setFaderMonitorFunc(i+5, {
-    ~base.setFaderValue(i+5, ~habit.trumpetLoopers.submixer.vol(i).dbfsCC);
+  ~base.setFaderMonitorFunc(i+1, {
+    ~base.setFaderValue(i+1, ~habit.trumpetLoopers.submixer.vol(i).dbfsCC);
   }, bank: mainMixBank, page: page);
 });
 4.do({ | i |
-  ~base.setFaderFunc(i+5, { | val |
+  ~base.setFaderFunc(i+1, { | val |
     ~habit.trumpetLoopers.submixer.setVol(i, val.ccdbfs);
   }, bank: mainMixBank, page: page);
 });
@@ -100,37 +100,37 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 //// Delay:
 // mute:
 ~base.setTouchButtonMonitorFunc(1, {
-  if( ~habit.delay.mixer.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1); });
+  if( ~prm.delay.mixer.isMuted, { ~base.turnTouchButtonRed(1); }, { ~base.turnTouchButtonGreen(1); });
 }, bank: miscBank, page: page);
-~base.setTouchButtonFunc(1, { ~habit.delay.mixer.tglMute; }, bank: miscBank, page: page);
+~base.setTouchButtonFunc(1, { ~prm.delay.mixer.tglMute; }, bank: miscBank, page: page);
 // vol:
 ~base.setFaderMode(1, 'yellowFill', bank: miscBank, page: page);
 ~base.setFaderMonitorFunc(1, { ~base.setFaderValue(1, ~habit.delay.mixer.vol.dbfsCC); },
   bank: miscBank, page: page);
-~base.setFaderFunc(1, { | val | ~habit.delay.mixer.setVol(val.ccdbfs); },
+~base.setFaderFunc(1, { | val | ~prm.delay.mixer.setVol(val.ccdbfs); },
   bank: miscBank, page: page);
 // delay time:
 ~base.setFaderMode(2, 'cyanFill', bank: miscBank, page: page);
 ~base.setFaderMonitorFunc(2, {
-  var value = ~habit.delay.delayTime.linlin(0.005, 5, 0, 127);
+  var value = ~prm.delay.delayTime.linlin(0.005, 5, 0, 127);
   ~base.setFaderValue(2, value);
 }, bank: miscBank, page: page);
 ~base.setFaderFunc(2, { | val |
   var delayTime = val.linlin(0, 127, 0.001, 5);
-  ~habit.delay.setDelayTime(delayTime);
+  ~prm.delay.setDelayTime(delayTime);
 }, bank: miscBank, page: page);
 // feedback:
 ~base.setFaderMode(3, 'redFill', bank: miscBank, page: page);
 ~base.setFaderMonitorFunc(3, {
-  var value = ~habit.delay.feedback.linlin(0.0, 1.0, 0, 127);
+  var value = ~prm.delay.feedback.linlin(0.0, 1.0, 0, 127);
   ~base.setFaderValue(3, value);
 }, bank: miscBank, page: page);
 ~base.setFaderFunc(3, { | val |
   var feedback = val.linlin(0, 127, 0.0, 1.0);
-  ~habit.delay.setFeedback(feedback);
+  ~prm.delay.setFeedback(feedback);
 }, bank: miscBank, page: page);
 
-
+/*
 ////// Delay Sends:
 4.do({ | i | ~base.setFaderMode(i + 4, 'blueFill', bank: miscBank, page: page); });
 4.do({ | i |
@@ -143,7 +143,7 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
     ~habit.songMixer.setSendVol(i, 3, val.ccdbfs);
   }, bank: miscBank, page: page);
 });
-
+*/
 
 ////////// Grid:
 

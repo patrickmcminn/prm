@@ -6,6 +6,7 @@ prm
 
 var page = 'habit';
 
+var main = 0;
 var mainMixBank = 0;
 var trumpetLooperBank = 1;
 var leftKnobMiscBank = 1;
@@ -28,9 +29,13 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
 
+~apc.setUserButtonFunc({
+	~prm.reverb.loadPreset('habit');
+	~apc.turnUserButtonOn(page: page);
+}, bank: main, page: page);
 
 //// Mixer:
-
+/*
 4.do({ | i |
   // vol:
   ~apc.setFaderFunc(i+1, { | val | ~habit.songMixer.setVol(i, val.ccdbfs); }, page: page);
@@ -93,7 +98,23 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
   if( ~habit.trumpetLoopersInput.isMuted,
     { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
 }, page: page);
+*/
 
+~apc.mapMixer("~habit.mixer", 5, 0, 0, send0, send1, send2, send3, main, page);
+~apc.mapSendBanks(\main, send0, send1, send2, send3, main, page);
+
+//// record enable:
+~apc.setMixerMonitorFunc(\record, {
+	var tpt, looper;
+	tpt = ~habit.trumpetInput.isMuted;
+	looper = ~habit.trumpetLoopersInput.isMuted;
+	if( tpt, { ~apc.turnRecordEnableButtonOff(1); }, { ~apc.turnRecordEnableButtonOn(1) });
+	if( looper, { ~apc.turnRecordEnableButtonOff(5) }, { ~apc.turnRecordEnableButtonOn(5) });
+}, main, page);
+~apc.setRecordEnableButtonFunc(1, { ~habit.trumpetInput.tglMute }, bank: main, page: page);
+~apc.setRecordEnableButtonFunc(5, { ~habit.trumpetLoopersInput.tglMute }, bank: main, page: page);
+
+/*
 ////// trumpet:
 ~apc.setClipStopFunc(1, { ~habit.trumpet.free; ~habit.trumpetInput.free; ~apc.turnClipStopButtonOff(1) },
   page: page);
@@ -108,9 +129,10 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 ~apc.setClipStopFunc(4, { ~habit.trumpetLoopers.free; ~habit.trumpetLoopersInput.free; ~apc.turnStopButtonOff(4) },
   page: page);
 ~apc.setRecordEnableButtonFunc(4, { ~habit.trumpetLoopersInput.tglMute }, page: page);
+*/
 
 
-
+/*
 ////// Trumpet Looper Submixer:
 4.do({ | i |
   ~apc.setFaderFunc(i+5, { | val | ~habit.trumpetLoopers.submixer.setVol(i, val.ccdbfs); }, page: page);
@@ -120,8 +142,8 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
     if( ~habit.trumpetLoopers.submixer.isMuted(i),
       { ~apc.turnTrackSelectButtonOff(i+5) }, { ~apc.turnTrackSelectButtonOn(i+5); });
   }, page: page);
-
 });
+*/
 
 /////////// Device Encoders:
 
@@ -138,6 +160,31 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
 
 //// Delay:
 
+~apc.setDeviceEncodersMonitorFunc(\delay, {
+	var vol, time, feedback;
+	vol = ~prm.delay.mixer.vol.dbfsCC;
+	time = ~prm.delay.delayTime.linlin(0.001, 5, 0, 127);
+	feedback = ~prm.delay.feedback.linlin(0, 1, 0, 127);
+	~apc.setDeviceEncoderValue(2, vol);
+	~apc.setDeviceEncoderValue(3, time);
+	~apc.setDeviceEncoderValue(4, feedback);
+}, page: page);
+
+~apc.setDeviceEncoderFunc(2, { | val |
+  ~prm.delay.mixer.setVol(val.ccdbfs);
+}, page: page);
+// Delay Time:
+~apc.setDeviceEncoderFunc(3, { | val |
+  var delayTime = val.linlin(0, 127, 0.001, 5);
+  ~prm.delay.setDelayTime(delayTime);
+}, page: page);
+// feedback:
+~apc.setDeviceEncoderFunc(4, { | val |
+  var feedback = val.linlin(0, 127, 0, 1);
+  ~prm.delay.setFeedback(feedback);
+}, bank: main, page: page);
+
+/*
 ~apc.setDeviceEncodersMonitorFunc(\delay, {
   var delayTime = ~habit.delay.delayTime.linlin(0.001, 5, 0, 127);
   var feedback = ~habit.delay.feedback.linlin(0, 1, 0, 127);
@@ -160,7 +207,40 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
   var feedback = val.linlin(0, 127, 0, 1);
   ~habit.delay.setFeedback(feedback);
 }, page: page);
+*/
 
+~apc.setDeviceEncodersMonitorFunc(\granulator, {
+	var durLow, durHigh, rate, delayMix;
+	durLow = ~prm.granulator.grainDurLow.linlin(0.001, 0.5, 0, 127);
+	durHigh = ~prm.granulator.grainDurHigh.linlin(0.005, 0.75, 0, 127);
+	rate = ~prm.granulator.trigRate.linlin(1, 44, 0, 127);
+	delayMix = ~prm.granulator.delayLevel.linlin(0, 1, 0, 127);
+	~apc.setDeviceEncoderValue(5, durLow);
+	~apc.setDeviceEncoderValue(6, durHigh);
+	~apc.setDeviceEncoderValue(7, rate);
+	~apc.setDeviceEncoderValue(8, delayMix);
+}, bank: main, page: page);
+
+~apc.setDeviceEncoderFunc(5, { | val |
+	var dur = val.linlin(0, 127, 0.001, 0.5);
+	~prm.granulator.setGrainDurLow(dur);
+}, bank: main, page: page);
+~apc.setDeviceEncoderFunc(6, { | val |
+	var dur = val.linlin(0, 127, 0.005, 0.75);
+	~prm.granulator.setGrainDurHigh(dur);
+}, bank: main, page: page);
+~apc.setDeviceEncoderFunc(7, { | val |
+	var rate = val.linlin(0, 127, 1, 44);
+	~prm.granulator.setTrigRate(rate);
+}, bank: main, page: page);
+~apc.setDeviceEncoderFunc(8, { | val |
+	var delay = val.linlin(0, 127, 0, 1);
+	~prm.granulator.setDelayLevel(delay);
+}, bank: main, page: page);
+
+
+
+/*
 //// Main Granulator:
 ~apc.setDeviceEncodersMonitorFunc(\granulator, {
   //var trigRate = ~prm.granulator.trigR
@@ -188,10 +268,24 @@ var pitchArray = [1, 3, 4, 6, 8, 9, 11];
   ~prm.granulator.setGrainDurHigh(dur);
   ~apc.setDeviceEncoderValue(8, val);
 }, page: page);
+*/
 
 ////////////////////////
 //////// GRID: ////////
 //////////////////////
+
+~apc.turnSceneLaunchButtonMagenta(2, 2, main, page);
+~apc.turnSceneLaunchButtonPurple(3, 2, main, page);
+~apc.turnSceneLaunchButtonPink(4, 2, main, page);
+~apc.setSceneLaunchFunc(2, { ~habit.mixer.fadeOut(1, 20); ~apc.turnSceneLaunchButtonGreen(2);
+}, 'noteOn', main, page);
+~apc.setSceneLaunchFunc(2, { ~apc.turnSceneLaunchButtonMagenta(2) }, 'noteOff', main, page);
+~apc.setSceneLaunchFunc(3, { ~habit.mixer.fadeOut(3, 20); ~apc.turnSceneLaunchButtonGreen(3);
+}, 'noteOn', main, page);
+~apc.setSceneLaunchFunc(3, { ~apc.turnSceneLaunchButtonPurple(3) }, 'noteOff', main, page);
+~apc.setSceneLaunchFunc(4, { ~habit.mixer.fadeOut(4, 20); ~apc.turnSceneLaunchButtonGreen(4);
+}, 'noteOn', main, page);
+~apc.setSceneLaunchFunc(4, { ~apc.turnSceneLaunchButtonPink(4) }, 'noteOff', main, page);
 
 //// sequences:
 
@@ -204,6 +298,8 @@ sequenceResetFunc = {
   ~apc.turnGridWhite(5, 4, 1);
   ~apc.turnGridRed(6, 4, 1);
 };
+
+~apc.turnGridRed(7, 4, 2, page: page);
 
 ~apc.setGridMonitorFunc(\sequences, {
   sequenceResetFunc.value;
@@ -225,6 +321,7 @@ sequenceResetFunc = {
 ~apc.setGridFunc(4, 4, { ~habit.moog.playSectionEndLoop(~habit.clock); }, page: page);
 ~apc.setGridFunc(5, 4, { ~habit.moog.playSectionEnd(~habit.clock); }, page: page);
 ~apc.setGridFunc(6, 4, { ~habit.moog.playPieceEnd(~habit.clock); }, page: page);
+~apc.setGridFunc(7, 4, { ~habit.moog.stopAllSequences; }, page: page);
 
 //// notes being played:
 ~apc.setGridMonitorFunc(\notesPlaying, {
@@ -307,8 +404,8 @@ sequenceResetFunc = {
 ~apc.setGridMonitorFunc(\grain, {
   3.do({ | i | ~apc.turnGridCyan(i, 1, 1); });
   3.do({ | i | ~apc.turnGridCyan(i, 0, 1); });
-  switch( ~prm.granulator.grainEnv,
-    'sine', { ~apc.turnGridGreen(0, 1); },
+  switch( ~prm.granulator.grainEnvelope,
+    'hann', { ~apc.turnGridGreen(0, 1); },
     'gabor', { ~apc.turnGridGreen(1, 1); },
     'perc', { ~apc.turnGridGreen(2, 1); },
     'revPerc', { ~apc.turnGridGreen(0, 0); },
@@ -317,7 +414,7 @@ sequenceResetFunc = {
   );
 }, page: page);
 // sine:
-~apc.setGridFunc(0, 1, { ~prm.granulator.setGrainEnvelope('sine'); }, page: page);
+~apc.setGridFunc(0, 1, { ~prm.granulator.setGrainEnvelope('hann'); }, page: page);
 // gabor:
 ~apc.setGridFunc(1, 1, { ~prm.granulator.setGrainEnvelope('gabor'); }, page: page);
 // perc:

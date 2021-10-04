@@ -132,4 +132,9 @@ r {
 
 s.makeWindow;
 
+Server.killAll;
+
+
+
+
 

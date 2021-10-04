@@ -167,9 +167,14 @@ var tuningNoteIsPlaying = false;
 ~apc.setGridFunc(4, 4, {
   if(habitIsLoaded == false, {
     r{
+			/*
       ~habit = Habit.new(~prm.audioIn, 1, 2, 3, ~moogDevice, ~moogPort,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
         relGroup: ~prm.procGroup, addAction: \addToHead);
+			*/
+			~habit = Habit.new(~prm.audioIn, ~micIn, ~modInput, ~modOutput, ~moogDevice, ~moogPort, ~pyr, ~prm.delay,
+				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+				~prm.procGroup, \addToHead);
       while({ try { ~habit.isLoaded } != true }, { 0.001.wait; });
       ~apc.setGridFunc(5, 4, { ~apc.setPage('habit'); }, page: page);
       ~apc.turnGridGreen(5, 4);

@@ -36,43 +36,44 @@ prm
 			var chanMod = i + chanOffset;
 
 			// volumes:
-			this.setFaderFunc(surfaceMod, { | val | mixer.setVol(chanMod, val.ccdbfs); }, bank: mixerBank, page: page);
+			this.setFaderFunc(surfaceMod, { | val | (mixer.interpret).setVol(chanMod, val.ccdbfs); }, bank: mixerBank, page: page);
 
 			// toggle mutes:
-			this.setTrackSelectFunc(surfaceMod, { mixer.tglMute(chanMod) }, bank: mixerBank, page: page);
+			this.setTrackSelectFunc(surfaceMod, { (mixer.interpret).tglMute(chanMod) }, bank: mixerBank, page: page);
 			this.setMixerMonitorFunc("mute"++(mixer.asSymbol++surfaceMod++chanMod).asSymbol, {
-				if( mixer.isMuted(chanMod),
+				if( (mixer.interpret).isMuted(chanMod),
 					{ this.turnTrackSelectButtonOff(surfaceMod) }, { this.turnTrackSelectButtonOn(surfaceMod); });
 			}, bank: mixerBank, page: page);
 			// sends pre/post:
 			this.setCrossfaderSelectFunc(surfaceMod, {
-				if( mixer.preOrPost(chanMod) == 'post',
-					{ mixer.setSendPre(chanMod) }, { mixer.setSendPost(chanMod) });
+				if( (mixer.interpret).preOrPost(chanMod) == 'post',
+					{ (mixer.interpret).setSendPre(chanMod) }, { (mixer.interpret).setSendPost(chanMod) });
 			}, bank: mixerBank, page: page);
 			this.setMixerMonitorFunc("preOrPost"++(mixer.asSymbol++surfaceMod++chanMod).asSymbol, {
-				if(mixer.preOrPost(chanMod) == 'post',
+				if((mixer.interpret).preOrPost(chanMod) == 'post',
 					{ this.turnCrossfaderSelectButtonOrange(surfaceMod) },
 					{ this.turnCrossfaderSelectButtonYellow(surfaceMod) });
 			}, bank: mixerBank, page: page);
 			//// sends:
 			this.setMixerEncoderFunc(surfaceMod, { | val |
-				mixer.setSendVol(chanMod, 0, val.ccdbfs); }, bank: send0Bank, page: page);
+				(mixer.interpret).setSendVol(chanMod, 0, val.ccdbfs); }, bank: send0Bank, page: page);
 			this.setMixerEncoderFunc(surfaceMod, { | val |
-				mixer.setSendVol(chanMod, 1, val.ccdbfs); }, bank: send1Bank, page: page);
+				(mixer.interpret).setSendVol(chanMod, 1, val.ccdbfs); }, bank: send1Bank, page: page);
 			this.setMixerEncoderFunc(surfaceMod, { | val |
-				mixer.setSendVol(chanMod, 2, val.ccdbfs); }, bank: send2Bank, page: page);
+				(mixer.interpret).setSendVol(chanMod, 2, val.ccdbfs); }, bank: send2Bank, page: page);
 			this.setMixerEncoderFunc(surfaceMod, { | val |
-				mixer.setSendVol(chanMod, 3, val.ccdbfs); }, bank: send3Bank, page: page);
+				(mixer.interpret).setSendVol(chanMod, 3, val.ccdbfs); }, bank: send3Bank, page: page);
 
 			this.setMixerEncodersMonitorFunc("send"++(mixer.asSymbol++surfaceMod++chanMod).asSymbol, {
-				this.setMixerEncoderValue(surfaceMod, mixer.sendVol(chanMod, 0).dbfsCC); }, bank: send0Bank, page: page);
+				this.setMixerEncoderValue(surfaceMod, (mixer.interpret).sendVol(chanMod, 0).dbfsCC); }, bank: send0Bank, page: page);
 			this.setMixerEncodersMonitorFunc("send"++(mixer.asSymbol++surfaceMod++chanMod).asSymbol, {
-				this.setMixerEncoderValue(surfaceMod, mixer.sendVol(chanMod, 1).dbfsCC); }, bank: send1Bank, page: page);
+				this.setMixerEncoderValue(surfaceMod, (mixer.interpret).sendVol(chanMod, 1).dbfsCC); }, bank: send1Bank, page: page);
 			this.setMixerEncodersMonitorFunc("send"++(mixer.asSymbol++surfaceMod++chanMod).asSymbol, {
-				this.setMixerEncoderValue(surfaceMod, mixer.sendVol(chanMod, 2).dbfsCC); }, bank: send2Bank, page: page);
+				this.setMixerEncoderValue(surfaceMod, (mixer.interpret).sendVol(chanMod, 2).dbfsCC); }, bank: send2Bank, page: page);
 			this.setMixerEncodersMonitorFunc("send"++(mixer.asSymbol++surfaceMod++chanMod).asSymbol, {
-				this.setMixerEncoderValue(surfaceMod, mixer.sendVol(chanMod, 3).dbfsCC); }, bank: send3Bank, page: page);
+				this.setMixerEncoderValue(surfaceMod, (mixer.interpret).sendVol(chanMod, 3).dbfsCC); }, bank: send3Bank, page: page);
 		});
+
 	}
 
 }

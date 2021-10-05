@@ -88,6 +88,7 @@ var tuningNoteIsPlaying = false;
   });
 }, page: page);
 
+/*
 'False Self';
 
 ~apc.turnGridWhite(0, 3, page: page);
@@ -110,6 +111,7 @@ var tuningNoteIsPlaying = false;
     falseSelfIsLoaded = false;
   });
 }, page: page);
+*/
 
 'Where the Birds Must Be Drunk to be Amidst the Unknown Spray and Sky';
 ~apc.turnGridPink(2, 4, 2, page: page);
@@ -118,7 +120,7 @@ var tuningNoteIsPlaying = false;
     r{
       ~birds = WhereTheBirds.new(~prm.audioIn, ~micIn, ~modInput[0], ~modInput[2], ~modInput[3],
         ~modOutput[2], ~modOutput[3], ~modOutput[4], ~modOutput[7],
-        ~moogDevice, ~moogPort,
+        ~moogDevice, ~moogPort, ~pyr,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
         ~prm.procGroup, \addToHead);
       while({ try { ~birds.isLoaded } != true }, { 0.001.wait; });

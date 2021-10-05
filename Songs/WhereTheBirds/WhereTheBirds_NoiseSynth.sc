@@ -11,7 +11,7 @@ Friday, November 2nd, 2012
 WhereTheBirds_NoiseSynth : IM_Module {
 
   var <isLoaded, server;
-  var <granulator, <lfo;
+  var <granulator, <lfo, <eq;
 
   var path, <bufferArray;
 
@@ -38,7 +38,10 @@ WhereTheBirds_NoiseSynth : IM_Module {
       bufferArray = Array.fill(53, { | i |
         Buffer.read(server, path ++ (i + 32) ++ ".wav"); });
 
-      granulator = GranularDelay.new(mixer.chanStereo, group, \addToHead);
+			eq = Equalizer.newStereo(mixer.chanStereo, group, \addToHead);
+			while({ try { eq.isLoaded } != true }, { 0.001.wait; });
+
+			granulator = GranularDelay2.new(eq.inBus, group, \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
       lfo = LFO.new(0.14, 'sine', -0.7, 0.7, group, \addToHead);
@@ -83,12 +86,15 @@ WhereTheBirds_NoiseSynth : IM_Module {
     sustain = 0.5;
     release = 3;
 
-    granulator.setGranulatorCrossfade(1);
+    granulator.setMix(1);
     granulator.setGrainDur(0.4, 0.6);
     granulator.setTrigRate(45);
     granulator.setDelayTime(1);
-    granulator.setFeedback(0.6);
-    granulator.setDelayMix(0.3);
+    granulator.setFeedback(0.35);
+    granulator.setDelayLevel(0.4);
+		granulator.setGrainEnvelope('gabWide');
+
+		eq.setLowPassCutoff(2450);
   }
 
   prMakeSequences {
@@ -844,6 +850,7 @@ WhereTheBirds_NoiseSynth : IM_Module {
     this.stopPhrase2;
     this.stopPhrase3;
     this.stopPhrase4;
+		eq.free;
     granulator.free;
     bufferArray.size.do({ | i | i.free; });
     this.freeModule;

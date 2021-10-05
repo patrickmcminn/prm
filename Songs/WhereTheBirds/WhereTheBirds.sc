@@ -14,18 +14,20 @@ WhereTheBirds : IM_Module {
   var <bass, <noiseSynth;
   var <noise, <noiseFilter, <mic;
 
+	var <midiDict, sequencer, <midiEnabled;
+
   *new {
     |
     outBus = 0, micIn, moogIn, chordsIn, noiseIn,
-    pitchOut, chordOut, invOut, clockOut, moogDevice, moogPort,
+    pitchOut, chordOut, invOut, clockOut, moogDevice, moogPort, seq,
     send0Bus, send1Bus, send2Bus, send3Bus,
     relGroup, addAction = 'addToHead'
     |
     ^super.new(7, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(
-      micIn, moogIn, chordsIn, noiseIn,pitchOut, chordOut, invOut, clockOut, moogDevice, moogPort);
+      micIn, moogIn, chordsIn, noiseIn,pitchOut, chordOut, invOut, clockOut, moogDevice, moogPort, seq);
   }
 
-  prInit { | micIn, moogIn, chordsIn, noiseIn,pitchOut, chordOut, invOut, clockOut, moogDevice, moogPort |
+  prInit { | micIn, moogIn, chordsIn, noiseIn,pitchOut, chordOut, invOut, clockOut, moogDevice, moogPort, seq |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -73,6 +75,13 @@ WhereTheBirds : IM_Module {
 
       this.prSetInitialParameters;
 
+			server.sync;
+
+			sequencer = seq.uid;
+			//this.prMakeMIDIFuncs;
+			midiDict = IdentityDictionary.new;
+			midiEnabled = false;
+
       mixer.masterChan.unMute;
       isLoaded = true;
     }
@@ -94,6 +103,7 @@ WhereTheBirds : IM_Module {
     mixer.setVol(1, -inf);
     mixer.setSendVol(2, 0, -15);
     // bass:
+		mixer.mute(3);
     mixer.setVol(3, -9);
     mixer.setSendVol(3, 0, -24);
     mixer.setPreVol(3, -9);
@@ -111,6 +121,30 @@ WhereTheBirds : IM_Module {
     mixer.setSendVol(6, 0, -3);
 
   }
+
+	makeMIDIFuncs {
+		midiDict[\drone] = MIDIFunc.noteOn({ chords.setDrone }, 42, 0, sequencer);
+
+		midiDict[\chord1] = MIDIFunc.noteOn({ chords.setChord1 }, 66, 0, sequencer);
+		midiDict[\chord2] = MIDIFunc.noteOn({ chords.setChord2 }, 69, 0, sequencer);
+		midiDict[\chord3] = MIDIFunc.noteOn({ chords.setChord3 }, 61, 0, sequencer);
+		midiDict[\chord4] = MIDIFunc.noteOn({ chords.setChord4 }, 64, 0, sequencer);
+
+		midiDict[\turnaround1] = MIDIFunc.noteOn({ chords.setTurnaroundChord1 }, 78, 0, sequencer);
+		midiDict[\turnaround2] = MIDIFunc.noteOn({ chords.setTurnaroundChord2 }, 81, 0, sequencer);
+		midiDict[\turnaround3] = MIDIFunc.noteOn({ chords.setTurnaroundChord3 }, 73, 0, sequencer);
+		midiDict[\turnaround4] = MIDIFunc.noteOn({ chords.setTurnaroundChord4 }, 76, 0, sequencer);
+
+		midiDict[\endDrone] = MIDIFunc.noteOn({ chords.setEndDrone }, 53, 0, sequencer);
+
+		midiEnabled = true;
+
+	}
+
+	freeMIDIFuncs {
+		midiDict.do({ | func | func.free; });
+		midiEnabled = false;
+	}
 
   free {
     clock.stop;

@@ -27,7 +27,7 @@ WhereTheBirds_Chords : IM_Module {
 
   var server, <isLoaded;
   var <input, <eq;
-  var synth;
+  var <synth;
 
   var cvPitchOutBus, cvChordOutBus, cvInversionOutBus;
   var <frequency, <chordCV, <inversionCV;
@@ -35,6 +35,8 @@ WhereTheBirds_Chords : IM_Module {
   var <sequencerDict;
 
   var <droneIsPlaying, <section1IsPlaying, <turnaroundIsPlaying, <endDroneIsPlaying;
+
+	var <chordPlaying;
 
   *new { | outBus, pitchOutBus, chordOutBus, inversionOutBus, inBus, relGroup, addAction = 'addToHead' |
     ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(pitchOutBus, chordOutBus, inversionOutBus, inBus);
@@ -49,7 +51,7 @@ WhereTheBirds_Chords : IM_Module {
       server.sync;
 
       this.prAddSynthDef;
-      this.prMakeSequences;
+      //this.prMakeSequences;
 
 
       sequencerDict = IdentityDictionary.new;
@@ -68,20 +70,22 @@ WhereTheBirds_Chords : IM_Module {
       input = IM_HardwareIn.new(inBus, eq.inBus, group, \addToHead);
 
       server.sync;
-      /*
+
       synth = Synth(\prm_birdsChords, [\pitchOutBus, pitchOutBus, \chordOutBus, chordOutBus,
       \inversionOutBus, inversionOutBus, \freq, frequency, \chordValue, chordCV,
       \inversionValue, inversionCV], group, \addToHead);
 
       server.sync;
-      */
+
 
       droneIsPlaying = false;
       section1IsPlaying = false;
       turnaroundIsPlaying = false;
       endDroneIsPlaying = false;
 
-      this.prSetSequenceParameters;
+			chordPlaying = nil;
+
+     // this.prSetSequenceParameters;
 
       isLoaded = true;
     }
@@ -162,10 +166,70 @@ WhereTheBirds_Chords : IM_Module {
 		this.setFreq(66.midicps);
 		this.setChordValue(0);
 		this.setInversionValue(0);
+		chordPlaying = 'drone';
 	}
 
 	setChord1 {
+		this.setFreq(66.midicps);
+		this.setChordValue(0.13);
+		this.setInversionValue(0.05);
+		chordPlaying = 'chord1';
+	}
 
+	setChord2 {
+		this.setFreq(69.midicps);
+		this.setChordValue(0.5);
+		this.setInversionValue(0.03);
+		chordPlaying = 'chord2';
+	}
+
+	setChord3 {
+		this.setFreq(61.midicps);
+		this.setChordValue(0.13);
+		this.setInversionValue(0.05);
+		chordPlaying = 'chord3';
+	}
+
+	setChord4 {
+		this.setFreq(64.midicps);
+		this.setChordValue(0.5);
+		this.setInversionValue(0);
+		chordPlaying = 'chord4';
+	}
+
+	setTurnaroundChord1 {
+		this.setFreq(66.midicps);
+		this.setChordValue(0.13);
+		this.setInversionValue(0.05);
+		chordPlaying = 'turnaround1';
+	}
+
+	setTurnaroundChord2 {
+		this.setFreq(69.midicps);
+		this.setChordValue(0.5);
+		this.setInversionValue(0.05);
+		chordPlaying = 'turnaround2';
+	}
+
+	setTurnaroundChord3 {
+		this.setFreq(61.midicps);
+		this.setChordValue(0.13);
+		this.setInversionValue(0.15);
+		chordPlaying = 'turnaround3';
+	}
+
+	setTurnaroundChord4 {
+		this.setFreq(64.midicps);
+		this.setChordValue(0.5);
+		this.setInversionValue(0.2);
+		chordPlaying = 'turnaround4';
+	}
+
+	setEndDrone {
+		this.setFreq(54.midicps);
+		this.setChordValue(0.13);
+		this.setInversionValue(0);
+		chordPlaying = 'endDrone';
 	}
 
   setFreq { | freq = 220 |

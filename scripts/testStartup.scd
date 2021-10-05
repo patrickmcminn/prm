@@ -134,6 +134,8 @@ s.makeWindow;
 
 Server.killAll;
 
+s.meter
+
 
 
 

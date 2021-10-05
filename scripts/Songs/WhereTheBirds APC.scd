@@ -153,6 +153,16 @@ var encoderBank1 = 0;
 //// GRID ////
 /////////////
 
+~apc.setSceneLaunchMonitorFunc(\sceneLaunch, {
+	var midi = ~birds.midiEnabled == true;
+	if( midi, { ~apc.turnSceneLaunchButtonGreen(0, 2); }, { ~apc.turnSceneLaunchButtonWhite(0) });
+}, bank: gridBank1, page: page);
+~apc.setSceneLaunchFunc(0, {
+	if( ~birds.midiEnabled == true,
+		{ ~birds.freeMIDIFuncs }, { ~birds.makeMIDIFuncs });
+}, bank: gridBank1, page: page);
+
+
 //// bed:
 ~apc.setGridMonitorFunc(\bed, {
   if( ~birds.bed.fSharpIsPlaying,
@@ -188,6 +198,7 @@ var encoderBank1 = 0;
 ~apc.setGridFunc(5, 4, { ~birds.bed.toggleE },
   bank: gridBank1, page: page);
 
+/*
 //// chords:
 ~apc.setGridMonitorFunc(\chords, {
   if( ~birds.chords.droneIsPlaying,
@@ -308,6 +319,8 @@ var encoderBank1 = 0;
   });
 }, bank: gridBank1, page: page);
 
+*/
+
 
 //// noise synth:
 ~apc.setGridMonitorFunc(\noiseSynth, {
@@ -381,8 +394,9 @@ var encoderBank1 = 0;
 /////////////////////////
 
 ~apc.setDeviceEncodersMonitorFunc(\bank1, {
-  var crossfade = ~birds.noiseSynth.granulator.crossfade.linlin(-1.0, 1.0, 0, 127);
-  var cutoff = ~birds.distChords.distortion.postEQ.lowPassCutoff.explin(900, 5000, 0, 127);
+	var cutoff = ~birds.distChords.distortion.postEQ.lowPassCutoff.explin(900, 5000, 0, 127);
+  var crossfade = ~birds.noiseSynth.granulator.mix.linlin(0, 1.0, 0, 127);
+	var distCutoff = ~birds.noiseSynth.eq.lowPassCutoff.explin(900, 20000, 0, 127);
 
   var lfoCutoff = ~birds.noiseFilter.filterCutoff.explin(400, 20000, 0, 127);
   var lfoSpeed = ~birds.noiseFilter.lfo.frequency.explin(0.01, 50, 0, 127);
@@ -391,6 +405,7 @@ var encoderBank1 = 0;
 
   ~apc.setDeviceEncoderValue(1, cutoff);
   ~apc.setDeviceEncoderValue(2, crossfade);
+	~apc.setDeviceEncoderValue(3, distCutoff);
 
   ~apc.setDeviceEncoderValue(5, lfoCutoff);
   ~apc.setDeviceEncoderValue(6, lfoSpeed);
@@ -407,8 +422,14 @@ var encoderBank1 = 0;
 
 // noise synth granulator:
 ~apc.setDeviceEncoderFunc(2, { | val |
-  var crossfade = val.linlin(0, 127, -1.0, 1.0);
-  ~birds.noiseSynth.granulator.setGranulatorCrossfade(crossfade);
+  var crossfade = val.linlin(0, 127, 0, 1.0);
+  ~birds.noiseSynth.granulator.setMix(crossfade);
+}, bank: encoderBank1, page: page);
+
+// noise synth filter cutoff:
+~apc.setDeviceEncoderFunc(3, { | val |
+	var cutoff = val.linexp(0, 127, 900, 20000);
+	~birds.noiseSynth.eq.setLowPassCutoff(cutoff);
 }, bank: encoderBank1, page: page);
 
 // noise filter cutoff:

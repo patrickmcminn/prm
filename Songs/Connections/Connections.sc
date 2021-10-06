@@ -27,6 +27,8 @@ Connections : IM_Module {
 
   var <clock;
 
+	var send0, send1, send2, send3;
+
   *new {
     |
     outBus = 0, micInBus, pickupInBus, moogInBus, clockOutBus,
@@ -36,6 +38,7 @@ Connections : IM_Module {
     |
     ^super.new(8, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
       relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, clockOutBus, moogDeviceName, moogPortName, ir);
+		send
   }
 
   prInit {
@@ -93,7 +96,8 @@ Connections : IM_Module {
     if( try { airSputters.isLoaded } != true,
       {
         r {
-          airSputters = Connections_AirSputters.new(mixer.chanStereo(0), clock, group, \addToHead);
+          airSputters = Connections_AirSputters.new(mixer.chanStereo(0), clock, send0Bus, send1Bus, send2Bus, send3Bus,
+						group, \addToHead);
           while({ try { airSputters.isLoaded } != true }, { 0.001.wait; });
           airSputtersInput = IM_HardwareIn.new(pickupIn, airSputters.inBus, group, \addToHead);
         }.play;

@@ -12,8 +12,8 @@ Connections_AirSputters : IM_Processor {
   var <isPlayingArray;
   var <isPlaying;
 
-  *new { | outBus = 0, clock, relGroup = nil, addAction = 'addToTail' |
-    ^super.new(1, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(clock);
+  *new { | outBus = 0, clock, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToTail' |
+    ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(clock);
   }
 
   prInit { | clock |

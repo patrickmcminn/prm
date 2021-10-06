@@ -198,6 +198,33 @@ var encoderBank1 = 0;
 ~apc.setGridFunc(5, 4, { ~birds.bed.toggleE },
   bank: gridBank1, page: page);
 
+
+//// Chords being played:
+~apc.setGridMonitorFunc(\chordPlay, {
+	if( ~birds.chords.chordPlaying == 'chord1',
+		{ ~apc.turnGridGreen(0, 3) }, { ~apc.turnGridPurple(0, 3, 1); });
+	if( ~birds.chords.chordPlaying == 'chord2',
+		{ ~apc.turnGridGreen(1, 3) }, { ~apc.turnGridPurple(1, 3, 1); });
+	if( ~birds.chords.chordPlaying == 'chord3',
+		{ ~apc.turnGridGreen(2, 3) }, { ~apc.turnGridPurple(2, 3, 1); });
+	if( ~birds.chords.chordPlaying == 'chord4',
+		{ ~apc.turnGridGreen(3, 3) }, { ~apc.turnGridPurple(3, 3, 1); });
+	if( ~birds.chords.chordPlaying == 'turnaround1',
+		{ ~apc.turnGridGreen(0, 2) }, { ~apc.turnGridMagenta(0, 2, 1); });
+	if( ~birds.chords.chordPlaying == 'turnaround2',
+		{ ~apc.turnGridGreen(1, 2) }, { ~apc.turnGridMagenta(1, 2, 1); });
+	if( ~birds.chords.chordPlaying == 'turnaround3',
+		{ ~apc.turnGridGreen(2, 2) }, { ~apc.turnGridMagenta(2, 2, 1); });
+	if( ~birds.chords.chordPlaying == 'turnaround4',
+		{ ~apc.turnGridGreen(3, 2) }, { ~apc.turnGridMagenta(3, 2, 1); });
+
+	if( ~birds.chords.chordPlaying == 'drone',
+		{ ~apc.turnGridGreen(7, 3) }, { ~apc.turnGridPurple(7, 3, 1); });
+	if( ~birds.chords.chordPlaying == 'endDrone',
+		{ ~apc.turnGridGreen(7, 2) }, { ~apc.turnGridPurple(7, 2, 1); });
+}, bank: gridBank1, page: page);
+
+
 /*
 //// chords:
 ~apc.setGridMonitorFunc(\chords, {

@@ -22,7 +22,7 @@ WhereTheBirds_Bed : IM_Module {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = GranularDelay.new(mixer.chanStereo(0), group, \addToHead);
+      granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction:  \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
 
@@ -67,8 +67,8 @@ WhereTheBirds_Bed : IM_Module {
     reverb.postEQ.setPeak2Freq(650);
     reverb.postEQ.setPeak2Gain(-6);
 
-    granulator.setGranulatorCrossfade(-0.75);
-    granulator.setDelayMix(0);
+		granulator.setMix(0.35);
+    granulator.setDelayLevel(0.1);
     granulator.setTrigRate(5);
     granulator.setGrainDur(0.5, 1.5);
     granulator.setPan(-0.75, 0.75);

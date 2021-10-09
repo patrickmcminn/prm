@@ -20,10 +20,12 @@ Connections_TrumpetGran : IM_Module {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      reverb = IM_Reverb.new(mixer.chanStereo(0), nil, nil, nil, nil, false, 1, 0.55, 0.75, 0.3, group, \addToHead);
+			/*
+      reverb = IM_Reverb.new(mixer.chanStereo(0), nil, nil, nil, nil, false, 0.55, 0.75, 0.3, group, \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
+			*/
 
-      granulator = GranularDelay.new(reverb.inBus, group, \addToHead);
+			granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
       eq = Equalizer.newStereo(granulator.inBus, group, \addToHead);
@@ -37,17 +39,21 @@ Connections_TrumpetGran : IM_Module {
       inBus = input.chanMono(0);
 
       //input.mute;
+			eq.setLowPassCutoff(6500);
       eq.setHighFreq(2500);
       eq.setHighGain(-6);
+			eq.setHighPassCutoff(220);
+
       granulator.setGrainDur(0.04, 0.13);
       granulator.setTrigRate(40);
-      granulator.mixer.setPreVol(12);
+      granulator.mixer.setPreVol(3);
+			granulator.setDelayLevel(0.9);
       granulator.setDelayTime(0.8);
-      granulator.setDelayMix(0.5);
-      granulator.setGranulatorCrossfade(0);
+      granulator.setDelayLevel(0.6);
+			granulator.setMix(0.5);
       granulator.setFeedback(0.3);
 
-      mixer.setPreVol(12);
+      mixer.setPreVol(3);
 
       server.sync;
 
@@ -61,7 +67,7 @@ Connections_TrumpetGran : IM_Module {
     input.free;
     eq.free;
     granulator.free;
-    reverb.free;
+    //reverb.free;
     this.freeModule;
   }
 }

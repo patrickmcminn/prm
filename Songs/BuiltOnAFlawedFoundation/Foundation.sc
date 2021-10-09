@@ -39,6 +39,7 @@ Foundation : IM_Module {
 		server.waitForBoot {
 			isLoaded = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+			mixer.masterChan.mute;
 
 			// distorted trumpet gonna be LOUD (so mute it!)
 			//mixer.tglMute(2);
@@ -123,6 +124,8 @@ Foundation : IM_Module {
 			relBar = 0;
 			clock.schedAbs(clock.beats.ceil, { | beat | bar = (clock.bar - relBar) + 1; 1 });
 
+			mixer.masterChan.unMute;
+
 			isLoaded = true;
 		}
 	}
@@ -175,7 +178,7 @@ Foundation : IM_Module {
 		mixer.setVol(2, -3);
 		mixer.setSendVol(2, 0, -12);
 		mixer.setSendVol(2, 1, -70);
-		mixer.setSendVol(2, 3, -6);
+		mixer.setSendVol(2, 3, -18);
 
 		// trumpet section:
 		mixer.setVol(8, -3);

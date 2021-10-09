@@ -12,8 +12,8 @@ Connections_AirSputters : IM_Processor {
   var <isPlayingArray;
   var <isPlaying;
 
-  *new { | outBus = 0, clock, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToTail' |
-    ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(clock);
+  *new { | outBus = 0, clock, relGroup = nil, addAction = 'addToTail' |
+    ^super.new(1, 1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(clock);
   }
 
   prInit { | clock |
@@ -33,8 +33,7 @@ Connections_AirSputters : IM_Processor {
       eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
-
-      granulator = GranularDelay.new(eq.inBus, group, \addToHead);
+      granulator = GranularDelay2.new(eq.inBus, relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
       sampler = Sampler.newMono(granulator.inBus, relGroup: group, addAction: \addToHead);
@@ -57,9 +56,9 @@ Connections_AirSputters : IM_Processor {
       granulator.setGrainDur(0.01, 0.16);
       granulator.setTrigRate(45);
       granulator.setGrainEnvelope('rexpodec');
-      granulator.granulator.setPan(-0.7, 0.7);
-      granulator.setDelayMix(0);
-      granulator.setGranulatorCrossfade(1);
+      granulator.setPan(-0.7, 0.7);
+      granulator.setDelayLevel(0);
+			granulator.setMix(1);
 
       eq.setHighPassCutoff(100);
       eq.setLowFreq(180);
@@ -73,9 +72,9 @@ Connections_AirSputters : IM_Processor {
       eq.setPeak3Freq(900);
       eq.setPeak3Gain(-6);
 
-      mixer.setPreVol(18);
-      isPlaying = true;
-      isLoaded = true;
+			mixer.setPreVol(24);
+			isPlaying = true;
+			isLoaded = true;
     };
   }
 

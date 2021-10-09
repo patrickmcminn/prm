@@ -9,7 +9,7 @@ updated 6/5/2019
 -- erosion sounds terrible -- replacing with Distortion
 */
 
-Droner : IM_Processor {
+Droner : IM_Module {
 
   var <isLoaded, server;
   var demand, <input, <delay, <granulator, erosion, <reverb, <eq;
@@ -17,8 +17,8 @@ Droner : IM_Processor {
   var <inBus;
   var demandBus, erosionBus;
 
-  *newMono { | outBus = 0, ir, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
-    ^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono(ir);
+  *newMono { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
+    ^super.new(1,outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono;
   }
 
   prInitMono { | ir |
@@ -35,16 +35,19 @@ Droner : IM_Processor {
       eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
-
       /*
       reverb = IM_Reverb.new(eq.inBus, mix: 0.75, roomSize: 1, damp: 0.85, relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
       */
 
+			/*
       reverb = IM_Reverb.newConvolution(eq.inBus, bufName: ir, relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
+			*/
+			reverb = Valhalla.newStereo(eq.inBus, relGroup: group, addAction: \addToHead);
+			while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = GranularDelay.new(reverb.inBus, group, \addToHead);
+      granulator = GranularDelay2.new(reverb.inBus, relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
       /*
       erosion = Synth(\prm_Droner_Erosion, [\inBus, erosionBus, \outBus, granulator.inBus, \freq, 500, \rangeLow, 0.002,
@@ -67,16 +70,17 @@ Droner : IM_Processor {
         \d5, 0.5, \d6, 0.25, \d7, 0.25], group, \addToHead);
       server.sync;
 
-      granulator.mapGranulatorParameter(\rateLow, demandBus);
-      granulator.mapGranulatorParameter(\rateHigh, demandBus);
+      granulator.mapParameter(\rateLow, demandBus);
+      granulator.mapParameter(\rateHigh, demandBus);
       granulator.setGrainDur(0.1, 0.33);
       granulator.setTrigRate(17);
       granulator.setPan(-0.03, 0.03);
-      granulator.setGranulatorCrossfade(1);
-      granulator.setDelayMix(0);
+			granulator.setMix(1);
+      granulator.setDelayLevel(0);
       granulator.mixer.setVol(3);
 
-      reverb.setMix(0.75);
+			reverb.loadPreset('droner');
+      //reverb.setMix(0.75);
       reverb.mixer.setPreVol(-3);
       reverb.postEQ.setHighGain(6);
       reverb.preEQ.setPeak1Freq(300);
@@ -85,14 +89,12 @@ Droner : IM_Processor {
       reverb.preEQ.setPeak1Gain(-3);
       reverb.postEQ.setHighPassCutoff(20);
 
-      reverb.setMix(0.75);
-
       eq.setLowFreq(120);
       eq.setLowGain(0);
-      eq.setHighFreq(2637);
-      eq.setHighGain(-3);
+      eq.setHighFreq(2500);
+      eq.setHighGain(-6);
 
-      mixer.setPreVol(3);
+      mixer.setPreVol(-12);
       mixer.setVol(0);
 
       isLoaded = true;

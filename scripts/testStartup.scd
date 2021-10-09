@@ -32,7 +32,7 @@ Outputs:
 1 - Modular Send
 8 - clock out
 */
-
+(
 r {
 
 	//// Audio Inputs:
@@ -54,9 +54,14 @@ r {
 
 	while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
+	s.sync;
+
 	try { ~apc = APC40Mk2.new; };
+	s.sync;
 	try { ~base = Base.new; };
+	s.sync;
 	try { ~pyr = MIDIIn.findPort("Pyramid MIDI USB", "Pyramid MIDI USB");};
+	s.sync;
 
 	"/Global Functions/Load Global Functions.scd".loadRelative;
 	"/System Scripts/Load System Scripts.scd".loadRelative;
@@ -65,7 +70,7 @@ r {
 	"/Instruments/Load Instruments.scd".loadRelative;
 
 }.play;
-
+)
 
 //////////////////
 //// Studio: ////
@@ -136,6 +141,7 @@ Server.killAll;
 
 s.meter
 
+~connections.bassline
 
 
 

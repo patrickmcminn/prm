@@ -323,4 +323,8 @@ GranularDelay2 : IM_Processor {
     );
   }
 
+	mapParameter {  | param, bus |
+		synth.set(param, bus.asMap);
+  }
+
 }

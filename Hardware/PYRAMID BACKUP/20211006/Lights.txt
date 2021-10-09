@@ -1,0 +1,33 @@
+NAME:Lights
+OUT:USB
+CHANNEL:16
+1: IN_ALL
+2: Red_ALL
+3: Green_ALL
+4: Blue_ALL
+5: Macro_ALL
+6: Strobe_ALL
+7: Int_1
+8: Red_1
+9: Green_1
+10: Blue_1
+11: Macro_1
+12: Strobe_1
+13: Int_2
+14: Red_2
+15: Green_2
+16: Blue_2
+17: Macro_2
+18: Strobe_2
+19: Int_3
+20: Red_3
+21: Green_3
+22: Blue_3
+23: Macro_3
+24: Strobe_3
+25: Int_4
+26: Red_4
+27: Green_4
+28: Blue_4
+29: Macro_4
+30: Strobe_4

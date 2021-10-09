@@ -21,13 +21,15 @@ Connections_Bassline : IM_Module {
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = GranularDelay.new(mixer.chanStereo(0), group, \addToHead);
+      granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
+			/*
       reverb = IM_Reverb.new(granulator.inBus, nil, nil, nil, nil, false, 1, 0.7, 0.8, 0.45, group, \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
+			*/
 
-      eq = Equalizer.newStereo(reverb.inBus, group, \addToHead);
+      eq = Equalizer.newStereo(granulator.inBus, group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
       sampler = Sampler.newMono(eq.inBus, relGroup: group, addAction: \addToHead);
@@ -44,14 +46,17 @@ Connections_Bassline : IM_Module {
       eq.setHighFreq(1770);
       eq.setHighGain(-6);
 
-      granulator.setGranulatorCrossfade(-1);
-      granulator.setDelayMix(0);
+      granulator.setMix(0);
+      granulator.setDelayLevel(0);
       granulator.setGrainDur(0.2, 0.4);
       granulator.setTrigRate(30);
 
-      mixer.setPreVol(18);
+      mixer.setPreVol(3);
 
       server.sync;
+
+			sampler.setAttackTime(0.1);
+			sampler.setReleaseTime(0.1);
 
       this.prMakePatternParameters(bufferArray);
 

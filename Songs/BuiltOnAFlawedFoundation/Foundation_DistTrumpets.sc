@@ -23,7 +23,7 @@ Foundation_DistTrumpets : IM_Module {
 			isLoaded = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-			granulator = GranularDelay.new(mixer.chanStereo(0), group, \addToHead);
+			granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
 			while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
 			distortion = Distortion.newStereo(granulator.inBus, 3, relGroup: group, addAction: \addToHead);
@@ -54,19 +54,26 @@ Foundation_DistTrumpets : IM_Module {
 	}
 
 	prSetInitialParameters {
-		granulator.setGranulatorCrossfade(-0.5);
-		granulator.setDelayMix(0.35);
+		//granulator.setGranulatorCrossfade(-0.5);
+		granulator.setMix(0.15);
+		granulator.setDelayLevel(0.1);
 		granulator.setDelayTime(1.25);
 		granulator.setFeedback(0.2);
 		granulator.setGrainDur(0.1, 0.3);
-		granulator.setGrainEnvelope('hanning');
+		granulator.setGrainEnvelope('gabWide');
 
 		distortion.preEQ.setHighPassCutoff(400);
-		distortion.postEQ.setHighPassCutoff(550);
-		distortion.postEQ.setLowPassCutoff(4500);
+		distortion.postEQ.setHighPassCutoff(400);
+		//distortion.postEQ.setLowPassCutoff(4500);
+		distortion.postEQ.setLowPassCutoff(5500);
+		distortion.postEQ.setPeak1Freq(300);
+		distortion.postEQ.setPeak1Gain(-5);
+		distortion.postEQ.setPeak2Freq(1100);
+		distortion.postEQ.setPeak1Gain(3);
 
 		trumpet.setAttackTime(0.25);
 		trumpet.setReleaseTime(0.25);
+		trumpet.mixer.setPreVol(-9);
 	}
 
 	prMakeMIDIFuncs {

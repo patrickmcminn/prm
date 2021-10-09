@@ -143,9 +143,14 @@ var tuningNoteIsPlaying = false;
 ~apc.setGridFunc(2, 2, {
   if(connectionsIsLoaded == false, {
     r{
+			/*
       ~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
         ~moogDevice, ~moogPort, ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.procGroup, \addToHead);
+			*/
+			~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~prm.reverb.inBus,
+				~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus, ~moogDevice, ~moogPort,
+				~prm.procGroup, \addToHead);
       while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
       ~apc.setGridFunc(3, 2, { ~apc.setPage('connections'); }, page: page);
       ~apc.turnGridGreen(3, 2);

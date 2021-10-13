@@ -115,7 +115,6 @@ controlButtonResetFunc.value;
 
 //////// Faders:
 
-
 //// droner:
 3.do({ | i | ~base.setFaderMode(i+1, 'cyanFill', bank: mainBank, page: page); });
 // volume:
@@ -141,6 +140,35 @@ controlButtonResetFunc.value;
   var fb = val.linlin(0, 127, 0.3, 1.2);
   ~connections.droner.delay.setFeedback(fb);
 }, bank: mainBank, page: page);
+
+
+3.do({ | i | ~base.setFaderMode(i+6, 'whiteFill', bank: mainBank, page: page); });
+// modular inputs:
+~base.setFaderMonitorFunc(6, {
+	var moogVol = ~connections.mixer.vol(8).dbfsCC;
+	var modVol = ~connections.mixer.vol(9).dbfsCC;
+	var samplerVol = ~connections.mixer.vol(10).dbfsCC;
+	~base.setFaderValue(6, moogVol);
+	~base.setFaderValue(7, modVol);
+	~base.setFaderValue(8, samplerVol);
+}, bank: mainBank, page: page);
+~base.setFaderFunc(6, { | val | ~connections.mixer.setVol(8, val.ccdbfs); }, bank: mainBank, page: page);
+~base.setFaderFunc(7, { | val | ~connections.mixer.setVol(9, val.ccdbfs); }, bank: mainBank, page: page);
+~base.setFaderFunc(8, { | val | ~connections.mixer.setVol(10, val.ccdbfs); }, bank: mainBank, page: page);
+
+//// record enable:
+~base.setTouchButtonMonitorFunc(6, {
+	var moog = ~connections.mixer.isMuted(8);
+	var mod = ~connections.mixer.isMuted(9);
+	var sampler = ~connections.mixer.isMuted(10);
+	if( moog == true, { ~base.turnTouchButtonRed(6) }, { ~base.turnTouchButtonGreen(6) });
+	if( mod == true, { ~base.turnTouchButtonRed(7) }, { ~base.turnTouchButtonGreen(7) });
+	if( sampler == true, { ~base.turnTouchButtonRed(8) }, { ~base.turnTouchButtonGreen(8) });
+}, bank: mainBank, page: page);
+~base.setTouchButtonFunc(6, { ~connections.mixer.tglMute(8) }, bank: mainBank, page: page);
+~base.setTouchButtonFunc(7, { ~connections.mixer.tglMute(9) }, bank: mainBank, page: page);
+~base.setTouchButtonFunc(8, { ~connections.mixer.tglMute(10) }, bank: mainBank, page: page);
+
 
 /*
 //// droner:

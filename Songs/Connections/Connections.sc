@@ -22,6 +22,8 @@ Connections : IM_Module {
 
 	var <modularClock;
 
+	var <moog,<modular, <sampler;
+
 	var micIn, pickupIn, moogIn, moogDevice, moogPort;
 	//var impulseResponse;
 
@@ -32,26 +34,25 @@ Connections : IM_Module {
 
 	*new {
 		|
-		outBus = 0, micInBus, pickupInBus, moogInBus,
+		outBus = 0, micInBus, pickupInBus, moogInBus, modInBus, samplerInBus,
 		send0Bus, send1Bus, send2Bus, send3Bus,
-		moogDeviceName, moogPortName,
 		relGroup, addAction = 'addToHead'
 		|
 		^super.new(11, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false,
-			relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, moogDeviceName, moogPortName);
+			relGroup, addAction).prInit(micInBus, pickupInBus, moogInBus, modInBus, samplerInBus);
 	}
 
 	prInit {
 		|
-		micInBus, pickupInBus, moogInBus,clockOutBus,
-		moogDeviceName, moogPortName, ir
+		micInBus, pickupInBus, moogInBus, modInBus, samplerInBus
 		|
+
 		server = Server.default;
 		micIn = micInBus; pickupIn = pickupInBus; moogIn = moogInBus;
-		moogDevice = moogDeviceName; moogPort = moogPortName;
 		server.waitForBoot {
 			isLoaded = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+			mixer.masterChan.mute;
 
 			clock = TempoClock.new;
 			server.sync;
@@ -75,7 +76,6 @@ Connections : IM_Module {
 			airSputtersInput = IM_HardwareIn.new(pickupIn, airSputters.inBus, group, \addToHead);
 			while({ try { airSputtersInput.isLoaded } != true }, { 0.001.wait; });
 
-
 			droner = Droner.newMono(mixer.chanStereo(1), relGroup: group, addAction: \addToHead);
 			//droner = Droner.newMono(mixer.chanStereo(1), impulseResponse,  relGroup: group, addAction: \addToHead);
 			while({ try { droner.isLoaded } != true }, { 0.001.wait; });
@@ -90,11 +90,9 @@ Connections : IM_Module {
 			trumpetGranInput = IM_HardwareIn.new(pickupIn, trumpetGran.inBus, group, \addToHead);
 			while({ try { trumpetGranInput.isLoaded } != true }, { 0.001.wait; });
 
-			/*
 			inlet = Connections_Inlet.new(mixer.chanStereo(4), noteRecord.noteBufferArray,
 				noteRecord.cascadeBufferArray,  group, \addToHead);
 			while({ try { inlet.isLoaded } != true }, { 0.001.wait; });
-			mixer.setSendVol(4, 0, -6);
 
 			chords = Connections_Chords.new(mixer.chanStereo(5), noteRecord.chordBufferArray,
 				group, \addToHead);
@@ -104,12 +102,22 @@ Connections : IM_Module {
 			while({ try { mic.isLoaded } != true }, { 0.001.wait; });
 			micInput = IM_HardwareIn.new(micIn, mic.inBus, group, \addToHead);
 			while({ try { micInput.isLoaded } != true }, { 0.001.wait; });
-			*/
+
+			moog = IM_HardwareIn.new(moogInBus, mixer.chanMono(8), group, \addToHead);
+			while({ try { moog.isLoaded } != true }, { 0.001.wait; });
+
+			modular = IM_HardwareIn.new(modInBus, mixer.chanMono(9), group, \addToHead);
+			while({ try { modular.isLoaded } != true }, { 0.001.wait; });
+
+			sampler = IM_HardwareIn.new(samplerInBus, mixer.chanMono(10), group, \addToHead);
+			while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
 
 			server.sync;
 
 			this.prSetInitialParameters;
+			mixer.masterChan.unMute;
 
+			server.sync;
 			isLoaded = true;
 		}
 	}
@@ -117,12 +125,12 @@ Connections : IM_Module {
 	prSetInitialParameters {
 		// mixer parameters:
 		mixer.setMasterVol(-9);
-		mixer.setSendVol(7, 0, -6);
 
 		11.do({ | chan | mixer.setPreVol(chan, -6); });
 
 		// air sputters:
 		airSputtersInput.mute;
+		mixer.setPreVol(0, -9);
 		mixer.setSendVol(0, 0, -36);
 
 		// droner:
@@ -138,6 +146,41 @@ Connections : IM_Module {
 		trumpetGranInput.mute;
 		mixer.setSendVol(3, 0, -3);
 		mixer.setVol(3, -12);
+		mixer.setPreVol(3, -7.5);
+
+		// inlet:
+		mixer.setPreVol(4, 6);
+		mixer.setSendVol(4, 0, -18);
+
+		// chords:
+		mixer.setSendVol(5, 0, -9);
+		mixer.setPreVol(5, -6);
+
+		// mic:
+		mixer.setPreVol(7, -9);
+		mixer.setSendVol(7, 0, -6);
+		mixer.setvol(7, -6);
+		micInput.mute;
+
+		// moog:
+		mixer.setPreVol(8, 0);
+		mixer.setVol(8, -140);
+		mixer.setSendVol(8, 0, -10);
+		mixer.mute(8);
+
+		// modular:
+		mixer.setPreVol(9, 0);
+		mixer.setVol(9, -140);
+		mixer.setSendVol(9, 0, -12);
+		mixer.mute(9);
+
+		// sampler:
+		mixer.setPreVol(10, 0);
+		mixer.setVol(10, -140);
+		mixer.setSendVol(10, 0, -45);
+		mixer.mute(10);
+
+
 
 	}
 
@@ -163,23 +206,23 @@ Connections : IM_Module {
 	makeMIDIFuncs {
 		//// bass:
 
-		midiDict[\bass1On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass1, 0, 0.25, 0.1, 1, 0) },
+		midiDict[\bass1On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass1, 0, 0, 0.25, 0.1, 1, 0) },
 			60, 8);
 		midiDict[\bass1Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass1); },
 			60, 8);
-		midiDict[\bass2On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass2, 4, 9, 0.25, 0.1, 1, 0) },
+		midiDict[\bass2On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass2, 4, 0, 0.25, 0.1, 1, 0) },
 			61, 8);
 		midiDict[\bass2Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass2); },
 			61, 8);
-		midiDict[\bass3On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass3, 2, 9, 0.25, 0.1, 1, 0) },
+		midiDict[\bass3On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass3, 2, 0, 0.25, 0.1, 1, 0) },
 			62, 8);
 		midiDict[\bass3Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass3); },
 			62, 8);
-		midiDict[\bass4On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass4, 3, 9, 0.25, 0.1, 1, 0) },
+		midiDict[\bass4On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass4, 3, 0, 0.25, 0.1, 1, 0) },
 			63, 8);
 		midiDict[\bass4Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass4); },
 			63, 8);
-		midiDict[\bass5On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass5, 1, 9, 0.25, 0.1, 1, 0) },
+		midiDict[\bass5On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass5, 1, 0, 0.25, 0.1, 1, 0) },
 			64, 8);
 		midiDict[\bass5Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass5); },
 			64, 8);

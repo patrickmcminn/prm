@@ -47,7 +47,7 @@ Connections_TrumpetGran : IM_Module {
       granulator.setGrainDur(0.04, 0.13);
       granulator.setTrigRate(40);
       granulator.mixer.setPreVol(3);
-			granulator.setDelayLevel(0.9);
+			granulator.setDelayLevel(1);
       granulator.setDelayTime(0.8);
       granulator.setDelayLevel(0.6);
 			granulator.setMix(0.5);

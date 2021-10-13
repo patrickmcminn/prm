@@ -148,8 +148,13 @@ var tuningNoteIsPlaying = false;
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
         ~moogDevice, ~moogPort, ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.procGroup, \addToHead);
 			*/
+			/*
 			~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~prm.reverb.inBus,
 				~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus, ~moogDevice, ~moogPort,
+				~prm.procGroup, \addToHead);
+			*/
+			~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[3],
+				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
 				~prm.procGroup, \addToHead);
       while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
       ~apc.setGridFunc(3, 2, { ~apc.setPage('connections'); }, page: page);
@@ -164,8 +169,6 @@ var tuningNoteIsPlaying = false;
     connectionsIsLoaded = false;
   });
 }, page: page);
-
-
 
 
 'Habit Fills Up What Remains';

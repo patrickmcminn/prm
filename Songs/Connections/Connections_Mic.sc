@@ -34,7 +34,7 @@ Connections_Mic : IM_Module {
       eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = GranularDelay.new(eq.inBus, group, \addToHead);
+      granulator = GranularDelay2.new(eq.inBus, relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
       inBusHack = IM_Mixer.new(1, granulator.inBus, relGroup: group, addAction: \addToHead);
@@ -55,13 +55,12 @@ Connections_Mic : IM_Module {
     eq.setPeak2Freq(650);
     eq.setPeak2Gain(-6);
 
-    granulator.setGranulatorCrossfade(-0.75);
-    granulator.granulator.setRate(0.5, 0.5);
+    granulator.setMix(0.3);
+    granulator.setRate(0.5, 0.5);
     granulator.setGrainEnvelope('gabWide');
     granulator.setTrigRate(16);
     granulator.setGrainDur(0.1, 0.3);
-    granulator.setGranulatorCrossfade(-0.75);
-    granulator.setDelayMix(0);
+    granulator.setDelayLevel(0.5);
 
   }
 

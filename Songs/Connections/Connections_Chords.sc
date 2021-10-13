@@ -30,14 +30,16 @@ Connections_Chords :IM_Module {
       sumBusArray = Array.fill(4, { Bus.audio; });
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = GranularDelay.new(mixer.chanStereo(0), group, \addToHead);
+      granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
+			/*
       reverb = IM_Reverb.new(granulator.inBus, amp: 1, mix: 1, roomSize: 0.7, damp: 0.95,
         relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
+			*/
 
-      eq = Equalizer.newStereo(reverb.inBus, group, \addToHead);
+      eq = Equalizer.newStereo(granulator.inBus, group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
       bufferGranulator = BufferGranulator.newMono(eq.inBus, relGroup: group, addAction: \addToHead);
@@ -48,8 +50,8 @@ Connections_Chords :IM_Module {
 
       eq.setHighFreq(1200);
       eq.setHighGain(-9);
-      granulator.setDelayMix(0);
-      granulator.setGranulatorCrossfade(-0.75);
+      granulator.setDelayLevel(0);
+      granulator.setMix(0.35);
       granulator.setGrainDur(0.1, 0.2);
       granulator.setTrigRate(25);
       granulator.mixer.setVol(-3);

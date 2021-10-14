@@ -159,7 +159,7 @@ Connections : IM_Module {
 		// mic:
 		mixer.setPreVol(7, -9);
 		mixer.setSendVol(7, 0, -6);
-		mixer.setvol(7, -6);
+		mixer.setVol(7, -6);
 		micInput.mute;
 
 		// moog:

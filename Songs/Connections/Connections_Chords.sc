@@ -50,6 +50,7 @@ Connections_Chords :IM_Module {
 
       eq.setHighFreq(1200);
       eq.setHighGain(-9);
+      eq.setLowPassCutoff(2500);
       granulator.setDelayLevel(0);
       granulator.setMix(0.35);
       granulator.setGrainDur(0.1, 0.2);
@@ -59,7 +60,7 @@ Connections_Chords :IM_Module {
       server.sync;
       this.prMakePatternParameters;
 
-      mixer.setPreVol(3);
+      mixer.setPreVol(-3);
       isLoaded = true;
     };
   }

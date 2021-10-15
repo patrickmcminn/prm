@@ -40,12 +40,12 @@ Droner : IM_Module {
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
       */
 
-			/*
+      /*
       reverb = IM_Reverb.newConvolution(eq.inBus, bufName: ir, relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
-			*/
-			reverb = Valhalla.newStereo(eq.inBus, relGroup: group, addAction: \addToHead);
-			while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
+      */
+      reverb = Valhalla.newStereo(eq.inBus, relGroup: group, addAction: \addToHead);
+      while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 
       granulator = GranularDelay2.new(reverb.inBus, relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
@@ -75,11 +75,11 @@ Droner : IM_Module {
       granulator.setGrainDur(0.1, 0.33);
       granulator.setTrigRate(17);
       granulator.setPan(-0.03, 0.03);
-			granulator.setMix(1);
+      granulator.setMix(1);
       granulator.setDelayLevel(0);
       granulator.mixer.setVol(3);
 
-			reverb.loadPreset('droner');
+      reverb.loadPreset('droner');
       //reverb.setMix(0.75);
       reverb.mixer.setPreVol(-3);
       reverb.postEQ.setHighGain(6);
@@ -93,6 +93,8 @@ Droner : IM_Module {
       eq.setLowGain(0);
       eq.setHighFreq(2500);
       eq.setHighGain(-6);
+
+      eq.setLowPassCutoff(4500);
 
       mixer.setPreVol(-12);
       mixer.setVol(0);

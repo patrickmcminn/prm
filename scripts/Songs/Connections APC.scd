@@ -201,6 +201,7 @@ if( ~connections.mixer.preOrPost(i) == 'post',
 	var mix = ~connections.droner.granulator.mix.linlin(0, 1.0, 0, 127);
 	var lowShelf = ~connections.droner.eq.lowGain.linlin(-12.0, 12.0, 0, 127);
 	var highShelf = ~connections.droner.eq.highGain.linlin(-12.0, 12.0, 0, 127);
+  var cutoff = ~connections.droner.eq.lowPassCutoff.explin(500, 15000, 0, 127);
 	var bassGranMix = ~connections.bass.granulator.mix.linlin(0, 1.0, 0, 127);
 	var feedback = ~connections.trumpetGran.granulator.feedback.linlin(0.0, 2, 0, 127);
 	var gain = ~connections.trumpetGran.eq.highGain.linlin(-6.0, 9.0, 0, 127);
@@ -209,9 +210,9 @@ if( ~connections.mixer.preOrPost(i) == 'post',
 	~apc.setDeviceEncoderValue(1, mix);
 	~apc.setDeviceEncoderValue(2, lowShelf);
 	~apc.setDeviceEncoderValue(3, highShelf);
-	~apc.setDeviceEncoderValue(4, bassGranMix);
-	~apc.setDeviceEncoderValue(5, feedback);
-	~apc.setDeviceEncoderValue(6, gain);
+  ~apc.setDeviceEncoderValue(4, cutoff);
+	~apc.setDeviceEncoderValue(5, bassGranMix);
+	~apc.setDeviceEncoderValue(6, feedback);
 	~apc.setDeviceEncoderValue(7, inletGran);
 	~apc.setDeviceEncoderValue(8, atkVol);
 }, bank: encoderBank1, page: page);
@@ -234,20 +235,20 @@ if( ~connections.mixer.preOrPost(i) == 'post',
 	~connections.droner.eq.setHighGain(eq);
 }, bank: encoderBank1, page: page);
 
-// bass gran mix:
 ~apc.setDeviceEncoderFunc(4, { | val |
+  var cutoff = val.linexp(0, 127, 500, 15000);
+  ~connections.droner.eq.setLowPassCutoff(cutoff);
+}, bank: encoderBank1, page: page);
+
+// bass gran mix:
+~apc.setDeviceEncoderFunc(5, { | val |
 	var mix = val.linlin(0, 127, 0, 1.0);
 	~connections.bass.granulator.setMix(mix);
 }, bank: encoderBank1, page: page);
 
-~apc.setDeviceEncoderFunc(5, { | val |
+~apc.setDeviceEncoderFunc(6, { | val |
 	var feedback = val.linlin(0, 127, 0, 2);
 	~connections.trumpetGran.granulator.setFeedback(feedback);
-}, bank: encoderBank1, page: page);
-
-~apc.setDeviceEncoderFunc(6, { | val |
-	var gain = val.linlin(0, 127, -6.0, 9.0);
-	~connections.trumpetGran.eq.setHighGain(gain);
 }, bank: encoderBank1, page: page);
 
 

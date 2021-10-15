@@ -37,8 +37,9 @@ Connections_Cascade :IM_Module {
 
       eq.setHighFreq(2500);
       eq.setHighGain(-7);
+      eq.setLowPassCutoff(3500);
 
-      mixer.setPreVol(9);
+      //mixer.setPreVol(9);
 
       server.sync;
       this.prMakePatternParameters;

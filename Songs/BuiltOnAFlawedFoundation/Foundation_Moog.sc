@@ -35,13 +35,15 @@ Foundation_Moog : IM_Module {
 
 			sequencer = seq.uid;
 			channel = seqChan;
-
+			/*
 			mainMidiFile = SimpleMIDIFile.read(path1);
 			endMidiFile = SimpleMIDIFile.read(path2);
+
 
 			server.sync;
 			mainMidiFile.tempo = 96;
 			endMidiFile.tempo = 96;
+			*/
 
 			server.sync;
 

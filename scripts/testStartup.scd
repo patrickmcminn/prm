@@ -1,3 +1,4 @@
+
 /*
 Tuesday, February 21st 2017
 testStartup.scd
@@ -140,8 +141,6 @@ s.makeWindow;
 Server.killAll;
 
 s.meter
-
-~connections.bassline
 
 
 

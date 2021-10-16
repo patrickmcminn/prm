@@ -23,6 +23,9 @@ Connections_Inlet : IM_Module {
       granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
+      reverb = Valhalla.new(granulator.inBus, relGroup: group, addAction: \addToHead);
+      while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
+
 			/*
       reverb = IM_Reverb.new(granulator.inBus, amp: 1, mix: 0.6, roomSize: 0.8, damp: 0.9,
         relGroup: group, addAction: \addToHead);
@@ -30,7 +33,7 @@ Connections_Inlet : IM_Module {
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
 			*/
 
-      cascade = Connections_Cascade.new(granulator.inBus, noteBufferArray, cascadeBufferArray, group, \addToHead);
+      cascade = Connections_Cascade.new(reverb.inBus, noteBufferArray, cascadeBufferArray, group, \addToHead);
       while({ try { cascade.isLoaded } != true }, { 0.001.wait; });
 
       attackRandomizer = Connections_AttackRandomizer.new(granulator.inBus, noteBufferArray, group, \addToHead);
@@ -46,6 +49,7 @@ Connections_Inlet : IM_Module {
 
       //mixer.setPreVol(3);
 
+      reverb.loadPreset(\inlet);
       isLoaded = true;
     }
   }
@@ -55,7 +59,7 @@ Connections_Inlet : IM_Module {
   free {
     cascade.free;
     attackRandomizer.free;
-    //reverb.free;
+    reverb.free;
     granulator.free;
     this.freeModule;
     isLoaded = false;

@@ -51,6 +51,8 @@ Connections_Chords :IM_Module {
       eq.setHighFreq(1200);
       eq.setHighGain(-9);
       eq.setLowPassCutoff(2500);
+      eq.setPeak3Freq(650);
+      eq.setPeak3Gain(-3);
       granulator.setDelayLevel(0);
       granulator.setMix(0.35);
       granulator.setGrainDur(0.1, 0.2);

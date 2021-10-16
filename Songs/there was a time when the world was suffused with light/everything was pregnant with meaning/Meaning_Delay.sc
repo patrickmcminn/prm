@@ -23,7 +23,7 @@ Meaning_Delay : IM_Module {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = GranularDelay.new(mixer.chanStereo(0), group, \addToHead);
+      granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
       delay3 = SimpleDelay.newStereo(granulator.inBus, relGroup: group, addAction: \addToHead);
@@ -50,9 +50,9 @@ Meaning_Delay : IM_Module {
 
   prInitializeParameters {
     // granulator:
-    granulator.setGranulatorCrossfade(0.65.linlin(0, 1, -1, 1));
-    granulator.setDelayMix(0.35);
-    granulator.setFeedback(0.25);
+    granulator.setMix(0.65);
+    granulator.setDelayLevel(0.35);
+    granulator.setFeedback(0.3);
 
     // delay 1:
     delay1.setMix(0.75);

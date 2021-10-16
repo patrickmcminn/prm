@@ -55,7 +55,7 @@ var page = 'meaning';
 ~base.setGridFunc(3, 3, { ~meaning.main.releaseNote4; }, 'noteOff', page: page);
 
 
-
+/*
 //////// Synth:
 
 //// chord 1:
@@ -93,6 +93,7 @@ var page = 'meaning';
 
 ~base.setGridFunc(3, 1, { ~meaning.synth.playChord4 }, 'noteOn', page: page);
 ~base.setGridFunc(3, 1, { ~meaning.synth.releaseChord4 }, 'noteOff', page: page);
+*/
 
 
 //////////////
@@ -102,32 +103,32 @@ var page = 'meaning';
 //////// Hiss:
 //// Mute:
 ~base.setTouchButtonMonitorFunc(1, {
-  if( ~meaning.mainMixer.isMuted(0) == true,
+  if( ~meaning.mixer.isMuted(0) == true,
     { ~base.turnTouchButtonRed(1) }, { ~base.turnTouchButtonGreen(1) });
 }, page: page);
-~base.setTouchButtonFunc(1, { ~meaning.mainMixer.tglMute(0); }, page: page);
+~base.setTouchButtonFunc(1, { ~meaning.mixer.tglMute(0); }, page: page);
 
 //// Volume:
 ~base.setFaderMode(1, 'whiteFill', page: page);
 ~base.setFaderMonitorFunc(1, {
-  ~base.setFaderValue(1, ~meaning.mainMixer.vol(0).dbfsCC)
+  ~base.setFaderValue(1, ~meaning.mixer.vol(0).dbfsCC)
 }, page: page);
 ~base.setFaderFunc(1, { | val |
-  ~meaning.mainMixer.setVol(0, val.ccdbfs);
+  ~meaning.mixer.setVol(0, val.ccdbfs);
 }, page: page);
 
 /////// Main:
 //// Mute:
 ~base.setTouchButtonMonitorFunc(2, {
-  if( ~meaning.mainMixer.isMuted(1) == true,
+  if( ~meaning.mixer.isMuted(1) == true,
     { ~base.turnTouchButtonRed(2) }, { ~base.turnTouchButtonGreen(2) });
 }, page: page);
-~base.setTouchButtonFunc(2, { ~meaning.mainMixer.tglMute(1); }, page: page);
+~base.setTouchButtonFunc(2, { ~meaning.mixer.tglMute(1); }, page: page);
 
 //// Volume:
 ~base.setFaderMode(2, 'magentaFill', page: page);
 ~base.setFaderMonitorFunc(2, {
-  ~base.setFaderValue(2, ~meaning.mainMixer.vol(1).dbfsCC)
+  ~base.setFaderValue(2, ~meaning.mixer.vol(1).dbfsCC)
 }, page: page);
 ~base.setFaderFunc(2, { | val |
   ~meaning.mainMixer.setVol(1, val.ccdbfs);

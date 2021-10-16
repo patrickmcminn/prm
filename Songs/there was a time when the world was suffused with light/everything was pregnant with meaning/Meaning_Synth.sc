@@ -11,9 +11,9 @@ Meaning_Synth : IM_Module {
   var <isLoaded;
   var server;
 
-  var <subtractive, <eq;
+  var <moog, <eq;
 
-  var <chord1IsPlaying, <chord2IsPlaying, <chord3IsPlaying, <chord4IsPlaying;
+  //var <chord1IsPlaying, <chord2IsPlaying, <chord3IsPlaying, <chord4IsPlaying;
 
   *new { |outBus = 0, relGroup = nil, addAction = \addToHead |
     ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
@@ -28,22 +28,24 @@ Meaning_Synth : IM_Module {
       eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
+      /*
       subtractive = Subtractive.new(eq.inBus, relGroup: group, addAction: \addToHead);
       while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
+      */
 
       server.sync;
 
       this.prSetInitialParameters;
 
-      subtractive.makeSequence(\chord1);
-      subtractive.makeSequence(\chord2);
-      subtractive.makeSequence(\chord3);
+      //subtractive.makeSequence(\chord1);
+      //subtractive.makeSequence(\chord2);
+      //subtractive.makeSequence(\chord3);
 
-      subtractive.makeSequence(\chord4);
+      //subtractive.makeSequence(\chord4);
 
       server.sync;
 
-      this.prMakeSequences;
+      //this.prMakeSequences;
 
       isLoaded = true;
     }
@@ -51,18 +53,23 @@ Meaning_Synth : IM_Module {
 
   prSetInitialParameters {
 
+    /*
     chord1IsPlaying = false;
     chord2IsPlaying = false;
     chord3IsPlaying = false;
     chord4IsPlaying = false;
+    */
 
     eq.setHighPassCutoff(12500);
     //eq.setLowPassCutoff(150);
 
+    /*
     subtractive.setAllParameters([ 1, 1, 4, 5.3, 0.5, 0, 0.05, 0.05, 1, 0.5, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0.5, 0.5, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 3, 0.5, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1.5, 0.53, 1, 0.05, 8.42, 10, false, 0.75, 1.5, 1, 1, 0, 1.1, 0, 0, 1, 1300, 0, 0, 1, 1, 1, 1, 0.7, 0.351, 0.84, 1, 0, -1, 1, 0, 0 ]);
+    */
   }
 
   prMakeSequences {
+    /*
     subtractive.addKey(\chord1, \note, Prand([
       [-13, -8, -4, 3, 11, 15, 20, 22],
       [-13, -8, -4, 3, 11, 15, 20, 22],
@@ -104,17 +111,19 @@ Meaning_Synth : IM_Module {
     subtractive.addKey(\chord4, \amp, 0.4);
     subtractive.addKey(\chord4, \dur, 2);
     subtractive.addKey(\chord4, \legato, 0.75);
+    */
   }
 
   //////// public functions:
 
   free {
     eq.free;
-    subtractive.free;
+    //subtractive.free;
     this.freeModule;
     isLoaded = false;
   }
 
+  /*
   playChord1 {
     subtractive.playSequence(\chord1);
     chord1IsPlaying = true;
@@ -169,7 +178,9 @@ Meaning_Synth : IM_Module {
 
   tglChord4 { if(chord4IsPlaying == false,
     { this.playChord4 }, { this.releaseChord4 });
+
   }
+  */
 
 }
 

@@ -94,7 +94,7 @@ Meaning_Main : IM_Module {
 
     // Sampler:
     sampler.setReleaseTime(0.5);
-
+    mixer.setPreVol(-15);
   }
 
   prAddSynthDef {

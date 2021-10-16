@@ -8,6 +8,8 @@ everything was pregnant with meaning
 
 var page = 'meaning';
 
+var main = 0;
+
 var send0 = 0;
 var send1 = 1;
 var send2 = 2;
@@ -23,7 +25,7 @@ var send3 = 3;
 //// Grid //////
 ///////////////
 
-//~apc.turnAllGridBlue(page: page);
+~apc.turnAllGridBlue(page: page);
 
 ~apc.setGridMonitorFunc(\hissPlaying, {
   if( ~meaning.hiss.isPlaying == false,
@@ -39,6 +41,23 @@ var send3 = 3;
 //// Mixer: /////
 ////////////////////
 
+~apc.mapMixer("~meaning.mixer", 5, 0, 0, send0, send1, send2, send3, main, page);
+~apc.mapSendBanks(\main, send0, send1, send2, send3, main, page);
+
+// input mutes:
+~apc.setMixerMonitorFunc(\inputs, {
+  var moog = ~meaning.synth.isMuted;
+  var trumpet = ~meaning.trumpet.isMuted;
+  var modular = ~meaning.modular.isMuted;
+  if( moog, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
+  if( trumpet, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
+  if( modular, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
+}, bank: main, page: page);
+~apc.setRecordEnableButtonFunc(2, { ~meaning.synth.tglMute }, bank: main, page: page);
+~apc.setRecordEnableButtonFunc(3, { ~meaning.trumpet.tglMute }, bank: main, page: page);
+~apc.setRecordEnableButtonFunc(4, { ~meaning.modular.tglMute }, bank: main, page: page);
+
+/*
 3.do({ | i |
   // vol:
   ~apc.setFaderFunc(i+1, { | val | ~meaning.mainMixer.setVol(i, val.ccdbfs); }, page: page);
@@ -99,10 +118,13 @@ var send3 = 3;
   ~apc.setDeviceButtonFunc(4, { ~apc.setActiveMixerEncodersBank(send3); }, page: page);
 
 
+
 ~apc.setMixerEncodersMonitorFunc(\test, {
   ~apc.setMixerEncoderValue(1, ~meaning.mainMixer.sendVol(0, 0).dbfsCC) }, bank: send0, page: page);
+*/
 
 ///// Delay Return:
+/*
 // mute:
 ~apc.setMixerMonitorFunc(\delayMute, {
   if( ~meaning.returns.isMuted(1),
@@ -112,6 +134,9 @@ var send3 = 3;
 
 // volume:
 ~apc.setFaderFunc(4, { | val | ~meaning.returns.setVol(1, val.ccdbfs); }, page: page);
+*/
+
+/*
 
 //////////////////////
 ////// Modular //////
@@ -180,19 +205,17 @@ var send3 = 3;
 ~apc.setMixerEncoderFunc(6, { | val | ~prm.cmix.setSendVol(3, 1, val.ccdbfs); }, bank: send1, page: page);
 ~apc.setMixerEncoderFunc(6, { | val | ~prm.cmix.setSendVol(3, 2, val.ccdbfs); }, bank: send2, page: page);
 ~apc.setMixerEncoderFunc(6, { | val | ~prm.cmix.setSendVol(3, 3, val.ccdbfs); }, bank: send3, page: page);
-
-
-
+*/
 /////// incidentals:
 
 //// Synth Cutoff:
 ~apc.setDeviceEncodersMonitorFunc(\synthCutoff, {
-  var cutoff = ~meaning.synth.eq.highPassCutoff.explin(150, 13000, 0, 127);
+  var cutoff = ~meaning.synthEQ.highPassCutoff.explin(150, 13000, 0, 127);
   ~apc.setDeviceEncoderValue(1, cutoff);
 }, page: page);
 ~apc.setDeviceEncoderFunc(1, { | val |
    var cutoff = val.linexp(0, 127, 150, 13000);
-  ~meaning.synth.eq.setHighPassCutoff(cutoff);
+  ~meaning.synthEQ.setHighPassCutoff(cutoff);
 }, page: page);
 
 

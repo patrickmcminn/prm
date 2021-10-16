@@ -149,8 +149,8 @@ Connections : IM_Module {
 		mixer.setPreVol(3, -7.5);
 
 		// inlet:
-		mixer.setPreVol(4, 6);
-		mixer.setSendVol(4, 0, -18);
+		//mixer.setPreVol(4, -3);
+		//mixer.setSendVol(4, 0, -18);
 
 		// chords:
 		mixer.setSendVol(5, 0, -9);
@@ -247,7 +247,17 @@ Connections : IM_Module {
 			76, 8);
 		midiDict[\highBass5Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\highBass5); },
 			76, 8);
+
+
+    midiDict[\basslineFade] = MIDIFunc.noteOn({ mixer.setVol(2, -140, 30); },
+      60, 7);
+    midiDict[\chordsFade] = MIDIFunc.noteOn({ mixer.setVol(5, -140, 30); },
+      62, 7);
+
+
 		midiEnabled = true;
+
+
 	}
 
 	freeMIDIFuncs { midiDict.do({ | func | func.free; }); midiEnabled = false; }

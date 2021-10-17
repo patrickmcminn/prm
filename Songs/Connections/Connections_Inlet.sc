@@ -44,8 +44,8 @@ Connections_Inlet : IM_Module {
       //reverb.mixer.setVol(-9);
       granulator.setMix(1);
       granulator.setDelayLevel(0);
-      granulator.setTrigRate(40);
-      granulator.setGrainDur(0.1, 0.3);
+      granulator.setTrigRate(18);
+      granulator.setGrainDur(0.4, 0.13);
 
       reverb.mixer.setPreVol(-6);
 

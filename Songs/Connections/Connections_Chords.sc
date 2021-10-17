@@ -11,21 +11,21 @@ Connections_Chords :IM_Module {
   var <sumBusArray;
   var <bufferGranulator;
   var <eq, <reverb, <granulator;
-  var myChordBufferArray;
+  var buffer;
   var <randomChordsIsPlaying, <chordProgressionIsPlaying;
 
-  *new { | outBus = 0, chordBufferArray, relGroup = nil, addAction = 'addToTail' |
-    ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(chordBufferArray);
+  *new { | outBus = 0, cSharpBuf, relGroup = nil, addAction = 'addToTail' |
+    ^super.new(1, outBus, nil, nil, nil, nil, false, relGroup, addAction).prInit(cSharpBuf);
   }
 
-  prInit { | chordBufferArray |
+  prInit { | cSharpBuf |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
       randomChordsIsPlaying = false;
       chordProgressionIsPlaying = false;
       this.prAddSynthDefs;
-      myChordBufferArray = chordBufferArray;
+      buffer = cSharpBuf;
       chordSumBufferArray = Buffer.allocConsecutive(4, server, server.sampleRate, 1);
       sumBusArray = Array.fill(4, { Bus.audio; });
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
@@ -76,9 +76,9 @@ Connections_Chords :IM_Module {
     }).add;
 
     SynthDef(\prm_Connections_Chords_PlayBuf, {
-      | outBus = 0, buffer, amp = 0.5 |
+      | outBus = 0, buffer, amp = 0.5, rate = 1 |
       var playBuf, envelope, sig;
-      playBuf = PlayBuf.ar(1, buffer, 1, 1, 0, 0, 0);
+      playBuf = PlayBuf.ar(1, buffer, rate, 1, 0, 0, 0);
       envelope = EnvGen.kr(Env.linen(0.1, 0.8, 0.1, 1), 1, doneAction: 2);
       sig = playBuf * envelope;
       sig = sig * amp;
@@ -124,11 +124,11 @@ Connections_Chords :IM_Module {
 
   recordChords {
     //// F# Minor:
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[0], \buffer, myChordBufferArray[0]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[0], \buffer, buffer, \rate, 1],
       group, \addToTail);
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[0], \buffer, myChordBufferArray[1]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[0], \buffer, buffer, \rate, 2/3],
       group, \addToTail);
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[0], \buffer, myChordBufferArray[2]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[0], \buffer, buffer, \rate, 4/5],
       group, \addToTail);
     //record:
     Synth(\prm_Connections_Chords_RecordBuf, [\inBus, sumBusArray[0], \buffer, chordSumBufferArray[0]],
@@ -136,11 +136,11 @@ Connections_Chords :IM_Module {
 
 
     //// A Major:
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[1], \buffer, myChordBufferArray[1]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[1], \buffer, buffer, \rate, 1],
       group, \addToTail);
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[1], \buffer, myChordBufferArray[2]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[1], \buffer, buffer, \rate, 4/5],
       group, \addToTail);
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[1], \buffer, myChordBufferArray[5]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[1], \buffer, buffer, \rate, 0.6],
       group, \addToTail);
     //record:
     Synth(\prm_Connections_Chords_RecordBuf, [\inBus, sumBusArray[1], \buffer, chordSumBufferArray[1]],
@@ -148,22 +148,22 @@ Connections_Chords :IM_Module {
 
 
     //// C# Minor:
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[2], \buffer, myChordBufferArray[2]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[2], \buffer, buffer, \rate, 1],
       group, \addToTail);
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[2], \buffer, myChordBufferArray[4]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[2], \buffer, buffer, \rate, 3/4],
       group, \addToTail);
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[2], \buffer, myChordBufferArray[5]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[2], \buffer, buffer, \rate, 0.6],
       group, \addToTail);
     //record:
     Synth(\prm_Connections_Chords_RecordBuf, [\inBus, sumBusArray[2], \buffer, chordSumBufferArray[2]],
       group, \addToTail);
 
     //// E Major:
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[3], \buffer, myChordBufferArray[3]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[3], \buffer, buffer, \rate, 8/9],
       group, \addToTail);
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[3], \buffer, myChordBufferArray[4]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[3],\buffer, buffer, \rate, 3/4],
       group, \addToTail);
-    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[3], \buffer, myChordBufferArray[5]],
+    Synth(\prm_Connections_Chords_PlayBuf, [\outBus, sumBusArray[3], \buffer, buffer, \rate, 0.6],
       group, \addToTail);
     //record:
     Synth(\prm_Connections_Chords_RecordBuf, [\inBus, sumBusArray[3], \buffer, chordSumBufferArray[3]],

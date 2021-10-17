@@ -73,21 +73,33 @@ Connections_Bassline : IM_Module {
 
   prMakePatternParameters { | bufferArray |
     var noteCount = Pseq([8, 6, 16, 9, 4], inf);
+    var rateArray1 = 0.25*[1, 8/9, 2/3, 4/5, 3/4];
+    var rateArray2 = 0.5*[2/3, 4/5, 1, 3/4, 8/9];
     //bassline 1:
+    /*
     sampler.addKey(\bassline1, \buffer, Pseq([bufferArray[0], bufferArray[4], bufferArray[2],
       bufferArray[3], bufferArray[1]], inf));
-    sampler.addKey(\bassline1, \rate, 0.25);
+    */
+    sampler.addKey(\bassline1, \buffer, bufferArray[0]);
+    //sampler.addKey(\bassline1, \rate, 0.25);
+    sampler.addKey(\bassline1, \rate, Pseq([rateArray1[0], rateArray1[1], rateArray1[2], rateArray1[3], rateArray1[4]], inf));
     sampler.addKey(\bassline1, \attackTime, 0.05);
     sampler.addKey(\bassline1, \releaseTime, 0.05);
     sampler.addKey(\bassline1, \dur, Pseq([8, 8, 8, 4, 4], inf));
-    sampler.addKey(\bassline1, \legato, 0.95);
+    sampler.addKey(\bassline1, \legato, 1);
     sampler.addKey(\bassline1, \startPos, 0.1);
     sampler.addKey(\bassline1, \amp, 1);
 
     //bassline 2:
+    /*
     sampler.addKey(\bassline2, \buffer, Pstutter(
       Pseq([8, 6, 16, 9, 4], inf), Pseq([bufferArray[2], bufferArray[3], bufferArray[0], bufferArray[1], bufferArray[4]], inf)));
-    sampler.addKey(\bassline2, \rate, 0.5);
+    */
+    sampler.addKey(\bassline2, \buffer, bufferArray[0]);
+    //sampler.addKey(\bassline2, \rate, 0.5);
+    sampler.addKey(\bassline2, \rate,
+      Pstutter(Pseq([8, 6, 16, 9, 4], inf), Pseq([rateArray2[0], rateArray2[1], rateArray2[2],
+        rateArray2[3], rateArray2[4]], inf)));
     sampler.addKey(\bassline2, \amp, 0.8);
     sampler.addKey(\bassline2, \dur, Pstutter(
 			noteCount,

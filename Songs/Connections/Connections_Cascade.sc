@@ -46,7 +46,7 @@ Connections_Cascade :IM_Module {
       eq.setPeak1Gain(6);
 
       //mixer.setPreVol(9);
-      mixer.setPreVol(-6);
+      mixer.setPreVol(-9);
 
       server.sync;
       this.prMakePatternParameters;
@@ -74,62 +74,70 @@ Connections_Cascade :IM_Module {
 
     sampler.addKey(\highCSharp, \buffer, bufferArray[0]);
     sampler.addKey(\highCSharp, \dur, 0.25);
+    sampler.addKey(\highCSharp, \rate, 1);
     sampler.addKey(\highCSharp, \amp, Pn(Pif(Ptime(inf) <= 25.6, env), inf));
     sampler.addKey(\highCSharp, \attackTime, attackTime);
     sampler.addKey(\highCSharp, \releaseTime, releaseTime);
     sampler.addKey(\highCSharp, \startPos, 0.1);
     sampler.addKey(\highCSharp, \legato, 0.9);
 
-    sampler.addKey(\gSharp, \buffer, bufferArray[1]);
+    sampler.addKey(\gSharp, \buffer, bufferArray[0]);
     sampler.addKey(\gSharp, \dur, 0.25);
+    sampler.addKey(\gSharp, \rate, 3/4);
     sampler.addKey(\gSharp, \amp, Pn(Pif(Ptime(inf) <= 25.6, env), inf));
     sampler.addKey(\gSharp, \attackTime, attackTime);
     sampler.addKey(\gSharp, \releaseTime, releaseTime);
     sampler.addKey(\gSharp, \startPos, 0.1);
     sampler.addKey(\gSharp, \legato, 0.9);
 
-    sampler.addKey(\lowFSharp, \buffer, bufferArray[2]);
+    sampler.addKey(\lowFSharp, \buffer, bufferArray[0]);
     sampler.addKey(\lowFSharp, \dur, 0.25);
+    sampler.addKey(\lowFSharp, \rate, 2/3);
     sampler.addKey(\lowFSharp, \amp, Pn(Pif(Ptime(inf) <= 25.6, env), inf));
     sampler.addKey(\lowFSharp, \attackTime, attackTime);
     sampler.addKey(\lowFSharp, \releaseTime, releaseTime);
     sampler.addKey(\lowFSharp, \startPos, 0.1);
     sampler.addKey(\lowFSharp, \legato, 0.9);
 
-    sampler.addKey(\b, \buffer, bufferArray[4]);
+    sampler.addKey(\b, \buffer, bufferArray[0]);
     sampler.addKey(\b, \dur, 0.25);
+    sampler.addKey(\b, \rate, 8/9);
     sampler.addKey(\b, \amp, Pn(Pif(Ptime(inf) <= 25.6, env), inf));
     sampler.addKey(\b, \attackTime, attackTime);
     sampler.addKey(\b, \releaseTime, releaseTime);
     sampler.addKey(\b, \startPos, 0.1);
     sampler.addKey(\b, \legato, 0.9);
 
-    sampler.addKey(\e, \buffer, bufferArray[5]);
+    sampler.addKey(\e, \buffer, bufferArray[0]);
     sampler.addKey(\e, \dur, 0.25);
+    sampler.addKey(\e, \rate, 6/5);
     sampler.addKey(\e, \amp, Pn(Pif(Ptime(inf) <= 25.6, env), inf));
     sampler.addKey(\e, \attackTime, attackTime);
     sampler.addKey(\e, \releaseTime, releaseTime);
     sampler.addKey(\e, \startPos, 0.1);
     sampler.addKey(\e, \legato, 0.9);
 
-    sampler.addKey(\a, \buffer, bufferArray[3]);
+    sampler.addKey(\a, \buffer, bufferArray[0]);
     sampler.addKey(\a, \dur, 0.25);
+    sampler.addKey(\a, \rate, 4/5);
     sampler.addKey(\a, \amp, Pn(Pif(Ptime(inf) <= 25.6, env), inf));
     sampler.addKey(\a, \attackTime, attackTime);
     sampler.addKey(\a, \releaseTime, releaseTime);
     sampler.addKey(\a, \startPos, 0.1);
     sampler.addKey(\a, \legato, 0.9);
 
-    sampler.addKey(\lowCSharp, \buffer, bufferArray[6]);
+    sampler.addKey(\lowCSharp, \buffer, bufferArray[0]);
     sampler.addKey(\lowCSharp, \dur, 0.25);
+    sampler.addKey(\lowCSharp, \rate, 0.5);
     sampler.addKey(\lowCSharp, \amp, Pn(Pif(Ptime(inf) <= 25.6, env), inf));
     sampler.addKey(\lowCSharp, \attackTime, attackTime);
     sampler.addKey(\lowCSharp, \releaseTime, releaseTime);
     sampler.addKey(\lowCSharp, \startPos, 0.1);
     sampler.addKey(\lowCSharp, \legato, 0.9);
 
-    sampler.addKey(\highFSharp, \buffer, bufferArray[7]);
+    sampler.addKey(\highFSharp, \buffer, bufferArray[0]);
     sampler.addKey(\highFSharp, \dur, 0.25);
+    sampler.addKey(\highFSharp, \rate, 4/3);
     sampler.addKey(\highFSharp, \amp, Pn(Pif(Ptime(inf) <= 25.6, env), inf));
     sampler.addKey(\highFSharp, \attackTime, attackTime);
     sampler.addKey(\highFSharp, \releaseTime, releaseTime);

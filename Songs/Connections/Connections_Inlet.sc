@@ -47,7 +47,9 @@ Connections_Inlet : IM_Module {
       granulator.setTrigRate(40);
       granulator.setGrainDur(0.1, 0.3);
 
-      //mixer.setPreVol(3);
+      reverb.mixer.setPreVol(-6);
+
+      mixer.setPreVol(6);
 
       reverb.loadPreset(\inlet);
       isLoaded = true;

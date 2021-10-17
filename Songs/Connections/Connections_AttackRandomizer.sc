@@ -56,30 +56,34 @@ Connections_AttackRandomizer :IM_Module {
 
     sampler.addKey(\cSharp, \buffer, bufferArray[0]);
     sampler.addKey(\cSharp, \dur, 2);
+    sampler.addKey(\cSharp, \rate, 1);
     sampler.addKey(\cSharp, \attackTime, 3);
     sampler.addKey(\cSharp, \releaseTime, 0.05);
     sampler.addKey(\cSharp, \amp, Pif( Pfunc( { 12.rand > 8 }), 0.35, 0));
     sampler.addKey(\cSharp, \pan, Pwhite(-1, 1));
     sampler.addKey(\cSharp, \legato, 1.5);
 
-    sampler.addKey(\gSharp, \buffer, bufferArray[1]);
+    sampler.addKey(\gSharp, \buffer, bufferArray[0]);
     sampler.addKey(\gSharp, \dur, 2.01);
+    sampler.addKey(\gSharp, \rate, 3/4);
     sampler.addKey(\gSharp, \attackTime, 3);
     sampler.addKey(\gSharp, \releaseTime, 0.05);
     sampler.addKey(\gSharp, \amp, Pif( Pfunc( { 12.rand > 9 }), 0.35, 0));
     sampler.addKey(\gSharp, \pan, Pwhite(-1, 1));
     sampler.addKey(\gSharp, \legato, 1.5);
 
-    sampler.addKey(\fSharp, \buffer, bufferArray[2]);
+    sampler.addKey(\fSharp, \buffer, bufferArray[0]);
     sampler.addKey(\fSharp, \dur, 1.99);
+    sampler.addKey(\fSharp, \rate, 2/3);
     sampler.addKey(\fSharp, \attackTime, 3);
     sampler.addKey(\fSharp, \releaseTime, 0.05);
     sampler.addKey(\fSharp, \amp, Pif( Pfunc( { 16.rand > 12 }), 0.35, 0));
     sampler.addKey(\fSharp, \pan, Pwhite(-1, 1));
     sampler.addKey(\fSharp, \legato, 1.5);
 
-    sampler.addKey(\a, \buffer, bufferArray[3]);
+    sampler.addKey(\a, \buffer, bufferArray[0]);
     sampler.addKey(\a, \dur, 2.011);
+    sampler.addKey(\a, \rate, 4/5);
     sampler.addKey(\a, \attackTime, 3);
     sampler.addKey(\a, \releaseTime, 0.05);
     sampler.addKey(\a, \amp, Pif( Pfunc( { 8.rand > 6 }), 0.35, 0));

@@ -94,7 +94,7 @@ Connections : IM_Module {
 				noteRecord.cascadeBufferArray,  group, \addToHead);
 			while({ try { inlet.isLoaded } != true }, { 0.001.wait; });
 
-			chords = Connections_Chords.new(mixer.chanStereo(5), noteRecord.chordBufferArray,
+      chords = Connections_Chords.new(mixer.chanStereo(5), noteRecord.noteBufferArray[0],
 				group, \addToHead);
 			while( { try { chords.isLoaded } != true }, { 0.00.wait; });
 
@@ -149,7 +149,7 @@ Connections : IM_Module {
 		mixer.setPreVol(3, -7.5);
 
 		// inlet:
-		//mixer.setPreVol(4, -3);
+		mixer.setPreVol(4, 6);
 		//mixer.setSendVol(4, 0, -18);
 
 		// chords:
@@ -205,45 +205,57 @@ Connections : IM_Module {
 
 	makeMIDIFuncs {
 		//// bass:
+    var rateArray1 = 0.25*[1, 8/9, 2/3, 4/5, 3/4];
+    var rateArray2 = 0.5*[2/3, 4/5, 1, 3/4, 8/9];
 
-		midiDict[\bass1On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass1, 0, 0, 0.25, 0.1, 1, 0) },
+    midiDict[\bass1On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\bass1, 0, 0, rateArray1[0], 0.1, 1, 0) },
 			60, 8);
 		midiDict[\bass1Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass1); },
 			60, 8);
-		midiDict[\bass2On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass2, 4, 0, 0.25, 0.1, 1, 0) },
+		midiDict[\bass2On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\bass2, 0, 0, rateArray1[1], 0.1, 1, 0) },
 			61, 8);
 		midiDict[\bass2Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass2); },
 			61, 8);
-		midiDict[\bass3On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass3, 2, 0, 0.25, 0.1, 1, 0) },
+		midiDict[\bass3On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\bass3, 0, 0, rateArray1[2], 0.1, 1, 0) },
 			62, 8);
 		midiDict[\bass3Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass3); },
 			62, 8);
-		midiDict[\bass4On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass4, 3, 0, 0.25, 0.1, 1, 0) },
+		midiDict[\bass4On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\bass4, 0, 0, rateArray1[3], 0.1, 1, 0) },
 			63, 8);
 		midiDict[\bass4Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass4); },
 			63, 8);
-		midiDict[\bass5On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\bass5, 1, 0, 0.25, 0.1, 1, 0) },
+		midiDict[\bass5On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\bass5, 0, 0, rateArray1[4], 0.1, 1, 0) },
 			64, 8);
 		midiDict[\bass5Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\bass5); },
 			64, 8);
 
-		midiDict[\highBass1On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\highBass1, 2, -3, 0.5, 0.1, 1, 0); },
+		midiDict[\highBass1On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\highBass1, 0, -3, rateArray2[0], 0.1, 1, 0); },
 			72, 8);
 		midiDict[\highBass1Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\highBass1); },
 			72, 8);
-		midiDict[\highBass2On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\highBass2, 3, -3, 0.5, 0.1, 1, 0); },
+		midiDict[\highBass2On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\highBass2, 0, -3, rateArray2[1], 0.1, 1, 0); },
 			73, 8);
 		midiDict[\highBass2Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\highBass2); },
 			73, 8);
-		midiDict[\highBass3On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\highBass3, 0, -3, 0.5, 0.1, 1, 0); },
+		midiDict[\highBass3On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\highBass3, 0, -3, rateArray2[2], 0.1, 1, 0); },
 			74, 8);
 		midiDict[\highBass3Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\highBass3); },
 			74, 8);
-		midiDict[\highBass4On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\highBass4, 1, -3, 0.5, 0.1, 1, 0); },
+		midiDict[\highBass4On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\highBass4, 0, -3, rateArray2[3], 0.1, 1, 0); },
 			75, 8);
 		midiDict[\highBass4Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\highBass4); },
 			75, 8);
-		midiDict[\highBass5On] = MIDIFunc.noteOn({ bass.sampler.playSampleSustaining(\highBass5, 4, -3, 0.5, 0.1, 1, 0); },
+		midiDict[\highBass5On] = MIDIFunc.noteOn({
+      bass.sampler.playSampleSustaining(\highBass5, 0, -3, rateArray2[4], 0.1, 1, 0); },
 			76, 8);
 		midiDict[\highBass5Off] = MIDIFunc.noteOff({ bass.sampler.releaseSampleSustaining(\highBass5); },
 			76, 8);

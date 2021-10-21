@@ -11,7 +11,7 @@ Meaning : IM_Module {
   var <isLoaded;
   var server;
 
-  var <hiss, <main, <synth, <synthEQ;
+  var <hiss, <main, <synth, <synthEQ, <synthDelay;
   var <reverb, <delay;
 
   var <trumpet, <modular;
@@ -27,7 +27,7 @@ Meaning : IM_Module {
 		send0Bus, send1Bus, send2Bus, send3Bus,
 		relGroup, addAction = 'addToHead'
     |
-    ^super.new(5, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(micInBus, moogInBus, modInBus, sequencer);
+    ^super.new(3, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(micInBus, moogInBus, modInBus, sequencer);
   }
 
   prInit { | micInBus, moogInBus, modInBus, sequencer |
@@ -37,6 +37,7 @@ Meaning : IM_Module {
       midiEnabled = false;
       midiDict = IdentityDictionary.new;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+      mixer.masterChan.mute;
 
       /*
       /////// Send Returns:
@@ -59,16 +60,20 @@ Meaning : IM_Module {
       while({ try { main.isLoaded } != true }, { 0.001.wait; });
 
 
-      synthEQ = Equalizer.newMono(mixer.chanStereo(2), group, \addToHead);
+      synthDelay = SimpleDelay.newStereo(mixer.chanStereo(2), (60/86)*2/3, 0.45, 1,
+        relGroup: group, addAction: \addToHead);
+      synthEQ = Equalizer.newMono(synthDelay.inBus, group, \addToHead);
       while({ try { synthEQ.isLoaded } != true }, { 0.001.wait; });
       synth = IM_HardwareIn.new(moogInBus, synthEQ.inBus, group, \addToHead);
       while({ try { synth.isLoaded } != true }, { 0.001.wait; });
 
+      /*
       trumpet = IM_HardwareIn.new(micInBus, mixer.chanStereo(3), group, \addToHead);
       while({ try{ trumpet.isLoaded } != true }, { 0.001.wait; });
 
       modular = IM_HardwareIn.new(modInBus, mixer.chanStereo(4), group, \addToHead);
       while({ try { modular.isLoaded } != true }, { 0.001.wait; });
+      */
 
       server.sync;
 
@@ -78,6 +83,7 @@ Meaning : IM_Module {
 
       server.sync;
 
+      mixer.masterChan.unMute;
       isLoaded = true;
     }
   }
@@ -86,25 +92,29 @@ Meaning : IM_Module {
     //////// Mixer:
 
     // hiss:
-    mixer.setPreVol(0, -3);
+    mixer.setPreVol(0, -12);
     mixer.setVol(0, 0);
     mixer.setSendVol(0, 0, -20);
     mixer.setSendVol(0, 3, 0);
 
     // main:
-    mixer.setPreVol(1, -12);
+    mixer.setPreVol(1, -9);
     mixer.setVol(1, 3);
     mixer.setSendVol(1, 0, 0);
     mixer.setSendVol(1, 3, -12);
 
     // synth:
     synthEQ.setHighPassCutoff(12500);
+    synthEQ.setLowPassCutoff(8000);
+    synthEQ.setPeak1Freq(400);
+    synthEQ.setPeak1Gain(-3);
     mixer.mute(2);
     mixer.setPreVol(2, -6);
     mixer.setSendVol(2, 0, -15);
     mixer.setSendVol(2, 3, -3);
     mixer.setVol(2, -17);
 
+    /*
     // trumpet:
     mixer.mute(3);
     mixer.setPreVol(3, 0);
@@ -118,6 +128,7 @@ Meaning : IM_Module {
     mixer.setPreVol(4, 0);
     mixer.setVol(4, -12);
     mixer.setSendVol(4, 0, -9);
+    */
 
   }
 
@@ -125,6 +136,8 @@ Meaning : IM_Module {
 
   free {
     synth.free;
+    synthEQ.free;
+    synthDelay.free;
     main.free;
     hiss.free;
     trumpet.free;
@@ -138,14 +151,14 @@ Meaning : IM_Module {
   toggleMIDIFuncs { if( midiEnabled == false, { this.makeMIDIFuncs }, { this.freeMIDIFuncs }); }
 
   makeMIDIFuncs {
-    midiDict[\note1On] = MIDIFunc.noteOn({ main.playNote1 }, 60, 0, seq);
-    midiDict[\note1Off] = MIDIFunc.noteOff({ main.releaseNote1 }, 60, 0, seq);
-    midiDict[\note2On] = MIDIFunc.noteOn({ main.playNote2 }, 62, 0, seq);
-    midiDict[\note2Off] = MIDIFunc.noteOff({ main.releaseNote2 }, 62, 0, seq);
-    midiDict[\note3On] = MIDIFunc.noteOn({ main.playNote3 }, 64, 0, seq);
-    midiDict[\note3Off] = MIDIFunc.noteOff({ main.releaseNote3 }, 64, 0, seq);
-    midiDict[\note4On] = MIDIFunc.noteOn({ main.playNote4 }, 65, 0, seq);
-    midiDict[\note4Off] = MIDIFunc.noteOff({ main.releaseNote4 }, 65, 0, seq);
+    midiDict[\note1On] = MIDIFunc.noteOn({ main.playNote1 }, 60, 12, seq);
+    midiDict[\note1Off] = MIDIFunc.noteOff({ main.releaseNote1 }, 60, 12, seq);
+    midiDict[\note2On] = MIDIFunc.noteOn({ main.playNote2 }, 62, 12, seq);
+    midiDict[\note2Off] = MIDIFunc.noteOff({ main.releaseNote2 }, 62, 12, seq);
+    midiDict[\note3On] = MIDIFunc.noteOn({ main.playNote3 }, 64, 12, seq);
+    midiDict[\note3Off] = MIDIFunc.noteOff({ main.releaseNote3 }, 64, 12, seq);
+    midiDict[\note4On] = MIDIFunc.noteOn({ main.playNote4 }, 65, 12, seq);
+    midiDict[\note4Off] = MIDIFunc.noteOff({ main.releaseNote4 }, 65, 12, seq);
 
     midiEnabled = true;
   }

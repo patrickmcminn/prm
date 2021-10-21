@@ -70,6 +70,7 @@ Meaning_Synth : IM_Module {
 
   prMakeSequences {
     /*
+    B F# G# D# B D# G# B
     subtractive.addKey(\chord1, \note, Prand([
       [-13, -8, -4, 3, 11, 15, 20, 22],
       [-13, -8, -4, 3, 11, 15, 20, 22],
@@ -85,6 +86,7 @@ Meaning_Synth : IM_Module {
 
 
     subtractive.addKey(\chord2, \note, Prand([
+    C# C# F# F G#
       [-11, 1, 6, 17, 20],
       [-11, 1, 6, 17, 20],
       [-11, 1, 6, 17, 20],
@@ -98,11 +100,13 @@ Meaning_Synth : IM_Module {
     subtractive.addKey(\chord2, \legato, 1);
 
     subtractive.addKey(\chord3, \note, Prand([3, 13, 20, 25, 5, 1, -18, -30], inf));
+    D# C# G# C# F C# F# F#
     subtractive.addKey(\chord3, \amp, Pwhite(0.5, 0.9, inf));
     subtractive.addKey(\chord3, \dur, Pwhite(0.5, 0.8, inf));
     subtractive.addKey(\chord3, \legato, 1.3);
 
     subtractive.addKey(\chord4, \note, Pseq([
+    C# B G# B C G# B C
       [-23, -11, 8, 10, 12, 20, 22, 24],
       [-23, -11, 8, 10, 12, 20, 22, 24],
       [-27, -15, 12, 24],

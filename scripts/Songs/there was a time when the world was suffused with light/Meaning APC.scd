@@ -27,6 +27,17 @@ var send3 = 3;
 
 ~apc.turnAllGridBlue(page: page);
 
+~apc.setUserButtonFunc({
+  ~prm.reverb.loadPreset('default');
+  ~apc.turnUserButtonOn;
+}, bank: main, page: page);
+
+~apc.setSceneLaunchMonitorFunc(\midi, {
+  var midi = ~meaning.midiEnabled;
+  if( midi == true, { ~apc.turnSceneLaunchButtonGreen(0) }, { ~apc.turnSceneLaunchButtonWhite(0) });
+}, bank: main, page: page);
+~apc.setSceneLaunchFunc(0, { ~meaning.toggleMIDIFuncs }, bank: main, page: page);
+
 ~apc.setGridMonitorFunc(\hissPlaying, {
   if( ~meaning.hiss.isPlaying == false,
     { ~apc.turnGridRed(0, 4); }, { ~apc.turnGridGreen(0, 4) });
@@ -41,21 +52,21 @@ var send3 = 3;
 //// Mixer: /////
 ////////////////////
 
-~apc.mapMixer("~meaning.mixer", 5, 0, 0, send0, send1, send2, send3, main, page);
+~apc.mapMixer("~meaning.mixer", 3, 0, 0, send0, send1, send2, send3, main, page);
 ~apc.mapSendBanks(\main, send0, send1, send2, send3, main, page);
 
 // input mutes:
 ~apc.setMixerMonitorFunc(\inputs, {
   var moog = ~meaning.synth.isMuted;
-  var trumpet = ~meaning.trumpet.isMuted;
-  var modular = ~meaning.modular.isMuted;
+  //var trumpet = ~meaning.trumpet.isMuted;
+  //var modular = ~meaning.modular.isMuted;
   if( moog, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
-  if( trumpet, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
-  if( modular, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
+  //if( trumpet, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
+  //if( modular, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
 }, bank: main, page: page);
 ~apc.setRecordEnableButtonFunc(2, { ~meaning.synth.tglMute }, bank: main, page: page);
-~apc.setRecordEnableButtonFunc(3, { ~meaning.trumpet.tglMute }, bank: main, page: page);
-~apc.setRecordEnableButtonFunc(4, { ~meaning.modular.tglMute }, bank: main, page: page);
+//~apc.setRecordEnableButtonFunc(3, { ~meaning.trumpet.tglMute }, bank: main, page: page);
+//~apc.setRecordEnableButtonFunc(4, { ~meaning.modular.tglMute }, bank: main, page: page);
 
 /*
 3.do({ | i |

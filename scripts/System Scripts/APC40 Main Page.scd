@@ -29,6 +29,10 @@ var habitIsLoaded = false;
 var birdsIsLoaded = false;
 var connectionsIsLoaded = false;
 
+var meaningIsLoaded = false;
+
+var chainIsLoaded = false;
+
 var tuningNoteIsPlaying = false;
 
 ~apc.addPageLoadFunction(\master, { ~apc.storageDict[\loadMasterFunc].value; }, page);
@@ -171,6 +175,67 @@ var tuningNoteIsPlaying = false;
 }, page: page);
 
 
+'everything was pregnant with meaning';
+~apc.turnGridMagenta(4, 4, page: page);
+~apc.setGridFunc(4, 4, {
+  if( meaningIsLoaded == false, {
+    r{
+      /*
+      ~meaning = Meaning.new(~prm.audioIn, ~prm.modularSend.inBus, ~prm.irLibrary.irDict['2.0MediumHall'],
+      ~prm.procGroup, \addToHead);
+      */
+      ~meaningDelay = Meaning_Delay.new(~prm.audioIn, ~prm.procGroup, \addToHead);
+      while({ try { ~meaningDelay.isLoaded } != true }, { 0.001.wait; });
+      ~meaning = Meaning.new(~prm.audioIn, ~micIn, ~modInput[0], ~modInput[1], ~pyr,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~meaningDelay.inBus,
+        ~prm.procGroup, \addToHead);
+      while({ try { ~meaning.isLoaded } != true }, { 0.001.wait; });
+      ~apc.turnGridGreen(5, 4);
+      ~apc.setGridFunc(5, 4, { ~apc.setPage('meaning'); }, page: page);
+      meaningIsLoaded = true;
+    }.play;
+  },
+  {
+    ~meaningDelay.free;
+    ~meaning.free;
+    ~apc.setGridFunc(5, 4, {});
+    ~apc.turnGridOff(5, 4);
+    meaningIsLoaded = false;
+  });
+}, page: page);
+
+/*
+'CHAIN:';
+~apc.turnGridWhite(0, 0, page: page);
+~apc.setGridFunc(0, 0, {
+  if(chainIsLoaded == false, {
+    r {
+
+      ~chain = Chain.new(~prm.audioIn,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+        ~prm.delay.inBus, ~prm.procGroup, \addToHead);
+      while({ try { ~chain.isLoaded } != true }, { 0.001.wait; });
+      ~chInput = IM_HardwareIn.new(~pickupIn, ~chain.inBus, ~prm.procGroup, \addToHead);
+      while({ try { ~chInput.isLoaded } != true }, { 0.001.wait; });
+      ~chMic = IM_HardwareIn.new(~micIn, ~chain.inBus, ~prm.procGroup, \addToHead);
+      while({ try { ~chMic.isLoaded } != true }, { 0.001.wait; });
+      ~apc.turnGridGreen(1, 0);
+      ~apc.setGridFunc(1, 0, { ~apc.setPage('chain'); }, page: page);
+      chainIsLoaded = true;
+    }.play;
+  },
+  {
+    ~chain.free;
+    ~chInput.free;
+    ~chMic.free;
+    ~apc.setGridFunc(1, 0, {});
+    ~apc.turnGridOff(1, 0);
+    chainIsLoaded = false; \
+  });
+}, page: page);
+*/
+
+/*
 'Habit Fills Up What Remains';
 
 ~apc.turnGridPurple(4, 4, 2, page: page);
@@ -198,13 +263,16 @@ var tuningNoteIsPlaying = false;
     habitIsLoaded = false;
   });
 }, page: page);
+*/
 
 
+/*
 //////// There Was a Time when the World was Suffused with Light ////////
 
 ~apc.turnSceneLaunchButtonPurple(0, 2, page: page);
 ~apc.setSceneLaunchFunc(0, { ~apc.setPage('light album'); }, page: page);
 
+*/
 
 ///////////////////////////////////
 ////// Convenience Mixer: ////////

@@ -11,11 +11,12 @@ page to load into the language all of the songs for this tape
 
 "Light Base.scd".loadRelative;
 //"Light Ohm.scd".loadRelative;
-
+*/
 "Meaning APC.scd".loadRelative;
 "Meaning Base.scd".loadRelative;
 //"Meaning Ohm.scd".loadRelative;
 
+/*
 "wasntKnownBase.scd".loadRelative;
 //"wasntKnownOhm.scd".loadRelative;
 

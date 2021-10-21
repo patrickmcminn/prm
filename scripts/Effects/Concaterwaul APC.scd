@@ -35,6 +35,7 @@ var freq1Reset, freq2Reset, freq3Reset, freq4Reset, freq5Reset;
 ~apc.setMixerMonitorFunc(\main, {
 	if( ~conc.mixer.isMuted, { ~apc.turnTrackSelectButtonOff(1) }, { ~apc.turnTrackSelectButtonOn(1) });
 	if( ~concInput.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
+  if( ~concMic.isMuted, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2); });
 	if( ~conc.mixer.preOrPost == 'post',
 		{ ~apc.turnCrossfaderSelectButtonOrange(1) }, { ~apc.turnCrossfaderSelectButtonYellow(1) });
 }, main, page);

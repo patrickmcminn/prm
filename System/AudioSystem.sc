@@ -128,6 +128,7 @@ AudioSystem {
 
 			// send out to modular system
 			modularSend = MonoHardwareSend.new(modOut1, relGroup: systemGroup, addAction: \addToHead);
+      modularSend.setPreVol(9);
 			while({ try { modularSend.isLoaded } != true }, { 0.001.wait; });
 
 			// delay:

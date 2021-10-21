@@ -131,26 +131,27 @@ var page = 'meaning';
   ~base.setFaderValue(2, ~meaning.mixer.vol(1).dbfsCC)
 }, page: page);
 ~base.setFaderFunc(2, { | val |
-  ~meaning.mainMixer.setVol(1, val.ccdbfs);
+  ~meaning.mixer.setVol(1, val.ccdbfs);
 }, page: page);
 
 ////// Synth:
 //// Mute:
 ~base.setTouchButtonMonitorFunc(3, {
-  if( ~meaning.mainMixer.isMuted(2) == true,
+  if( ~meaning.mixer.isMuted(2) == true,
     { ~base.turnTouchButtonRed(3) }, { ~base.turnTouchButtonGreen(3) });
 }, page: page);
-~base.setTouchButtonFunc(3, { ~meaning.mainMixer.tglMute(2); }, page: page);
+~base.setTouchButtonFunc(3, { ~meaning.mixer.tglMute(2); }, page: page);
 
 //// Volume:
 ~base.setFaderMode(3, 'cyanFill', page: page);
 ~base.setFaderMonitorFunc(3, {
-  ~base.setFaderValue(3, ~meaning.mainMixer.vol(2).dbfsCC)
+  ~base.setFaderValue(3, ~meaning.mixer.vol(2).dbfsCC)
 }, page: page);
 ~base.setFaderFunc(3, { | val |
-  ~meaning.mainMixer.setVol(2, val.ccdbfs);
+  ~meaning.mixer.setVol(2, val.ccdbfs);
 }, page: page);
 
+/*
 /////// Reverb:
 //// Mute:
 ~base.setTouchButtonMonitorFunc(4, {
@@ -186,17 +187,17 @@ var page = 'meaning';
   ~meaning.returns.setVol(1, val.ccdbfs);
 }, page: page);
 
-
+*/
 
 /////// High Pass:
 ~base.setFaderMode(6, 'whiteFill', page: page);
 ~base.setFaderMonitorFunc(6, {
-  var cutoff = ~meaning.synth.eq.highPassCutoff.explin(100, 14000, 0, 127);
+  var cutoff = ~meaning.synthEQ.highPassCutoff.explin(100, 14000, 0, 127);
   ~base.setFaderValue(6, cutoff);
 }, page: page);
 ~base.setFaderFunc(6, { | val |
   var cutoff = val.linexp(0, 127, 100, 14000);
-  ~meaning.synth.eq.setHighPassCutoff(cutoff);
+  ~meaning.synthEQ.setHighPassCutoff(cutoff);
 }, page: page);
 
 /////// Sample Low Pass:
@@ -213,9 +214,9 @@ var page = 'meaning';
 /////// Main Modular Send:
 ~base.setFaderMode(8, 'blueFill', page: page);
 ~base.setFaderMonitorFunc(8, {
-  ~base.setFaderValue(8, ~meaning.mainMixer.sendVol(1, 2).dbfsCC);
+  ~base.setFaderValue(8, ~meaning.mixer.sendVol(1, 2).dbfsCC);
 }, page: page);
 ~base.setFaderFunc(8, { | val |
-  ~meaning.mainMixer.setSendVol(1, 2, val.ccdbfs);
+  ~meaning.mixer.setSendVol(1, 2, val.ccdbfs);
 }, page: page);
 

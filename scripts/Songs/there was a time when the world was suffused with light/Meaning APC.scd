@@ -42,10 +42,17 @@ var send3 = 3;
   if( ~meaning.hiss.isPlaying == false,
     { ~apc.turnGridRed(0, 4); }, { ~apc.turnGridGreen(0, 4) });
 }, page: page);
+/*
 ~apc.setGridFunc(0, 4, {
   if( ~meaning.hiss.isPlaying == false,
     { ~meaning.hiss.playSequences },
     { ~meaning.hiss.stopSequences });
+}, page: page);
+*/
+~apc.setGridFunc(0, 4, {
+  if( ~meaning.hiss.isPlaying == false,
+    { ~meaning.playSimpleHiss; },
+    { ~meaning.releaseSimpleHiss; });
 }, page: page);
 
 //////////////////////

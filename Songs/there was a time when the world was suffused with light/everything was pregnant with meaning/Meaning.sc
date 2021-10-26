@@ -53,8 +53,11 @@ Meaning : IM_Module {
 
       //////// Main Mixer:
 
+      /*
       hiss = Meaning_Hiss.new(mixer.chanStereo(0), group, \addToHead);
       while({ try { hiss.isLoaded } != true }, { 0.001.wait; });
+      */
+      hiss = Meaning_SimpleHiss.new(mixer.chanStereo(0), group, \addToHead);
 
       main = Meaning_Main.new(mixer.chanStereo(1), group, \addToHead);
       while({ try { main.isLoaded } != true }, { 0.001.wait; });
@@ -147,6 +150,9 @@ Meaning : IM_Module {
 
     isLoaded = false;
   }
+
+  playSimpleHiss { hiss.playSample; }
+  releaseSimpleHiss { hiss.releaseSample; }
 
   toggleMIDIFuncs { if( midiEnabled == false, { this.makeMIDIFuncs }, { this.freeMIDIFuncs }); }
 

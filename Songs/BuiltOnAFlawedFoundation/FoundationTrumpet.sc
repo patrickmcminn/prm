@@ -65,7 +65,7 @@ FoundationTrumpet : IM_Module {
 
 
 		// Distortion:
-		distortion.postEQ.setLowPassCutoff(2200);
+		distortion.postEQ.setLowPassCutoff(3500);
 		distortion.postEQ.setHighPassCutoff(280.cpsmidi);
 		distortion.postEQ.setPeak1Freq(250);
 		distortion.postEQ.setPeak1Gain(-4.5);

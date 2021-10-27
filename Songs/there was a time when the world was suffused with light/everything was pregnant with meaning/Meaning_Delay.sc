@@ -23,16 +23,20 @@ Meaning_Delay : IM_Module {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
+      granulator = GranularDelay2.new(mixer.chanStereo(0),
+        relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
-      delay3 = SimpleDelay.newStereo(granulator.inBus, relGroup: group, addAction: \addToHead);
+      delay3 = SimpleDelay.newStereo(granulator.inBus, maxDelayTime: 0.5,
+        relGroup: group, addAction: \addToHead);
       while({ try { delay3.isLoaded } != true }, { 0.001.wait; });
 
-      delay2 = SimpleDelay.newStereo(granulator.inBus, relGroup: group, addAction: \addToHead);
+      delay2 = SimpleDelay.newStereo(granulator.inBus, maxDelayTime: 0.5,
+        relGroup: group, addAction: \addToHead);
       while({ try { delay2.isLoaded } != true }, { 0.001.wait; });
 
-      delay1 = SimpleDelay.newStereo(granulator.inBus, relGroup: group, addAction: \addToHead);
+      delay1 = SimpleDelay.newStereo(granulator.inBus, maxDelayTime: 0.5,
+        relGroup: group, addAction: \addToHead);
       while({ try { delay1.isLoaded } != true }, { 0.001.wait; });
 
       splitter = Splitter.newMono(3, [delay1.inBus, delay2.inBus, delay3.inBus], relGroup: group, addAction: \addToHead);

@@ -189,7 +189,14 @@ var tuningNoteIsPlaying = false;
       ~meaning = Meaning.new(~prm.audioIn, ~micIn, ~modInput[0], ~modInput[1], ~pyr,
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~meaningDelay.inBus,
         ~prm.procGroup, \addToHead);
+      /*
+      ~meaning = Meaning.new(~prm.audioIn, ~micIn, ~modInput[0], ~modInput[1], ~pyr,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+        ~prm.procGroup, \addToHead);
+      */
       while({ try { ~meaning.isLoaded } != true }, { 0.001.wait; });
+      //~prm.delay.setDelayTime(0.3);
+      //~prm.delay.setFeedback(0.5);
       ~apc.turnGridGreen(5, 4);
       ~apc.setGridFunc(5, 4, { ~apc.setPage('meaning'); }, page: page);
       meaningIsLoaded = true;

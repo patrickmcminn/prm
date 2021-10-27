@@ -36,7 +36,7 @@ Connections_Inlet : IM_Module {
       cascade = Connections_Cascade.new(reverb.inBus, noteBufferArray, cascadeBufferArray, group, \addToHead);
       while({ try { cascade.isLoaded } != true }, { 0.001.wait; });
 
-      attackRandomizer = Connections_AttackRandomizer.new(granulator.inBus, noteBufferArray, group, \addToHead);
+      attackRandomizer = Connections_AttackRandomizer.new(reverb.inBus, noteBufferArray, group, \addToHead);
       while({ try { attackRandomizer.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;

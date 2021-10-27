@@ -25,7 +25,7 @@ Meaning_SimpleHiss : IM_Module {
       isPlaying = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/there was a time when the world was suffused with light/everything was pregnant with meaning/samples/hiss/simpleHiss.aiff";
+      path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/there was a time when the world was suffused with light/everything was pregnant with meaning/samples/hiss/simpleHiss.aif";
 
       sampler = SamplePlayer.newStereo(mixer.chanStereo(0), path, relGroup: group, addAction: \addToHead);
       while({ try { sampler.isLoaded } != true }, { 0.001.wait; });

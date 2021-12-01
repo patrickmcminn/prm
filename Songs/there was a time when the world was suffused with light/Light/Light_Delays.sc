@@ -25,14 +25,14 @@ Light_Delays : IM_Processor {
 
       server.sync;
 
-      filterDelay1 = SimpleDelay.newStereo(mixer.chanStereo(0), 0.6, 0.91, 1, relGroup: group, addAction: \addToHead);
+      filterDelay1 = SimpleDelay.newStereo(mixer.chanStereo(0), 0.6, 0.65, 1, relGroup: group, addAction: \addToHead);
       while({ try { filterDelay1.isLoaded } != true }, { 0.001.wait; });
       filterDelay2 = SimpleDelay.newStereo(mixer.chanStereo(0), 0.8, 0.56, 1, relGroup: group, addAction: \addToHead);
       while({ try { filterDelay2.isLoaded } != true }, { 0.001.wait; });
-      filterDelay3 = SimpleDelay.newStereo(mixer.chanStereo(0), 1.2, 0.67, 1, relGroup: group, addAction: \addToHead);
+      filterDelay3 = SimpleDelay.newStereo(mixer.chanStereo(0), 1.2, 0.67, 1.2, relGroup: group, addAction: \addToHead);
       while({ try { filterDelay3.isLoaded } != true }, { 0.001.wait; });
 
-      delayLine1 = SimpleDelay.newStereo(mixer.chanStereo(0), 0.6, 0.21, 0.5,
+      delayLine1 = SimpleDelay.newStereo(mixer.chanStereo(0), 0.6, 0.21, 0.6,
         filterDelay1.inBus, filterDelay2.inBus, filterDelay3.inBus,
         relGroup: group, addAction: \addToHead);
       while({ try { delayLine1.isLoaded } != true }, { 0.001.wait; });
@@ -40,7 +40,7 @@ Light_Delays : IM_Processor {
         filterDelay1.inBus, filterDelay2.inBus, filterDelay3.inBus,
         relGroup: group, addAction: \addToHead);
       while({ try { delayLine2.isLoaded } != true }, { 0.001.wait; });
-      delayLine3 = SimpleDelay.newStereo(mixer.chanStereo(0), 1, 0.24, 0.5,
+      delayLine3 = SimpleDelay.newStereo(mixer.chanStereo(0), 1, 0.24, 1,
         filterDelay1.inBus, filterDelay2.inBus, filterDelay3.inBus,
         relGroup: group, addAction: \addToHead);
       while({ try { delayLine3.isLoaded } != true }, { 0.001.wait; });
@@ -76,6 +76,7 @@ Light_Delays : IM_Processor {
   }
 
   prInitializeParamters {
+    mixer.setPreVol(-9);
 
     // filter delay 1:
     filterDelay1.setMix(1);

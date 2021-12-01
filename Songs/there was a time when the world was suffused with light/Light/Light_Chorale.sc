@@ -23,7 +23,7 @@ Light_Chorale : IM_Module {
       isLoaded = false;
       while({ try {mixer.isLoaded } != true }, { 0.001.wait; });
 
-      synth = Subtractive.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
+      synth = SubJuno.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { synth.isLoaded } != true }, { 0.001.wait; });
 
       this.prInitializeParameters;
@@ -51,6 +51,8 @@ Light_Chorale : IM_Module {
     synth.setLFO2Waveform('noise');
     synth.setLFO2Freq(0.3);
     synth.setFilterCutoff(1200);
+    synth.setFilterCutoffLFO1BottomRatio(0.8);
+    synth.setFilterCutoffLFO1TopRatio(2);
     synth.setAttackTime(0.5);
     synth.setReleaseTime(1);
     synth.setFilterDrive(50);

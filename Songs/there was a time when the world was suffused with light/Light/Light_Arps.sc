@@ -11,7 +11,7 @@ Light_Arps : IM_Module {
 
   var server, <isLoaded;
 
-  var <synth, <granulator, <lowPass;
+  var <synth1, <synth2, stereoizer, <granulator, <lowPass;
 
   var <chord1IsPlaying, <chord2IsPlaying, <chord3IsPlaying, <chord4IsPlaying, <chord5IsPlaying;
 
@@ -19,11 +19,11 @@ Light_Arps : IM_Module {
   var <arp2Chord1, <arp2Chord2, <arp2Chord3, <arp2Chord4, <arp2Chord5;
 
 
-  *new { | outBus = 0, relGroup, addAction = 'addToHead' |
-    ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
+  *new { | outBus = 0, plaitsIn, relGroup, addAction = 'addToHead' |
+    ^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(plaitsIn);
   }
 
-  prInit {
+  prInit { | plaitsIn |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
@@ -32,11 +32,17 @@ Light_Arps : IM_Module {
       lowPass = LowPassFilter.newStereo(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { lowPass.isLoaded } != true }, { 0.001.wait; });
 
-      granulator = GranularDelay.new(lowPass.inBus, group, \addToHead);
+      granulator = GranularDelay2.new(lowPass.inBus, relGroup: group, addAction: \addToHead);
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
-      synth = Subtractive.new(granulator.inBus, relGroup: group, addAction: \addToHead);
-      while({ try { synth.isLoaded } != true }, { 0.001.wait; });
+      synth1 = SubJuno.new(granulator.inBus, relGroup: group, addAction: \addToHead);
+      while({ try { synth1.isLoaded } != true }, { 0.001.wait; });
+
+      stereoizer = IM_Mixer_1Ch.newNoSends(granulator.inBus, relGroup: group, addAction: \addToHead);
+      while({ try { stereoizer.isLoaded } != true }, { 0.001.wait; });
+
+      synth2 = IM_HardwareIn.new(plaitsIn, stereoizer.chanMono, group, \addToHead);
+      while({ try { synth2.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
 
@@ -52,22 +58,31 @@ Light_Arps : IM_Module {
   }
 
   prInitializeParameters {
-    mixer.setPreVol(6);
+    mixer.setPreVol(-6);
+
     chord1IsPlaying = false; chord2IsPlaying = false; chord3IsPlaying = false;
     chord4IsPlaying = false;chord5IsPlaying = false;
 
     // lowPass:
     lowPass.setCutoff(26);
 
+    // subtractive:
+    synth1.mixer.setPanBal(-0.6);
+
+    // plaits:
+    stereoizer.setPanBal(0.6);
+    stereoizer.setPreVol(-9);
+
     // granulator:
-    granulator.setGranulatorCrossfade(0.4);
-    granulator.setGrainDur(0.01, 0.1);
-    granulator.setDelayMix(0);
+    granulator.setMix(0.65);
+    granulator.setGrainDur(0.1, 0.5);
+    granulator.setTrigRate(24);
+    granulator.setDelayLevel(0);
     granulator.setGrainEnvelope('percRev');
 
-    // synth:
-    synth.setAllParameters([ 1, 1, 0, 1, 0.5, 0, 0.05, 0.05, 1, 0.5, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0.5, 0.5, 0, 1, -22, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0.5, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0.29, 0.227, false, 1, 1, 0.5, 4, 0, 0, 0, 0, 1, 2000, 0, 0, 1, 1, 1, 1, 0.05, 0.1, 0.1, 0.05, 0, 0, 0, 0, 0 ]);
-    synth.sequencerClock.tempo = 75/60;
+    // synth1:
+    synth1.setAllParameters([ 1, 1, 0, 1, 0.5, 0, 0.05, 0.05, 1, 0.5, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0.5, 0.5, 0, 1, -22, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0.5, 0.25, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 10000, 1, 1, 1, 1, 0.05, 0.29, 0.227, false, 1, 1, 0.5, 4, 0, 0, 0, 0, 1, 2000, 0, 0, 1, 1, 1, 1, 0.05, 0.1, 0.1, 0.05, 0, 0, 0, 0, 0 ]);
+    synth1.sequencerClock.tempo = 75/60;
 
     /*
     x.setFilterCutoff(2000);
@@ -100,66 +115,66 @@ Light_Arps : IM_Module {
   }
 
   prMakePatterns {
-    synth.makeSequence(\arp1Chord1);
-    synth.makeSequence(\arp1Chord2);
-    synth.makeSequence(\arp1Chord3);
-    synth.makeSequence(\arp1Chord4);
-    synth.makeSequence(\arp1Chord5);
+    synth1.makeSequence(\arp1Chord1);
+    synth1.makeSequence(\arp1Chord2);
+    synth1.makeSequence(\arp1Chord3);
+    synth1.makeSequence(\arp1Chord4);
+    synth1.makeSequence(\arp1Chord5);
 
-    synth.makeSequence(\arp2Chord1);
-    synth.makeSequence(\arp2Chord2);
-    synth.makeSequence(\arp2Chord3);
-    synth.makeSequence(\arp2Chord4);
-    synth.makeSequence(\arp2Chord5);
+    synth1.makeSequence(\arp2Chord1);
+    synth1.makeSequence(\arp2Chord2);
+    synth1.makeSequence(\arp2Chord3);
+    synth1.makeSequence(\arp2Chord4);
+    synth1.makeSequence(\arp2Chord5);
 
   }
 
   prMakePatternParameters {
-    synth.addKey(\arp1Chord1, \pan, -1);
-    synth.addKey(\arp1Chord1, \dur, 1/6);
-    synth.addKey(\arp1Chord1, \note, Pseq([9, 6, 13, 2, 14], inf));
+    synth1.addKey(\arp1Chord1, \pan, -1);
+    synth1.addKey(\arp1Chord1, \dur, 1/6);
+    synth1.addKey(\arp1Chord1, \note, Pseq([9, 6, 13, 2, 14], inf));
 
-    synth.addKey(\arp1Chord2, \pan, -1);
-    synth.addKey(\arp1Chord2, \dur, 1/6);
-    synth.addKey(\arp1Chord2, \note, Pseq([9, 6, 11, 2, 14], inf));
+    synth1.addKey(\arp1Chord2, \pan, -1);
+    synth1.addKey(\arp1Chord2, \dur, 1/6);
+    synth1.addKey(\arp1Chord2, \note, Pseq([9, 6, 11, 2, 14], inf));
 
-    synth.addKey(\arp1Chord3, \pan, -1);
-    synth.addKey(\arp1Chord3, \dur, 1/6);
-    synth.addKey(\arp1Chord3, \note, Pseq([9, 6, 13, 4, 18], inf));
+    synth1.addKey(\arp1Chord3, \pan, -1);
+    synth1.addKey(\arp1Chord3, \dur, 1/6);
+    synth1.addKey(\arp1Chord3, \note, Pseq([9, 6, 13, 4, 18], inf));
 
-    synth.addKey(\arp1Chord4, \pan, -1);
-    synth.addKey(\arp1Chord4, \dur, 1/6);
-    synth.addKey(\arp1Chord4, \note, Pseq([11, 9, 13, 4, 14], inf));
+    synth1.addKey(\arp1Chord4, \pan, -1);
+    synth1.addKey(\arp1Chord4, \dur, 1/6);
+    synth1.addKey(\arp1Chord4, \note, Pseq([11, 9, 13, 4, 14], inf));
 
-    synth.addKey(\arp1Chord5, \pan, -1);
-    synth.addKey(\arp1Chord5, \dur, 0.0625);
-    synth.addKey(\arp1Chord5, \note, Pseq([7, 6, 11, 2, 14, -5], inf));
+    synth1.addKey(\arp1Chord5, \pan, -1);
+    synth1.addKey(\arp1Chord5, \dur, 0.0625);
+    synth1.addKey(\arp1Chord5, \note, Pseq([7, 6, 11, 2, 14, -5], inf));
 
-    synth.addKey(\arp2Chord1, \pan, -1);
-    synth.addKey(\arp2Chord1, \dur, 1/6);
-    synth.addKey(\arp2Chord1, \note, Pseq([14, 13, 9, 6, 2, 2, 6, 9, 13, 14], inf));
+    synth1.addKey(\arp2Chord1, \pan, -1);
+    synth1.addKey(\arp2Chord1, \dur, 1/6);
+    synth1.addKey(\arp2Chord1, \note, Pseq([14, 13, 9, 6, 2, 2, 6, 9, 13, 14], inf));
 
-    synth.addKey(\arp2Chord2, \pan, -1);
-    synth.addKey(\arp2Chord2, \dur, 1/6);
-    synth.addKey(\arp2Chord2, \note, Pseq([14, 11, 9, 6, 2, 2, 6, 9, 11, 14], inf));
+    synth1.addKey(\arp2Chord2, \pan, -1);
+    synth1.addKey(\arp2Chord2, \dur, 1/6);
+    synth1.addKey(\arp2Chord2, \note, Pseq([14, 11, 9, 6, 2, 2, 6, 9, 11, 14], inf));
 
-    synth.addKey(\arp2Chord3, \pan, -1);
-    synth.addKey(\arp2Chord3, \dur, 1/6);
-    synth.addKey(\arp2Chord3, \note, Pseq([18, 13, 9, 6, 4, 1, 1, 4, 6, 9, 13, 18], inf));
+    synth1.addKey(\arp2Chord3, \pan, -1);
+    synth1.addKey(\arp2Chord3, \dur, 1/6);
+    synth1.addKey(\arp2Chord3, \note, Pseq([18, 13, 9, 6, 4, 1, 1, 4, 6, 9, 13, 18], inf));
 
-    synth.addKey(\arp2Chord4, \pan, -1);
-    synth.addKey(\arp2Chord4, \dur, 1/6);
-    synth.addKey(\arp2Chord4, \note, Pseq([14, 13, 11, 9, 4, 4, 9, 11, 13, 14], inf));
+    synth1.addKey(\arp2Chord4, \pan, -1);
+    synth1.addKey(\arp2Chord4, \dur, 1/6);
+    synth1.addKey(\arp2Chord4, \note, Pseq([14, 13, 11, 9, 4, 4, 9, 11, 13, 14], inf));
 
-    synth.addKey(\arp2Chord5, \pan, -1);
-    synth.addKey(\arp2Chord5, \dur, 1/12);
-    synth.addKey(\arp2Chord5, \note, Pseq([14, 11, 7, 6, 2, -5, -5, 2, 6, 7, 11, 14], inf));
+    synth1.addKey(\arp2Chord5, \pan, -1);
+    synth1.addKey(\arp2Chord5, \dur, 1/12);
+    synth1.addKey(\arp2Chord5, \note, Pseq([14, 11, 7, 6, 2, -5, -5, 2, 6, 7, 11, 14], inf));
 
   }
 
   ///////// public functions:
   free {
-    synth.free;
+    synth1.free; synth2.free;
     granulator.free;
     lowPass.free;
     this.freeModule;
@@ -167,13 +182,13 @@ Light_Arps : IM_Module {
   }
 
   playChord1 {
-    synth.playSequence(\arp1Chord1);
-    synth.playSequence(\arp2Chord1);
+    synth1.playSequence(\arp1Chord1);
+    synth1.playSequence(\arp2Chord1);
     chord1IsPlaying = true;
   }
   stopChord1 {
-    synth.stopSequence(\arp1Chord1);
-    synth.stopSequence(\arp2Chord1);
+    synth1.stopSequence(\arp1Chord1);
+    synth1.stopSequence(\arp2Chord1);
     chord1IsPlaying = false;
   }
   tglChord1 {
@@ -181,13 +196,13 @@ Light_Arps : IM_Module {
   }
 
   playChord2 {
-    synth.playSequence(\arp1Chord2);
-    synth.playSequence(\arp2Chord2);
+    synth1.playSequence(\arp1Chord2);
+    synth1.playSequence(\arp2Chord2);
     chord2IsPlaying = true;
   }
   stopChord2 {
-    synth.stopSequence(\arp1Chord2);
-    synth.stopSequence(\arp2Chord2);
+    synth1.stopSequence(\arp1Chord2);
+    synth1.stopSequence(\arp2Chord2);
     chord2IsPlaying = false;
   }
   tglChord2 {
@@ -195,13 +210,13 @@ Light_Arps : IM_Module {
   }
 
   playChord3 {
-    synth.playSequence(\arp1Chord3);
-    synth.playSequence(\arp2Chord3);
+    synth1.playSequence(\arp1Chord3);
+    synth1.playSequence(\arp2Chord3);
     chord3IsPlaying = true;
   }
   stopChord3 {
-    synth.stopSequence(\arp1Chord3);
-    synth.stopSequence(\arp2Chord3);
+    synth1.stopSequence(\arp1Chord3);
+    synth1.stopSequence(\arp2Chord3);
     chord3IsPlaying = false;
   }
   tglChord3 {
@@ -209,13 +224,13 @@ Light_Arps : IM_Module {
   }
 
   playChord4 {
-    synth.playSequence(\arp1Chord4);
-    synth.playSequence(\arp2Chord4);
+    synth1.playSequence(\arp1Chord4);
+    synth1.playSequence(\arp2Chord4);
     chord4IsPlaying = true;
   }
   stopChord4 {
-    synth.stopSequence(\arp1Chord4);
-    synth.stopSequence(\arp2Chord4);
+    synth1.stopSequence(\arp1Chord4);
+    synth1.stopSequence(\arp2Chord4);
     chord4IsPlaying = false;
   }
   tglChord4 {
@@ -223,13 +238,13 @@ Light_Arps : IM_Module {
   }
 
   playChord5 {
-    synth.playSequence(\arp1Chord5);
-    synth.playSequence(\arp2Chord5);
+    synth1.playSequence(\arp1Chord5);
+    synth1.playSequence(\arp2Chord5);
     chord5IsPlaying = true;
   }
   stopChord5 {
-    synth.stopSequence(\arp1Chord5);
-    synth.stopSequence(\arp2Chord5);
+    synth1.stopSequence(\arp1Chord5);
+    synth1.stopSequence(\arp2Chord5);
     chord5IsPlaying = false;
   }
   tglChord5 {

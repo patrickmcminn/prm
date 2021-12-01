@@ -29,6 +29,7 @@ var habitIsLoaded = false;
 var birdsIsLoaded = false;
 var connectionsIsLoaded = false;
 
+var lightIsLoaded = false;
 var meaningIsLoaded = false;
 
 var chainIsLoaded = false;
@@ -175,9 +176,38 @@ var tuningNoteIsPlaying = false;
 }, page: page);
 
 
-'everything was pregnant with meaning';
-~apc.turnGridMagenta(4, 4, page: page);
+'there was a time when the world was suffused with light';
+
+~apc.turnGridWhite(4, 4, page: page);
 ~apc.setGridFunc(4, 4, {
+  if( lightIsLoaded == false, {
+    r{
+      ~lightDelays = Light_Delays.new(~prm.audioIn, ~prm.procGroup, \addToHead);
+      while({ try { ~lightDelays.isLoaded } != true }, { 0.001.wait; });
+      ~light = Light.new(~prm.audioIn, ~micIn, ~pickupIn,
+        ~modInput[0], ~modInput[1], ~modInput[2], ~modInput[3],
+        ~moogDevice, ~moogPort, ~pyr,
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~lightDelays.inBus,
+        ~prm.procGroup, \addToHead);
+      while({ try { ~light.isLoaded } != true }, { 0.001.wait; });
+      ~apc.turnGridGreen(5, 4);
+      ~apc.setGridFunc(5, 4, { ~apc.setPage('light'); }, page: page);
+      lightIsLoaded = true;
+    }.play
+  },
+  {
+    ~lightDelays.free;
+    ~light.free;
+    ~apc.setGridFunc(5, 4, {});
+    ~apc.turnGridOff(5, 4);
+    lightIsLoaded = false;
+  });
+}, page: page);
+
+
+'everything was pregnant with meaning';
+~apc.turnGridMagenta(4, 3, page: page);
+~apc.setGridFunc(4, 3, {
   if( meaningIsLoaded == false, {
     r{
       /*
@@ -197,16 +227,16 @@ var tuningNoteIsPlaying = false;
       while({ try { ~meaning.isLoaded } != true }, { 0.001.wait; });
       //~prm.delay.setDelayTime(0.3);
       //~prm.delay.setFeedback(0.5);
-      ~apc.turnGridGreen(5, 4);
-      ~apc.setGridFunc(5, 4, { ~apc.setPage('meaning'); }, page: page);
+      ~apc.turnGridGreen(5, 3);
+      ~apc.setGridFunc(5, 3, { ~apc.setPage('meaning'); }, page: page);
       meaningIsLoaded = true;
     }.play;
   },
   {
     ~meaningDelay.free;
     ~meaning.free;
-    ~apc.setGridFunc(5, 4, {});
-    ~apc.turnGridOff(5, 4);
+    ~apc.setGridFunc(5, 3, {});
+    ~apc.turnGridOff(5, 3);
     meaningIsLoaded = false;
   });
 }, page: page);

@@ -28,20 +28,28 @@ FalseSelf_TrumpetMelody : IM_Processor {
       eq = Equalizer.newStereo(mixer.chanStereo, group, \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
+      shift1 = GrainFreeze2.newMono(eq.inBus, relGroup: group, addAction: \addToHead);
+      while({ try { shift1.isLoaded } != true }, { 0.001.wait; });
+
+      shift2 = GrainFreeze2.newMono(eq.inBus, relGroup: group, addAction: \addToHead);
+      while({ try { shift2.isLoaded } != true }, { 0.001.wait; });
+
+      /*
       shift1 = PitchShifter.newMono(eq.inBus, -12, relGroup: group, addAction: \addToHead);
       while({ try { shift1.isLoaded } != true }, { 0.001.wait; });
 
       shift2 = PitchShifter.newMono(eq.inBus, -15, relGroup: group, addAction: \addToHead);
       while({ try { shift2.isLoaded } != true }, { 0.001.wait; });
+      */
 
       dry = IM_Mixer_1Ch.new(eq.inBus, relGroup: group, addAction: \addToHead);
       while({ try { dry.isLoaded } != true }, { 0.001.wait; });
 
-      splitter = Splitter.newMono(4, [dry.chanMono, shift1.inBus, shift2.inBus],
+      splitter = Splitter.newMono(3, [dry.chanMono, shift1.inBus, shift2.inBus],
         relGroup: group, addAction: \addToHead);
       while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
-      this.prInitParameters;
+      this.prInitializeParameters;
       //this.prMakePatterns;
 
       server.sync;
@@ -51,61 +59,22 @@ FalseSelf_TrumpetMelody : IM_Processor {
   }
 
 
-  prInitParameters {
-    mixer.setPreVol(0);
+  prInitializeParameters {
+    mixer.setPreVol(-6);
     dry.setVol(0);
-    dry.mute;
+    shift1.mixer.setPreVol(-5);
+    shift2.mixer.setPreVol(-5);
+    //dry.mute;
     //shift2.mixer.mute;
     // eq:
-    eq.setHighPassCutoff(100);
-    eq.setPeak3Freq(350);
-    eq.setPeak3Gain(-3);
+    eq.setHighPassCutoff(175);
+    eq.setPeak3Freq(360);
+    eq.setPeak3Gain(-6);
     eq.setPeak1Freq(150);
     eq.setPeak1Gain(1.5);
     eq.setPeak1RQ(0.3);
     eq.setPeak2Freq(1200);
     eq.setPeak2Gain(-1);
-  }
-
-  // phasing this out in favor of playing it live:
-  prMakePatterns {
-    {
-
-      var shift1NoteArray, shift2NoteArray, durArray;
-
-      shift1NoteArray =
-      [
-        //Pseq([-12], 25),
-        -8, -7, -9, -8, -8, -7, -9, -9, -5, -9, -7, -8, -7, -9, -7, -8, -8, -5, -3, -2, 3, -7, -5, -4, -9
-      ];
-
-      shift2NoteArray =
-      [
-        //-3, -2, -5, -4, -3, -2, -5, -4, -4, -5, -3, -1, -4, -5, -3, -1, -4, -2, -3, -2, 8, -2, -3, -2, -8,
-        -3, -2, -5, -5, -3, -2, -5, -4, 4, -4, -2, -5, -4, -4, -2, 0, 0, 3, 5, 6, 8, 0, 2, 3, -5
-      ] -12;
-
-      durArray =
-      [
-        //2, 4, 2, 10, 2, 4, 4, 8, 8, 2, 2, 4, 6, 2, 2, 2, 8, 2, 4, 2, 8, 2, 4, 4, 10,
-        2, 4, 2, 8, 2, 2, 2, 4, 6, 2, 2, 4, 8, 2, 2, 2, 6, 2, 4, 2, 6, 2, 2, 4, 8
-      ];
-
-
-      shift1.makeSequence(\falseSelf_Shift1);
-      shift2.makeSequence(\falseSelf_Shift2);
-
-      server.sync;
-
-      shift1.addKey(\falseSelf_Shift1, \shiftAmount, Pseq(shift1NoteArray, 1));
-      shift1.addKey(\falseSelf_Shift1, \dur, Pseq(durArray, 1));
-      shift1.addKey(\falseSelf_Shift1, \legato, 1);
-
-      shift2.addKey(\falseSelf_Shift2, \shiftAmount, Pseq(shift2NoteArray, 1));
-      shift2.addKey(\falseSelf_Shift2, \dur, Pseq(durArray, 1));
-      shift2.addKey(\falseSelf_Shift2, \legato, 1);
-
-    }.fork;
   }
 
   //////// free:
@@ -122,8 +91,9 @@ FalseSelf_TrumpetMelody : IM_Processor {
 
   inBus { ^splitter.inBus }
 
-  playPattern { | clock |
-    shift1.playSequence(\falseSelf_Shift1, clock);
-    shift2.playSequence(\falseSelf_Shift2, clock);
+  recordBuffer {
+    shift1.recordBuffer;
+    shift2.recordBuffer;
   }
+
 }

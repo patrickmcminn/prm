@@ -62,6 +62,7 @@ r {
 	try { ~base = Base.new; };
 	s.sync;
 	try { ~pyr = MIDIIn.findPort("Pyramid MIDI USB", "Pyramid MIDI USB");};
+  try { ~pyrOut = MIDIOut.newByName("Pyramid MIDI USB", "Pyramid MIDI USB"); };
 	s.sync;
 
 	"/Global Functions/Load Global Functions.scd".loadRelative;
@@ -73,17 +74,17 @@ r {
 }.play;
 )
 
-
 s.makeWindow;
 
 Server.killAll;
 
 s.meter
+~falseSelf.mixer.muteMaster
+~falseSelf.mixer.isMutedMaster
 
+~falseSelf.mixer.setVol(10, -16.5);
 
-~pyr
+~falseSelf.planeNoise.samplePlayer.setReleaseTime(15);
+~falseSelf.midBuzz.sampler.setReleaseTime(15);
 
-
-~light.bass.playNote(220);
-~light.bass.releaseNote(220);
-
+FalseSelf_PlaneNoise

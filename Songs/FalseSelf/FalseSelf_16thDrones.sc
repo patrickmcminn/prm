@@ -9,7 +9,7 @@ driving from Ithaca, to Kingston, NY
 FalseSelf_16thDrones : IM_Module {
 
   var server, <isLoaded;
-  var <sampler, <delay, <filter1, <filter2;
+  var <sampler, <delay, <filter1, <filter2, <eq;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -23,7 +23,9 @@ FalseSelf_16thDrones : IM_Module {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      delay = SimpleDelay.newStereo(mixer.chanStereo(0), 0.24, 0.3, 0.25, relGroup: group, addAction: \addToHead);
+      eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
+      while({ try { eq.isLoaded } != true }, { 0.001.wait; });
+      delay = SimpleDelay.newStereo(eq.inBus, 0.24, 0.3, 0.25, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
       filter2 = LowPassFilter.newStereo(delay.inBus, 4570, 1, relGroup: group, addAction: \addToHead);
       while({ try { filter2.isLoaded } != true }, { 0.001.wait; });
@@ -48,6 +50,9 @@ FalseSelf_16thDrones : IM_Module {
       //mixer.setSendVol(2, 0);
       //mixer.setPreVol(3);
       //mixer.setVol(-6);
+
+      eq.setPeak2Freq(673);
+      eq.setPeak2Gain(-9);
 
       this.prMakeSequences;
 

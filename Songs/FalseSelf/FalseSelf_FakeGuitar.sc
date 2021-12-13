@@ -32,22 +32,12 @@ FalseSelf_FakeGuitar : IM_Module {
       while({ try { section2.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
+
+      section2.setFilterCutoff(40);
+
       isLoaded = true;
     }
   }
-
-  fadeVolume { | start = 0, end = -inf, time = 10 |
-    {
-      var bus = Bus.control;
-      server.sync;
-      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)); }.play;
-      mixer.mapAmp(0, bus);
-      mixer.mapAmp(1, bus);
-      { mixer.setVol(0, end); mixer.setVol(1, end); }.defer(time);
-      { bus.free; }.defer(time);
-    }.fork;
-  }
-
 
   free {
     section1.free;
@@ -56,6 +46,13 @@ FalseSelf_FakeGuitar : IM_Module {
     isLoaded = false;
   }
 
+  playSection1 { section1.playSampleSustaining('gtr', -3); }
+  releaseSection1 { section1.releaseSampleSustaining('gtr'); }
+  playSection2 { section2.playSampleSustaining('gtr', -3); }
+  releaseSection2 { section2.releaseSampleSustaining('gtr'); }
 
+  panic { section1
+
+  }
 
 }

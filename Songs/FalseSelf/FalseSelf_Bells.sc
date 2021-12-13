@@ -7,7 +7,7 @@ prm
 FalseSelf_Bells : IM_Module {
 
   var server, <isLoaded;
-  var bells, <reverb, <delay;
+  var bells, <delay;
   var <granulator;
 
   *new {
@@ -24,14 +24,10 @@ FalseSelf_Bells : IM_Module {
       isLoaded = false;
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
-      granulator = GranularDelay.new(mixer.chanStereo(0), group, 'addToHead');
+      granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction: 'addToHead');
       while({ try { granulator.isLoaded } != true }, { 0.001.wait; });
 
-      reverb = IM_Reverb.new(granulator.inBus, mix: 0.55, roomSize: 0.8, damp: 0.3,
-        relGroup: group, addAction: \addToHead);
-      while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
-
-      delay = SimpleDelay.newStereo(reverb.inBus, 0.1875, 0.5, 0.5, relGroup: group, addAction: \addToHead);
+      delay = SimpleDelay.newStereo(granulator.inBus, 0.1875, 0.5, 0.5, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       bells = MidBells.new(delay.inBus, relGroup: group, addAction: \addToHead);
@@ -42,11 +38,13 @@ FalseSelf_Bells : IM_Module {
       // initial parameters:
       delay.setMix(0.5);
 
-      granulator.setGranulatorCrossfade(-0.1);
+      bells.mixer.setPreVol(-9);
+
+      granulator.setMix(0.45);
       granulator.setGrainDur(0.05, 0.2);
       granulator.setTrigRate(20);
 
-      mixer.setPreVol(-3);
+      mixer.setPreVol(-12);
 
       isLoaded = true;
     }
@@ -56,7 +54,6 @@ FalseSelf_Bells : IM_Module {
   free {
     bells.free;
     delay.free;
-    reverb.free;
     granulator.free;
     this.freeModule;
     isLoaded = false;

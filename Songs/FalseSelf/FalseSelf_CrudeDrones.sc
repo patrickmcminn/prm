@@ -8,7 +8,7 @@ FalseSelf_CrudeDrones :IM_Module {
 
   var server, <isLoaded;
   var <sampler;
-  var <delay;
+  var <delay, <eq;
 
   // note: send out to reverb!!
 
@@ -24,7 +24,10 @@ FalseSelf_CrudeDrones :IM_Module {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-      delay = SimpleDelay.newStereo(mixer.chanStereo(0), 0.48, 0.1, 0.5, relGroup: group, addAction: \addToHead);
+      eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
+      while({ try { eq.isLoaded } != true }, { 0.001.wait; });
+
+      delay = SimpleDelay.newStereo(eq.inBus, 0.48, 0.1, 0.5, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
       sampler = Sampler.newStereo(delay.inBus, sampleArray, relGroup: group, addAction: \addToHead);
@@ -38,6 +41,13 @@ FalseSelf_CrudeDrones :IM_Module {
       //mixer.setSendVol(0, -6);
       // modular send:
       //mixer.setSendVol(2, 0);
+
+      eq.setPeak3Freq(1100);
+      eq.setPeak3Gain(-4);
+      eq.setPeak2Freq(639);
+      eq.setPeak2Gain(-6);
+      eq.setPeak1Freq(350);
+      eq.setPeak1Gain(0);
 
       isLoaded = true;
     }

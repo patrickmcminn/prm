@@ -29,17 +29,19 @@ FalseSelf_MainTrumpet : IM_Processor {
 
       this.prAddSynthDefs;
 
+      /*
       reverb = IM_Reverb.new(mixer.chanStereo(0), mix: 0.4, roomSize: 0.9, damp: 0.2,
         relGroup: group, addAction: \addToHead);
       while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
+      */
 
-      eq = Equalizer.newStereo(reverb.inBus, relGroup: group, addAction: \addToHead);
+      eq = Equalizer.newStereo(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
       delay = SimpleDelay.newStereo(eq.inBus, 0.375, 0.22, 5, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
 
-      distortion = Distortion.newMono(delay.inBus, 1000, relGroup: group, addAction: \addToHead);
+      distortion = Distortion.newMono(delay.inBus, 100, relGroup: group, addAction: \addToHead);
       while({ try { distortion.isLoaded } != true }, { 0.001.wait; });
 
       splitter = Splitter.newMono(2, [distortion.inBus, recordBus], false, group, \addToHead);
@@ -49,10 +51,7 @@ FalseSelf_MainTrumpet : IM_Processor {
 
       server.sync;
 
-      this.prInitializeReverb;
-      this.prInitializeEQ;
-      this.prInitializeDelay;
-      this.prInitializeDistortion;
+      this.prSetInitialParameters;
 
       server.sync;
 
@@ -80,28 +79,21 @@ FalseSelf_MainTrumpet : IM_Processor {
     }).add;
   }
 
-  prInitializeReverb {
-    reverb.setLowPassFreq(5500);
-  }
-
-  prInitializeEQ {
+  prSetInitialParameters {
     eq.setLowPassCutoff(9500);
     eq.setHighPassCutoff(173);
     eq.setPeak1Freq(1000);
     eq.setPeak1Gain(3.1);
     eq.mixer.setPreVol(-6);
-  }
 
-  prInitializeDelay {
     delay.setMix(0.35);
+
+    distortion.preEQ.setHighPassCutoff(350);
+    distortion.postEQ.setHighPassCutoff(350);
+    distortion.postEQ.setLowPassCutoff(3500);
+    distortion.mixer.setPreVol(-18);
   }
 
-  prInitializeDistortion {
-    distortion.preEQ.setHighPassCutoff(100);
-    distortion.postEQ.setHighPassCutoff(100);
-    distortion.postEQ.setLowPassCutoff(7500);
-    distortion.mixer.setPreVol(0);
-  }
 
   //////// public functions:
 
@@ -110,7 +102,6 @@ FalseSelf_MainTrumpet : IM_Processor {
     distortion.free;
     delay.free;
     eq.free;
-    reverb.free;
     recordBus.free;
     this.freeProcessor;
     isLoaded = false;
@@ -122,18 +113,5 @@ FalseSelf_MainTrumpet : IM_Processor {
     Synth(\prm_falseSelf_trumpetWarp, [\outBus, distortion.inBus, \buffer, buffer, \time, time],
       group, \addToHead);
   }
-
-  fadeVolume { | start = -inf, end = 0, time = 10 |
-    {
-      var bus = Bus.control;
-      server.sync;
-      { Out.kr(bus, Line.kr(start.dbamp, end.dbamp, time, doneAction: 2)) }.play;
-      mixer.mapAmp(bus);
-      { bus.free }.defer(time);
-      { mixer.setVol(end) }.defer(time);
-    }.fork;
-  }
-
-
 
 }

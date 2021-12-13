@@ -7,7 +7,7 @@ prm
 GlockSynth : IM_Module {
 
   var server, <isLoaded;
-  var <synth, <reverb, <delay;
+  var <synth, <delay;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
     ^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -21,9 +21,7 @@ GlockSynth : IM_Module {
 
       delay = SimpleDelay.newStereo(mixer.chanStereo(0), 0.1875, 0.6, 5, relGroup: group, addAction: \addToHead);
       while({ try { delay.isLoaded } != true }, { 0.001.wait; });
-      reverb = IM_Reverb.new(delay.inBus, mix: 0.5, roomSize: 0.7, damp: 0.3, relGroup: group, addAction: \addToHead);
-      while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
-      synth = Subtractive.new(reverb.inBus, relGroup: group, addAction: \addToHead);
+      synth = Subtractive.new(delay.inBus, relGroup: group, addAction: \addToHead);
       while({ try { synth.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
@@ -33,6 +31,8 @@ GlockSynth : IM_Module {
       mixer.setPreVol(3);
 
       server.sync;
+
+      mixer.setPreVol(-12);
 
       isLoaded = true;
     }
@@ -59,7 +59,6 @@ GlockSynth : IM_Module {
 
   free {
     synth.free;
-    reverb.free;
     delay.free;
     this.freeModule;
   }

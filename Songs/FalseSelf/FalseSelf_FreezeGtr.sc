@@ -8,7 +8,7 @@ Kingston, NY
 FalseSelf_FreezeGtr : IM_Module {
 
   var server, <isLoaded;
-  var <sampler, <reverb, eq;
+  var <sampler, eq;
   var noteDict, bufferDict;
 
   *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
@@ -25,11 +25,7 @@ FalseSelf_FreezeGtr : IM_Module {
 
       eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
 
-      reverb = IM_Reverb.new(eq.inBus, mix: 0.65, roomSize: 0.92, damp: 0.9,
-        relGroup: group, addAction: \addToHead);
-      while({ try { reverb.isLoaded } != true }, { 0.001.wait; });
-
-      sampler = Sampler.newStereo(reverb.inBus, sampleArray, relGroup: group, addAction: \addToHead);
+      sampler = Sampler.newStereo(eq.inBus, sampleArray, relGroup: group, addAction: \addToHead);
       while({ try { sampler.isLoaded } != true }, { 0.001.wait; });
 
       server.sync;
@@ -37,14 +33,16 @@ FalseSelf_FreezeGtr : IM_Module {
       this.prMakeNoteDict;
       this.prMakePatterns;
 
-      sampler.setAttackTime(0.5);
+      sampler.setAttackTime(0.25);
       sampler.setReleaseTime(0.5);
       //sampler.setSequencerClockTempo(125);
 
       // eq parameters:
       eq.setLowFreq(73.2);
       eq.setLowGain(-3);
-      eq.setLowPassCutoff(1690);
+      eq.setLowPassCutoff(2500);
+
+      mixer.setPreVol(-9);
 
       isLoaded = true;
     };
@@ -110,7 +108,7 @@ FalseSelf_FreezeGtr : IM_Module {
       sampler.addKey(\chordProgression, \dur, Pseq([20, 8, 8, 6, 10, 8, 8, 6, 6, 8, 6, 8], 1));
       //sampler.addKey(\chordProgression, \dur, Pseq([8, 8, 6, 10, 8, 8, 6, 6, 8, 6, 8], 1));
       sampler.addKey(\chordProgression, \buffer, Pseq([
-        [bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
+        //[bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
         [bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
         [bufferDict[\midC], bufferDict[\midG], bufferDict[\highC], bufferDict[\highE]],
         [bufferDict[\highCSharp], bufferDict[\midGSharp], bufferDict[\highCSharp2], bufferDict[\highE]],
@@ -164,7 +162,6 @@ FalseSelf_FreezeGtr : IM_Module {
 
   free {
     sampler.free;
-    reverb.free;
     this.freeModule;
     isLoaded = false;
   }

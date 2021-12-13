@@ -2,8 +2,208 @@
 Tuesday, September 25th 2018
 False Self APC.scd
 prm
+
+updated 12/10/2021
 */
 
+
+var page = 'falseSelf';
+
+var main = 0;
+var secondary = 1;
+
+var send0 = 0;
+var send1 = 1;
+var send2 = 2;
+var send3 = 3;
+
+var send10 = 4;
+var send11 = 5;
+var send12 = 6;
+var send13 = 7;
+
+var sequenceReset;
+
+~apc.makePage(page);
+~apc.addPageLoadFunction(\masterFunc, { ~apc.storageDict[\loadMasterFunc].value; }, page);
+
+
+~apc.addMixerEncodersBanks(7, page: page);
+~apc.addMixerBanks(1, page);
+~apc.addDeviceButtonsBanks(1, page);
+
+~apc.setUserButtonFunc({
+  ~prm.reverb.loadPreset('falseSelf');
+  ~apc.turnUserButtonOn;
+}, bank: main, page: page);
+
+~apc.setGridMonitorFunc(\muted, {
+  //if( ~falseSelf.mixer.isMutedMaster, { ~apc.turnBankButtonOn }, { ~apc.turnBankButtonOff });
+  if( ~falseSelf.songIsMuted, { ~apc.turnBankButtonOn }, { ~apc.turnBankButtonOff });
+}, main, page);
+~apc.setBankButtonFunc({ ~falseSelf.tglMuteSong; }, bank: main, page: page);
+
+~apc.setSceneLaunchMonitorFunc(\midi, {
+  var midi = ~falseSelf.midiEnabled;
+  if( midi == true, { ~apc.turnSceneLaunchButtonGreen(0) }, { ~apc.turnSceneLaunchButtonWhite(0) });
+}, bank: main, page: page);
+~apc.setSceneLaunchFunc(0, { ~falseSelf.toggleMIDIFuncs }, bank: main, page: page);
+
+//////////////////////
+//// Mixer: /////////
+////////////////////
+
+~apc.mapMixer("~falseSelf.mixer", 8, 0, 0, send0, send1, send2, send3, main, page);
+~apc.mapSendBanks(\main, send0, send1, send2, send3, main, page);
+
+
+~apc.mapMixer("~falseSelf.mixer", 8, 8, 0, send10, send11, send12, send13, secondary, page);
+~apc.mapSendBanks(\page2, send10, send11, send12, send13, secondary, page);
+
+/*
+~apc.setDeviceButtonsMonitorFunc(\switcher, {
+  if( ~apc.activeDeviceButtonsBank == main,
+    { ~apc.turnDeviceButtonOn(5); });
+}, main, page);
+~apc.setDeviceButtonsMonitorFunc(\switcher2, {
+  if( ~apc.activeDeviceButtonsBank == secondary, { ~apc.turnDeviceButtonOn(6); });
+*/
+~apc.turnDeviceButtonOn(5, main, page);
+~apc.turnDeviceButtonOn(6, secondary, page);
+~apc.setDeviceButtonFunc(6, {
+  ~apc.setActiveDeviceButtonsBank(secondary, page);
+  ~apc.setActiveMixerBank(secondary, page);
+}, bank: main, page: page);
+~apc.setDeviceButtonFunc(5, {
+  ~apc.setActiveDeviceButtonsBank(main, page);
+  ~apc.setActiveMixerBank(main, page);
+}, bank: secondary, page: page);
+
+// input mutes:
+~apc.setMixerMonitorFunc(\inputMutes, {
+  var mainTrumpet = ~falseSelf.mainTrumpetInput.isMuted;
+  if( mainTrumpet,
+    { ~apc.turnRecordEnableButtonOff(6, main, page); },
+    { ~apc.turnRecordEnableButtonOn(6, main, page); });
+}, main, page);
+~apc.setRecordEnableButtonFunc(6, { ~falseSelf.mainTrumpetInput.tglMute },
+  bank: main, page: page);
+~apc.setMixerMonitorFunc(\inputMutesSec, {
+  var trumpetMel = ~falseSelf.trumpetMelodyInput.isMuted;
+  var modular = ~falseSelf.modular.isMuted;
+  var modNoise = ~falseSelf.modNoise.isMuted;
+  if( trumpetMel,
+    { ~apc.turnRecordEnableButtonOff(1, secondary, page); },
+    { ~apc.turnRecordEnableButtonOn(1, secondary, page); });
+  if( modular,
+    { ~apc.turnRecordEnableButtonOff(7, secondary, page); },
+    { ~apc.turnRecordEnableButtonOn(7, secondary, page) });
+  if( modNoise,
+    { ~apc.turnRecordEnableButtonOff(8, secondary, page); },
+    { ~apc.turnRecordEnableButtonOn(8, secondary, page) });
+}, secondary, page);
+~apc.setRecordEnableButtonFunc(1, { ~falseSelf.trumpetMelodyInput.tglMute },
+  bank: secondary, page: page);
+~apc.setRecordEnableButtonFunc(7, { ~falseSelf.modular.tglMute },
+  bank: secondary, page: page);
+~apc.setRecordEnableButtonFunc(8, { ~falseSelf.modNoise.tglMute },
+  bank: secondary, page: page);
+
+//////////////////////
+//// Grid: //////////
+////////////////////
+
+~apc.turnAllGridWhite(1, main, page);
+~apc.setGridMonitorFunc(\twoBars, {
+  if( ~falseSelf.twoBarWarning == true,
+    { ~apc.turnGridGreen(0, 4, 2) }, { ~apc.turnGridPurple(0, 4, 2); });
+}, main, page);
+
+~apc.turnGridCyan(0, 3, 2, main, page);
+~apc.setGridFunc(0, 3, {
+  ~falseSelf.trumpetMelody.recordBuffer;
+  ~apc.turnGridRed(0, 3);
+}, bank: main, page: page);
+
+sequenceReset = { 7.do({ | i |  ~apc.turnGridBlue(i, 1, bank: main, page: page); }); };
+sequenceReset.value;
+
+
+// play sequences:
+6.do({ | i |
+  ~apc.setGridFunc(i, 1, {
+    ~pyrOut.control(0, 69, i+9);
+    ~apc.turnGridGreen(i, 1);
+  }, bank: main, page: page);
+});
+
+~apc.setGridFunc(6, 1, {
+  ~pyrOut.control(0, 69, 16);
+  ~apc.turnGridGreen(6, 1);
+}, bank: main, page: page);
+
+~apc.turnSceneLaunchButtonBlue(3, 2, main, page);
+~apc.setSceneLaunchFunc(3, { sequenceReset.value; }, bank: main, page: page);
+
+//// tpt feedback:
+~apc.setGridMonitorFunc(\tpt, {
+  var feedback = ~falseSelf.mainTrumpet.delay.feedback;
+  if( feedback == 1,
+    { ~apc.turnGridYellow(0, 0) }, { ~apc.turnGridPink(0, 0) });
+}, main, page);
+
+~apc.setGridFunc(0, 0, {
+  var feedback = ~falseSelf.mainTrumpet.delay.feedback;
+  if( feedback != 1,
+    { ~falseSelf.mainTrumpet.delay.setFeedback(1); },
+    { ~falseSelf.mainTrumpet.delay.setFeedback(0.22); });
+}, bank: main, page: page);
+
+//////////////////////////
+//// device encoders: ///
+////////////////////////
+
+~apc.setDeviceEncodersMonitorFunc(\main, {
+  var tptFeedback, gtrCutoff1, gtrCutoff2, fbCutoff, kickCutoff;
+  tptFeedback = ~falseSelf.mainTrumpet.delay.feedback.linlin(0, 1, 0, 127);
+  gtrCutoff1 = ~falseSelf.fakeGuitar.section1.filterCutoff.explin(40, 20000, 0, 127);
+  gtrCutoff2 = ~falseSelf.fakeGuitar.section2.filterCutoff.explin(40, 20000, 0, 127);
+  fbCutoff = ~falseSelf.bassSection.feedback.filterCutoff.explin(40, 6500, 0, 127);
+  kickCutoff = ~falseSelf.drums.eq.highPassCutoff.explin(40, 3500, 0, 127);
+  ~apc.setDeviceEncoderValue(1, tptFeedback);
+  ~apc.setDeviceEncoderValue(2, gtrCutoff1);
+  ~apc.setDeviceEncoderValue(3, gtrCutoff2);
+  ~apc.setDeviceEncoderValue(4, fbCutoff);
+  ~apc.setDeviceEncoderValue(5, kickCutoff);
+}, bank: main, page: page);
+~apc.setDeviceEncoderFunc(1, { | val |
+  var feedback = val.linlin(0, 127, 0, 1);
+  ~falseSelf.mainTrumpet.delay.setFeedback(feedback);
+}, main, page);
+~apc.setDeviceEncoderFunc(2, { | val |
+  var cutoff = val.linexp(0, 127, 40, 20000);
+  ~falseSelf.fakeGuitar.section1.setFilterCutoff(cutoff);
+}, main, page);
+~apc.setDeviceEncoderFunc(3, { | val |
+  var cutoff = val.linexp(0, 127, 40, 20000);
+  ~falseSelf.fakeGuitar.section2.setFilterCutoff(cutoff);
+}, main, page);
+~apc.setDeviceEncoderFunc(4, { | val |
+  var cutoff = val.linexp(0, 127, 40, 6500);
+  ~falseSelf.bassSection.feedback.setFilterCutoff(cutoff);
+}, main, page);
+~apc.setDeviceEncoderFunc(5, { | val |
+  var cutoff = val.linexp(0, 127, 40, 3500);
+  ~falseSelf.drums.eq.setHighPassCutoff(cutoff);
+}, main, page);
+
+
+
+
+
+
+
+/*
 var page = 'falseSelf';
 
 var activeMixerBank = mixerBank1;
@@ -637,5 +837,7 @@ if( ~falseSelf.drums.drums.isSequencePlaying(\ending),
 ~falseSelf.mixerA.tglMute(0);
 
 ~falseSelf.startMelody
+
+*/
 
 */

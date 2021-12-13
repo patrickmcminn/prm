@@ -20,7 +20,7 @@ FalseSelf_Orchestra : IM_Module {
       var path;
 
       isLoaded = false;
-      path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/FalseSelf/samples/mahler/Mahler Phrase.wav";
+      path = "/Users/patrickmcminn/Library/Application Support/SuperCollider/Extensions/prm/Songs/FalseSelf/samples/mahler/Mahler Phrase.aif";
 
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 

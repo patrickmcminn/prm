@@ -72,12 +72,12 @@ var tuningNoteIsPlaying = false;
       ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
       ~prm.procGroup, \addToHead, ~moogDevice, ~moogPort);
       */
-			~foundation = Foundation.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
-				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
-				~moogDevice, ~moogPort, ~pyr, ~prm.procGroup, \addToHead);
+      ~foundation = Foundation.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
+        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
+        ~moogDevice, ~moogPort, ~pyr, ~prm.procGroup, \addToHead);
       //~foundation = Foundation.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
-        //~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
-        //~moogDevice, ~moogPort, ~prm.procGroup, \addToHead);
+      //~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~foundationDelay.inBus,
+      //~moogDevice, ~moogPort, ~prm.procGroup, \addToHead);
       while({ try { ~foundation.isLoaded } != true }, { 0.001.wait; });
       ~apc.setGridFunc(1, 4, { ~apc.setPage('foundation'); }, page: page);
       ~apc.turnGridGreen(1, 4);
@@ -93,15 +93,14 @@ var tuningNoteIsPlaying = false;
   });
 }, page: page);
 
-/*
+
 'False Self';
 
 ~apc.turnGridWhite(0, 3, page: page);
 ~apc.setGridFunc(0, 3, {
   if(falseSelfIsLoaded == false, {
     r {
-      ~falseSelf = FalseSelf.new(~prm.audioIn, ~moogDevice, ~moogPort,
-        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+      ~falseSelf = FalseSelf.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput, ~modOutput, ~moogDevice, ~moogPort, ~pyr, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
         ~prm.procGroup, \addToHead);
       while({ try { ~falseSelf.isLoaded } != true }, { 0.001.wait; });
       ~apc.setGridFunc(1, 3, { ~apc.setPage('falseSelf'); }, page: page);
@@ -116,7 +115,7 @@ var tuningNoteIsPlaying = false;
     falseSelfIsLoaded = false;
   });
 }, page: page);
-*/
+
 
 'Where the Birds Must Be Drunk to be Amidst the Unknown Spray and Sky';
 ~apc.turnGridPink(2, 4, 2, page: page);
@@ -148,19 +147,19 @@ var tuningNoteIsPlaying = false;
 ~apc.setGridFunc(2, 2, {
   if(connectionsIsLoaded == false, {
     r{
-			/*
+      /*
       ~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modOutput[7],
+      ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+      ~moogDevice, ~moogPort, ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.procGroup, \addToHead);
+      */
+      /*
+      ~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~prm.reverb.inBus,
+      ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus, ~moogDevice, ~moogPort,
+      ~prm.procGroup, \addToHead);
+      */
+      ~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[3],
         ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
-        ~moogDevice, ~moogPort, ~prm.irLibrary.irDict['3.4Cathedral'], ~prm.procGroup, \addToHead);
-			*/
-			/*
-			~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~prm.reverb.inBus,
-				~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus, ~moogDevice, ~moogPort,
-				~prm.procGroup, \addToHead);
-			*/
-			~connections = Connections.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modInput[3],
-				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
-				~prm.procGroup, \addToHead);
+        ~prm.procGroup, \addToHead);
       while({ try { ~connections.isLoaded } != true }, { 0.001.wait; });
       ~apc.setGridFunc(3, 2, { ~apc.setPage('connections'); }, page: page);
       ~apc.turnGridGreen(3, 2);
@@ -221,8 +220,8 @@ var tuningNoteIsPlaying = false;
         ~prm.procGroup, \addToHead);
       /*
       ~meaning = Meaning.new(~prm.audioIn, ~micIn, ~modInput[0], ~modInput[1], ~pyr,
-        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
-        ~prm.procGroup, \addToHead);
+      ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+      ~prm.procGroup, \addToHead);
       */
       while({ try { ~meaning.isLoaded } != true }, { 0.001.wait; });
       //~prm.delay.setDelayTime(0.3);
@@ -245,30 +244,30 @@ var tuningNoteIsPlaying = false;
 'CHAIN:';
 ~apc.turnGridWhite(0, 0, page: page);
 ~apc.setGridFunc(0, 0, {
-  if(chainIsLoaded == false, {
-    r {
+if(chainIsLoaded == false, {
+r {
 
-      ~chain = Chain.new(~prm.audioIn,
-        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
-        ~prm.delay.inBus, ~prm.procGroup, \addToHead);
-      while({ try { ~chain.isLoaded } != true }, { 0.001.wait; });
-      ~chInput = IM_HardwareIn.new(~pickupIn, ~chain.inBus, ~prm.procGroup, \addToHead);
-      while({ try { ~chInput.isLoaded } != true }, { 0.001.wait; });
-      ~chMic = IM_HardwareIn.new(~micIn, ~chain.inBus, ~prm.procGroup, \addToHead);
-      while({ try { ~chMic.isLoaded } != true }, { 0.001.wait; });
-      ~apc.turnGridGreen(1, 0);
-      ~apc.setGridFunc(1, 0, { ~apc.setPage('chain'); }, page: page);
-      chainIsLoaded = true;
-    }.play;
-  },
-  {
-    ~chain.free;
-    ~chInput.free;
-    ~chMic.free;
-    ~apc.setGridFunc(1, 0, {});
-    ~apc.turnGridOff(1, 0);
-    chainIsLoaded = false; \
-  });
+~chain = Chain.new(~prm.audioIn,
+~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+~prm.delay.inBus, ~prm.procGroup, \addToHead);
+while({ try { ~chain.isLoaded } != true }, { 0.001.wait; });
+~chInput = IM_HardwareIn.new(~pickupIn, ~chain.inBus, ~prm.procGroup, \addToHead);
+while({ try { ~chInput.isLoaded } != true }, { 0.001.wait; });
+~chMic = IM_HardwareIn.new(~micIn, ~chain.inBus, ~prm.procGroup, \addToHead);
+while({ try { ~chMic.isLoaded } != true }, { 0.001.wait; });
+~apc.turnGridGreen(1, 0);
+~apc.setGridFunc(1, 0, { ~apc.setPage('chain'); }, page: page);
+chainIsLoaded = true;
+}.play;
+},
+{
+~chain.free;
+~chInput.free;
+~chMic.free;
+~apc.setGridFunc(1, 0, {});
+~apc.turnGridOff(1, 0);
+chainIsLoaded = false; \
+});
 }, page: page);
 */
 
@@ -277,28 +276,28 @@ var tuningNoteIsPlaying = false;
 
 ~apc.turnGridPurple(4, 4, 2, page: page);
 ~apc.setGridFunc(4, 4, {
-  if(habitIsLoaded == false, {
-    r{
-			/*
-      ~habit = Habit.new(~prm.audioIn, 1, 2, 3, ~moogDevice, ~moogPort,
-        ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
-        relGroup: ~prm.procGroup, addAction: \addToHead);
-			*/
-			~habit = Habit.new(~prm.audioIn, ~micIn, ~modInput, ~modOutput, ~moogDevice, ~moogPort, ~pyr, ~prm.delay,
-				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
-				~prm.procGroup, \addToHead);
-      while({ try { ~habit.isLoaded } != true }, { 0.001.wait; });
-      ~apc.setGridFunc(5, 4, { ~apc.setPage('habit'); }, page: page);
-      ~apc.turnGridGreen(5, 4);
-      habitIsLoaded = true;
-    }.play;
-  },
-  {
-    ~habit.free;
-    ~apc.setGridFunc(5, 4, { });
-    ~apc.turnGridOff(5, 4);
-    habitIsLoaded = false;
-  });
+if(habitIsLoaded == false, {
+r{
+/*
+~habit = Habit.new(~prm.audioIn, 1, 2, 3, ~moogDevice, ~moogPort,
+~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+relGroup: ~prm.procGroup, addAction: \addToHead);
+*/
+~habit = Habit.new(~prm.audioIn, ~micIn, ~modInput, ~modOutput, ~moogDevice, ~moogPort, ~pyr, ~prm.delay,
+~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+~prm.procGroup, \addToHead);
+while({ try { ~habit.isLoaded } != true }, { 0.001.wait; });
+~apc.setGridFunc(5, 4, { ~apc.setPage('habit'); }, page: page);
+~apc.turnGridGreen(5, 4);
+habitIsLoaded = true;
+}.play;
+},
+{
+~habit.free;
+~apc.setGridFunc(5, 4, { });
+~apc.turnGridOff(5, 4);
+habitIsLoaded = false;
+});
 }, page: page);
 */
 
@@ -371,12 +370,12 @@ var tuningNoteIsPlaying = false;
 // ext ins:
 
 ~apc.setMixerMonitorFunc(\cMix0Enable, {
-	if( ~prm.microphone.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
-	if( ~prm.pickup.isMuted, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
-	if( ~prm.mod1.isMuted, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
-	if( ~prm.mod2.isMuted, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
-	if( ~prm.mod3.isMuted, { ~apc.turnRecordEnableButtonOff(5) }, { ~apc.turnRecordEnableButtonOn(5) });
-	if( ~prm.mod4.isMuted, { ~apc.turnRecordEnableButtonOff(6) }, { ~apc.turnRecordEnableButtonOn(6) });
+  if( ~prm.microphone.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
+  if( ~prm.pickup.isMuted, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
+  if( ~prm.mod1.isMuted, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
+  if( ~prm.mod2.isMuted, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
+  if( ~prm.mod3.isMuted, { ~apc.turnRecordEnableButtonOff(5) }, { ~apc.turnRecordEnableButtonOn(5) });
+  if( ~prm.mod4.isMuted, { ~apc.turnRecordEnableButtonOff(6) }, { ~apc.turnRecordEnableButtonOn(6) });
 }, bank: cmix0, page: page);
 
 ~apc.setRecordEnableButtonFunc(1, { ~prm.microphone.tglMute; }, bank: cmix0, page: page);
@@ -392,10 +391,10 @@ var tuningNoteIsPlaying = false;
 ~apc.mapSendBanks(\cmix1, send01, send11, send21, send31, cmix1, page);
 
 ~apc.setMixerMonitorFunc(\cmix1Enable, {
-	if( ~prm.threeAndFour.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
-	if( ~prm.five.isMuted, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
-	if( ~prm.six.isMuted, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
-	if( ~prm.sevenAndEight.isMuted, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
+  if( ~prm.threeAndFour.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn(1) });
+  if( ~prm.five.isMuted, { ~apc.turnRecordEnableButtonOff(2) }, { ~apc.turnRecordEnableButtonOn(2) });
+  if( ~prm.six.isMuted, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
+  if( ~prm.sevenAndEight.isMuted, { ~apc.turnRecordEnableButtonOff(4) }, { ~apc.turnRecordEnableButtonOn(4) });
 }, bank: cmix1, page: page);
 ~apc.setRecordEnableButtonFunc(1, { ~prm.threeAndFour.tglMute }, bank: cmix1, page: page);
 ~apc.setRecordEnableButtonFunc(2, { ~prm.fix.tglMute }, bank: cmix1, page: page);
@@ -407,18 +406,18 @@ var tuningNoteIsPlaying = false;
 
 ~apc.turnDeviceButtonOn(5, cmix0, page);
 ~apc.setDeviceButtonFunc(6, {
-	activeCMix = 1;
-	~apc.setActiveMixerBank(activeCMix);
-	~apc.setActiveDeviceButtonsBank(activeCMix);
-	~apc.setActiveMixerEncodersBank(send01);
+  activeCMix = 1;
+  ~apc.setActiveMixerBank(activeCMix);
+  ~apc.setActiveDeviceButtonsBank(activeCMix);
+  ~apc.setActiveMixerEncodersBank(send01);
 }, bank: cmix0, page: page);
 
 ~apc.turnDeviceButtonOn(6, cmix1, page);
 ~apc.setDeviceButtonFunc(5, {
-	activeCMix = 0;
-	~apc.setActiveMixerBank(activeCMix);
-	~apc.setActiveDeviceButtonsBank(activeCMix);
-	~apc.setActiveMixerEncodersBank(send0);
+  activeCMix = 0;
+  ~apc.setActiveMixerBank(activeCMix);
+  ~apc.setActiveDeviceButtonsBank(activeCMix);
+  ~apc.setActiveMixerEncodersBank(send0);
 }, bank: cmix1, page: page);
 
 
@@ -426,13 +425,13 @@ var tuningNoteIsPlaying = false;
 ~apc.setBankButtonFunc({
   if( tuningNoteIsPlaying == false,
     {
-			~tuner = { Out.ar(~prm.audioIn, SinOsc.ar(60.midicps) * (-12.dbamp)) }.play;
-			tuningNoteIsPlaying = true;
-			~apc.turnBankButtonOn;
-		},
+      ~tuner = { Out.ar(~prm.audioIn, SinOsc.ar(60.midicps) * (-12.dbamp)) }.play;
+      tuningNoteIsPlaying = true;
+      ~apc.turnBankButtonOn;
+    },
     {
-			~tuner.free; tuningNoteIsPlaying = false;
-			~apc.turnBankButtonOff;
-	});
+      ~tuner.free; tuningNoteIsPlaying = false;
+      ~apc.turnBankButtonOff;
+  });
 }, page: page);
 

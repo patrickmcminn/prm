@@ -26,6 +26,7 @@ FalseSelf_PlaneNoise : IM_Module {
       while({ try { samplePlayer.isLoaded } != true }, { 0.001.wait; });
 
       samplePlayer.setFilterCutoff(9490);
+      samplePlayer.setReleaseTime(15);
       mixer.setPreVol(12);
       isPlaying = false;
       isLoaded = true;

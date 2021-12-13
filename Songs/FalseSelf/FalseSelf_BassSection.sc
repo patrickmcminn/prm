@@ -9,41 +9,36 @@ FalseSelf_BassSection :IM_Module {
 
   var server, <isLoaded;
   var <satur, <feedback, <guitar, <moog;
-  var <saturFadeBus, <feedbackFadeBus, <moogFadeBus;
   var <preChorusIsPlaying, <chorusIsPlaying, <postChorusIsPlaying;
   var <endIsPlaying, <codaIsPlaying;
 
-  *new { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead',
-    moogDeviceName = "iConnectAudio4+", moogPortName = "DIN" |
-    ^super.new(4, outBus, send0Bus, send1Bus, send3Bus, send3Bus, false, relGroup, addAction).prInit(
-      moogDeviceName, moogPortName);
+  *new { | moogInBus, outBus = 0, relGroup = nil, addAction = 'addToHead' |
+    ^super.new(3, outBus, relGroup: relGroup, addAction: addAction).prInit(moogInBus);
   }
 
-  prInit { | moogDeviceName = "iConnectAudio4+", moogPortName = "DIN" |
+  prInit { | moogInBus |
     server = Server.default;
     server.waitForBoot {
       isLoaded = false;
       while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
+      /*
       satur = SaturSynth.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { satur.isLoaded } != true }, { 0.001.wait; });
+      */
 
-      feedback = FeedbackSynth.new(mixer.chanStereo(1), relGroup: group, addAction: \addToHead);
+      feedback = FeedbackSynth.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
       while({ try { feedback.isLoaded } != true },  { 0.001.wait; });
 
-      guitar = FakeGuitar.new(mixer.chanStereo(2), relGroup: group, addAction: \addToHead);
+      guitar = FakeGuitar.new(mixer.chanStereo(1), relGroup: group, addAction: \addToHead);
       while({ try { guitar.isLoaded } != true }, { 0.001.wait; });
 
-      moog = Mother32.new(3, mixer.chanStereo(3), moogDeviceName, moogPortName, 1, 1,
-        relGroup: group, addAction: \addToHead);
+      moog = IM_HardwareIn.new(moogInBus, mixer.chanMono(2), group, \addToHead);
       while({ try { moog.isLoaded } != true }, { 0.001.wait; });
 
-
-      saturFadeBus = Bus.control;
-      feedbackFadeBus = Bus.control;
-      moogFadeBus = Bus.control;
-
       server.sync;
+
+      /*
       moog.makeSequence('preChorus');
       moog.makeSequence('chorus');
       moog.makeSequence('postChorus');
@@ -83,23 +78,29 @@ FalseSelf_BassSection :IM_Module {
       this.prMakeMoogPatterns;
       this.prMakeFeedbackSynthPatterns;
 
-      guitar.setFilterCutoff(1200);
-      feedback.setFilterCutoff(30);
-
-      satur.mixer.setVol(-6);
-
-      server.sync;
-
-      mixer.setMasterVol(-9);
-
       preChorusIsPlaying = false;
       chorusIsPlaying = false;
       postChorusIsPlaying = false;
       endIsPlaying = false;
       codaIsPlaying = false;
+      */
+
+      this.prSetInitialParameters;
 
       isLoaded = true;
     }
+  }
+
+  prSetInitialParameters {
+    mixer.setPreVol(0, -9);
+    mixer.setPreVol(1, -9);
+    mixer.setPreVol(2, 0);
+
+    guitar.setFilterCutoff(1200);
+    feedback.setFilterCutoff(30);
+
+
+    server.sync;
   }
 
   //////// public:
@@ -108,13 +109,11 @@ FalseSelf_BassSection :IM_Module {
     feedback.free;
     satur.free;
     moog.free;
-    feedbackFadeBus.free;
-    saturFadeBus.free;
-    moogFadeBus.free;
     this.freeModule;
     isLoaded = false;
   }
 
+  /*
   prMakeGuitarPatterns {
     var note, dur;
     note = Pseq([[6, 18], [5, 17], [6, 18], [5, 17], [6, 18], [8, 20], [6, 18], [13, 25], [6, 18],  [5, 17]], 2);
@@ -266,7 +265,6 @@ FalseSelf_BassSection :IM_Module {
     moog.addKey(\postChorus, \note, Pseq([1], inf));
   }
 
-
   playBassNote { | freq, saturVol = -6, feedbackVol = -6, guitarVol = -6 |
     satur.playNote(freq, saturVol);
     feedback.playNote(freq, feedbackVol);
@@ -372,5 +370,7 @@ FalseSelf_BassSection :IM_Module {
     { Out.kr(moogFadeBus, Line.kr(start, end, time, doneAction: 2)); }.play;
     moog.mixer.mapAmp(moogFadeBus);
   }
+
+  */
 }
 

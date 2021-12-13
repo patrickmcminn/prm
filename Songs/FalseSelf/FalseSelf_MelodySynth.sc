@@ -26,7 +26,7 @@ FalseSelf_MelodySynth : IM_Module {
 
       mixer.tglMute;
 
-      synth.setAttackTime(15);
+      synth.setAttackTime(5);
       synth.setReleaseTime(0.05);
 
       this.prMakeSequence;

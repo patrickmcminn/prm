@@ -36,6 +36,7 @@ FalseSelf_MidBuzz :IM_Module {
       filter.lfo.setWaveform('noise');
       filter.setCutoffLFOBottomRatio(0.4);
       filter.setCutoffLFOTopRatio(1.5);
+      sampler.setReleaseTime(15);
 
       this.prMakePattern;
       isLoaded = true;

@@ -6,4 +6,10 @@
 
 ~chInput = IM_HardwareIn.new(~pickupIn, ~chain.inBus);
 ~chMic = IM_HardwareIn.new(~micIn, ~chain.inBus);
+
+
+
 ~apc.setPage('chain');
+
+
+FalseSelf

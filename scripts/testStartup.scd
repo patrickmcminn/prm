@@ -105,6 +105,7 @@ r {
 	~moogPort = "Pyramid MIDI USB";
 	~moogIn = ~modInput[0];
 
+
 	// Juno 106:
 	~junoDevice = "mio10";
 	~junoPort = "DIN 2";
@@ -142,6 +143,11 @@ Server.killAll;
 
 s.meter
 
+~apc.setPage('main');
+~prm.isLoaded;
 
-~base
+
+
+
+
 

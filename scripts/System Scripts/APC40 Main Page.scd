@@ -23,6 +23,7 @@ var cmix1 = 1;
 
 var foundationIsLoaded = false;
 var falseSelfIsLoaded = false;
+var yearsIsLoaded = false;
 
 var habitIsLoaded = false;
 
@@ -115,6 +116,34 @@ var tuningNoteIsPlaying = false;
     falseSelfIsLoaded = false;
   });
 }, page: page);
+
+'Years';
+
+~apc.turnGridPurple(0, 2, page: page);
+~apc.setGridFunc(0, 2, {
+	if(yearsIsLoaded == false, {
+		r {
+			~yearsDelay = Years_Delay.new(~prm.audioIn, ~prm.reverb.inBus, relGroup: ~prm.procGroup, addAction: \addToHead);
+			while({ try { ~yearsDelay.isLoaded } != true }, { 0.001.wait; });
+			s.sync;
+			~yearsDelay.mixer.setSendVol(0, -18);
+			~years = Years.new(~prm.audioIn, ~micIn, ~modInput, ~pyr,
+				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~yearsDelay.inBus,
+				~prm.procGroup, \addToHead);
+			while({ try { ~years.isLoaded } != true }, { 0.001.wait; });
+			~apc.setGridFunc(1, 2, { ~apc.setPage('years'); }, page: page);
+			~apc.turnGridGreen(1, 2);
+			yearsIsLoaded = true;
+		}.play;
+	},
+	{
+		~years.free;
+		~apc.setGridFunc(1, 2, {});
+		~apc.turnGridOff(1, 3);
+		yearsIsLoaded = false;
+	});
+}, page: page);
+
 
 
 'Where the Birds Must Be Drunk to be Amidst the Unknown Spray and Sky';

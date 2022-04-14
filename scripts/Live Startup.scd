@@ -51,7 +51,7 @@ r {
 
 
 	//~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput[0], ~modInput[1], ~modOutput[0]);
-		~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput, ~modOutput);
+	~prm = AudioSystem.new(2, ~micIn, ~pickupIn, ~modInput, ~modOutput);
 
 	while( { try { ~prm.isLoaded } != true; }, { 0.001.wait; });
 
@@ -71,6 +71,8 @@ r {
 	"/Effects/Load Effects.scd".loadRelative;
 	"/Instruments/Load Instruments.scd".loadRelative;
 
+	s.sync;
+
 }.play;
 )
 
@@ -78,13 +80,9 @@ s.makeWindow;
 
 Server.killAll;
 
+~apc.setPage('main');
+
+
+
+
 s.meter
-~falseSelf.mixer.muteMaster
-~falseSelf.mixer.isMutedMaster
-
-~falseSelf.mixer.setVol(10, -16.5);
-
-~falseSelf.planeNoise.samplePlayer.setReleaseTime(15);
-~falseSelf.midBuzz.sampler.setReleaseTime(15);
-
-FalseSelf_PlaneNoise

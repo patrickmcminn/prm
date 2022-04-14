@@ -41,44 +41,44 @@ activeBank = main;
 ///// Main Grid Bank: /////
 //////////////////////////
 
-16.do({ | i | ~base.turnGridMagenta((i%4), (i/4).asInt, main, page); });
+16.do({ | i | ~base.turnGridMagenta((i%4), (i/4).asInteger, main, page); });
 
 16.do({ | slot |
-	~base.setGridFunc((slot%4), (slot/4).asInt, { | vel |
+	~base.setGridFunc((slot%4), (slot/4).asInteger, { | vel |
 		~prm.sampler.playSample(slot, vel.ccdbfs(-33, 3));
-		~base.turnGridGreen((slot%4), (slot/4).asInt);
+		~base.turnGridGreen((slot%4), (slot/4).asInteger);
 	}, 'noteOn', main, page);
-	~base.setGridFunc((slot%4), (slot/4).asInt, { | vel |
+	~base.setGridFunc((slot%4), (slot/4).asInteger, { | vel |
 		~prm.sampler.releaseSample(slot);
-		~base.turnGridMagenta((slot%4), (slot/4).asInt);
+		~base.turnGridMagenta((slot%4), (slot/4).asInteger);
 	}, 'noteOff', main, page);
 });
 
 //////// record bank:
 
-16.do({ | i | ~base.turnGridMagenta((i%4), 3-((i/4).asInt), record, page); });
+16.do({ | i | ~base.turnGridMagenta((i%4), 3-((i/4).asInteger), record, page); });
 16.do({ | slot |
-	~base.setGridFunc((slot%4), (slot/4).asInt, { | vel |
+	~base.setGridFunc((slot%4), (slot/4).asInteger, { | vel |
 		~prm.sampler.playSample(slot, vel.ccdbfs(-33, 3));
-		~base.turnGridGreen((slot%4), (slot/4).asInt);
+		~base.turnGridGreen((slot%4), (slot/4).asInteger);
 	}, 'noteOn', record, page);
-	~base.setGridFunc((slot%4), (slot/4).asInt, { | vel |
+	~base.setGridFunc((slot%4), (slot/4).asInteger, { | vel |
 		~prm.sampler.releaseSample(slot);
-		~base.turnGridMagenta((slot%4), (slot/4).asInt);
+		~base.turnGridMagenta((slot%4), (slot/4).asInteger);
 	}, 'noteOff', record, page);
 });
 
-16.do({ | i | ~base.turnGridYellow((i%4)+4, (i/4).asInt, record, page); });
+16.do({ | i | ~base.turnGridYellow((i%4)+4, (i/4).asInteger, record, page); });
 16.do({ | slot |
-	~base.setGridFunc((slot%4)+4, (slot/4).asInt, { | vel |
+	~base.setGridFunc((slot%4)+4, (slot/4).asInteger, { | vel |
 		if( ~prm.sampler.isRecording == false,
 			{
 				~prm.sampler.recordSampleStereo;
-				~base.turnGridRed((slot%4)+4, (slot/4).asInt);
+				~base.turnGridRed((slot%4)+4, (slot/4).asInteger);
 			},
 			{
 				~prm.sampler.stopRecordingLoadSlot(slot);
-				~base.turnGridYellow((slot%4)+4, (slot/4).asInt);
+				~base.turnGridYellow((slot%4)+4, (slot/4).asInteger);
 		});
 	}, 'noteOn', record, page);
 });

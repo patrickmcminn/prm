@@ -168,22 +168,22 @@ FalseSelf : IM_Module {
     mixer.setSendVol(9, 0, 0);
 
     // crude drones:
-    mixer.setVol(10, -20);
+    mixer.setVol(10, -24);
     mixer.setSendVol(10, 0, 0);
     mixer.setSendVol(10, 1, 0);
     mixer.setSendVol(10, 3, -9);
 
     // 16th drones:
-    mixer.setVol(11, -23);
+    mixer.setVol(11, -26);
     mixer.setSendVol(11, 0, -6);
     mixer.setSendVol(11, 1, 0);
 
     // plane noise:
-    mixer.setVol(12, -18);
+    mixer.setVol(12, -21);
     mixer.setSendVol(12, 0, -10);
 
     // mid buzz:
-    mixer.setVol(13, -24);
+    mixer.setVol(13, -27);
     mixer.setSendVol(13, 0, -10);
 
     // modular:

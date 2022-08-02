@@ -137,8 +137,8 @@ Years : IM_Module {
 		// 10 - modIn:
 		mixer.mute(9);
 		mixer.setVol(9, -70);
-		mixer.setSendVol(9, 0, -12);
-		mixer.setSendVol(9, 3, -9);
+		mixer.setSendVol(9, 0, -24);
+		//mixer.setSendVol(9, 3, -);
 
 		// 11 - noiseIn:
 		mixer.mute(10);
@@ -194,7 +194,10 @@ Years : IM_Module {
 		this.freeMIDIFuncs;
 		this.stopDroneCutoffRout; this.stopDroneTremRout; this.stopGlockNoteRout1;
 		drone.free; glock.free; ensemble.free; bass.free;
-		drums.free;
+		drums.free; freezeTpts.free; tpt.free; endTpts.free;
+		freezeTptsInput.free; endTptsInput.free; blockChords.free;
+		modIn.free; noiseIn.free;
+
 		this.freeModule;
 	}
 

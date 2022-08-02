@@ -138,6 +138,7 @@ var tuningNoteIsPlaying = false;
 	},
 	{
 		~years.free;
+		~yearsDelay.free;
 		~apc.setGridFunc(1, 2, {});
 		~apc.turnGridOff(1, 3);
 		yearsIsLoaded = false;

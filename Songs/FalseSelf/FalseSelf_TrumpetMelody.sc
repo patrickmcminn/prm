@@ -60,7 +60,7 @@ FalseSelf_TrumpetMelody : IM_Processor {
 
 
   prInitializeParameters {
-    mixer.setPreVol(-6);
+    mixer.setPreVol(0);
     dry.setVol(0);
     shift1.mixer.setPreVol(-5);
     shift2.mixer.setPreVol(-5);

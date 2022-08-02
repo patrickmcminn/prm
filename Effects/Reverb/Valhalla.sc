@@ -149,6 +149,7 @@ Valhalla : IM_Module {
 	}
 
 	makeGUI { ^synth.gui }
+	makeEditor { ^synth.editor }
 
 	setMix { | m = 1.0 |
 		mix = m;

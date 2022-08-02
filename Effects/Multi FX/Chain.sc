@@ -16,6 +16,8 @@ Chain : IM_Module {
 	var splitter;
 	var <input;
 
+	var <looper;
+
 	*new { |outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction |
 		^super.new(1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
 	}
@@ -49,7 +51,10 @@ Chain : IM_Module {
 			freezer = IM_GrainFreeze.new(concat.inBus, group, \addToHead);
 			while({ try { freezer.isLoaded } != true }, { 0.001.wait; });
 
-			splitter = Splitter.newMono(2, [concat.inBus, freezer.inBus], false, group, \addToHead);
+			looper = Looper.newStereo(concat.inBus, 30, 1, relGroup: group, addAction: \addToHead);
+			while({ try { looper.isLoaded } != true }, { 0.001.wait; });
+
+			splitter = Splitter.newMono(3, [concat.inBus, freezer.inBus, looper.inBus], false, group, \addToHead);
 			while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
 			input = IM_Mixer_1Ch.new(splitter.inBus, relGroup: group, addAction: \addToHead);
@@ -72,6 +77,7 @@ Chain : IM_Module {
 		multiShift.bypass;
 		3.do({ | chan | concat.subMixer.mute(chan); });
 		concat.subMixer.unMute(3);
+		looper.mixer.setPreVol(-9);
 	}
 
 	//////// public functions:

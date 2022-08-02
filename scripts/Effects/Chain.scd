@@ -11,9 +11,14 @@ var granulator = 3;
 var delay = 4;
 var eq = 5;
 
+var digitone = 1;
+
 var freezeRate = 1;
 
 var shiftPreset = 0;
+
+
+var currentGrid = main;
 
 var freezeResetFunc, rateReset, envReset, shiftReset, devButtonReset;
 
@@ -28,6 +33,9 @@ var tempFB;
 ~apc.storageDict[\loadMasterFunc].value;
 
 ~apc.addDeviceEncodersBanks(5, page);
+~apc.addGridBanks(1, page);
+~apc.addMixerBanks(1, page);
+~apc.addMixerEncodersBanks(1, page);
 
 //////// mixer:
 
@@ -284,6 +292,18 @@ shiftReset.value;
 	~apc.turnGridYellowGreen(0, 0);
 }, 'noteOff', main, page);
 
+/////// looper:
+~apc.setGridMonitorFunc(\looper, {
+	var looping = ~chain.looper.isRecording;
+	var playing = ~chain.looper.isPlaying;
+	if( looping, { ~apc.turnGridGreen(4, 0) }, { ~apc.turnGridWhite(4, 0) });
+	if( playing, { ~apc.turnGridGreen(5, 0) }, { ~apc.turnGridCyan(5, 0) });
+}, main, page);
+~apc.setGridFunc(4, 0, { ~chain.looper.loop }, bank: main, page: page);
+~apc.setGridFunc(5, 0, { ~chain.looper.togglePlayLoop }, bank: main, page: page);
+~apc.setGridFunc(6, 0, { ~chain.looper.clearLoop(30) }, bank: main, page: page);
+~apc.turnGridRed(6, 0, 2, main, page);
+
 
 ////////// device encoders:
 
@@ -509,4 +529,47 @@ devButtonReset = { 8.do({ | i | ~apc.turnDeviceButtonOff(i+1, main, page); }); }
 	var freq = val.linexp(0, 127, 0.001, 22);
 	~chain.concat.lfo.setFrequency(freq);
 }, bank: concat2, page: page);
+
+
+/////// Digitone:
+
+~apc.setMixerMonitorFunc(\digitone, {
+	var verb = ~digitone.sendVol(0).dbfsCC;
+	var gran = ~digitone.sendVol(1).dbfsCC;
+	var mod = ~digitone.sendVol(2).dbfsCC;
+	var del = ~digitone.sendVol(3).dbfsCC;
+	if(~digitone.isMuted, { ~apc.turnTrackSelectButtonOff(1) }, { ~apc.turnTrackSelectButtonOn(1) });
+	if(~digitoneInput.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn });
+	~apc.setMixerEncoderValue(1, verb);
+	~apc.setMixerEncoderValue(2, gran);
+	~apc.setMixerEncoderValue(3, mod);
+	~apc.setMixerEncoderValue(4, del);
+}, bank: digitone, page: page);
+~apc.setFaderFunc(1, { | val | ~digitone.setVol(val.ccdbfs); }, digitone, page);
+
+~apc.setTrackSelectFunc(1, { ~digitone.tglMute; }, bank: digitone, page: page);
+~apc.setRecordEnableButtonFunc(1, { ~digitoneInput.tglMute; }, bank: digitone, page: page);
+
+~apc.setMixerEncoderFunc(1, { | val | ~digitone.setSendVol(0, val.ccdbfs); }, digitone, page);
+~apc.setMixerEncoderFunc(2, { | val | ~digitone.setSendVol(1, val.ccdbfs); }, digitone, page);
+~apc.setMixerEncoderFunc(3, { | val | ~digitone.setSendVol(2, val.ccdbfs); }, digitone, page);
+~apc.setMixerEncoderFunc(4, { | val | ~digitone.setSendVol(3, val.ccdbfs); }, digitone, page);
+
+~apc.setUserButtonFunc({
+	if( currentGrid == main,
+		{
+			~apc.setActiveMixerBank(digitone, page);
+			~apc.setActiveMixerEncodersBank(digitone, page);
+			~apc.turnUserButtonOn;
+			currentGrid = digitone;
+		},
+		{
+			~apc.setActiveMixerBank(main, page);
+			~apc.setActiveMixerEncodersBank(main, page);
+			~apc.turnUserButtonOff;
+			currentGrid = main;
+	});
+}, bank: main, page: page);
+
+
 

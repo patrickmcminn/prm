@@ -8,7 +8,7 @@ Looper : IM_Module {
 
   var <isLoaded;
   var <isPlaying, <isRecording;
-  var server, buffer, <eq, <looper, <inBus;
+  var server, <buffer, <eq, <looper, <inBus;
   var isStereo;
   var prLooperRoutine;
   var <mix, <rate, <div, <pos, <waveLoss, <waveLossMode;
@@ -249,6 +249,7 @@ Looper : IM_Module {
       looper.set(\t_reset, 1);
       server.sync;
       prLooperRoutine.reset;
+			this.prMakeLooperRoutine;
     }.fork;
   }
 

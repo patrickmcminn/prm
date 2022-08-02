@@ -127,7 +127,7 @@ var tuningNoteIsPlaying = false;
 			while({ try { ~yearsDelay.isLoaded } != true }, { 0.001.wait; });
 			s.sync;
 			~yearsDelay.mixer.setSendVol(0, -18);
-			~years = Years.new(~prm.audioIn, ~micIn, ~modInput, ~pyr,
+			~years = Years.new(~prm.audioIn, ~micIn, ~modInput, ~digiTrackArray, ~pyr,
 				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~yearsDelay.inBus,
 				~prm.procGroup, \addToHead);
 			while({ try { ~years.isLoaded } != true }, { 0.001.wait; });

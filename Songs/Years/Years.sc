@@ -24,14 +24,14 @@ Years : IM_Module {
 
 	*new {
 		|
-		outBus, micIn, modularInArray, seq,
+		outBus, micIn, modularInArray, digiArray, seq,
 		send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead'
 		|
 		^super.new(11, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(micIn,
-			modularInArray, seq);
+			modularInArray, digiArray, seq);
 	}
 
-	prInit { | micIn, modularInArray, seq |
+	prInit { | micIn, modularInArray, digiArray, seq |
 		server = Server.default;
 		server.waitForBoot {
 			isLoaded = false;
@@ -54,7 +54,7 @@ Years : IM_Module {
 			glock = Years_Glock.new(mixer.chanStereo(1), group, \addToHead);
 			while({ try { glock.isLoaded } != true }, { 0.001.wait; });
 
-			ensemble = Years_Ensemble.new(modularInArray[0], modularInArray[2], mixer.chanStereo(2), group, \addToHead);
+			ensemble = Years_Ensemble.new(modularInArray[0], digiArray, mixer.chanStereo(2), group, \addToHead);
 			while({ try { ensemble.isLoaded } != true }, { 0.001.wait; });
 
 			bass = SaturSynth.new(mixer.chanStereo(3), relGroup: group, addAction: \addToHead);

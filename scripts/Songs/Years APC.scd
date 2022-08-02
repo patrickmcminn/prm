@@ -22,6 +22,7 @@ var fb = 0.75;
 
 ~apc.setUserButtonFunc({
   ~prm.reverb.loadPreset('years');
+	~years.ensemble.unMuteEnsembleInputs;
   ~apc.turnUserButtonOn;
 }, bank: main, page: page);
 
@@ -40,13 +41,17 @@ var fb = 0.75;
 
 // input mutes:
 ~apc.setMixerMonitorFunc(\inputMutes, {
+	var ens = ~years.ensemble.ensembleIsMuted;
 	var freeze = ~years.freezeTptsInput.isMuted;
 	var tpt = ~years.tpt.isMuted;
 	var endTpt = ~years.endTptsInput.isMuted;
+	if( ens, { ~apc.turnRecordEnableButtonOff(3) }, { ~apc.turnRecordEnableButtonOn(3) });
 	if( freeze, { ~apc.turnRecordEnableButtonOff(6) }, { ~apc.turnRecordEnableButtonOn(6) });
 	if( tpt, { ~apc.turnRecordEnableButtonOff(7) }, { ~apc.turnRecordEnableButtonOn(7) });
 	if( endTpt, { ~apc.turnRecordEnableButtonOff(8) }, { ~apc.turnRecordEnableButtonOn(8) });
 }, main, page);
+~apc.setRecordEnableButtonFunc(3, { ~years.ensemble.tglMuteEnsembleInputs;
+}, bank: main, page: page);
 ~apc.setRecordEnableButtonFunc(6, { ~years.freezeTptsInput.tglMute
 }, bank: main, page: page);
 ~apc.setRecordEnableButtonFunc(7, { ~years.tpt.tglMute

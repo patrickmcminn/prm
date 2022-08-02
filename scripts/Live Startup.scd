@@ -43,6 +43,14 @@ r {
 	~modInput = Array.fill(4, { | i | 10 + i });
 	~modOutput = Array.fill(8, { | i | 12 + i });
 
+	~digiMaster = 18;
+	~digi1 = 20;
+	~digi2 = 22;
+	~digi3 = 24;
+	~digi4 = 26;
+
+	~digiTrackArray = [~digi1, ~digi2, ~digi3, ~digi4];
+
 	//// MIDI Devices:
 
 	// M32:

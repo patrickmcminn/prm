@@ -7,16 +7,19 @@ prm
 Years_Ensemble : IM_Module {
 
 	var <isLoaded, server;
-	var <moog, <synths, <subtractive;
-	var <delayNetwork1, <delayNetwork2, <splitter1, <splitter2;
+	var <moog, <synths, <outlier;
+	var <delayNetwork1, <delayNetwork2, <splitter;
 	var <granulator, <distortion, <eq;
+	var <digiIn1, <digiIn2, <digiIn3, <digiIn4;
+
+	var <ensembleIsMuted = true;
 
 	*new {
-		| moogInBus, synthsInBus, outBus = 0, relGroup = nil, addAction = 'addToHead' |
-		^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(moogInBus, synthsInBus);
+		| moogInBus, digiArray, outBus = 0, relGroup = nil, addAction = 'addToHead' |
+		^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(moogInBus, digiArray);
 	}
 
-	prInit { | moogInBus, synthsInBus |
+	prInit { | moogInBus, digiArray |
 		server = Server.default;
 		server.waitForBoot {
 			isLoaded = false;
@@ -32,24 +35,44 @@ Years_Ensemble : IM_Module {
 
 			delayNetwork1 = DelayNetwork.newMono(granulator.inBus, 3, maxDelay: 2, relGroup: group, addAction: \addToHead);
 			while({ try { delayNetwork1.isLoaded } != true }, { 0.001.wait; });
-
 			delayNetwork2 = DelayNetwork.newStereo(granulator.inBus, 3, maxDelay: 4, relGroup: group, addAction: \addToHead);
 			while({ try { delayNetwork2.isLoaded } != true }, { 0.001.wait; });
 
+			/*
 			splitter2 = Splitter.newStereo(2, [granulator.inBus, delayNetwork2.inBus], false, group, \addToHead);
 			while({ try { splitter2.isLoaded } != true }, { 0.001.wait; });
 
 			subtractive = Subtractive.new(splitter2.inBus, relGroup: group, addAction: \addToHead);
 			while({ try { subtractive.isLoaded } != true }, { 0.001.wait; });
+			*/
 
-			splitter1 = Splitter.newStereo(2, [granulator.inBus, delayNetwork1.inBus], false, group, \addToHead);
-			while({ try { splitter1.isLoaded } != true }, { 0.001.wait; });
+			splitter = Splitter.newStereo(3, [granulator.inBus, delayNetwork1.inBus, delayNetwork2.inBus],
+				false, group, \addToHead);
+			while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
+			/*
 			synths = IM_HardwareIn.new(synthsInBus, splitter1.inBus, group, \addToHead);
 			while({ try { synths.isLoaded } != true }, { 0.001.wait; });
+			*/
+
+			synths = IM_Mixer.newNoSends(3, splitter.inBus, false, group, \addToHead);
+			while({ try { synths.isLoaded } != true }, { 0.001.wait; });
+
+			outlier = IM_Mixer_1Ch.newNoSends(granulator.inBus, false, group, \addToHead);
+			while({ try { outlier.isLoaded } != true }, { 0.001.wait; });
 
 			moog = IM_HardwareIn.new(moogInBus, granulator.inBus, group, \addToHead);
 			while({ try { moog.isLoaded } != true }, { 0.001.wait; });
+
+			digiIn1 = IM_HardwareIn.newStereo(digiArray[0], synths.chanStereo(0), group, \addToHead);
+			while( { try { digiIn1.isLoaded } != true }, { 0.001.wait; });
+			digiIn2 = IM_HardwareIn.newStereo(digiArray[1], synths.chanStereo(1), group, \addToHead);
+			while( { try { digiIn2.isLoaded } != true }, { 0.001.wait; });
+			digiIn3 = IM_HardwareIn.newStereo(digiArray[2], synths.chanStereo(2), group, \addToHead);
+			while( { try { digiIn3.isLoaded } != true }, { 0.001.wait; });
+
+			digiIn4 = IM_HardwareIn.newStereo(digiArray[3], outlier.chanStereo, group, \addToHead);
+			while( { try { digiIn4.isLoaded } != true }, { 0.001.wait; });
 
 			server.sync;
 
@@ -67,6 +90,11 @@ Years_Ensemble : IM_Module {
 		mixer.setPreVol(-3);
 		granulator.mixer.setPreVol(-12);
 
+		3.do({ | i | synths.setPreVol(i, 3); });
+		outlier.setPreVol(3);
+
+		this.muteEnsembleInputs;
+
 		eq.setHighPassCutoff(100);
 
 		distortion.loadPreset('yearsEns');
@@ -78,8 +106,8 @@ Years_Ensemble : IM_Module {
 		granulator.setTrigRate(18);
 		granulator.setDelayLevel(0);
 
-		delayNetwork1.mixer.setPreVol(-9);
-		delayNetwork2.mixer.setPreVol(-9);
+		delayNetwork1.mixer.setPreVol(-3);
+		delayNetwork2.mixer.setPreVol(-3);
 
 		delayNetwork1.mixer.setVol(-70);
 
@@ -125,17 +153,34 @@ Years_Ensemble : IM_Module {
 		delayNetwork2.setCutoff(1, 449);
 		delayNetwork2.setCutoff(2, 918);
 
+		/*
 		subtractive.mixer.setPanBal(-0.3);
 		subtractive.mixer.setPreVol(6);
 		subtractive.readPreset('yearsStrings');
+		*/
 	}
 
 	////////
 	free {
-		moog.free; synths.free; subtractive.free;
-		delayNetwork1.free; delayNetwork2.free; splitter1.free; splitter2.free;
+		moog.free; synths.free; outlier.free;
+		delayNetwork1.free; delayNetwork2.free; splitter.free;
 		granulator.free; distortion.free; eq.free;
+		digiIn1.free; digiIn2.free; digiIn3.free; digiIn4.free;
 		this.freeModule;
+	}
+
+	tglMuteEnsembleInputs {
+		if( ensembleIsMuted == true, { this.unMuteEnsembleInputs }, { this.muteEnsembleInputs; });
+	}
+
+	muteEnsembleInputs {
+		moog.mute; digiIn1.mute; digiIn2.mute; digiIn3.mute; digiIn4.mute;
+		ensembleIsMuted = true;
+	}
+
+	unMuteEnsembleInputs {
+		moog.unMute; digiIn1.unMute; digiIn2.unMute; digiIn3.unMute; digiIn4.unMute;
+		ensembleIsMuted = false;
 	}
 
 } 

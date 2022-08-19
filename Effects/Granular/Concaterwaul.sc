@@ -202,7 +202,7 @@ Concaterwaul : IM_Module {
 			sig = sig * amp;
 			Out.ar(outBus, sig);
 		}).add;
-		~cGlitch.free;
+		//~cGlitch.free;
 
 
 		SynthDef(\prm_concatGendyUnpitched, {

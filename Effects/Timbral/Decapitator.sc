@@ -104,6 +104,7 @@ Decapitator : IM_Processor {
 	}
 
 	makeGUI { ^synth.gui; }
+	makeEditor { ^synth.editor; }
 
 	setMix { | m = 1.0 | mix = m; synth.set(\Mix, mix); }
 	setDrive { | d = 0.0 | drive = d; synth.set(\Drive, drive); }

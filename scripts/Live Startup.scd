@@ -81,6 +81,8 @@ r {
 
 	s.sync;
 
+	~s = [~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus];
+
 }.play;
 )
 

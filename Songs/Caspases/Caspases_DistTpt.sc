@@ -33,13 +33,23 @@ Caspases_DistTpt : IM_Module {
 
 			server.sync;
 
+			input.mute;
+
 			this.prSetInitialParameters;
 
 			isLoaded = true;
 		}
 	}
 
-	prSetInitialParameters { }
+	prSetInitialParameters {
+
+		delay.setMix(0.75);
+		eq.setLowPassCutoff(2500);
+		eq.setHighPassCutoff(200);
+		eq.setPeak1Freq(1740);
+		eq.setPeak1Gain(3);
+
+	}
 
 	/////// public functions:
 

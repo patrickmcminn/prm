@@ -24,6 +24,7 @@ var cmix1 = 1;
 var foundationIsLoaded = false;
 var falseSelfIsLoaded = false;
 var yearsIsLoaded = false;
+var caspasesIsLoaded = false;
 
 var habitIsLoaded = false;
 
@@ -142,6 +143,29 @@ var tuningNoteIsPlaying = false;
 		~apc.setGridFunc(1, 2, {});
 		~apc.turnGridOff(1, 3);
 		yearsIsLoaded = false;
+	});
+}, page: page);
+
+'Caspases';
+
+~apc.turnGridMagenta(0, 0, page: page);
+~apc.setGridFunc(0, 0, {
+	if ( caspasesIsLoaded == false, {
+		r {
+			~caspases = Caspases.new(~prm.audioIn, ~micIn, ~pickupIn, ~modInput, ~digiTrackArray, ~pyr,
+				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+				~prm.procGroup, \addToHead);
+			while({ try { ~caspases.isLoaded } != true }, { 0.001.wait; });
+			~apc.setGridFunc(1, 0, { ~apc.setPage('caspases'); }, page: page);
+			~apc.turnGridGreen(1, 0);
+			caspasesIsLoaded = true;
+		}.play;
+	},
+	{
+		~caspases.free;
+		~apc.setGridFunc(1, 0, { });
+		~acp.turnGridOff(1, 0);
+		caspasesIsLoaded = false;
 	});
 }, page: page);
 

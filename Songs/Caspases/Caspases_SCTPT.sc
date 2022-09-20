@@ -36,6 +36,7 @@ Caspases_SCTPT : IM_Module {
 			while({ try { input.isLoaded } != true }, { 0.001.wait; });
 
 			server.sync;
+			input.mute;
 
 			this.prSetInitialParameters;
 

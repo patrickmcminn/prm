@@ -6,386 +6,387 @@ prm
 
 FalseSelf : IM_Module {
 
-  var <server, <isLoaded;
+	var <server, <isLoaded;
 
-  var <midiEnabled, <midiDict, <sequencer;
+	var <midiEnabled, <midiDict, <sequencer;
 
-  var <bellSection, <fakeGuitar, <melodySynth, <bassSection;
-  var <drums, <mainTrumpet, <mainTrumpetInput, <trumpetCanon, <trumpetCanonInput;
-  var <orchestra, <trumpetMelody, <trumpetMelodyInput, <freezeGuitar;
-  var <drones, <sixteenthDrones, <planeNoise, <midBuzz, <modular, <cvEnv, <modNoise;
+	var <bellSection, <fakeGuitar, <melodySynth, <bassSection;
+	var <drums, <mainTrumpet, <mainTrumpetInput, <trumpetCanon, <trumpetCanonInput;
+	var <orchestra, <trumpetMelody, <trumpetMelodyInput, <freezeGuitar;
+	var <drones, <sixteenthDrones, <planeNoise, <midBuzz, <modular, <cvEnv, <modNoise;
 
-  var <twoBarWarning, <songIsMuted;
+	var <twoBarWarning, <songIsMuted;
 
-  *new { | outBus, micIn, pickupIn, modularInArray, modularOutArray,
-    moogDevice, moogPort, seq,
-    send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
-    ^super.new(16, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(micIn, pickupIn, modularInArray, modularOutArray, moogDevice, moogPort, seq);
-  }
+	*new { | outBus, micIn, pickupIn, modularInArray, modularOutArray,
+		moogDevice, moogPort, seq,
+		send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
+		^super.new(16, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(micIn, pickupIn, modularInArray, modularOutArray, moogDevice, moogPort, seq);
+	}
 
-  prInit { | micIn, pickupIn, modularInArray, modularOutArray, moogDevice, moogPort, seq |
-    server = Server.default;
-    server.waitForBoot {
-      isLoaded = false;
-      while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
-      server.sync;
-      mixer.muteMaster;
-      16.do({ | chan | mixer.mute(chan); });
-      this.prSetMixerParameters;
+	prInit { | micIn, pickupIn, modularInArray, modularOutArray, moogDevice, moogPort, seq |
+		server = Server.default;
+		server.waitForBoot {
+			isLoaded = false;
+			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+			server.sync;
+			mixer.muteMaster;
+			16.do({ | chan | mixer.mute(chan); });
+			this.prSetMixerParameters;
 
-      server.sync;
+			server.sync;
 
-      bellSection = FalseSelf_BellSection.new(mixer.chanStereo(0),
-        relGroup: group, addAction: \addToHead);
-      while({ try { bellSection.isLoaded } != true }, { 0.001.wait; });
+			bellSection = FalseSelf_BellSection.new(mixer.chanStereo(0),
+				relGroup: group, addAction: \addToHead);
+			while({ try { bellSection.isLoaded } != true }, { 0.001.wait; });
 
-      fakeGuitar = FalseSelf_FakeGuitar.new(mixer.chanStereo(1),
-        relGroup: group, addAction: \addToHead);
-      while({ try { fakeGuitar.isLoaded } != true }, { 0.001.wait; });
+			fakeGuitar = FalseSelf_FakeGuitar.new(mixer.chanStereo(1),
+				relGroup: group, addAction: \addToHead);
+			while({ try { fakeGuitar.isLoaded } != true }, { 0.001.wait; });
 
-      melodySynth = FalseSelf_MelodySynth.new(mixer.chanStereo(2), group, \addToHead);
-      while({ try { melodySynth.isLoaded } != true }, { 0.001.wait; });
-
-      bassSection = FalseSelf_BassSection.new(modularInArray[0], mixer.chanStereo(3),
-        group, \addToHead);
-      while({ try { bassSection.isLoaded } != true }, { 0.001.wait; });
-
-      drums = FalseSelf_Kick.new(mixer.chanStereo(4), relGroup: group, addAction: \addToHead);
-      while({ try { drums.isLoaded } != true }, { 0.001.wait; });
-
-      mainTrumpet = FalseSelf_MainTrumpet.new(mixer.chanStereo(5), relGroup: group, addAction: \addToHead);
-      while({ try { mainTrumpet.isLoaded } != true }, { 0.001.wait; });
-      mainTrumpetInput = IM_HardwareIn.new(pickupIn, mainTrumpet.inBus, group, 'addToHead');
-      while({ try { mainTrumpetInput.isLoaded } != true }, { 0.001.wait; });
-
-      trumpetCanon = FalseSelf_TrumpetCanon.new(mixer.chanStereo(6), relGroup: group, addAction: \addToHead);
-      while({ try { trumpetCanon.isLoaded } != true }, { 0.001.wait; });
-      trumpetCanonInput = IM_HardwareIn.new(pickupIn, trumpetCanon.inBus, group, \addToHead);
-      while({ try { trumpetCanonInput.isLoaded } != true }, { 0.001.wait; });
-
-      orchestra = FalseSelf_Orchestra.new(mixer.chanStereo(7), relGroup: group, addAction: \addToHead);
-      while({ try { orchestra.isLoaded } != true }, { 0.001.wait; });
-
-      trumpetMelody = FalseSelf_TrumpetMelody.new(mixer.chanStereo(8),
-        relGroup: group, addAction: \addToHead);
-      while({ try { trumpetMelody.isLoaded } != true }, { 0.001.wait; });
-      trumpetMelodyInput = IM_HardwareIn.new(micIn, trumpetMelody.inBus, group, \addToHead);
-      while({ try { trumpetMelodyInput.isLoaded } != true }, { 0.001.wait; });
-
-      freezeGuitar = FalseSelf_FreezeGtr.new(mixer.chanStereo(9),
-        relGroup: group, addAction: \addToHead);
-      while({ try { freezeGuitar.isLoaded } != true }, { 0.001.wait; });
-
-      drones = FalseSelf_CrudeDrones.new(mixer.chanStereo(10), relGroup: group, addAction: \addToHead);
-      while({ try { drones.isLoaded } != true }, { 0.001.wait; });
-
-      sixteenthDrones = FalseSelf_16thDrones.new(mixer.chanStereo(11), relGroup: group, addAction: \addToHead);
-      while({ try { sixteenthDrones.isLoaded } != true }, { 0.001.wait; });
-
-      planeNoise = FalseSelf_PlaneNoise.new(mixer.chanStereo(12), relGroup: group, addAction: \addToHead);
-      while({ try { planeNoise.isLoaded } != true }, { 0.001.wait; });
-
-      midBuzz = FalseSelf_MidBuzz.new(mixer.chanStereo(13), relGroup: group, addAction: \addToHead);
-      while({ try { midBuzz.isLoaded } != true }, { 0.001.wait; });
-
-      modular = IM_HardwareIn.new(modularInArray[1], mixer.chanMono(14), group, \addToHead);
-      while({ try { modular.isLoaded } != true }, { 0.001.wait; });
-
-      cvEnv = CV_EnvPerc.new(modularOutArray[4], group, \addToHead);
-      while({ try { cvEnv.isLoaded } != true }, { 0.001.wait;});
-
-      modNoise = IM_HardwareIn.new(modularInArray[3], mixer.chanMono(15), group, \addToHead);
-      while({ try { modNoise.isLoaded } != true }, { 0.001.wait; });
-
-      server.sync;
-
-      this.prSetInitialParameters;
-
-      sequencer = seq.uid;
-      midiEnabled = false;
-      midiDict = IdentityDictionary.new;
-      twoBarWarning = false;
-      songIsMuted = false;
-
-      server.sync;
-      16.do({ | chan | mixer.unMute(chan); });
-      mixer.unMuteMaster;
-      isLoaded = true;
-    }
-  }
-
-  prSetMixerParameters {
-    16.do({ | chan | mixer.setPreVol(chan, -9); });
-
-    // bell section:
-    mixer.setVol(0, -3);
-    mixer.setSendVol(0, 0, -6);
-
-    // fake guitar:
-    mixer.setPreVol(1, -3);
-    mixer.setVol(1, -6);
-    mixer.setSendVol(1, 0, -12);
-
-    // melody synth:
-    mixer.setPreVol(2, -9);
-    mixer.setVol(2, -3);
-    mixer.setSendVol(2, 0, -9);
-
-    // bass section:
-    mixer.setPreVol(3, -9);
-    mixer.setVol(3, -3);
-    mixer.setSendVol(3, 0, -24);
-
-    // kick:
-    mixer.setPreVol(4, -4.5);
-    mixer.setVol(4, -6);
-    mixer.setSendVol(4, 0, -36);
-
-    // main trumpet:
-    //mixer.mute(5);
-    mixer.setVol(5, -9);
-    mixer.setSendVol(5, 0, -6);
-    mixer.setSendVol(5, 1, -24);
-
-    // trumpet canon:
-    //mixer.setPreVol(6, -15);
-    mixer.setVol(6, -6);
-    mixer.setSendVol(6, 0, -12);
-
-    // orchestra:
-    mixer.setVol(7, -9);
-    mixer.setSendVol(7, 0, -6);
-    mixer.setSendVol(7, 1, -6);
-    mixer.setSendVol(7, 2, -5);
-
-    // trumpet melody:
-    mixer.setVol(8, -6);
-    mixer.setSendVol(8, 0, -3);
-    mixer.setSendVol(8, 2, 0);
-
-    //freeze guitar:
-    mixer.setVol(9, -12);
-    mixer.setSendVol(9, 0, 0);
-
-    // crude drones:
-    mixer.setVol(10, -24);
-    mixer.setSendVol(10, 0, 0);
-    mixer.setSendVol(10, 1, 0);
-    mixer.setSendVol(10, 3, -9);
-
-    // 16th drones:
-    mixer.setVol(11, -26);
-    mixer.setSendVol(11, 0, -6);
-    mixer.setSendVol(11, 1, 0);
-
-    // plane noise:
-    mixer.setVol(12, -21);
-    mixer.setSendVol(12, 0, -10);
-
-    // mid buzz:
-    mixer.setVol(13, -27);
-    mixer.setSendVol(13, 0, -10);
-
-    // modular:
-    mixer.setVol(14, -3);
-    mixer.setSendVol(14, 0, -3);
-
-    // mod noise:
-    mixer.setVol(15, -9);
-    mixer.setSendVol(15, 0, -9);
-    mixer.setSendVol(15, 1, -3);
-  }
-
-  prSetInitialParameters {
-    mainTrumpetInput.mute;
-    trumpetCanonInput.mute;
-    trumpetMelodyInput.mute;
-    cvEnv.setAttackTime(0.01);
-    cvEnv.setReleaseTime(0.08375);
-    modular.mute;
-    modNoise.mute;
-  }
-
-  /////// public functions:
-
-  free {
-    this.freeModule;
-  }
-
-  tglMuteSong { if(songIsMuted == true, { this.unMuteSong }, { this.muteSong }); }
-
-  muteSong {
-    16.do({ | chan | mixer.mute(chan); });
-    songIsMuted = true;
-  }
-
-  unMuteSong {
-    16.do({ | chan | mixer.unMute(chan); });
-    songIsMuted = false;
-  }
-
-  toggleMIDIFuncs {
-    if( midiEnabled == true, { this.freeMIDIFuncs }, { this.makeMIDIFuncs });
-  }
-
-  makeMIDIFuncs {
-    // bells:
-    midiDict[\bells] = Array.fill(128, { | note |
-      MIDIFunc.noteOn({ bellSection.playNote(note.midicps); }, note, 0, sequencer);});
-    // fake guitar:
-    midiDict[\fakeGtr1On] = MIDIFunc.noteOn( { fakeGuitar.playSection1 }, 60, 1, sequencer);
-    midiDict[\fakeGtr1Off] = MIDIFunc.noteOff( { fakeGuitar.releaseSection1; }, 60, 1, sequencer);
-    midiDict[\fakeGtr2On] = MIDIFunc.noteOn({ fakeGuitar.playSection2 }, 62, 1, sequencer);
-    midiDict[\fakeGtr2Off] = MIDIFunc.noteOff( { fakeGuitar.releaseSection2; }, 62, 1, sequencer);
-    midiDict[\fakeGtrVol] = MIDIFunc.cc({ | val | mixer.setVol(1, val.ccdbfs) }, 0, 1, sequencer);
-    midiDict[\fakeGtrSend0] = MIDIFunc.cc({ | val | mixer.setSendVol(1, 0, val.ccdbfs);
-    }, 1, 1, sequencer);
-    midiDict[\fakeGuitarCutoff] = MIDIFunc.cc({ | val |
-      var cutoff = val.linexp(0, 127, 40, 20000);
-      fakeGuitar.section2.setFilterCutoff(cutoff); }, 10, 1, sequencer);
-
-    // melody synth:
-    midiDict[\melodySynthOn] = Array.fill(128, { | note |
-      MIDIFunc.noteOn({ melodySynth.playNote(note.midicps); }, note, 2, sequencer); });
-    midiDict[\melodySynthOff] = Array.fill(128, { | note |
-      MIDIFunc.noteOff({ melodySynth.releaseNote(note.midicps); }, note, 2, sequencer); });
-    // melody synth vol:
-    midiDict[\melodySynthVol] = MIDIFunc.cc({ | val | mixer.setVol(2, val.ccdbfs); }, 0, 2, sequencer);
-    midiDict[\melodySynthAtk] = MIDIFunc.cc({ | val |
-      var attack = val.linlin(0, 127, 0.1, 5);
-      melodySynth.synth.setAttackTime(attack);
-    }, 1, 2, sequencer);
-
-    ///// bass section:
-    // feedback:
-    midiDict[\fbOn] = Array.fill(128, { | note |
-      MIDIFunc.noteOn({ bassSection.feedback.playNote(note.midicps) }, note, 3, sequencer) });
-    midiDict[\fbOff] = Array.fill(128, { | note |
-      MIDIFunc.noteOff({ bassSection.feedback.releaseNote(note.midicps) }, note, 3, sequencer); });
-    // filter:
-    midiDict[\fbFilter] = MIDIFunc.cc({ | val |
-      var cutoff = val.linexp(0, 127, 40, 5720);
-      bassSection.feedback.setFilterCutoff(cutoff);
-    }, 0, 3, sequencer);
-    midiDict[\moogVol] = MIDIFunc.cc({ | val | bassSection.mixer.setVol(2, val.ccdbfs);
-    }, 1, 3, sequencer);
-
-    // guitar:
-    midiDict[\gtrOn] = Array.fill(128, { | note |
-      MIDIFunc.noteOn({ bassSection.guitar.playNote(note.midicps) }, note, 4, sequencer) });
-    midiDict[\gtrOff] = Array.fill(128, { | note |
-      MIDIFunc.noteOff({ bassSection.guitar.releaseNote(note.midicps) }, note, 4, sequencer); });
-
-    // drums:
-    midiDict[\drum0] = MIDIFunc.noteOn({ | vel | drums.playDrum0(vel.ccdbfs) },
-      48, 5, sequencer);
-    midiDict[\drum1] = MIDIFunc.noteOn({ | vel | drums.playDrum1(vel.ccdbfs) },
-      50, 5, sequencer);
-    midiDict[\drum2] = MIDIFunc.noteOn({ | vel | drums.playDrum2(vel.ccdbfs) },
-      52, 5, sequencer);
-    midiDict[\drum3] = MIDIFunc.noteOn({ | vel | drums.playDrum3(vel.ccdbfs) },
-      53, 5, sequencer);
-
-    midiDict[\mDrumF] = MIDIFunc.noteOn({ | vel | drums.playMDrum(vel.ccdbfs, -1) },
-      65, 5, sequencer);
-    midiDict[\mDrumFSharp] = MIDIFunc.noteOn({ | vel | drums.playMDrum(vel.ccdbfs, 0) },
-      66, 5, sequencer);
-    midiDict[\mDrumGSharp] = MIDIFunc.noteOn({ | vel | drums.playMDrum(vel.ccdbfs, 2) },
-      68, 5, sequencer);
-    midiDict[\mDrumCSharp] = MIDIFunc.noteOn({ | vel | drums.playMDrum(vel.ccdbfs, 7) },
-      73, 5, sequencer);
-
-    midiDict[\drumVol] = MIDIFunc.cc({ | val | mixer.setVol(4, val.ccdbfs) },
-      0, 5, sequencer);
-    midiDict[\drumFilter] = MIDIFunc.cc({ | val |
-      var cutoff = val.linexp(0, 127, 40, 3500);
-      drums.eq.setHighPassCutoff(cutoff);
-    }, 1, 5, sequencer);
-
-    // trumpet:
-    midiDict[\twoBarOn] = MIDIFunc.noteOn({ twoBarWarning = true; }, 48, 6, sequencer);
-    midiDict[\twoBarOff] = MIDIFunc.noteOff({ twoBarWarning = false; }, 48, 6, sequencer);
-    midiDict[\tptRecOn] = MIDIFunc.noteOn({ | val | mainTrumpetInput.unMute; }, 60, 6, sequencer);
-    midiDict[\tptRecOff] = MIDIFunc.noteOn({ | val | mainTrumpetInput.mute; }, 61, 6, sequencer);
-    midiDict[\tptFBLow] = MIDIFunc.noteOn({ mainTrumpet.delay.setFeedback(0.22) }, 62, 6, sequencer);
-    midiDict[\tptFBHigh] = MIDIFunc.noteOn({ mainTrumpet.delay.setFeedback(0.99) }, 63, 6, sequencer);
-    midiDict[\tptFBMed] = MIDIFunc.noteOn({ mainTrumpet.delay.setFeedback(0.65) }, 64, 6, sequencer);
-
-    midiDict[\tptCanonInputUnMute] = MIDIFunc.noteOn({ trumpetCanonInput.unMute }, 72, 6, sequencer);
-    midiDict[\tptCanonInputMute] = MIDIFunc.noteOn({ trumpetCanonInput.mute; }, 73, 6, sequencer);
-    midiDict[\tptCanonDelaysUnMute] = MIDIFunc.noteOn({ trumpetCanon.unMuteDelays; }, 74, 6, sequencer);
-    midiDict[\tptCanonDelayMute] = MIDIFunc.noteOn({ trumpetCanon.muteDelays; }, 75, 6, sequencer);
-
-    //orchestra:
-    midiDict[\orchestra] = MIDIFunc.noteOn({ orchestra.playMahlerPhrase; }, 48, 7, sequencer);
-    // crude drones:
-    midiDict[\crudeDronesOn] = MIDIFunc.noteOn({
-      drones.playVoice1Sequence;
-      drones.playVoice2Sequence;
-      drones.playVoice3Sequence;
-    }, 50, 7, sequencer);
-    midiDict[\crudeDronesOff] = MIDIFunc.noteOff({
-      drones.stopVoice1Sequence;
-      drones.stopVoice2Sequence;
-      drones.stopVoice3Sequence;
-    }, 50, 7, sequencer);
-    midiDict[\sixteenthDronesOn] = MIDIFunc.noteOn({
-      sixteenthDrones.playVoice1Sequence;
-      sixteenthDrones.playVoice2Sequence;
-      sixteenthDrones.playVoice3Sequence;
-    }, 52, 7, sequencer);
-    midiDict[\sixteenthDronesOff] = MIDIFunc.noteOff({
-      sixteenthDrones.stopVoice1Sequence;
-      sixteenthDrones.stopVoice2Sequence;
-      sixteenthDrones.stopVoice3Sequence;
-    }, 52, 7, sequencer);
-    // plane noise:
-    midiDict[\planeNoiseOn] = MIDIFunc.noteOn({ planeNoise.playSample }, 53, 7, sequencer);
-    midiDict[\planeNoiseOff] = MIDIFunc.noteOff({ planeNoise.releaseSample }, 53, 7, sequencer);
-    // mid buzz:
-    midiDict[\midBuzzOn] = MIDIFunc.noteOn({ midBuzz.playSequence; }, 55, 7, sequencer);
-    midiDict[\midBuzzOff] = MIDIFunc.noteOff({ midBuzz.stopSequence; }, 55, 7, sequencer);
-    // lfo env trig:
-    midiDict[\cvEnv] = MIDIFunc.noteOn({ cvEnv.trigger; }, 60, 7, sequencer);
-    // modular return mute:
-    midiDict[\modularOn] = MIDIFunc.noteOn({ modular.unMute; }, 72, 7, sequencer);
-    midiDict[\modularOff] = MIDIFunc.noteOn({ modular.mute; }, 73, 7, sequencer);
-    // mod noise
-    midiDict[\modNoiseOn] =MIDIFunc.noteOn({ modNoise.unMute; }, 74, 7, sequencer);
-    midiDict[\modNoiseOff] = MIDIFunc.noteOn({ modNoise.mute; }, 75, 7, sequencer);
-
-    // trumpet melody:
-    midiDict[\shift1On] = Array.fill(37, { | i |
-      MIDIFunc.noteOn({ trumpetMelody.shift1.playNote((i-36).asSymbol, (i-36), -5)
-    }, i+36, 8, sequencer);});
-    midiDict[\shift1Off] = Array.fill(37, { | i |
-      MIDIFunc.noteOff({ trumpetMelody.shift1.releaseNote((i-36).asSymbol); }, i+36, 8, sequencer);
-    });
-    midiDict[\shift2On] = Array.fill(37, { | i |
-      MIDIFunc.noteOn({ trumpetMelody.shift2.playNote((i-36).asSymbol, (i-36), -5)
-    }, i+36, 9, sequencer);});
-    midiDict[\shift2Off] = Array.fill(37, { | i |
-      MIDIFunc.noteOff({ trumpetMelody.shift2.releaseNote((i-36).asSymbol); }, i+36, 9, sequencer);
-    });
-
-    // freeze guitar:
-    midiDict[\freezeGuitarOn] = Array.fill(20, { | note |
-      MIDIFunc.noteOn({ | vel |
-        freezeGuitar.sampler.playSampleSustaining(note.asSymbol, note, vel.ccdbfs);
-      }, note+48, 10, sequencer);
-    });
-    midiDict[\freezeGuitarOff] = Array.fill(20, { | note |
-      MIDIFunc.noteOff({ freezeGuitar.sampler.releaseSampleSustaining(note.asSymbol);
-      }, note+48, 10, sequencer);
-    });
-
-    midiEnabled = true;
-  }
-
-  freeMIDIFuncs {
-    midiDict.do({ | func | func.free; });
-    midiEnabled = false;
-  }
+			melodySynth = FalseSelf_MelodySynth.new(mixer.chanStereo(2), group, \addToHead);
+			while({ try { melodySynth.isLoaded } != true }, { 0.001.wait; });
+
+			bassSection = FalseSelf_BassSection.new(modularInArray[0], mixer.chanStereo(3),
+				group, \addToHead);
+			while({ try { bassSection.isLoaded } != true }, { 0.001.wait; });
+
+			drums = FalseSelf_Kick.new(mixer.chanStereo(4), relGroup: group, addAction: \addToHead);
+			while({ try { drums.isLoaded } != true }, { 0.001.wait; });
+
+			mainTrumpet = FalseSelf_MainTrumpet.new(mixer.chanStereo(5), relGroup: group, addAction: \addToHead);
+			while({ try { mainTrumpet.isLoaded } != true }, { 0.001.wait; });
+			mainTrumpetInput = IM_HardwareIn.new(pickupIn, mainTrumpet.inBus, group, 'addToHead');
+			while({ try { mainTrumpetInput.isLoaded } != true }, { 0.001.wait; });
+
+			trumpetCanon = FalseSelf_TrumpetCanon.new(mixer.chanStereo(6), relGroup: group, addAction: \addToHead);
+			while({ try { trumpetCanon.isLoaded } != true }, { 0.001.wait; });
+			trumpetCanonInput = IM_HardwareIn.new(pickupIn, trumpetCanon.inBus, group, \addToHead);
+			while({ try { trumpetCanonInput.isLoaded } != true }, { 0.001.wait; });
+
+			orchestra = FalseSelf_Orchestra.new(mixer.chanStereo(7), relGroup: group, addAction: \addToHead);
+			while({ try { orchestra.isLoaded } != true }, { 0.001.wait; });
+
+			trumpetMelody = FalseSelf_TrumpetMelody.new(mixer.chanStereo(8),
+				relGroup: group, addAction: \addToHead);
+			while({ try { trumpetMelody.isLoaded } != true }, { 0.001.wait; });
+			trumpetMelodyInput = IM_HardwareIn.new(micIn, trumpetMelody.inBus, group, \addToHead);
+			while({ try { trumpetMelodyInput.isLoaded } != true }, { 0.001.wait; });
+
+			freezeGuitar = FalseSelf_FreezeGtr.new(mixer.chanStereo(9),
+				relGroup: group, addAction: \addToHead);
+			while({ try { freezeGuitar.isLoaded } != true }, { 0.001.wait; });
+
+			drones = FalseSelf_CrudeDrones.new(mixer.chanStereo(10), relGroup: group, addAction: \addToHead);
+			while({ try { drones.isLoaded } != true }, { 0.001.wait; });
+
+			sixteenthDrones = FalseSelf_16thDrones.new(mixer.chanStereo(11), relGroup: group, addAction: \addToHead);
+			while({ try { sixteenthDrones.isLoaded } != true }, { 0.001.wait; });
+
+			planeNoise = FalseSelf_PlaneNoise.new(mixer.chanStereo(12), relGroup: group, addAction: \addToHead);
+			while({ try { planeNoise.isLoaded } != true }, { 0.001.wait; });
+
+			midBuzz = FalseSelf_MidBuzz.new(mixer.chanStereo(13), relGroup: group, addAction: \addToHead);
+			while({ try { midBuzz.isLoaded } != true }, { 0.001.wait; });
+
+			modular = IM_HardwareIn.new(modularInArray[1], mixer.chanMono(14), group, \addToHead);
+			while({ try { modular.isLoaded } != true }, { 0.001.wait; });
+
+			cvEnv = CV_EnvPerc.new(modularOutArray[4], group, \addToHead);
+			while({ try { cvEnv.isLoaded } != true }, { 0.001.wait;});
+
+			modNoise = IM_HardwareIn.new(modularInArray[3], mixer.chanMono(15), group, \addToHead);
+			while({ try { modNoise.isLoaded } != true }, { 0.001.wait; });
+
+			server.sync;
+
+			this.prSetInitialParameters;
+
+			sequencer = seq.uid;
+			midiEnabled = false;
+			midiDict = IdentityDictionary.new;
+			twoBarWarning = false;
+			songIsMuted = false;
+
+			server.sync;
+			16.do({ | chan | mixer.unMute(chan); });
+			mixer.unMuteMaster;
+			isLoaded = true;
+		}
+	}
+
+	prSetMixerParameters {
+		16.do({ | chan | mixer.setPreVol(chan, -9); });
+
+		// bell section:
+		mixer.setVol(0, -3);
+		mixer.setSendVol(0, 0, -6);
+
+		// fake guitar:
+		mixer.setPreVol(1, -3);
+		mixer.setVol(1, -6);
+		mixer.setSendVol(1, 0, -12);
+
+		// melody synth:
+		mixer.setPreVol(2, -9);
+		mixer.setVol(2, -3);
+		mixer.setSendVol(2, 0, -9);
+
+		// bass section:
+		mixer.setPreVol(3, -9);
+		mixer.setVol(3, -3);
+		mixer.setSendVol(3, 0, -24);
+
+		// kick:
+		mixer.setPreVol(4, -4.5);
+		mixer.setVol(4, -6);
+		mixer.setSendVol(4, 0, -36);
+
+		// main trumpet:
+		//mixer.mute(5);
+		mixer.setVol(5, -9);
+		mixer.setSendVol(5, 0, -6);
+		mixer.setSendVol(5, 1, -24);
+
+		// trumpet canon:
+		//mixer.setPreVol(6, -15);
+		mixer.setVol(6, -6);
+		mixer.setSendVol(6, 0, -12);
+
+		// orchestra:
+		mixer.setVol(7, -9);
+		mixer.setSendVol(7, 0, -6);
+		mixer.setSendVol(7, 1, -6);
+		mixer.setSendVol(7, 2, -5);
+
+		// trumpet melody:
+		mixer.setVol(8, -6);
+		mixer.setSendVol(8, 0, -3);
+		mixer.setSendVol(8, 2, 0);
+
+		//freeze guitar:
+		mixer.setVol(9, -6);
+		mixer.setSendVol(9, 0, -9);
+
+		// crude drones:
+		mixer.setVol(10, -24);
+		mixer.setSendVol(10, 0, 0);
+		mixer.setSendVol(10, 1, 0);
+		mixer.setSendVol(10, 3, -9);
+
+		// 16th drones:
+		mixer.setVol(11, -26);
+		mixer.setSendVol(11, 0, -6);
+		mixer.setSendVol(11, 1, 0);
+
+		// plane noise:
+		mixer.setVol(12, -21);
+		mixer.setSendVol(12, 0, -10);
+
+		// mid buzz:
+		mixer.setVol(13, -27);
+		mixer.setSendVol(13, 0, -10);
+
+		// modular:
+		mixer.setPreVol(14, -3);
+		mixer.setVol(14, -3);
+		mixer.setSendVol(14, 0, -18);
+
+		// mod noise:
+		mixer.setVol(15, -9);
+		mixer.setSendVol(15, 0, -9);
+		mixer.setSendVol(15, 1, -3);
+	}
+
+	prSetInitialParameters {
+		mainTrumpetInput.mute;
+		trumpetCanonInput.mute;
+		trumpetMelodyInput.mute;
+		cvEnv.setAttackTime(0.01);
+		cvEnv.setReleaseTime(0.08375);
+		modular.mute;
+		modNoise.mute;
+	}
+
+	/////// public functions:
+
+	free {
+		this.freeModule;
+	}
+
+	tglMuteSong { if(songIsMuted == true, { this.unMuteSong }, { this.muteSong }); }
+
+	muteSong {
+		16.do({ | chan | mixer.mute(chan); });
+		songIsMuted = true;
+	}
+
+	unMuteSong {
+		16.do({ | chan | mixer.unMute(chan); });
+		songIsMuted = false;
+	}
+
+	toggleMIDIFuncs {
+		if( midiEnabled == true, { this.freeMIDIFuncs }, { this.makeMIDIFuncs });
+	}
+
+	makeMIDIFuncs {
+		// bells:
+		midiDict[\bells] = Array.fill(128, { | note |
+			MIDIFunc.noteOn({ bellSection.playNote(note.midicps); }, note, 0, sequencer);});
+		// fake guitar:
+		midiDict[\fakeGtr1On] = MIDIFunc.noteOn( { fakeGuitar.playSection1 }, 60, 1, sequencer);
+		midiDict[\fakeGtr1Off] = MIDIFunc.noteOff( { fakeGuitar.releaseSection1; }, 60, 1, sequencer);
+		midiDict[\fakeGtr2On] = MIDIFunc.noteOn({ fakeGuitar.playSection2 }, 62, 1, sequencer);
+		midiDict[\fakeGtr2Off] = MIDIFunc.noteOff( { fakeGuitar.releaseSection2; }, 62, 1, sequencer);
+		midiDict[\fakeGtrVol] = MIDIFunc.cc({ | val | mixer.setVol(1, val.ccdbfs) }, 0, 1, sequencer);
+		midiDict[\fakeGtrSend0] = MIDIFunc.cc({ | val | mixer.setSendVol(1, 0, val.ccdbfs);
+		}, 1, 1, sequencer);
+		midiDict[\fakeGuitarCutoff] = MIDIFunc.cc({ | val |
+			var cutoff = val.linexp(0, 127, 40, 20000);
+			fakeGuitar.section2.setFilterCutoff(cutoff); }, 10, 1, sequencer);
+
+		// melody synth:
+		midiDict[\melodySynthOn] = Array.fill(128, { | note |
+			MIDIFunc.noteOn({ melodySynth.playNote(note.midicps); }, note, 2, sequencer); });
+		midiDict[\melodySynthOff] = Array.fill(128, { | note |
+			MIDIFunc.noteOff({ melodySynth.releaseNote(note.midicps); }, note, 2, sequencer); });
+		// melody synth vol:
+		midiDict[\melodySynthVol] = MIDIFunc.cc({ | val | mixer.setVol(2, val.ccdbfs); }, 0, 2, sequencer);
+		midiDict[\melodySynthAtk] = MIDIFunc.cc({ | val |
+			var attack = val.linlin(0, 127, 0.1, 5);
+			melodySynth.synth.setAttackTime(attack);
+		}, 1, 2, sequencer);
+
+		///// bass section:
+		// feedback:
+		midiDict[\fbOn] = Array.fill(128, { | note |
+			MIDIFunc.noteOn({ bassSection.feedback.playNote(note.midicps) }, note, 3, sequencer) });
+		midiDict[\fbOff] = Array.fill(128, { | note |
+			MIDIFunc.noteOff({ bassSection.feedback.releaseNote(note.midicps) }, note, 3, sequencer); });
+		// filter:
+		midiDict[\fbFilter] = MIDIFunc.cc({ | val |
+			var cutoff = val.linexp(0, 127, 40, 5720);
+			bassSection.feedback.setFilterCutoff(cutoff);
+		}, 0, 3, sequencer);
+		midiDict[\moogVol] = MIDIFunc.cc({ | val | bassSection.mixer.setVol(2, val.ccdbfs);
+		}, 1, 3, sequencer);
+
+		// guitar:
+		midiDict[\gtrOn] = Array.fill(128, { | note |
+			MIDIFunc.noteOn({ bassSection.guitar.playNote(note.midicps) }, note, 4, sequencer) });
+		midiDict[\gtrOff] = Array.fill(128, { | note |
+			MIDIFunc.noteOff({ bassSection.guitar.releaseNote(note.midicps) }, note, 4, sequencer); });
+
+		// drums:
+		midiDict[\drum0] = MIDIFunc.noteOn({ | vel | drums.playDrum0(vel.ccdbfs) },
+			48, 5, sequencer);
+		midiDict[\drum1] = MIDIFunc.noteOn({ | vel | drums.playDrum1(vel.ccdbfs) },
+			50, 5, sequencer);
+		midiDict[\drum2] = MIDIFunc.noteOn({ | vel | drums.playDrum2(vel.ccdbfs) },
+			52, 5, sequencer);
+		midiDict[\drum3] = MIDIFunc.noteOn({ | vel | drums.playDrum3(vel.ccdbfs) },
+			53, 5, sequencer);
+
+		midiDict[\mDrumF] = MIDIFunc.noteOn({ | vel | drums.playMDrum(vel.ccdbfs, -1) },
+			65, 5, sequencer);
+		midiDict[\mDrumFSharp] = MIDIFunc.noteOn({ | vel | drums.playMDrum(vel.ccdbfs, 0) },
+			66, 5, sequencer);
+		midiDict[\mDrumGSharp] = MIDIFunc.noteOn({ | vel | drums.playMDrum(vel.ccdbfs, 2) },
+			68, 5, sequencer);
+		midiDict[\mDrumCSharp] = MIDIFunc.noteOn({ | vel | drums.playMDrum(vel.ccdbfs, 7) },
+			73, 5, sequencer);
+
+		midiDict[\drumVol] = MIDIFunc.cc({ | val | mixer.setVol(4, val.ccdbfs) },
+			0, 5, sequencer);
+		midiDict[\drumFilter] = MIDIFunc.cc({ | val |
+			var cutoff = val.linexp(0, 127, 40, 3500);
+			drums.eq.setHighPassCutoff(cutoff);
+		}, 1, 5, sequencer);
+
+		// trumpet:
+		midiDict[\twoBarOn] = MIDIFunc.noteOn({ twoBarWarning = true; }, 48, 6, sequencer);
+		midiDict[\twoBarOff] = MIDIFunc.noteOff({ twoBarWarning = false; }, 48, 6, sequencer);
+		midiDict[\tptRecOn] = MIDIFunc.noteOn({ | val | mainTrumpetInput.unMute; }, 60, 6, sequencer);
+		midiDict[\tptRecOff] = MIDIFunc.noteOn({ | val | mainTrumpetInput.mute; }, 61, 6, sequencer);
+		midiDict[\tptFBLow] = MIDIFunc.noteOn({ mainTrumpet.delay.setFeedback(0.22) }, 62, 6, sequencer);
+		midiDict[\tptFBHigh] = MIDIFunc.noteOn({ mainTrumpet.delay.setFeedback(0.99) }, 63, 6, sequencer);
+		midiDict[\tptFBMed] = MIDIFunc.noteOn({ mainTrumpet.delay.setFeedback(0.65) }, 64, 6, sequencer);
+
+		midiDict[\tptCanonInputUnMute] = MIDIFunc.noteOn({ trumpetCanonInput.unMute }, 72, 6, sequencer);
+		midiDict[\tptCanonInputMute] = MIDIFunc.noteOn({ trumpetCanonInput.mute; }, 73, 6, sequencer);
+		midiDict[\tptCanonDelaysUnMute] = MIDIFunc.noteOn({ trumpetCanon.unMuteDelays; }, 74, 6, sequencer);
+		midiDict[\tptCanonDelayMute] = MIDIFunc.noteOn({ trumpetCanon.muteDelays; }, 75, 6, sequencer);
+
+		//orchestra:
+		midiDict[\orchestra] = MIDIFunc.noteOn({ orchestra.playMahlerPhrase; }, 48, 7, sequencer);
+		// crude drones:
+		midiDict[\crudeDronesOn] = MIDIFunc.noteOn({
+			drones.playVoice1Sequence;
+			drones.playVoice2Sequence;
+			drones.playVoice3Sequence;
+		}, 50, 7, sequencer);
+		midiDict[\crudeDronesOff] = MIDIFunc.noteOff({
+			drones.stopVoice1Sequence;
+			drones.stopVoice2Sequence;
+			drones.stopVoice3Sequence;
+		}, 50, 7, sequencer);
+		midiDict[\sixteenthDronesOn] = MIDIFunc.noteOn({
+			sixteenthDrones.playVoice1Sequence;
+			sixteenthDrones.playVoice2Sequence;
+			sixteenthDrones.playVoice3Sequence;
+		}, 52, 7, sequencer);
+		midiDict[\sixteenthDronesOff] = MIDIFunc.noteOff({
+			sixteenthDrones.stopVoice1Sequence;
+			sixteenthDrones.stopVoice2Sequence;
+			sixteenthDrones.stopVoice3Sequence;
+		}, 52, 7, sequencer);
+		// plane noise:
+		midiDict[\planeNoiseOn] = MIDIFunc.noteOn({ planeNoise.playSample }, 53, 7, sequencer);
+		midiDict[\planeNoiseOff] = MIDIFunc.noteOff({ planeNoise.releaseSample }, 53, 7, sequencer);
+		// mid buzz:
+		midiDict[\midBuzzOn] = MIDIFunc.noteOn({ midBuzz.playSequence; }, 55, 7, sequencer);
+		midiDict[\midBuzzOff] = MIDIFunc.noteOff({ midBuzz.stopSequence; }, 55, 7, sequencer);
+		// lfo env trig:
+		midiDict[\cvEnv] = MIDIFunc.noteOn({ cvEnv.trigger; }, 60, 7, sequencer);
+		// modular return mute:
+		midiDict[\modularOn] = MIDIFunc.noteOn({ modular.unMute; }, 72, 7, sequencer);
+		midiDict[\modularOff] = MIDIFunc.noteOn({ modular.mute; }, 73, 7, sequencer);
+		// mod noise
+		midiDict[\modNoiseOn] =MIDIFunc.noteOn({ modNoise.unMute; }, 74, 7, sequencer);
+		midiDict[\modNoiseOff] = MIDIFunc.noteOn({ modNoise.mute; }, 75, 7, sequencer);
+
+		// trumpet melody:
+		midiDict[\shift1On] = Array.fill(37, { | i |
+			MIDIFunc.noteOn({ trumpetMelody.shift1.playNote((i-36).asSymbol, (i-36), -5)
+		}, i+36, 8, sequencer);});
+		midiDict[\shift1Off] = Array.fill(37, { | i |
+			MIDIFunc.noteOff({ trumpetMelody.shift1.releaseNote((i-36).asSymbol); }, i+36, 8, sequencer);
+		});
+		midiDict[\shift2On] = Array.fill(37, { | i |
+			MIDIFunc.noteOn({ trumpetMelody.shift2.playNote((i-36).asSymbol, (i-36), -5)
+		}, i+36, 9, sequencer);});
+		midiDict[\shift2Off] = Array.fill(37, { | i |
+			MIDIFunc.noteOff({ trumpetMelody.shift2.releaseNote((i-36).asSymbol); }, i+36, 9, sequencer);
+		});
+
+		// freeze guitar:
+		midiDict[\freezeGuitarOn] = Array.fill(20, { | note |
+			MIDIFunc.noteOn({ | vel |
+				freezeGuitar.sampler.playSampleSustaining(note.asSymbol, note, vel.ccdbfs);
+			}, note+48, 10, sequencer);
+		});
+		midiDict[\freezeGuitarOff] = Array.fill(20, { | note |
+			MIDIFunc.noteOff({ freezeGuitar.sampler.releaseSampleSustaining(note.asSymbol);
+			}, note+48, 10, sequencer);
+		});
+
+		midiEnabled = true;
+	}
+
+	freeMIDIFuncs {
+		midiDict.do({ | func | func.free; });
+		midiEnabled = false;
+	}
 
 }
 

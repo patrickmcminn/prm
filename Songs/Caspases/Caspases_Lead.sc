@@ -8,6 +8,7 @@ Caspases_Lead : IM_Module {
 
 	var server, <isLoaded;
 	var <input, <concat, <distortion, <microsynth, <oc2, <eq;
+	var <preset;
 
 	*new { | outBus = 0, synthIn, relGroup = nil, addAction = 'addToHead' |
 		^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit(synthIn);
@@ -18,6 +19,7 @@ Caspases_Lead : IM_Module {
 		server.waitForBoot {
 			isLoaded = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
+			mixer.mute;
 
 			eq = Equalizer.newStereo(mixer.chanStereo, group, \addToHead);
 			while({ try { eq.isLoaded } != true }, { 0.001.wait; });
@@ -39,17 +41,21 @@ Caspases_Lead : IM_Module {
 			server.sync;
 
 			this.prSetInitialParameters;
+			mixer.unMute;
 
 			isLoaded = true;
 		}
 	}
 
 	prSetInitialParameters {
+		input.mute;
 		microsynth.mixer.setPreVol(0);
 		concat.mixer.setPreVol(-3);
 		distortion.mixer.setPreVol(0);
 
 		distortion.loadPreset('caspases');
+
+		server.sync;
 
 		this.loadInitial;
 	}
@@ -65,15 +71,18 @@ Caspases_Lead : IM_Module {
 	loadInitial {
 		concat.setMix(0.5);
 
-		microsynth.setSubVol(-inf);
+		microsynth.setSubVol(-60);
 		microsynth.setOctVol(-24);
-		microsynth.setSquareVol(-inf);
+		microsynth.setSquareVol(-60);
 		microsynth.setDryVol(0);
 		microsynth.setStartFrequency(18000);
 		microsynth.setEndFrequency(18000);
 
-		oc2.setOct1Vol(-inf);
-		oc2.setOct2Vol(-inf );
+		distortion.setMix(0);
+		oc2.setOct1Vol(-60);
+		oc2.setOct2Vol(-60);
+
+		preset = 'initial';
 	}
 
 	loadCulmination {
@@ -81,12 +90,14 @@ Caspases_Lead : IM_Module {
 
 		concat.setMix(0);
 
-		microsynth.setSubVol(-3);
-		microsynth.setOctVol(-9);
-		microsynth.setSquareVol(-6);
+		microsynth.setSubVol(-9);
+		microsynth.setOctVol(0);
+		microsynth.setSquareVol(-21);
 
-		oc2.setOct1Vol(-3);
+		oc2.setOct1Vol(0);
 		oc2.setOct2Vol(-9);
+
+		preset = 'culmination';
 	}
 
 } 

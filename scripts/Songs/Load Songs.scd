@@ -19,6 +19,9 @@ try { "False Self Base.scd".loadRelative; };
 try {  "Years APC.scd".loadRelative };
 try { "Years Base.scd".loadRelative };
 
+try { "Caspases APC.scd".loadRelative; };
+try { "Caspases Base.scd".loadRelative };
+
 ///////////////////////////////
 //// The Phonometrician //////
 /////////////////////////////

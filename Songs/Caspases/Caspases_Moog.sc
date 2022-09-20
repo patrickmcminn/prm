@@ -36,7 +36,7 @@ Caspases_Moog : IM_Module {
 
 	prSetInitialParameters {
 		input.mute;
-		delay.setMix(0.42);
+		delay.setMix(0.3);
 	}
 
 	/////// public functions:

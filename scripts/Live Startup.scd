@@ -92,6 +92,7 @@ Server.killAll;
 
 ~apc.setPage('main');
 
+~falseSelf.mixer.setVol(9, -6);
 
 
 

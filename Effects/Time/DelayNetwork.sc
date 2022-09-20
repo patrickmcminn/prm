@@ -100,7 +100,8 @@ DelayNetwork : IM_Module {
 			|
 			var input, pitchShift, lowPass, highPass, bandPass, filter, localIn, delay, sig;
 			input = In.ar(inBus);
-			pitchShift = PitchShift.ar(input, 0.1, shiftAmount.midiratio, 0, 0.05);
+			//pitchShift = PitchShift.ar(input, 0.1, shiftAmount.midiratio, 0, 0.05);
+			pitchShift = input;
 			localIn = LocalIn.ar(1);
 
 			lowPass = RLPF.ar(localIn, cutoff, rq);

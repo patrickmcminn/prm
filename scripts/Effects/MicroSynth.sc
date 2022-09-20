@@ -10,7 +10,7 @@ MicroSynth : IM_Processor {
 	var synth;
 
 	var threshold,  inFilterFreq;
-	var	dryVol, subVol, octVol, squareVol;
+	var	<dryVol, <subVol, <octVol, <squareVol;
 	var	startFrequency, endFrequency, filterTime, attackTime, filterRes;
 
 	*newStereo { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
@@ -18,7 +18,7 @@ MicroSynth : IM_Processor {
 	}
 
 	*newMono { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
-		^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMonos;
+		^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitMono;
 	}
 
 	prInitStereo {
@@ -78,6 +78,7 @@ MicroSynth : IM_Processor {
 
 			input = In.ar(inBus);
 			onset = Coyote.kr(input, thresh: thresh, minDur: 0.05);
+			//freqSum = Mix.new([input[0], input[1]]);
 			amplitude = Amplitude.ar(input);
 			# freq, hasFreq = Tartini.kr(input);
 
@@ -103,7 +104,6 @@ MicroSynth : IM_Processor {
 			//waveSum = Mix.new([(input*dryAmp), subOctave, octave, dist]);
 
 			filterEnv = EnvGen.kr(Env([endFreq, startFreq, endFreq], [0, filterTime], \exp), onset);
-			filterEnv.poll;
 			envelope = EnvGen.kr(Env([1, 0, 1], [0, attackTime]), onset);
 
 			filter = DFM1.ar(waveSum, filterEnv, filterRes);

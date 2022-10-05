@@ -87,8 +87,8 @@ Years_Ensemble : IM_Module {
 	}
 
 	prSetInitialParameters {
-		mixer.setPreVol(-3);
-		granulator.mixer.setPreVol(-12);
+		mixer.setPreVol(3);
+		granulator.mixer.setPreVol(0);
 
 		3.do({ | i | synths.setPreVol(i, 3); });
 		outlier.setPreVol(3);
@@ -106,8 +106,8 @@ Years_Ensemble : IM_Module {
 		granulator.setTrigRate(18);
 		granulator.setDelayLevel(0);
 
-		delayNetwork1.mixer.setPreVol(-3);
-		delayNetwork2.mixer.setPreVol(-3);
+		delayNetwork1.mixer.setPreVol(-18);
+		delayNetwork2.mixer.setPreVol(-18);
 
 		delayNetwork1.mixer.setVol(-70);
 

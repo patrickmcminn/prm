@@ -122,6 +122,8 @@ GranularDelay2 : IM_Processor {
 			granulation = GrainBuf.ar(2, trigger: trigger, dur: duration, sndbuf: buffer,
 				rate: rate, pos: playHead, pan: pan, envbufnum: env);
 
+			granulation = granulation.softclip;
+
 			granulation = (granulation * mix) + dry;
 
 			delay = DelayC.ar(input + (granulation * feedback), maxDelayTime, delayTime.lag2(0.1));
@@ -130,7 +132,7 @@ GranularDelay2 : IM_Processor {
 			filter = LPF.ar(granulation, cutoff);
 
 			sig = filter * amp;
-			sig = sig.softclip;
+			//sig = sig.softclip;
 			Out.ar(outBus, sig);
 		}).add;
 	}

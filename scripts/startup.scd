@@ -28,3 +28,10 @@ r {
 
 s.meter;
 
+
+~years.ensemble.distortion.makeEditor
+
+~years.ensemble.granulator.mixer.setPreVol(0);
+
+~years.ensemble.delayNetwork1.mixer.setPreVol(-18);
+~years.ensemble.delayNetwork2.mixer.setPreVol(-18);

@@ -90,7 +90,7 @@ s.makeWindow;
 
 Server.killAll;
 
-~apc.setPage('main');
+~apc.setPage('main');z
 
 ~falseSelf.mixer.setVol(9, -6);
 

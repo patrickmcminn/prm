@@ -14,6 +14,7 @@ Chain : IM_Module {
 	var <freezer, <concat, <multiShift;
 	var <granulator, <eq, <delay;
 	var splitter;
+	var <oct, <microsynth;
 	var <input;
 
 	var <looper;
@@ -54,10 +55,16 @@ Chain : IM_Module {
 			looper = Looper.newStereo(concat.inBus, 30, 1, relGroup: group, addAction: \addToHead);
 			while({ try { looper.isLoaded } != true }, { 0.001.wait; });
 
-			splitter = Splitter.newMono(3, [concat.inBus, freezer.inBus, looper.inBus], false, group, \addToHead);
+			splitter = Splitter.newStereo(3, [concat.inBus, freezer.inBus, looper.inBus], false, group, \addToHead);
 			while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
-			input = IM_Mixer_1Ch.new(splitter.inBus, relGroup: group, addAction: \addToHead);
+			microsynth = MicroSynth.newStereo(splitter.inBus, relGroup: group, addAction: \addToHead);
+			while({ try { microsynth.isLoaded } != true }, { 0.001.wait; });
+
+			oct = Octave_OC2.newStereo(microsynth.inBus, relGroup: group, addAction: \addToHead);
+			while({ try { oct.isLoaded } != true }, { 0.001.wait; });
+
+			input = IM_Mixer_1Ch.new(oct.inBus, relGroup: group, addAction: \addToHead);
 			while({ try { input.isLoaded } != true }, { 0.001.wait; });
 
 			server.sync;
@@ -71,6 +78,19 @@ Chain : IM_Module {
 	}
 
 	prSetInitialParameters {
+		// microsynth:
+		microsynth.setDryVol(0);
+		microsynth.setSubVol(-70);
+		microsynth.setOctVol(-70);
+		microsynth.setSquareVol(-70);
+		microsynth.setStartFrequency(20000);
+		microsynth.setEndFrequency(20000);
+
+		// oct:
+		oct.setDryVol(0);
+		oct.setOct1Vol(-70);
+		oct.setOct2Vol(-70);
+
 		delay.setMix(0);
 		granulator.setMix(0);
 		granulator.setDelayLevel(0);

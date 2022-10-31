@@ -8,8 +8,9 @@ var main = 0;
 var concat1 = 1;
 var concat2 = 2;
 var granulator = 3;
-var delay = 4;
-var eq = 5;
+var microsynth = 4;
+var delay = 5;
+var eq = 6;
 
 var digitone = 1;
 
@@ -149,9 +150,9 @@ var tempFB;
 	~chain.eq.setLowPassCutoff(freq);
 }, main, page);
 
-////////
-// main grid:
-////////
+////////÷÷÷÷÷÷////
+// main grid: ///
+//////////÷/÷÷÷/
 
 //~apc.turnAllGridCyan(0, main, page);
 
@@ -274,7 +275,7 @@ shiftReset.value;
 }, bank: main, page: page);
 ~apc.setGridFunc(1, 1, { shiftPreset = 1; ~chain.multiShift.setShiftArray([-2, 2, 4, 5]);
 }, bank: main, page: page);
-~apc.setGridFunc(2, 1, { shiftPreset = 2; ~chain.multiShift.setShiftArray([-12, -12, 0.0005, 0]);
+~apc.setGridFunc(2, 1, { shiftPreset = 2; ~chain.multiShift.setShiftArray([-12, -12, -24, 0]);
 }, bank: main, page: page);
 ~apc.setGridFunc(3, 1, { shiftPreset = 3; ~chain.multiShift.setShiftArray([-1, -0.5, 0.5, 1]);
 }, bank: main, page: page);
@@ -316,8 +317,8 @@ devButtonReset = { 8.do({ | i | ~apc.turnDeviceButtonOff(i+1, main, page); }); }
 		concat1,  { devButtonReset.value; ~apc.turnDeviceButtonOn(2) },
 		concat2,  { devButtonReset.value; ~apc.turnDeviceButtonOn(3) },
 		granulator,  { devButtonReset.value; ~apc.turnDeviceButtonOn(4) },
-		delay,  { devButtonReset.value; ~apc.turnDeviceButtonOn(5) },
-		eq,  { devButtonReset.value; ~apc.turnDeviceButtonOn(6) }
+		microsynth,  { devButtonReset.value; ~apc.turnDeviceButtonOn(5) },
+		delay,  { devButtonReset.value; ~apc.turnDeviceButtonOn(6) }
 	);
 }, main, page);
 
@@ -338,14 +339,62 @@ devButtonReset = { 8.do({ | i | ~apc.turnDeviceButtonOff(i+1, main, page); }); }
 	~apc.setActiveDeviceEncodersBank(activeDeviceBank);
 }, bank: main, page: page);
 ~apc.setDeviceButtonFunc(5, {
-	activeDeviceBank = delay;
+	activeDeviceBank = microsynth;
 	~apc.setActiveDeviceEncodersBank(activeDeviceBank);
 }, bank: main, page: page);
 ~apc.setDeviceButtonFunc(6, {
-	activeDeviceBank = eq;
+	activeDeviceBank = delay;
 	~apc.setActiveDeviceEncodersBank(activeDeviceBank);
 }, bank: main, page: page);
 
+// microsynth:
+~apc.setDeviceEncodersMonitorFunc(\microsynth, {
+	var dryVol = ~chain.microsynth.dryVol.dbfsCC;
+	var subVol = ~chain.microsynth.subVol.dbfsCC;
+	var octVol = ~chain.microsynth.octVol.dbfsCC;
+	var squareVol = ~chain.microsynth.squareVol.dbfsCC;
+	var startFreq = ~chain.microsynth.startFrequency.explin(100, 20000, 0, 127);
+	var endFreq = ~chain.microsynth.endFrequency.explin(100, 20000, 0, 127);
+	var filterTime = ~chain.microsynth.filterTime.linlin(0, 5, 0, 127);
+	var filterRes = ~chain.microsynth.filterRes.linlin(0, 1, 0, 127);
+	~apc.setDeviceEncoderValue(1, dryVol);
+	~apc.setDeviceEncoderValue(2, subVol);
+	~apc.setDeviceEncoderValue(3, octVol);
+	~apc.setDeviceEncoderValue(4, squareVol);
+	~apc.setDeviceEncoderValue(5, startFreq);
+	~apc.setDeviceEncoderValue(6, endFreq);
+	~apc.setDeviceEncoderValue(7, filterTime);
+	~apc.setDeviceEncoderValue(8, filterRes);
+}, bank: microsynth, page: page);
+
+~apc.setDeviceEncoderFunc(1, { | val |
+	~chain.microsynth.setDryVol(val.ccdbfs);
+}, microsynth, page);
+~apc.setDeviceEncoderFunc(2, { | val |
+	~chain.microsynth.setSubVol(val.ccdbfs);
+}, microsynth, page);
+~apc.setDeviceEncoderFunc(3, { | val |
+	~chain.microsynth.setOctVol(val.ccdbfs);
+}, microsynth, page);
+~apc.setDeviceEncoderFunc(4, { | val |
+	~chain.microsynth.setSquareVol(val.ccdbfs);
+}, microsynth, page);
+~apc.setDeviceEncoderFunc(5, { | val |
+	var cutoff = val.linexp(0, 127, 100, 20000);
+	~chain.microsynth.setStartFrequency(cutoff);
+}, microsynth, page);
+~apc.setDeviceEncoderFunc(6, { | val |
+	var cutoff = val.linexp(0, 127, 100, 20000);
+	~chain.microsynth.setEndFrequency(cutoff);
+}, microsynth, page);
+~apc.setDeviceEncoderFunc(7, { | val |
+	var time = val.linlin(0, 127, 0, 5);
+	~chain.microsynth.setFilterTime(time);
+}, microsynth, page);
+~apc.setDeviceEncoderFunc(8, { | val |
+	var res = val.linlin(0, 127, 0, 1);
+	~chain.microsynth.setFilterRes(res);
+}, microsynth, page);
 
 ///// main:
 ~apc.setDeviceEncodersMonitorFunc(\main, {
@@ -353,10 +402,17 @@ devButtonReset = { 8.do({ | i | ~apc.turnDeviceButtonOff(i+1, main, page); }); }
 	var fb = ~chain.delay.feedback.linlin(0, 1, 0, 127);
 	var lowpass = ~chain.eq.lowPassCutoff.explin(20, 20000, 0, 127);
 	var highpass = ~chain.eq.highPassCutoff.explin(5, 15000, 0, 127);
+	var dryVol = ~chain.oct.dryVol.dbfsCC;
+	var oct1 = ~chain.oct.oct1Vol.dbfsCC;
+	var oct2 = ~chain.oct.oct2Vol.dbfsCC;
 	~apc.setDeviceEncoderValue(1, time);
 	~apc.setDeviceEncoderValue(2, fb);
 	~apc.setDeviceEncoderValue(3, lowpass);
 	~apc.setDeviceEncoderValue(4, highpass);
+	~apc.setDeviceEncoderValue(5, dryVol);
+	~apc.setDeviceEncoderValue(6, oct1);
+	~apc.setDeviceEncoderValue(7, oct2);
+
 }, main, page);
 
 // delay time:
@@ -378,6 +434,18 @@ devButtonReset = { 8.do({ | i | ~apc.turnDeviceButtonOff(i+1, main, page); }); }
 ~apc.setDeviceEncoderFunc(4, { | val |
 	var cutoff = val.linexp(0, 127, 5, 15000);
 	~chain.eq.setHighPassCutoff(cutoff);
+}, main, page);
+// dryVol:
+~apc.setDeviceEncoderFunc(5, { | val |
+	~chain.oct.setDryVol(val.ccdbfs);
+}, main, page);
+// oct 1:
+~apc.setDeviceEncoderFunc(6, { | val |
+	~chain.oct.setOct1Vol(val.ccdbfs);
+}, main, page);
+// oct 2:
+~apc.setDeviceEncoderFunc(7, { | val |
+	~chain.oct.setOct2Vol(val.ccdbfs);
 }, main, page);
 
 

@@ -9,9 +9,9 @@ MicroSynth : IM_Processor {
 	var <isLoaded, server;
 	var synth;
 
-	var threshold,  inFilterFreq;
+	var <threshold,  inFilterFreq;
 	var	<dryVol, <subVol, <octVol, <squareVol;
-	var	startFrequency, endFrequency, filterTime, attackTime, filterRes;
+	var	<startFrequency, <endFrequency, <filterTime, <attackTime, <filterRes;
 
 	*newStereo { | outBus = 0, send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead' |
 		^super.new(1, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInitStereo;

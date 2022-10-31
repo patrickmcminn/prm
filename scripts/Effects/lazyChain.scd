@@ -3,7 +3,9 @@
 	~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
 	~prm.procGroup, \addToHead);
 
+
 ~digitone = IM_Mixer_1Ch.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,false, ~prm.procGroup, \addToHead);
+
 )
 
 (
@@ -15,7 +17,7 @@
 
 
 ~apc.setPage('chain');
-
+~apc
 
 ~apc.setActiveMixerBank(1);
 ~apc.setActiveMixerEncodersBank(1);
@@ -23,3 +25,6 @@
 ~apc.turnTrackSelectButtonOff(1);
 
 s.meter
+
+~chain.microsynth.setDryVol(-1);
+~chain.microsynth.dryVol

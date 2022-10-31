@@ -9,10 +9,6 @@ audio interface
 
 
 
-Server.killAll
-s.meter
-s.makeWindow
-
 //////////////////
 //// Live: //////
 ////////////////
@@ -90,10 +86,6 @@ s.makeWindow;
 
 Server.killAll;
 
-~apc.setPage('main');z
-
-~falseSelf.mixer.setVol(9, -6);
-
-
+~apc.setPage('main');
 
 s.meter

@@ -445,6 +445,61 @@ GrainCloud2 : IM_Module {
 		});
 	}
 
+	addToInstArray { | inst |
+		instArray = instArray.add(inst);
+		cloudPatternArray.do({ | pattern, index |
+			if( playingArray[index] == true,
+				{
+					pattern.stream = Pbind(
+						\outBus, cloudBusArray[index],
+						\group, cloudGroup,
+						\addAction, \addToTail,
+						\instrument, Prand(instArray, inf),
+						\note, index,
+						\octave, 1,
+						\dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
+						\sustain, Pwhite(sustainLow, sustainHigh, inf),
+						\amp, Pwhite(ampLow, ampHigh, inf),
+						\cutoff, Pwhite(cutoffLow, cutoffHigh, inf),
+						\rq, Pwhite(rqLow, rqHigh, inf),
+						\width, Pwhite(widthLow, widthHigh, inf),
+						\pan, Pwhite(panLow, panHigh, inf)
+					).asStream;
+			});
+		});
+	}
+
+	removeFromInstArray { | inst |
+		var index = instArray.atIdentityHash(inst);
+		if(((index != -1) && (instArray.size > 1)), {
+			try {
+				instArray.removeAt(index);
+				cloudPatternArray.do({ | pattern, index |
+					if( playingArray[index] == true,
+						{
+							pattern.stream = Pbind(
+								\outBus, cloudBusArray[index],
+								\group, cloudGroup,
+								\addAction, \addToTail,
+								\instrument, Prand(instArray, inf),
+								\note, index,
+								\octave, 1,
+								\dur, Pwhite((1/trigRateLow), (1/trigRateHigh), inf),
+								\sustain, Pwhite(sustainLow, sustainHigh, inf),
+								\amp, Pwhite(ampLow, ampHigh, inf),
+								\cutoff, Pwhite(cutoffLow, cutoffHigh, inf),
+								\rq, Pwhite(rqLow, rqHigh, inf),
+								\width, Pwhite(widthLow, widthHigh, inf),
+								\pan, Pwhite(panLow, panHigh, inf)
+							).asStream;
+					});
+				});
+			};
+		});
+
+	}
+
+
 	setTrigRateLow { | low |
 		trigRateLow = low;
 		cloudPatternArray.do({ | pattern, index |

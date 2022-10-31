@@ -76,10 +76,12 @@ FeedbackSynth : IM_Module {
     sampler.setFilterCutoff(cutoff);
   }
 
+	/*
   sweepFilter { | startFreq = 1000, endFreq = 100, time =  1 |
     sampler.sweepFilter(startFreq, endFreq, time);
     { filterCutoff = endFreq; }.defer(time);
   }
+	*/
 
   //////// sequencer:
 

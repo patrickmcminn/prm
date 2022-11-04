@@ -8,17 +8,25 @@
 ~prm.reverb.makeEditor;
 
 
+x = 1.11234123;
+
+x.trunc(0.01);
+
+
 s.makeWindow
 
-~ches.data[\time][4000]
+
+x = NetAddr.new(
+
+~ches.data[\time].plot
 ~ches.data[\tide][6000]
 
 
 ~ches.tidalCSV[1]
-
+~ches.dataBuf[\oxygen].plot
 
 ~ches.algalBloomEvent;
-~ches.dataBus[\chlorophyll].get({ | val | val.postln });
+~ches.dataBus[\oxygen].get({ | val | val.postln });
 
 
 ~ches.bloomCounter

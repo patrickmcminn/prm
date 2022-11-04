@@ -18,7 +18,7 @@ Chesapeake : IM_Module {
 	var <ch3Tide;
 
 	var <netOut;
-	var <ip = "127.0.0.1";
+	var <ip = "10.0.0.1";
 
 	///// global variables:
 
@@ -261,9 +261,9 @@ Chesapeake : IM_Module {
 		dataBuf[\temp] = Buffer.loadCollection(server, data[\temp], 1);
 	}
 
-	prMakeDateTimeRoutines {
+	prMakeNetworkRoutines {
 
-		mapRout[\date] = r{
+		mapRout[\dateNetOut] = r{
 			var dateCounter = 0;
 			{
 				date = data[\date][dateCounter].asString;
@@ -274,7 +274,7 @@ Chesapeake : IM_Module {
 			}.loop;
 		};
 
-		mapRout[\time] = r {
+		mapRout[\timeNetOut] = r {
 			var timeCounter = 0;
 			{
 				time = data[\time][timeCounter].asString;
@@ -284,6 +284,54 @@ Chesapeake : IM_Module {
 				1.wait;
 			}.loop;
 		};
+
+		mapRout[\tempNetOut] = r {
+			{
+				var temp;
+				temp = temp.trunc(0.01);
+				dataBus[\temp].get({ | val | temp = val });
+				netOut.sendMsg('/cue/temp/text', ("waterTemp ="+temp++"F"));
+				2.5.wait;
+			}.loop;
+		};
+
+		mapRout[\tideNetOut] = r {
+			{
+				var height;
+				height = height.trunc(0.01);
+				dataBus[\tide].get({ | val | height = val; });
+				netOut.sendMsg('/cue/temp/text', (height++"ft"));
+				1.wait;
+			}.loop;
+		};
+
+		mapRout[\oxygenNetOut] = r {
+			{
+				var oxygen;
+				oxygen = oxygen.trunc(0.01);
+				dataBus[\oxygen].get({ | val | oxygen = val });
+				netOut.sendMsg('/cue/oxygen/text', ("dissolvedOxygen:"+oxygen+"mg/L").asString);
+				netOut.sendMsg('/cue/oxyCounter/text', ("oxygenCounter ="+oxygenCounter).asString);
+				netOut.sendMsg('/cue/oxyStable/text', ("oxygenStable ="+oxygenStable).asString);
+				//netOut.sendMsg('/cue/oxyCrisis/text', ("oxygenCrisis ="+oxygenCrisis).asString);
+				netOut.sendMsg('/cue/dieOff/text', ("dieOffEvent ="+dieOffEvent).asString);
+				2.5.wait;
+			}.loop;
+		};
+
+		mapRout[\algaeNetOut] = r{
+			{
+				var chloro;
+				chloro = chloro.trunc(0.01);
+				dataBus[\chlorophyll].get({ | val | chloro = val });
+				netOut.sendMsg('/cue/chlorophyll/text', ("chlorophyll:"+chloro+"ug/L").asString);
+				netOut.sendMsg('/cue/bloomCounter/text', ("bloomCounter ="+bloomCounter).asString);
+				netOut.sendMsg('/cue/bloomEvent/text', ("algalBloomEvent ="+algalBloomEvent).asString);
+				netOut.sendMsg('/cue/severeBloomEvent/text', ("severeaAlgalBloomEvent ="+severeBloomTrigger).asString);
+				2.5.wait;
+			}.loop;
+		};
+
 
 	}
 
@@ -407,29 +455,6 @@ Chesapeake : IM_Module {
 					{ oxygenStable = true });
 				time.wait;
 			};
-		};
-
-		mapRout[\oxygenNetOut] = r {
-			{
-				var oxygen;
-				dataBus[\oxygen].get({ | val | oxygen = val });
-				netOut.sendMsg('/cue/oxygen/text', ("dissolvedOxygen:"+oxygen+"mg/L").asString);
-				netOut.sendMsg('/cue/oxyCounter/text', ("oxygenCounter ="+oxygenCounter).asString);
-				netOut.sendMsg('/cue/oxyStable/text', ("oxygenStable ="+oxygenStable).asString);
-				//netOut.sendMsg('/cue/oxyCrisis/text', ("oxygenCrisis ="+oxygenCrisis).asString);
-				netOut.sendMsg('/cue/dieOff/text', ("dieOffEvent ="+dieOffEvent).asString);
-				2.5.wait;
-			}.loop;
-		};
-
-		mapRout[\algaeOut] = r{
-			var chloro;
-			dataBus[\chlorophyll].get({ | val | chloro = val });
-			netOut.sendMsg('/cue/chlorophyll/text', ("chlorophyll:"+chloro+"ug/L").asString);
-			netOut.sendMsg('/cue/bloomCounter/text', ("bloomCounter ="+bloomCounter).asString);
-			netOut.sendMsg('/cue/bloomEvent/text', ("algalBloomEvent ="+algalBloomEvent).asString);
-			netOut.sendMsg('/cue/severeBloomEvent/text', ("severeaAlgalBloomEvent ="+severeBloomTrigger).asString);
-
 		};
 
 		mapRout[\oxygenCounter] = r {

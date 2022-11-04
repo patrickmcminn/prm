@@ -8,12 +8,22 @@
 ~prm.reverb.makeEditor;
 
 
+s.makeWindow
+
+~ches.data[\time][4000]
+~ches.data[\tide][6000]
+
+
+~ches.tidalCSV[1]
+
+
 ~ches.algalBloomEvent;
 ~ches.dataBus[\chlorophyll].get({ | val | val.postln });
 
 
 ~ches.bloomCounter
-~ches.dataBus[\chlorophyll].get({ | val | val.postln });
+~ches.oxygenCounter
+~ches.dataBus[\temp].get({ | val | val.postln });
 ~ches.severeBloomTrigger
 ~ches.oxygenCounter
 
@@ -28,8 +38,7 @@
 ~ches.algae.granulator.setGrainEnvelope(\hanning);
 ~ches.algae.granulator.setGrainDur(3, 5);
 
-~ches.alga
-.granulator.grainEnvelope
+~ches.algae.granulator.grainEnvelope
 
 ~ches.oxygenCrisis
 ~ches.oxygenStable
@@ -52,7 +61,6 @@
 ~ches.date
 
 
-
 ~ches.mapRout[\bassTide].play;
 ~ches.mapRout[\chordTime].play;
 ~ches.mapRout[\chordChange].play;
@@ -72,7 +80,7 @@
 
 ~ches.bass.playSequence(\basslinePt1);
 
-
+~ches.algae.changePitchSet
 
 ~ches.wtrCrisis.synth.addKey(\dieOff, \amp, 0.5);
 ~ches.algae.granulator.setMix(0);
@@ -84,13 +92,13 @@ SubJuno
 isPlaying
 
 ~ches.algae.granulator.trigRate
-~ches.dataBus[\chlorophyll].get({ | val | val.postln });
+~ches.dataBus[\tideNorm].get({ | val | val.postln });
 ~ches.dataBuf[\oxygen].plot
 ~ches.dataBuf[\chlorophyll].plot
 
 
 ~ches.bloomCounter
-normalize
+
 
 ~ches.dataBus[\chlorophyll].get({ | val | val.postln });
 

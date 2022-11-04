@@ -15,6 +15,10 @@ Chesapeake : IM_Module {
 	var <mapRout;
 	var <dataBuf, <dataBus, <dataSynth;
 	var <tideRate, <qualRate, <chordTime;
+	var <ch3Tide;
+
+	var <netOut;
+	var <ip = "127.0.0.1";
 
 	///// global variables:
 
@@ -37,7 +41,7 @@ Chesapeake : IM_Module {
 		outBus, seq,
 		send0Bus, send1Bus, send2Bus, send3Bus, relGroup, addAction = 'addToHead'
 		|
-		^super.new(9, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(seq);
+		^super.new(4, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit(seq);
 	}
 
 	prInit { | seq |
@@ -55,6 +59,8 @@ Chesapeake : IM_Module {
 			dataBus = IdentityDictionary.new;
 			dataSynth = IdentityDictionary.new;
 
+			netOut = NetAddr.new(ip, 53000);
+
 
 			sequencer = try { seq.uid };
 			midiDict = IdentityDictionary.new;
@@ -71,6 +77,9 @@ Chesapeake : IM_Module {
 
 			algae = Chesa_Algae.new(mixer.chanStereo(3), relGroup: group, addAction: \addToHead);
 			while({ try { algae.isLoaded } != true }, { 0.001.wait; });
+
+			ch3Tide = Chesa_Tide.new(2, group, \addToHead);
+			while({ try { ch3Tide.isLoaded } != true }, { 0.001.wait; });
 
 			server.sync;
 
@@ -149,6 +158,8 @@ Chesapeake : IM_Module {
 		mixer.setPreVol(3, -12);
 		mixer.setVol(3, -6);
 		mixer.setSendVol(3, 0, -18);
+
+		ch3Tide.mixer.setVol(-6);
 	}
 
 	prMakeSequences {
@@ -165,8 +176,8 @@ Chesapeake : IM_Module {
 
 
 	prMakeBusses  {
-		dataBus[\date] = Bus.control;
-		dataBus[\time] = Bus.control;
+		//dataBus[\date] = Bus.control;
+		//dataBus[\time] = Bus.control;
 
 		dataBus[\tide] = Bus.control;
 		dataBus[\salinity] = Bus.control;
@@ -209,8 +220,8 @@ Chesapeake : IM_Module {
 		data[\tide] = Array.fill((tidalCSV[2].size)-1, { | i | tidalCSV[2][i+1].interpret.asFloat });
 		normData[\tide] = data[\tide].abs.normalize;
 
-		data[\date] = Array.fill((waterCSV[0].size)-1, { | i | waterCSV[0][i+1] });
-		data[\time] = Array.fill((waterCSV[1].size)-1, { | i | waterCSV[1][i+1] });
+		data[\date] = Array.fill((tidalCSV[0].size)-1, { | i | tidalCSV[0][i+1] });
+		data[\time] = Array.fill((tidalCSV[1].size)-1, { | i | tidalCSV[1][i+1] });
 
 		data[\salinity] = Array.fill((waterCSV[2].size)-1, { | i | waterCSV[2][i+1].interpret.asFloat; });
 		data[\ph] = Array.fill((waterCSV[3].size)-1, { | i | waterCSV[3][i+1].interpret.asFloat; });
@@ -257,6 +268,7 @@ Chesapeake : IM_Module {
 			{
 				date = data[\date][dateCounter].asString;
 				// here is where you send the date to QLab
+				netOut.sendMsg('/cue/date/text', ("date:"+date).asString);
 				dateCounter = dateCounter + 1;
 				1.wait;
 			}.loop;
@@ -267,6 +279,7 @@ Chesapeake : IM_Module {
 			{
 				time = data[\time][timeCounter].asString;
 				// here is where you send the time to QLab
+				netOut.sendMsg('/cue/time/text', ("time:"+time).asString);
 				timeCounter = timeCounter + 1;
 				1.wait;
 			}.loop;
@@ -299,6 +312,11 @@ Chesapeake : IM_Module {
 					tide.cloud.setCutoff(cutoffLow, cutoffHigh);
 					tide.tremolo.setVolLFOFreq(tremSpeed);
 					mixer.setSendVol(0, 0, verb);
+
+					ch3Tide.cloud.setSustain(durLow, durHigh);
+					ch3Tide.cloud.setTrigRate(trigLow, trigHigh);
+					ch3Tide.cloud.setCutoff(cutoffLow, cutoffHigh);
+					ch3Tide.tremolo.setVolLFOFreq(tremSpeed);
 				});
 				0.01.wait;
 			}
@@ -307,6 +325,7 @@ Chesapeake : IM_Module {
 		mapRout[\chordChange] = r {
 			loop {
 				tide.playMarkovChord;
+				ch3Tide.playMarkovChord;
 				chordTime.wait;
 			};
 		};
@@ -329,41 +348,88 @@ Chesapeake : IM_Module {
 				if( (param < 1) && (oxygenCrisis) == false, {
 					oxygenCrisis = true;
 					tide.cloud.setInstArray([\gaborGendy, \gaborGendy, \rexpodecRect, \expodecSaw, \rexpodecSaw]);
+					ch3Tide.cloud.setInstArray([\gaborGendy, \gaborGendy, \rexpodecRect, \expodecSaw, \rexpodecSaw]);
 					algae.granulator.setRate(0.5, 0.5);
 				});
 				if( (param > 2) && (oxygenCrisis == true), {
 					dieOffEvent = false;
 					oxygenCrisis = false;
 					tide.cloud.setInstArray([\gaborSine, \gaborSine, \gaborSine, \percRevSine, \percRect, \gaborSaw]);
+					ch3Tide.cloud.setInstArray([\gaborSine, \gaborSine, \gaborSine, \percRevSine, \percRect, \gaborSaw]);
 					algae.granulator.setRate(1, 1);
 				});
 				if( param < 1.5, {
 					tide.cloud.addToInstArray(\expodecRect);
 					tide.cloud.removeFromInstArray(\gaborSine);
+					tide.cloud.addToInstArray(\gaborGendy);
+
+					ch3Tide.cloud.addToInstArray(\expodecRect);
+					ch3Tide.cloud.removeFromInstArray(\gaborSine);
+					ch3Tide.cloud.addToInstArray(\gaborGendy);
 				});
 				if( (param < 3) && (param > 1.5), {
 					tide.cloud.addToInstArray(\gaborRect);
 					tide.cloud.removeFromInstArray(\gaborSine);
 					tide.cloud.removeFromInstArray(\rexpodecSine);
 					tide.cloud.removeFromInstArray(\percRevSine);
+					tide.cloud.removeFromInstArray(\gaborGendy);
+
+					ch3Tide.cloud.addToInstArray(\gaborRect);
+					ch3Tide.cloud.removeFromInstArray(\gaborSine);
+					ch3Tide.cloud.removeFromInstArray(\rexpodecSine);
+					ch3Tide.cloud.removeFromInstArray(\percRevSine);
+					ch3Tide.cloud.removeFromInstArray(\gaborGendy);
 				});
 				if( (param < 3) && (oxygenStable == true), { oxygenStable = false; });
 				if( (param > 3) && (param < 5), {
+					tide.cloud.removeFromInstArray(\gaborGendy);
 					tide.cloud.removeFromInstArray(\gaborRect);
 					tide.cloud.removeFromInstArray(\gaborSaw);
 					tide.cloud.addToInstArray(\gaborSine);
 					tide.cloud.addToInstArray(\percSine);
 					tide.cloud.addToInstArray(\rexpodecSine);
 					tide.cloud.addToInstArray(\percRevSine);
+
+					ch3Tide.cloud.removeFromInstArray(\gaborGendy);
+					ch3Tide.cloud.removeFromInstArray(\gaborRect);
+					ch3Tide.cloud.removeFromInstArray(\gaborSaw);
+					ch3Tide.cloud.addToInstArray(\gaborSine);
+					ch3Tide.cloud.addToInstArray(\percSine);
+					ch3Tide.cloud.addToInstArray(\rexpodecSine);
+					ch3Tide.cloud.addToInstArray(\percRevSine);
 				});
 				if( (param > 4.5) && ( oxygenStable == true),
 					{
 						tide.cloud.setInstArray([\percRevSine, \gaborWideSine, \gaborWideSaw, \percRevSaw]);
+						ch3Tide.cloud.setInstArray([\percRevSine, \gaborWideSine, \gaborWideSaw, \percRevSaw]);
 						algae.granulator.setRate(2, 2);
 					},
 					{ oxygenStable = true });
 				time.wait;
 			};
+		};
+
+		mapRout[\oxygenNetOut] = r {
+			{
+				var oxygen;
+				dataBus[\oxygen].get({ | val | oxygen = val });
+				netOut.sendMsg('/cue/oxygen/text', ("dissolvedOxygen:"+oxygen+"mg/L").asString);
+				netOut.sendMsg('/cue/oxyCounter/text', ("oxygenCounter ="+oxygenCounter).asString);
+				netOut.sendMsg('/cue/oxyStable/text', ("oxygenStable ="+oxygenStable).asString);
+				//netOut.sendMsg('/cue/oxyCrisis/text', ("oxygenCrisis ="+oxygenCrisis).asString);
+				netOut.sendMsg('/cue/dieOff/text', ("dieOffEvent ="+dieOffEvent).asString);
+				2.5.wait;
+			}.loop;
+		};
+
+		mapRout[\algaeOut] = r{
+			var chloro;
+			dataBus[\chlorophyll].get({ | val | chloro = val });
+			netOut.sendMsg('/cue/chlorophyll/text', ("chlorophyll:"+chloro+"ug/L").asString);
+			netOut.sendMsg('/cue/bloomCounter/text', ("bloomCounter ="+bloomCounter).asString);
+			netOut.sendMsg('/cue/bloomEvent/text', ("algalBloomEvent ="+algalBloomEvent).asString);
+			netOut.sendMsg('/cue/severeBloomEvent/text', ("severeaAlgalBloomEvent ="+severeBloomTrigger).asString);
+
 		};
 
 		mapRout[\oxygenCounter] = r {
@@ -442,14 +508,19 @@ Chesapeake : IM_Module {
 
 				//if( severeAlgalBloomEvent == true, { severeBloomCounter = severeBloomCounter + 1; });
 				if( algalBloomEvent == true,
-					{ if((bloomCounter < 10) && (0.6.coin == true),  { bloomCounter = bloomCounter + 1; })},
-					{ if( bloomCounter > 0, { bloomCounter = bloomCounter - 2; }); }
+					{ if((bloomCounter < 10) && (0.6.coin == true) && (severeAlgalBloomEvent != true),
+						{ bloomCounter = bloomCounter + 1; })},
+					{ if( bloomCounter > 0,
+						{ bloomCounter = bloomCounter - 2; }); if( bloomCounter < 0, { bloomCounter = 0 }); }
 				);
 				bloomCounter.postln;
-				if( (severeAlgalBloomEvent == true) && (bloomCounter < 10), { bloomCounter = bloomCounter + 1; });
+				if( (severeAlgalBloomEvent == true) && (bloomCounter < 10) && (0.5.coin == true),
+					{ bloomCounter = bloomCounter + 1; });
 				if( bloomCounter == 10, { severeBloomTrigger = true });
 				if( bloomCounter == 0, { severeBloomTrigger = false; });
 				if( (bloomCounter < 10) && (0.2.coin == true), { severeBloomTrigger = false; });
+				if( (severeBloomTrigger == true) && (severeAlgalBloomEvent == false) && (0.5.coin),
+					{ if( bloomCounter >0, { bloomCounter = bloomCounter -1; }); });
 				time.wait;
 			}.loop;
 		};
@@ -531,6 +602,7 @@ Chesapeake : IM_Module {
 				dataBus[\turbidityNorm].get({ | val |
 					var trem = val.lincurve(0, 0.8, 0, 1, -1.2);
 					tide.tremolo.setVolLFODepth(trem);
+					ch3Tide.tremolo.setVolLFODepth(trem);
 				});
 				0.1.wait;
 			}.loop;
@@ -543,8 +615,9 @@ Chesapeake : IM_Module {
 					var changed = false;
 					//val.postln;
 					if( val < 75, { algae.changePitchSet; changed = true; });
-					if( val < 77 &&  0.5.coin, { algae.changePitchSet; changed = true; });
-					if( val < 80 && 0.1.coin, { algae.changePitchSet; changed = true; });
+					if( (val < 77) &&  (0.6.coin) && (changed == false), { algae.changePitchSet; changed = true; });
+					if( (val < 80) && (0.3.coin) && (changed == false), { algae.changePitchSet; changed = true; });
+					if( (changed == false) && (0.1.coin), { algae.changePitchSet; changed = true; });
 					if( changed == true, { "set changed".postln; });
 				});
 				time.wait;
@@ -560,6 +633,9 @@ Chesapeake : IM_Module {
 	playTidalData { | startPos = 0 |
 		dataSynth[\tideNorm] = Synth(\prm_chesa_dataPlayer,
 			[\outBus, dataBus[\tideNorm], \buffer, dataBuf[\tideNorm], \rate, tideRate, \startPos, startPos],
+			group, \addToHead);
+		dataSynth[\tide] = Synth(\prm_chesa_dataPlayer,
+			[\outBus, dataBus[\tide], \buffer, dataBuf[\tide], \rate, tideRate, \startPos, startPos],
 			group, \addToHead);
 		/*
 		dataSynth[\date] = Synth(\prm_chesa_dataPlayer,

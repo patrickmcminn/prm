@@ -23,10 +23,10 @@ x = NetAddr.new(
 
 
 ~ches.tidalCSV[1]
-~ches.dataBuf[\oxygen].plot
+~ches.dataBuf[\chlorophyll].plot
 
 ~ches.algalBloomEvent;
-~ches.dataBus[\oxygen].get({ | val | val.postln });
+~ches.dataBus[\].get({ | val | val.postln });
 
 
 ~ches.bloomCounter

@@ -286,30 +286,34 @@ Chesapeake : IM_Module {
 		};
 
 		mapRout[\tempNetOut] = r {
+      var temp;
 			{
-				var temp;
-				temp = temp.trunc(0.01);
 				dataBus[\temp].get({ | val | temp = val });
-				netOut.sendMsg('/cue/temp/text', ("waterTemp ="+temp++"F"));
+        server.sync;
+        temp = temp.trunc(0.01);
+        temp.postln;
+				netOut.sendMsg('/cue/temp/text', ("waterTemp ="+temp+"F"));
 				2.5.wait;
 			}.loop;
 		};
 
 		mapRout[\tideNetOut] = r {
+      var height;
 			{
-				var height;
-				height = height.trunc(0.01);
 				dataBus[\tide].get({ | val | height = val; });
-				netOut.sendMsg('/cue/temp/text', (height++"ft"));
+        server.sync;
+        height = height.trunc(0.01);
+				netOut.sendMsg('/cue/tide/text', (height+"ft").asString);
 				1.wait;
 			}.loop;
 		};
 
 		mapRout[\oxygenNetOut] = r {
-			{
-				var oxygen;
-				oxygen = oxygen.trunc(0.01);
+			var oxygen;
+      {
 				dataBus[\oxygen].get({ | val | oxygen = val });
+        server.sync;
+        oxygen = oxygen.trunc(0.01);
 				netOut.sendMsg('/cue/oxygen/text', ("dissolvedOxygen:"+oxygen+"mg/L").asString);
 				netOut.sendMsg('/cue/oxyCounter/text', ("oxygenCounter ="+oxygenCounter).asString);
 				netOut.sendMsg('/cue/oxyStable/text', ("oxygenStable ="+oxygenStable).asString);
@@ -320,17 +324,42 @@ Chesapeake : IM_Module {
 		};
 
 		mapRout[\algaeNetOut] = r{
-			{
-				var chloro;
-				chloro = chloro.trunc(0.01);
+			var chloro;
+      {
 				dataBus[\chlorophyll].get({ | val | chloro = val });
+        server.sync;
+        chloro = chloro.trunc(0.01);
 				netOut.sendMsg('/cue/chlorophyll/text', ("chlorophyll:"+chloro+"ug/L").asString);
 				netOut.sendMsg('/cue/bloomCounter/text', ("bloomCounter ="+bloomCounter).asString);
 				netOut.sendMsg('/cue/bloomEvent/text', ("algalBloomEvent ="+algalBloomEvent).asString);
-				netOut.sendMsg('/cue/severeBloomEvent/text', ("severeaAlgalBloomEvent ="+severeBloomTrigger).asString);
+				netOut.sendMsg('/cue/severeBloomEvent/text', ("severeAlgalBloomEvent ="+severeBloomTrigger).asString);
 				2.5.wait;
 			}.loop;
 		};
+
+    mapRout[\crisisNetOut] = r {
+      loop {
+        if( dieOffEvent == true, { netOut.sendMsg('/cue/crisisIn/go'); }, {  netOut.sendMsg('/cue/crisisOut/go');  });
+        if( severeBloomTrigger == true,
+          { netOut.sendMsg('/cue/algaeIn/go'); }, { netOut.sendMsg('/cue/algaeOut/go'); });
+        1.wait;
+      };
+      /*
+      var previous = false;
+      loop {
+        if( dieOffEvent != previous,
+          {
+            if( dieOffEvent == true,
+              { netOut.sendMsg('/cue/crisisOut/go'); },
+              { netOut.sendMsg('/cue/crisisIn/go'); });
+            previous = dieOffEvent
+          },
+          { previous = dieOffEvent });
+        1.wait;
+      };
+      */
+    };
+
 
 
 	}
@@ -392,6 +421,7 @@ Chesapeake : IM_Module {
 			var param = 3;
 			loop {
 				dataBus[\oxygen].get({ | val | param = val });
+        server.sync;
 				//param.postln;
 				if( (param < 1) && (oxygenCrisis) == false, {
 					oxygenCrisis = true;
@@ -428,7 +458,7 @@ Chesapeake : IM_Module {
 					ch3Tide.cloud.removeFromInstArray(\percRevSine);
 					ch3Tide.cloud.removeFromInstArray(\gaborGendy);
 				});
-				if( (param < 3) && (oxygenStable == true), { oxygenStable = false; });
+				//if( (param < 3) && (oxygenStable == true), { oxygenStable = false; });
 				if( (param > 3) && (param < 5), {
 					tide.cloud.removeFromInstArray(\gaborGendy);
 					tide.cloud.removeFromInstArray(\gaborRect);
@@ -453,6 +483,9 @@ Chesapeake : IM_Module {
 						algae.granulator.setRate(2, 2);
 					},
 					{ oxygenStable = true });
+
+				if( (param < 3) && (oxygenStable == true), { oxygenStable = false; });
+
 				time.wait;
 			};
 		};

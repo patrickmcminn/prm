@@ -1,9 +1,47 @@
-
 ~ches = Chesapeake.new(~prm.audioIn, nil, ~prm.reverb.inBus, ~prm.granulator.inBus);
 ~ches.isLoaded;
 
-~ches.dataBuf[\ph].plot
 
+(
+~ches.playTidalData(0);
+~ches.playWaterQualityData(0);
+
+~ches.mapRout[\dateNetOut].play;
+~ches.mapRout[\timeNetOut].play;
+
+~ches.mapRout[\tempNetOut].play;
+~ches.mapRout[\tideNetOut].play;
+~ches.mapRout[\oxygenNetOut].play;
+~ches.mapRout[\algaeNetOut].play;
+~ches.mapRout[\crisisNetOut].play;
+)
+
+(
+~ches.mapRout[\bassTide].play;
+~ches.mapRout[\chordTime].play;
+~ches.mapRout[\chordChange].play;
+~ches.mapRout[\tideMap].play;
+~ches.mapRout[\oxygenInst].play;
+~ches.mapRout[\turbTrem].play;
+~ches.mapRout[\oxygenCounter].play;
+~ches.mapRout[\crisisBassVol].play;
+~ches.mapRout[\crisisBass].play;
+~ches.mapRout[\bloomCounter].play;
+~ches.mapRout[\bloomEvent].play;
+~ches.mapRout[\chloroAlgae].play;
+~ches.mapRout[\crisisVolume].play;
+~ches.mapRout[\tempAlgae].play;
+~ches.mapRout[\date].play;
+~ches.mapRout[\time].play;
+
+~ches.bass.playSequence(\basslinePt1);
+);
+
+~ches.netOut.sendMsg('/cue/crisisOut/go');
+~ches.netOut.sendMsg('/cue/crisisIn/go');
+
+
+  '/cue/time/text', ("time:"+time).asString
 
 ~prm.reverb.makeEditor;
 
@@ -14,26 +52,6 @@ x.trunc(0.01);
 
 
 s.makeWindow
-
-
-x = NetAddr.new(
-
-~ches.data[\time].plot
-~ches.data[\tide][6000]
-
-
-~ches.tidalCSV[1]
-~ches.dataBuf[\chlorophyll].plot
-
-~ches.algalBloomEvent;
-~ches.dataBus[\].get({ | val | val.postln });
-
-
-~ches.bloomCounter
-~ches.oxygenCounter
-~ches.dataBus[\temp].get({ | val | val.postln });
-~ches.severeBloomTrigger
-~ches.oxygenCounter
 
 ~ches.dataBuf[\chlorophyll].plot
 
@@ -62,31 +80,11 @@ x = NetAddr.new(
 ~ches.playTidalData(1000);
 ~ches.playWaterQualityData(1000);
 
-~ches.playTidalData(0);
-~ches.playWaterQualityData(0);
 
 ~ches.time
 ~ches.date
 
 
-~ches.mapRout[\bassTide].play;
-~ches.mapRout[\chordTime].play;
-~ches.mapRout[\chordChange].play;
-~ches.mapRout[\tideMap].play;
-~ches.mapRout[\oxygenInst].play;
-~ches.mapRout[\turbTrem].play;
-~ches.mapRout[\oxygenCounter].play;
-~ches.mapRout[\crisisBassVol].play;
-~ches.mapRout[\crisisBass].play;
-~ches.mapRout[\bloomCounter].play;
-~ches.mapRout[\bloomEvent].play;
-~ches.mapRout[\chloroAlgae].play;
-~ches.mapRout[\crisisVolume].play;
-~ches.mapRout[\tempAlgae].play;
-~ches.mapRout[\date].play;
-~ches.mapRout[\time].play;
-
-~ches.bass.playSequence(\basslinePt1);
 
 ~ches.algae.changePitchSet
 
@@ -157,7 +155,6 @@ b.plot
 
 ~ches.normData[\tide].plot
 
-plot
 
 
 ~ches.qualRate
@@ -254,14 +251,14 @@ x.mixer.vol(0);
 x.mixer.setVol(0, -12);
 
 ~rout = {
-	{
-		~ches.dataBus[\tideNorm].get({ | val |
-			var vol = if( val < 0.5, { -inf }, { val.linlin(0.5, 1, 0, 0.5).ampdb });
-			x.mixer.setVol(vol);
-			//vol.postln;
-		});
-		0.001.wait;
-	}.loop;
+  {
+    ~ches.dataBus[\tideNorm].get({ | val |
+      var vol = if( val < 0.5, { -inf }, { val.linlin(0.5, 1, 0, 0.5).ampdb });
+      x.mixer.setVol(vol);
+      //vol.postln;
+    });
+    0.001.wait;
+  }.loop;
 }.fork;
 ~rout.stop;
 ~ches.dataBus[\tideNorm].getSynchronous({ | val |  val.postln; });

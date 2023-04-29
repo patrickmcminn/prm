@@ -61,7 +61,7 @@ Chain : IM_Module {
 			microsynth = MicroSynth.newStereo(splitter.inBus, relGroup: group, addAction: \addToHead);
 			while({ try { microsynth.isLoaded } != true }, { 0.001.wait; });
 
-			oct = Octave_OC2.newStereo(microsynth.inBus, relGroup: group, addAction: \addToHead);
+			oct = Octave_OC2.newStereo(splitter.inBus, relGroup: group, addAction: \addToHead);
 			while({ try { oct.isLoaded } != true }, { 0.001.wait; });
 
 			input = IM_Mixer_1Ch.new(oct.inBus, relGroup: group, addAction: \addToHead);

@@ -99,7 +99,7 @@ Octave_OC2 : IM_Processor {
 	}
 	setDryVol { | vol = -3 |
 		dryVol = vol;
-		synth.set(\dryVol, dryVol.dbamp);
+		synth.set(\dryAmp, dryVol.dbamp);
 	}
 	setOct1Vol { | vol = -6 |
 		oct1Vol = vol;

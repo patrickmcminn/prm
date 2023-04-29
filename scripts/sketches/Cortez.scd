@@ -204,22 +204,7 @@ r {
 
 
 
-
-
-
-
-
-
-
-
-
-
 b.printAllParameters;
-
-
-
-
-
 
 c.printAllParameters;
 

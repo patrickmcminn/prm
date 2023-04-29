@@ -58,6 +58,37 @@ var tuningNoteIsPlaying = false;
 ~apc.setSceneLaunchFunc(3, { ~apc.setPage('subtractive'); }, page: page);
 
 /////// Grid Functions:
+
+'Habit Fills Up What Remains';
+
+~apc.turnGridPurple(6, 4, 2, page: page);
+~apc.setGridFunc(6, 4, {
+if(habitIsLoaded == false, {
+r{
+/*
+~habit = Habit.new(~prm.audioIn, 1, 2, 3, ~moogDevice, ~moogPort,
+~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus,
+relGroup: ~prm.procGroup, addAction: \addToHead);
+*/
+~habit = Habit.new(~prm.audioIn, ~micIn, ~modInput, ~modOutput, ~digiTrackArray, ~moogDevice, ~moogPort, ~pyr, ~prm.delay,
+~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
+~prm.procGroup, \addToHead);
+while({ try { ~habit.isLoaded } != true }, { 0.001.wait; });
+~apc.setGridFunc(7, 4, { ~apc.setPage('habit'); }, page: page);
+~apc.turnGridGreen(7, 4);
+habitIsLoaded = true;
+}.play;
+},
+{
+~habit.free;
+~apc.setGridFunc(7, 4, { });
+~apc.turnGridOff(7, 4);
+habitIsLoaded = false;
+});
+}, page: page);
+
+
+
 'Built on a Flawed Foundation';
 
 ~apc.turnGridCyan(0, 4, page: page);

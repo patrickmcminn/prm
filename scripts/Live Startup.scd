@@ -83,14 +83,7 @@ r {
 )
 
 s.makeWindow;
-
+s.meter;
 Server.killAll;
 
 ~apc.setPage('main');
-
-s.meter
-
-~habit.mixer.setPreVol(2, 0);
-
-
-Habit

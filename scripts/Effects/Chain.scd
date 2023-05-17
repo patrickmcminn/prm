@@ -12,12 +12,11 @@ var microsynth = 4;
 var delay = 5;
 var eq = 6;
 
-var digitone = 1;
+var aux = 1;
 
 var freezeRate = 1;
 
 var shiftPreset = 0;
-
 
 var currentGrid = main;
 
@@ -612,24 +611,24 @@ devButtonReset = { 8.do({ | i | ~apc.turnDeviceButtonOff(i+1, main, page); }); }
 	~apc.setMixerEncoderValue(2, gran);
 	~apc.setMixerEncoderValue(3, mod);
 	~apc.setMixerEncoderValue(4, del);
-}, bank: digitone, page: page);
-~apc.setFaderFunc(1, { | val | ~digitone.setVol(val.ccdbfs); }, digitone, page);
+}, bank: aux, page: page);
+~apc.setFaderFunc(1, { | val | ~digitone.setVol(val.ccdbfs); }, aux, page);
 
-~apc.setTrackSelectFunc(1, { ~digitone.tglMute; }, bank: digitone, page: page);
-~apc.setRecordEnableButtonFunc(1, { ~digitoneInput.tglMute; }, bank: digitone, page: page);
+~apc.setTrackSelectFunc(1, { ~digitone.tglMute; }, bank: aux, page: page);
+~apc.setRecordEnableButtonFunc(1, { ~digitoneInput.tglMute; }, bank: aux, page: page);
 
-~apc.setMixerEncoderFunc(1, { | val | ~digitone.setSendVol(0, val.ccdbfs); }, digitone, page);
-~apc.setMixerEncoderFunc(2, { | val | ~digitone.setSendVol(1, val.ccdbfs); }, digitone, page);
-~apc.setMixerEncoderFunc(3, { | val | ~digitone.setSendVol(2, val.ccdbfs); }, digitone, page);
-~apc.setMixerEncoderFunc(4, { | val | ~digitone.setSendVol(3, val.ccdbfs); }, digitone, page);
+~apc.setMixerEncoderFunc(1, { | val | ~digitone.setSendVol(0, val.ccdbfs); }, aux, page);
+~apc.setMixerEncoderFunc(2, { | val | ~digitone.setSendVol(1, val.ccdbfs); }, aux, page);
+~apc.setMixerEncoderFunc(3, { | val | ~digitone.setSendVol(2, val.ccdbfs); }, aux, page);
+~apc.setMixerEncoderFunc(4, { | val | ~digitone.setSendVol(3, val.ccdbfs); }, aux, page);
 
 ~apc.setUserButtonFunc({
 	if( currentGrid == main,
 		{
-			~apc.setActiveMixerBank(digitone, page);
-			~apc.setActiveMixerEncodersBank(digitone, page);
+			~apc.setActiveMixerBank(aux, page);
+			~apc.setActiveMixerEncodersBank(aux, page);
 			~apc.turnUserButtonOn;
-			currentGrid = digitone;
+			currentGrid = aux;
 		},
 		{
 			~apc.setActiveMixerBank(main, page);
@@ -639,7 +638,10 @@ devButtonReset = { 8.do({ | i | ~apc.turnDeviceButtonOff(i+1, main, page); }); }
 	});
 }, bank: main, page: page);
 
+//////// sampler:
 
+~apc.turnSceneLaunchButtonBlue(0, 2, main, page);
+~apc.setSceneLaunchFunc(0, { ~apc.setPage('sampler') }, bank: main, page: page);
 
 
 

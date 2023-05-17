@@ -49,15 +49,46 @@ var tuningNoteIsPlaying = false;
 ~apc.turnSceneLaunchButtonPurple(2, 2, page: page);
 ~apc.setSceneLaunchFunc(2, { ~apc.setPage('sampler') }, page: page);
 
-//////// Effects Page:
-~apc.turnSceneLaunchButtonPurple(4, 2, page: page);
-~apc.setSceneLaunchFunc(4, { ~apc.setPage('effects'); }, page: page);
-
 //////// Subtractive Page:
 ~apc.turnSceneLaunchButtonPink(3, 2, page: page);
 ~apc.setSceneLaunchFunc(3, { ~apc.setPage('subtractive'); }, page: page);
 
+
+//////// Effects Page:
+~apc.turnSceneLaunchButtonPurple(4, 2, page: page);
+~apc.setSceneLaunchFunc(4, { ~apc.setPage('effects'); }, page: page);
+
+
 /////// Grid Functions:
+'Chain';
+~apc.turnGridWhite(6, 0, 2, page: page);
+~apc.setGridFunc(6, 0, {
+	if( chainIsLoaded == false, {
+		r{
+			~chain = Chain.new(~prm.audioIn,
+				~s[0], ~s[1], ~s[2], ~s[3],
+				~prm.procGroup, \addToHead);
+			while({ try { ~chain.isLoaded } != true }, { 0.001.wait; });
+			~digitone = IM_Mixer_1Ch.new(~prm.audioIn,
+				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,false,
+				~prm.procGroup, \addToHead);
+			~chInput = IM_HardwareIn.new(~pickupIn, ~chain.inBus);
+			~chMic = IM_HardwareIn.new(~micIn, ~chain.inBus);
+			~digitoneInput = IM_HardwareIn.newStereo(2, ~digitone.chanStereo, ~prm.procGroup, \addToHead);
+			while({ try { ~digitoneInput.isLoaded } != true }, { 0.001.wait; });
+			~apc.setGridFunc(7, 0, { ~apc.setPage('chain'); }, page: page);
+			~apc.turnGridGreen(7, 0, page: page);
+			chainIsLoaded = true;
+		}.play;
+	},
+	{
+		~chain.free; ~digitone.free; ~chInput.free; ~chMic.free; ~digitoneInput.free;
+		~apc.setGridFunc(7, 0, { }, page: page);
+		~apc.turnGridOff(7, 0, page: page);
+		chainIsLoaded = false;
+	});
+}, page: page);
+
 
 'Habit Fills Up What Remains';
 

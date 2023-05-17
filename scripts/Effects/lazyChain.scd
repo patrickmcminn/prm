@@ -2,8 +2,6 @@
 ~chain = Chain.new(~prm.audioIn,
 	~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,
 	~prm.procGroup, \addToHead);
-
-
 ~digitone = IM_Mixer_1Ch.new(~prm.audioIn, ~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,false, ~prm.procGroup, \addToHead);
 
 )

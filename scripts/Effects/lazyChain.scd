@@ -20,11 +20,12 @@
 ~apc
 
 ~apc.setActiveMixerBank(1);
-~apc.setActiveMixerEncodersBank(1);
+~apc.setActiveMixerEncodersBank(1);`
 
 ~apc.turnTrackSelectButtonOff(1);
-
 s.meter
 
 ~chain.microsynth.setDryVol(-1);
 ~chain.microsynth.dryVol
+
+Octave_OC2

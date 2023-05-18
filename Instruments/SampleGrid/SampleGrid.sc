@@ -390,6 +390,7 @@ SampleGrid : IM_Processor {
 	////////////////////////
 
 	makeMIDIFuncs { | device, channel = 13 |
+		//////// to control Sampler from Pyramid:
 		var seq = device.uid;
 		noteOnArray = Array.fill(16, {  | i |
 			MIDIFunc.noteOn({ | vel |
@@ -401,6 +402,9 @@ SampleGrid : IM_Processor {
 		ccArray = Array.newClear(112);
 		16.do({ | i | this.makeSlotCC(i, i*7, channel, seq); });
 		midiLoaded = true;
+
+
+		//////// Digitone:
 	}
 
 	freeMIDIFuncs {

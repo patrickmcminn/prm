@@ -72,8 +72,11 @@ var tuningNoteIsPlaying = false;
 			~digitone = IM_Mixer_1Ch.new(~prm.audioIn,
 				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,false,
 				~prm.procGroup, \addToHead);
+			while({ try { ~digitone.isLoaded } != true}, { 0.001.wait; });
 			~chInput = IM_HardwareIn.new(~pickupIn, ~chain.inBus);
+			while({ try { ~chInput.isLoaded } != true}, { 0.001.wait; });
 			~chMic = IM_HardwareIn.new(~micIn, ~chain.inBus);
+			while({ try { ~chMic.isLoaded } != true}, { 0.001.wait; });
 			~digitoneInput = IM_HardwareIn.newStereo(2, ~digitone.chanStereo, ~prm.procGroup, \addToHead);
 			while({ try { ~digitoneInput.isLoaded } != true }, { 0.001.wait; });
 			~apc.setGridFunc(7, 0, { ~apc.setPage('chain'); }, page: page);

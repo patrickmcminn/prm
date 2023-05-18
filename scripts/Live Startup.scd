@@ -25,6 +25,8 @@ Inputs:
 3 - Plaits
 4 - Noise
 
+(THE ABOVE IS NOW VERY OUTDATED)
+
 Outputs:
 1 - Modular Send
 8 - clock out
@@ -65,8 +67,14 @@ r {
 	s.sync;
 	try { ~base = Base.new; };
 	s.sync;
+	// Pyramid:
 	try { ~pyr = MIDIIn.findPort("Pyramid MIDI USB", "Pyramid MIDI USB");};
-  try { ~pyrOut = MIDIOut.newByName("Pyramid MIDI USB", "Pyramid MIDI USB"); };
+	try { ~pyrOut = MIDIOut.newByName("Pyramid MIDI USB", "Pyramid MIDI USB"); };
+
+	// Digitone (via UMC1820) for THE ARM / perhaps other things?
+	try { ~umc = MIDIIn.findPort("UMC1820", "UMC1820"); };
+	try { ~umcOut = MIDIOut.newByName("UMC1820", "UMC1820"); };
+
 	s.sync;
 
 	"/Global Functions/Load Global Functions.scd".loadRelative;

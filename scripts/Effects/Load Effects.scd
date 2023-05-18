@@ -10,3 +10,4 @@ prm
 "LoopDelay Page.scd".loadRelative;
 "Huge.scd".loadRelative;
 "Concaterwaul APC.scd".loadRelative;
+"Chain.scd".loadRelative;

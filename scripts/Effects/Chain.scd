@@ -607,6 +607,11 @@ devButtonReset = { 8.do({ | i | ~apc.turnDeviceButtonOff(i+1, main, page); }); }
 	var del = ~digitone.sendVol(3).dbfsCC;
 	if(~digitone.isMuted, { ~apc.turnTrackSelectButtonOff(1) }, { ~apc.turnTrackSelectButtonOn(1) });
 	if(~digitoneInput.isMuted, { ~apc.turnRecordEnableButtonOff(1) }, { ~apc.turnRecordEnableButtonOn });
+	if( ~digiMidi.track1IsMuted, { ~apc.turnTrackSelectButtonOff(2) }, { ~apc.turnTrackSelectButtonOn(2) });
+	if( ~digiMidi.track2IsMuted, { ~apc.turnTrackSelectButtonOff(3) }, { ~apc.turnTrackSelectButtonOn(3) });
+	if( ~digiMidi.track3IsMuted, { ~apc.turnTrackSelectButtonOff(4) }, { ~apc.turnTrackSelectButtonOn(4) });
+	if( ~digiMidi.track4IsMuted, { ~apc.turnTrackSelectButtonOff(5) }, { ~apc.turnTrackSelectButtonOn(5) });
+
 	~apc.setMixerEncoderValue(1, verb);
 	~apc.setMixerEncoderValue(2, gran);
 	~apc.setMixerEncoderValue(3, mod);
@@ -621,6 +626,17 @@ devButtonReset = { 8.do({ | i | ~apc.turnDeviceButtonOff(i+1, main, page); }); }
 ~apc.setMixerEncoderFunc(2, { | val | ~digitone.setSendVol(1, val.ccdbfs); }, aux, page);
 ~apc.setMixerEncoderFunc(3, { | val | ~digitone.setSendVol(2, val.ccdbfs); }, aux, page);
 ~apc.setMixerEncoderFunc(4, { | val | ~digitone.setSendVol(3, val.ccdbfs); }, aux, page);
+
+~apc.setFaderFunc(2, { | val | ~digiMidi.setTrack1Vol(val) }, aux, page);
+~apc.setFaderFunc(3, { | val | ~digiMidi.setTrack2Vol(val) }, aux, page);
+~apc.setFaderFunc(4, { | val | ~digiMidi.setTrack3Vol(val) }, aux, page);
+~apc.setFaderFunc(5, { | val | ~digiMidi.setTrack4Vol(val) }, aux, page);
+
+~apc.setTrackSelectFunc(2, { ~digiMidi.tglMuteTrack1 }, bank: aux, page: page);
+~apc.setTrackSelectFunc(3, { ~digiMidi.tglMuteTrack2 }, bank: aux, page: page);
+~apc.setTrackSelectFunc(4, { ~digiMidi.tglMuteTrack3 }, bank: aux, page: page);
+~apc.setTrackSelectFunc(5, { ~digiMidi.tglMuteTrack4 }, bank: aux, page: page);
+
 
 ~apc.setUserButtonFunc({
 	if( currentGrid == main,

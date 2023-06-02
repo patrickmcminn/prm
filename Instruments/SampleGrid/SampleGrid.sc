@@ -13,6 +13,7 @@ SampleGrid : IM_Processor {
 	var recFileName;
 
 	var <noteOnArray, <noteOffArray, <ccArray, <midiLoaded;
+	var <umcOnArray, <umcOffArray;
 
 	*new { | outBus, send0Bus, send1Bus, send2Bus, send3Bus, relGroup = nil, addAction = 'addToHead' |
 		^super.new(2, 1, outBus, send0Bus, send1Bus, send2Bus, send3Bus, false, relGroup, addAction).prInit;
@@ -389,22 +390,36 @@ SampleGrid : IM_Processor {
 	//// MIDI Functions: ////
 	////////////////////////
 
-	makeMIDIFuncs { | device, channel = 13 |
+	makeMIDIFuncs { | pyr, umc, channel = 12 |
 		//////// to control Sampler from Pyramid:
-		var seq = device.uid;
-		noteOnArray = Array.fill(16, {  | i |
-			MIDIFunc.noteOn({ | vel |
-				this.playSample(i, vel.ccdbfs(-36, 3)) }, i+60, channel, seq);
+		var seq = try { pyr.uid; };
+		var seq2 = try { umc.uid; };
+		if( seq != nil, {
+			noteOnArray = Array.fill(16, {  | i |
+				MIDIFunc.noteOn({ | vel |
+					this.playSample(i, vel.ccdbfs(-36, 3)) }, i+60, channel, seq);
+			});
+			noteOffArray = Array.fill(16, { | i |
+				MIDIFunc.noteOff({ | vel | this.releaseSample(i); }, i+60, channel, seq);
+			});
+			ccArray = Array.newClear(112);
+			16.do({ | i | this.makeSlotCC(i, i*7, channel, seq); });
 		});
-		noteOffArray = Array.fill(16, { | i |
-			MIDIFunc.noteOff({ | vel | this.releaseSample(i); }, i+60, channel, seq);
+
+		if( seq2 != nil, {
+
+			umcOnArray = Array.fill(16, { | i |
+				MIDIFunc.noteOn({ | vel |
+					this.playSample(i, vel.ccdbfs(-36, 3)) }, i+60, channel, seq2);
+			});
+			umcOffArray = Array.fill(16, { | i |
+				MIDIFunc.noteOff({ this.releaseSample(i) }, i+60 , channel, seq2);
+			});
 		});
-		ccArray = Array.newClear(112);
-		16.do({ | i | this.makeSlotCC(i, i*7, channel, seq); });
+
+
 		midiLoaded = true;
 
-
-		//////// Digitone:
 	}
 
 	freeMIDIFuncs {

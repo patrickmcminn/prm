@@ -12,3 +12,5 @@
 7;1;MidSongDM7;Yellow;
 7;1;midSongDMBm;Yellow;
 0;2;siner;Purple;
+0;0;TheArm1;Blue;
+0;0;thearm2;Blue;

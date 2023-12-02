@@ -79,7 +79,7 @@ var tuningNoteIsPlaying = false;
 			while({ try { ~chMic.isLoaded } != true}, { 0.001.wait; });
 			~digitoneInput = IM_HardwareIn.newStereo(2, ~digitone.chanStereo, ~prm.procGroup, \addToHead);
 			while({ try { ~digitoneInput.isLoaded } != true }, { 0.001.wait; });
-			~digiMidi = Digitone.new("UMC1820", "UMC1820", 0, 1, 2, 3);
+			~digiMidi = Digitone.new("Elektron Digitone", "Elektron Digitone", 0, 1, 2, 3);
 			~apc.setGridFunc(7, 0, { ~apc.setPage('chain'); }, page: page);
 			~apc.turnGridGreen(7, 0, page: page);
 			chainIsLoaded = true;
@@ -386,7 +386,7 @@ chainIsLoaded = true;
 ~chMic.free;
 ~apc.setGridFunc(1, 0, {});
 ~apc.turnGridOff(1, 0);
-chainIsLoaded = false; \
+chainIsLoaded = false;
 });
 }, page: page);
 */

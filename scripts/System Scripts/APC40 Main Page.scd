@@ -73,6 +73,7 @@ var tuningNoteIsPlaying = false;
 				~prm.reverb.inBus, ~prm.granulator.inBus, ~prm.modularSend.inBus, ~prm.delay.inBus,false,
 				~prm.procGroup, \addToHead);
 			while({ try { ~digitone.isLoaded } != true}, { 0.001.wait; });
+			~digitone.setPreVol(9);
 			~chInput = IM_HardwareIn.new(~pickupIn, ~chain.inBus);
 			while({ try { ~chInput.isLoaded } != true}, { 0.001.wait; });
 			~chMic = IM_HardwareIn.new(~micIn, ~chain.inBus);

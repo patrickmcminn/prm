@@ -9,7 +9,7 @@ Chesa_Tide : IM_Module {
 	var server, <isLoaded;
 	var <cloud, <tremolo, <eq;
 	var <progression, <chordArray;
-	var <previousChord, <currentChord;
+	var <>previousChord, <>currentChord, <lowPassFilter;
 
 	*new { | outBus = 0, relGroup = nil, addAction = 'addToHead' |
 		^super.new(1, outBus, relGroup: relGroup, addAction: addAction).prInit;
@@ -21,7 +21,10 @@ Chesa_Tide : IM_Module {
 			isLoaded = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
-			eq = Equalizer.newStereo(mixer.chanStereo(0), group, \addToHead);
+			lowPassFilter = LowPassFilter.newStereo(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
+			while({ try { lowPassFilter.isLoaded } != true }, { 0.001.wait; });
+
+			eq = Equalizer.newStereo(lowPassFilter.inBus, group, \addToHead);
 			while({ try { eq.isLoaded } != true }, { 0.001.wait; });
 
 			tremolo = Tremolo.newStereo(eq.inBus, relGroup: group, addAction: \addToHead);
@@ -42,9 +45,14 @@ Chesa_Tide : IM_Module {
 		previousChord = 0;
 		currentChord = 1;
 		tremolo.setVolLFODepth(0);
-		eq.mixer.setPreVol(-18);
+		tremolo.setVolLFOWaveform('noise');
+		lowPassFilter.lfo.setWaveform('noise');
+		lowPassFilter.lfo.setFrequency(0.03);
+		eq.mixer.setPreVol(-3);
 		eq.setPeak2Freq(600);
 		eq.setPeak2Gain(-5);
+		eq.setPeak1Freq(300);
+		eq.setPeak1Gain(-5);
 		this.prMakeMarkovChain;
 		this.prDefineChords;
 		this.prSetInitialCloud;

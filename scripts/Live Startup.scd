@@ -3,8 +3,7 @@
 Tuesday, February 21st 2017
 testStartup.scd
 prm
-startup script for testing code w/o an
-audio interface
+
 */
 
 
@@ -102,10 +101,8 @@ s.makeWindow;
 s.meter;
 Server.killAll;
 
+
 ~apc.setPage('main');
 
 
-~s[0]
-
-~prm.isLoaded
 

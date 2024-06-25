@@ -273,6 +273,7 @@ SampleGrid : IM_Processor {
 	clearSample { | slot | samplerArray[slot].clearSample; }
 	loadSample { | slot | samplerArray[slot].loadSample; }
 	loadSampleByPath { | slot, path | samplerArray[slot].loadSampleByPath(path); }
+	getSampleLength { | slot | ^samplerArray[slot].getSampleLength; }
 	loadSampleGridGUI {
 		{
 			var window = Window.new('Sample Grid', Rect(200, 300, 450, 450));

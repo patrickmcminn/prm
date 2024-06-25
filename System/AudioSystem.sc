@@ -208,6 +208,7 @@ AudioSystem {
 	// Define audio device, block size, and total memory reserved for SCLang
 	// Default memory size = 2 ** 17
 	prSetServerOptions { |server, blockSize = 64, memSize = 131072, numAudioBusChannels = 1024, devName|
+		server.latency = 0.05;
 		server.options.blockSize = blockSize;
 		server.options.memSize = memSize;
 		server.options.numAudioBusChannels = numAudioBusChannels;

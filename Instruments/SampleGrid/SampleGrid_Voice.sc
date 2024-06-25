@@ -320,6 +320,8 @@ SampleGrid_Voice : IM_Module {
 	setStartPos { | pos  = 0 | startPos = pos; if( isPlaying == true, { synth.set(\startPos, pos); }); }
 	setEndPos { | pos = 1 | endPos = pos; if( isPlaying == true, { synth.set(\endPos, pos); }); }
 
+	getSampleLength { ^((endPos - startPos) * buffer.numFrames) }
+
 	playSample { | vol = -3 |
 		if( playMode == 'sustaining', { this.playSampleSustaining(vol); });
 		if( playMode == 'oneShot', { this.playSampleOneShot(vol); });

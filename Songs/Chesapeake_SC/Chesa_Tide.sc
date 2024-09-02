@@ -21,6 +21,9 @@ Chesa_Tide : IM_Module {
 			isLoaded = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 
+			//granulator = GranularDelay2.new(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
+			//while({ try { granulator.isLoaded } != true }, { 0.001.wait;});
+
 			lowPassFilter = LowPassFilter.newStereo(mixer.chanStereo(0), relGroup: group, addAction: \addToHead);
 			while({ try { lowPassFilter.isLoaded } != true }, { 0.001.wait; });
 
@@ -46,6 +49,17 @@ Chesa_Tide : IM_Module {
 		currentChord = 1;
 		tremolo.setVolLFODepth(0);
 		tremolo.setVolLFOWaveform('noise');
+
+		/*
+		granulator.setMix(0);
+		granulator.setDelayLevel(1);
+		granulator.setFeedback(0.45);
+		granulator.setDelayTime(1.5);
+		granulator.setRate(2, 2);
+		granulator.setGrainDur(0.5, 0.5);
+		granulator.setTrigRate(35);
+		*/
+
 		lowPassFilter.lfo.setWaveform('noise');
 		lowPassFilter.lfo.setFrequency(0.03);
 		eq.mixer.setPreVol(-3);
@@ -132,6 +146,12 @@ Chesa_Tide : IM_Module {
 	}
 
 	//////// public functions:
+
+	resetChain {
+		previousChord = 0;
+		currentChord = 1;
+		this.prMakeMarkovChain;
+	}
 
 	free {
 		eq.free; tremolo.free; cloud.free;

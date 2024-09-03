@@ -5,17 +5,22 @@ prm
 
 fx chain for trumpt improv
 hurray
+
+updating for HighZero 2024
+9/2/2024 -
 */
 
 
 Chain : IM_Module {
 
+	var <ampSplitter;
 	var <isLoaded, server;
 	var <freezer, <concat, <multiShift;
 	var <granulator, <eq, <delay;
 	var splitter;
 	var <oct, <microsynth;
 	var <input;
+	var <amplitudeMapper, <ampInBus;
 
 	var <looper;
 
@@ -29,6 +34,12 @@ Chain : IM_Module {
 			isLoaded = false;
 			while({ try { mixer.isLoaded } != true }, { 0.001.wait; });
 			mixer.muteMaster;
+
+			this.prAddSynthDefs;
+
+			ampInBus = Bus.audio(server, 2);
+
+			server.sync;
 
 			delay = SimpleDelay.newStereo(mixer.chanStereo(0), 0.75, 0.5, 10, relGroup: group, addAction: \addToHead);
 			while({ try { delay.isLoaded } != true }, { 0.001.wait; });
@@ -58,13 +69,17 @@ Chain : IM_Module {
 			splitter = Splitter.newStereo(3, [concat.inBus, freezer.inBus, looper.inBus], false, group, \addToHead);
 			while({ try { splitter.isLoaded } != true }, { 0.001.wait; });
 
+			// this is currently bypassed due to bad filter behavior
 			microsynth = MicroSynth.newStereo(splitter.inBus, relGroup: group, addAction: \addToHead);
 			while({ try { microsynth.isLoaded } != true }, { 0.001.wait; });
 
 			oct = Octave_OC2.newStereo(splitter.inBus, relGroup: group, addAction: \addToHead);
 			while({ try { oct.isLoaded } != true }, { 0.001.wait; });
 
-			input = IM_Mixer_1Ch.new(oct.inBus, relGroup: group, addAction: \addToHead);
+			ampSplitter = Splitter.newStereo(2, [oct.inBus, amplitudeMapper.inBus], false, group, \addToHead);
+			while({ try { ampSplitter.isLoaded } != true }, { 0.001.wait; });
+
+			input = IM_Mixer_1Ch.new(ampSplitter.inBus, relGroup: group, addAction: \addToHead);
 			while({ try { input.isLoaded } != true }, { 0.001.wait; });
 
 			server.sync;
@@ -75,6 +90,26 @@ Chain : IM_Module {
 
 			isLoaded = true;
 		}
+	}
+
+	prAddSynthDefs {
+		Synth(\prm_chain_ampMapper, {
+			| inBus, outBus, refInBus, ampHigh, tracking = 0, amp = 1 |
+			var input, refInput, amplitude;
+			var trackInput, sig;
+			input = In.ar(inBus, 2);
+			refInput = In.ar(refInBus, 2);
+			amplitude = Amplitude.kr(refInput);
+			amplitude.poll;
+			amplitude = amplitude.lincurve(0, ampHigh, 0, 1, 1);
+
+			trackInput = input * amplitude;
+
+			sig = Select.ar(tracking, [input, trackInput]);
+			sig = sig*amp;
+			Out.ar(outBus, sig);
+
+		}).add;
 	}
 
 	prSetInitialParameters {
